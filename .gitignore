@@ -1,5 +1,5 @@
 .DS_Store
+.gh-config/
 node_modules/
 dist/
 .vercel/
-

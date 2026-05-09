@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>四柱推命 無料鑑定 | 星の命式</title>
+    <meta name="description" content="四柱推命の無料鑑定ページです。生年月日、出生時間、出生地から命式を作成し、五行バランスや性格傾向を読み解きます。">
+    <link rel="canonical" href="https://hoshinomeishiki.jp/shichusuimei/free/">
+    <link rel="stylesheet" href="../../assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="../../">星の命式<small>Hoshi no Meishiki</small></a>
+        <div class="nav-links">
+          <a href="../">四柱推命</a>
+          <a href="./">無料鑑定</a>
+          <a href="../compatibility/">相性</a>
+          <a href="../../birthday-fortune/">生年月日占い</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <section class="section">
+        <div class="section-inner">
+          <p class="eyebrow">Free Meishiki</p>
+          <h1>四柱推命 無料鑑定</h1>
+          <p class="lead">生年月日と出生情報を入力して、命式、五行バランス、性格・恋愛・仕事の傾向を読み解きます。</p>
+        </div>
+      </section>
+      <section class="section alt">
+        <div class="section-inner form-panel">
+          <form class="card form" data-free-form>
+            <div class="field">
+              <label for="birthday">生年月日</label>
+              <input id="birthday" name="birthday" type="date" required>
+            </div>
+            <div class="field">
+              <label for="birthtime">出生時間</label>
+              <input id="birthtime" name="birthtime" type="time">
+              <p class="hint">不明な場合は空欄のままで進めます。</p>
+            </div>
+            <div class="field">
+              <label for="birthplace">出生地</label>
+              <select id="birthplace" name="birthplace" data-prefecture-select required>
+                <option value="">選択してください</option>
+              </select>
+            </div>
+            <button class="button" type="submit">入力内容を確認する</button>
+            <p class="hint">本番公開前に、節気・干支・時柱を検証済みの計算エンジンへ接続します。</p>
+          </form>
+          <div class="result-shell" data-result-shell>
+            <strong>鑑定結果の表示領域</strong>
+            <p>公開版では、ここに日主、命式表、五行バランス、通変星、性格・恋愛・仕事の読み解きが表示されます。</p>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="section-inner grid two">
+          <div class="content">
+            <h2>四柱推命無料鑑定でわかること</h2>
+            <p>命式を見ることで、自分の基本的な性質、行動の傾向、人との関わり方、仕事で力を発揮しやすい方向を整理できます。</p>
+            <ul>
+              <li>日主から見る基本性格</li>
+              <li>五行バランスから見る強みと偏り</li>
+              <li>通変星から見る対人関係や仕事の傾向</li>
+            </ul>
+          </div>
+          <div class="notice">
+            鑑定結果は自己理解とエンターテインメントの参考です。出生時間が不明な場合や出生地補正を簡易化する場合、結果の一部に差が出ることがあります。
+          </div>
+        </div>
+      </section>
+      <section class="section alt">
+        <div class="section-inner faq">
+          <h2>よくある質問</h2>
+          <details><summary>なぜ出生時間が必要ですか？</summary><p>出生時間があると時柱を計算でき、命式の情報量が増えます。不明でも年柱、月柱、日柱を中心に確認できます。</p></details>
+          <details><summary>出生地は何に使いますか？</summary><p>時区や時刻補正の扱いに関係します。MVP では日本国内を中心に対応します。</p></details>
+          <details><summary>結果は保存できますか？</summary><p>結果画像として保存・共有できる機能を後続で追加予定です。</p></details>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div class="section-inner">星の命式</div></footer>
+    <script src="../../assets/app.js"></script>
+  </body>
+</html>
+

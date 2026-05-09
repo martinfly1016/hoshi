@@ -651,6 +651,19 @@ p {
   transform: translateY(-2px);
 }
 
+.theme-button[aria-pressed="true"]::before {
+  content: "選択中";
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold) 70%, transparent);
+  border-radius: 999px;
+  padding: 2px 8px;
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .theme-button strong {
   display: block;
   font-family: var(--serif);
@@ -722,6 +735,14 @@ p {
 .theme-preview h3 {
   font-family: var(--serif);
   font-size: 32px;
+}
+
+.theme-preview.is-switching .theme-preview-content {
+  animation: previewchange 520ms ease both;
+}
+
+.theme-preview.is-switching::before {
+  animation: previewring 620ms ease both;
 }
 
 .pill-list {
@@ -833,6 +854,30 @@ select {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes previewchange {
+  0% {
+    opacity: 0.35;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes previewring {
+  0% {
+    opacity: 0.22;
+    transform: scale(0.985);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 

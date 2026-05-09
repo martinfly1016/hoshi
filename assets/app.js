@@ -3,6 +3,7 @@ const resultShell = document.querySelector("[data-result-shell]");
 const themeButtons = document.querySelectorAll("[data-theme-choice]");
 const themePreviewTitle = document.querySelector("[data-theme-preview-title]");
 const themePreviewCopy = document.querySelector("[data-theme-preview-copy]");
+const motionAllowed = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const themes = {
   yoru: {
@@ -21,6 +22,9 @@ const themes = {
 
 const initialTheme = new URLSearchParams(window.location.search).get("theme") || localStorage.getItem("hoshi-theme") || "yoru";
 applyTheme(themes[initialTheme] ? initialTheme : "yoru");
+initConstellations();
+initReveals();
+initPointerGlow();
 
 const prefectures = [
   "北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県",
@@ -94,4 +98,133 @@ function applyTheme(themeName) {
     themePreviewTitle.textContent = themes[selectedTheme].title;
     themePreviewCopy.textContent = themes[selectedTheme].copy;
   }
+}
+
+function initConstellations() {
+  if (!motionAllowed) return;
+
+  document.querySelectorAll("[data-constellation]").forEach((section) => {
+    const canvas = document.createElement("canvas");
+    canvas.className = "constellation-layer";
+    canvas.setAttribute("aria-hidden", "true");
+    section.prepend(canvas);
+
+    const context = canvas.getContext("2d");
+    const stars = [];
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+
+    const resize = () => {
+      const rect = section.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      stars.length = 0;
+
+      const count = Math.round(Math.min(86, Math.max(34, width / 16)));
+      for (let index = 0; index < count; index += 1) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: Math.random() * 1.7 + 0.35,
+          vx: (Math.random() - 0.5) * 0.08,
+          vy: (Math.random() - 0.5) * 0.05,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    };
+
+    const draw = () => {
+      frame += 0.008;
+      context.clearRect(0, 0, width, height);
+
+      stars.forEach((star, index) => {
+        star.x += star.vx;
+        star.y += star.vy;
+
+        if (star.x < -20) star.x = width + 20;
+        if (star.x > width + 20) star.x = -20;
+        if (star.y < -20) star.y = height + 20;
+        if (star.y > height + 20) star.y = -20;
+
+        const glow = 0.42 + Math.sin(frame * 4 + star.phase) * 0.22;
+        context.beginPath();
+        context.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        context.fillStyle = `rgba(246, 222, 158, ${glow})`;
+        context.fill();
+
+        for (let next = index + 1; next < stars.length; next += 1) {
+          const other = stars[next];
+          const dx = star.x - other.x;
+          const dy = star.y - other.y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance < 108) {
+            context.beginPath();
+            context.moveTo(star.x, star.y);
+            context.lineTo(other.x, other.y);
+            context.strokeStyle = `rgba(215, 182, 108, ${0.12 * (1 - distance / 108)})`;
+            context.lineWidth = 0.8;
+            context.stroke();
+          }
+        }
+      });
+
+      requestAnimationFrame(draw);
+    };
+
+    resize();
+    draw();
+    window.addEventListener("resize", resize);
+
+    section.addEventListener("pointermove", (event) => {
+      const rect = section.getBoundingClientRect();
+      const x = (event.clientX - rect.left - rect.width / 2) / rect.width;
+      const y = (event.clientY - rect.top - rect.height / 2) / rect.height;
+      section.style.setProperty("--drift-x", `${x * 10}px`);
+      section.style.setProperty("--drift-y", `${y * 8}px`);
+    });
+
+    section.addEventListener("pointerleave", () => {
+      section.style.setProperty("--drift-x", "0px");
+      section.style.setProperty("--drift-y", "0px");
+    });
+  });
+}
+
+function initReveals() {
+  const revealTargets = document.querySelectorAll(".card, .section-kicker, .content, .theme-panel, .form-panel, .faq, .steps");
+  revealTargets.forEach((target) => target.classList.add("reveal"));
+
+  if (!motionAllowed || !("IntersectionObserver" in window)) {
+    revealTargets.forEach((target) => target.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.14 });
+
+  revealTargets.forEach((target) => observer.observe(target));
+}
+
+function initPointerGlow() {
+  document.querySelectorAll(".card, .theme-button").forEach((element) => {
+    element.addEventListener("pointermove", (event) => {
+      const rect = element.getBoundingClientRect();
+      element.style.setProperty("--spot-x", `${event.clientX - rect.left}px`);
+      element.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
+    });
+  });
 }

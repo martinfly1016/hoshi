@@ -51,7 +51,7 @@ document.querySelectorAll("[data-prefecture-select]").forEach((select) => {
 
 themeButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    applyTheme(button.dataset.themeChoice);
+    applyTheme(button.dataset.themeChoice, { updateUrl: true, pulse: true });
   });
 });
 
@@ -89,7 +89,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function applyTheme(themeName) {
+function applyTheme(themeName, options = {}) {
   const selectedTheme = themes[themeName] ? themeName : "yoru";
   document.documentElement.dataset.theme = selectedTheme;
   localStorage.setItem("hoshi-theme", selectedTheme);
@@ -98,9 +98,23 @@ function applyTheme(themeName) {
     button.setAttribute("aria-pressed", String(button.dataset.themeChoice === selectedTheme));
   });
 
+  if (options.updateUrl) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("theme", selectedTheme);
+    window.history.replaceState({}, "", url);
+  }
+
   if (themePreviewTitle && themePreviewCopy) {
     themePreviewTitle.textContent = themes[selectedTheme].title;
     themePreviewCopy.textContent = themes[selectedTheme].copy;
+  }
+
+  if (options.pulse && themePreviewTitle) {
+    const preview = themePreviewTitle.closest(".theme-preview");
+    preview?.classList.remove("is-switching");
+    window.requestAnimationFrame(() => {
+      preview?.classList.add("is-switching");
+    });
   }
 }
 

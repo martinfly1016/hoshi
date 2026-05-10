@@ -258,11 +258,11 @@
     </div>
     <div class="summary-card">
       <strong>当前一致率</strong>
-      <span>5 / 6 个可计算样例一致；时辰不详不进入库级计算。</span>
+      <span>5 / 6 个可计算样例一致；时辰不详将在下一轮按默认午时纳入回归。</span>
     </div>
     <div class="summary-card">
       <strong>关键风险</strong>
-      <span>子时换日、真太阳时、时辰不详需要业务规则和人工对照确认。</span>
+      <span>子时换日、真太阳时、时辰不详已转为显式产品规则，不再依赖库默认值。</span>
     </div>
   </div>
 
@@ -568,8 +568,43 @@
     </table>
   </div>
 
-  <h2>6. Adapter 预览</h2>
-  <p>adapter 已经按显式配置设计：<code>lateZiHourMode: "next_day"</code> 时采用换日；<code>lateZiHourMode: "same_day"</code> 时保留当日；规则未确认时返回 <code>LATE_ZI_HOUR_RULE_PENDING</code>，不输出伪结果。</p>
+  <h2>6. 业务规则确认</h2>
+  <p>23:00 后是否换日没有行业唯一答案。问真八字、参天 AI、四柱推命ネクスト等工具或资料都把它作为可切换或需说明的规则；4Pillars 明确采用不跨日；也有工具固定 23:00 子初换日。因此产品不把该差异隐藏在库默认值里。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>问题</th>
+          <th>产品默认</th>
+          <th>用户可选</th>
+          <th>显示要求</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>23:00-23:59 是否换日</td>
+          <td>默认不换日，按晚子时/夜子时保留当日日柱。</td>
+          <td>高级设置可切换为 23:00 子初换日。</td>
+          <td>23:00-23:59 必须提示“该时段存在流派差异”。</td>
+        </tr>
+        <tr>
+          <td>真太阳时</td>
+          <td>标准版按输入时间直接计算。</td>
+          <td>精细版按出生地经纬度换算真太阳时。</td>
+          <td>精细版必须要求出生地；结果页显示原始时间和换算后时间。</td>
+        </tr>
+        <tr>
+          <td>时辰不详</td>
+          <td>默认按 12:00 午时计算。</td>
+          <td>后续可支持用户选择“大概时段”。</td>
+          <td>时柱必须标记为“12:00 午时假设值”，相关解释降级。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>7. Adapter 预览</h2>
+  <p>adapter 已经按显式配置设计：<code>lateZiHourMode: "same_day"</code> 为产品默认，23:00-23:59 保留当日；<code>lateZiHourMode: "next_day"</code> 为专家选项，23:00-23:59 按次日计算。</p>
   <div class="table-wrap">
     <table>
       <thead>
@@ -582,28 +617,22 @@
       </thead>
       <tbody>
         <tr>
-          <td><code>next_day</code></td>
-          <td>23:00-23:59 按次日计算。</td>
-          <td>辛丑</td>
-          <td>可稳定输出四柱。</td>
-        </tr>
-        <tr>
           <td><code>same_day</code></td>
           <td>23:00-23:59 保留当日日柱。</td>
           <td>庚子</td>
-          <td>可稳定输出四柱。</td>
+          <td>产品默认；结果页提示晚子时规则。</td>
         </tr>
         <tr>
-          <td><code>pending</code></td>
-          <td>规则未确认。</td>
-          <td>不输出</td>
-          <td>返回 <code>LATE_ZI_HOUR_RULE_PENDING</code>。</td>
+          <td><code>next_day</code></td>
+          <td>23:00-23:59 按次日计算。</td>
+          <td>辛丑</td>
+          <td>专家选项；用于匹配问真默认或部分传统排盘。</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <h2>7. 输出结构约束</h2>
+  <h2>8. 输出结构约束</h2>
   <p>无论最终使用哪个库，产品层只依赖统一函数，不直接依赖第三方 API。</p>
   <div class="table-wrap">
     <table>
@@ -639,12 +668,12 @@
     </table>
   </div>
 
-  <h2>8. 下一步</h2>
+  <h2>9. 下一步</h2>
   <ul>
     <li>从八字测测专业版 App 补录 Z002 / Z003：1988-02-15 23:00:00 和 1988-02-15 23:30:00。</li>
     <li>记录八字测测是否提供「晚子时」「夜子时」「子初换日」相关设置；如没有该开关，要记录默认结果。</li>
     <li>补充出生地样例，用问真八字或八字测测专业版开启 / 关闭真太阳时，对比时柱变化。</li>
-    <li>确定业务规则：23:00 后是否换日、是否支持真太阳时、时辰不详是否只输出三柱。</li>
+    <li>把 <code>same_day</code>、<code>next_day</code>、标准时间、真太阳时、时辰不详默认午时加入 fixtures。</li>
     <li>规则确认后，把样例冻结为回归 fixtures，再进入正式 adapter 设计。</li>
   </ul>
 </main>

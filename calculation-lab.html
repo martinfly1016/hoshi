@@ -108,6 +108,20 @@
     filter: brightness(0.96);
   }
 
+  .calc-status {
+    min-height: 22px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .calc-status.ok {
+    color: var(--ok);
+  }
+
+  .calc-status.fail {
+    color: var(--fail);
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -346,6 +360,7 @@
           </div>
 
           <button id="calculate" type="button">重新计算</button>
+          <div id="calculation-status" class="calc-status" aria-live="polite">等待计算</div>
         </div>
       </div>
     </aside>
@@ -362,6 +377,6 @@
   </section>
 </main>
 
-<script type="module" src="./calculation-lab.js"></script>
+<script type="module" src="./calculation-lab.js?v=lab-20260510-2"></script>
 </body>
 </html>

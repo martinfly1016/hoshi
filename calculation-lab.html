@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>命式计算验收台</title>
+<style>
+  :root {
+    color-scheme: light;
+    --text: #111827;
+    --muted: #6b7280;
+    --line: #d1d5db;
+    --soft: #f9fafb;
+    --soft-2: #f3f4f6;
+    --accent: #2563eb;
+    --ok-bg: #dcfce7;
+    --ok: #166534;
+    --warn-bg: #fef3c7;
+    --warn: #92400e;
+    --fail-bg: #fee2e2;
+    --fail: #991b1b;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--text);
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  main {
+    width: min(1280px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 32px 0 72px;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 28px;
+    line-height: 1.25;
+  }
+
+  h2 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  h3 {
+    margin: 24px 0 10px;
+    font-size: 16px;
+  }
+
+  p {
+    color: var(--muted);
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  input,
+  select,
+  button {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+  }
+
+  input,
+  select {
+    padding: 0 10px;
+  }
+
+  input[type="checkbox"] {
+    width: auto;
+    min-height: 0;
+  }
+
+  button {
+    cursor: pointer;
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  button:hover {
+    filter: brightness(0.96);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+  }
+
+  th,
+  td {
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--soft-2);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  pre {
+    max-height: 460px;
+    overflow: auto;
+    margin: 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: #0f172a;
+    color: #e5e7eb;
+    font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .header p {
+    margin-top: 8px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    white-space: nowrap;
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  .panel-body {
+    padding: 16px;
+  }
+
+  .form-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+  }
+
+  .check-row label {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .result-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .status,
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .status.pass {
+    background: var(--ok-bg);
+    color: var(--ok);
+  }
+
+  .status.fail {
+    background: var(--fail-bg);
+    color: var(--fail);
+  }
+
+  .pill.warn {
+    margin: 2px 4px 2px 0;
+    background: var(--warn-bg);
+    color: var(--warn);
+    white-space: normal;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .error {
+    padding: 14px;
+    border: 1px solid var(--fail-bg);
+    border-left: 4px solid var(--fail);
+    background: #fff7f7;
+  }
+
+  .fixtures {
+    margin-top: 28px;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .fixtures table {
+    min-width: 1120px;
+  }
+
+  @media (max-width: 920px) {
+    main {
+      width: min(100vw - 24px, 1280px);
+      padding-top: 20px;
+    }
+
+    .header,
+    .workspace,
+    .row {
+      display: block;
+    }
+
+    .links {
+      margin-top: 12px;
+    }
+
+    .panel + .panel,
+    .row > * + * {
+      margin-top: 14px;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header class="header">
+    <div>
+      <h1>命式计算验收台</h1>
+      <p>内部测试工具：用于验证四柱计算、真太阳时、晚子时规则和时辰不详处理。此页不套用线上视觉规范。</p>
+    </div>
+    <nav class="links" aria-label="页面链接">
+      <a href="./calculation-evaluation.html">评测记录</a>
+      <a href="https://github.com/martinfly1016/hoshi/blob/main/CALCULATION_SPEC.md">计算规格</a>
+    </nav>
+  </header>
+
+  <section class="workspace">
+    <aside class="panel">
+      <div class="panel-body">
+        <h2>输入</h2>
+        <div class="form-grid">
+          <div>
+            <label for="fixture">样例</label>
+            <select id="fixture"></select>
+          </div>
+
+          <div>
+            <label for="birth-date">出生日期</label>
+            <input id="birth-date" type="date" />
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="birth-time">出生时间</label>
+              <input id="birth-time" type="time" step="60" />
+            </div>
+            <div>
+              <label>&nbsp;</label>
+              <div class="check-row">
+                <input id="time-known" type="checkbox" />
+                <label for="time-known">出生时间已知</label>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="location">出生地</label>
+            <select id="location"></select>
+          </div>
+
+          <div>
+            <label for="time-mode">时间计算模式</label>
+            <select id="time-mode">
+              <option value="standard_time">标准时间：按输入时间直接计算</option>
+              <option value="true_solar_time">真太阳时：按出生地经纬度换算</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="late-zi-mode">23:00 子时规则</label>
+            <select id="late-zi-mode">
+              <option value="same_day">产品默认：晚子时不换日</option>
+              <option value="next_day">专家选项：23:00 子初换日</option>
+            </select>
+          </div>
+
+          <button id="calculate" type="button">重新计算</button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <div id="result" class="panel-body"></div>
+    </section>
+  </section>
+
+  <section class="fixtures">
+    <h2>回归样例</h2>
+    <p>每次打开页面都会自动跑一遍核心样例。失败时先检查规则配置，再判断是否为库或 adapter 问题。</p>
+    <div id="fixtures" class="table-scroll"></div>
+  </section>
+</main>
+
+<script type="module" src="./calculation-lab.js"></script>
+</body>
+</html>

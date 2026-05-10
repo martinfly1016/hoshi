@@ -1,0 +1,155 @@
+{
+  "version": "2026-05-10",
+  "purpose": "Regression fixtures used by site3/calculation-lab.html. The browser lab currently embeds the same cases for static GitHub Pages execution.",
+  "fixtures": [
+    {
+      "id": "F001",
+      "title": "普通日期",
+      "input": {
+        "date": "1990-06-15",
+        "timeKnown": true,
+        "time": "10:30",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "same_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "庚午 / 壬午 / 辛亥 / 癸巳"
+      }
+    },
+    {
+      "id": "F002A",
+      "title": "立春前",
+      "input": {
+        "date": "2024-02-04",
+        "timeKnown": true,
+        "time": "15:30",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "same_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "癸卯 / 乙丑 / 戊戌 / 庚申"
+      }
+    },
+    {
+      "id": "F002B",
+      "title": "立春后",
+      "input": {
+        "date": "2024-02-04",
+        "timeKnown": true,
+        "time": "16:30",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "same_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "甲辰 / 丙寅 / 戊戌 / 庚申"
+      }
+    },
+    {
+      "id": "F003A",
+      "title": "子时前",
+      "input": {
+        "date": "1988-02-15",
+        "timeKnown": true,
+        "time": "22:30",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "same_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "戊辰 / 甲寅 / 庚子 / 丁亥"
+      }
+    },
+    {
+      "id": "F003B-SAME",
+      "title": "子时后 / 产品默认",
+      "input": {
+        "date": "1988-02-15",
+        "timeKnown": true,
+        "time": "23:30",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "same_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "戊辰 / 甲寅 / 庚子 / 戊子",
+        "warnings": [
+          "LATE_ZI_HOUR_MODE_USER_SELECTABLE"
+        ]
+      }
+    },
+    {
+      "id": "F003B-NEXT",
+      "title": "子时后 / 专家选项",
+      "input": {
+        "date": "1988-02-15",
+        "timeKnown": true,
+        "time": "23:30",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "next_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+        "warnings": [
+          "LATE_ZI_HOUR_MODE_USER_SELECTABLE"
+        ]
+      }
+    },
+    {
+      "id": "BZ-Z002",
+      "title": "北京真太阳时 23:00",
+      "input": {
+        "date": "1988-02-15",
+        "timeKnown": true,
+        "time": "23:00",
+        "timeCalculationMode": "true_solar_time",
+        "lateZiHourMode": "next_day",
+        "locationId": "beijing-dongcheng"
+      },
+      "expected": {
+        "pillars": "戊辰 / 甲寅 / 庚子 / 丁亥",
+        "trueSolarTime": "1988-02-15 22:31"
+      }
+    },
+    {
+      "id": "BZ-Z003",
+      "title": "北京真太阳时 23:30",
+      "input": {
+        "date": "1988-02-15",
+        "timeKnown": true,
+        "time": "23:30",
+        "timeCalculationMode": "true_solar_time",
+        "lateZiHourMode": "next_day",
+        "locationId": "beijing-dongcheng"
+      },
+      "expected": {
+        "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+        "trueSolarTime": "1988-02-15 23:01",
+        "warnings": [
+          "LATE_ZI_HOUR_MODE_USER_SELECTABLE"
+        ]
+      }
+    },
+    {
+      "id": "F005",
+      "title": "时辰不详",
+      "input": {
+        "date": "1990-06-15",
+        "timeKnown": false,
+        "time": "12:00",
+        "timeCalculationMode": "standard_time",
+        "lateZiHourMode": "same_day",
+        "locationId": "tokyo"
+      },
+      "expected": {
+        "pillars": "庚午 / 壬午 / 辛亥 / 甲午",
+        "warnings": [
+          "BIRTH_TIME_DEFAULTED_TO_NOON"
+        ]
+      }
+    }
+  ]
+}

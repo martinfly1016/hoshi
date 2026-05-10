@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="tsukiyo" data-type="mincho" data-motion="soft">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>星の命式 | 计算库评测看板</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Serif+JP:wght@300;400;500;600&family=Yuji+Syuku&family=Yuji+Mai&family=Klee+One:wght@400;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+  body.eval-body {
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 72% 18%, color-mix(in srgb, var(--accent) 20%, transparent) 0 1px, transparent 2px 100%),
+      radial-gradient(circle at 26% 14%, color-mix(in srgb, var(--gold) 20%, transparent), transparent 24%),
+      linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 92%, #000 8%));
+  }
+
+  .eval-shell {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100vw - 48px));
+    margin: 0 auto;
+    padding: 112px 0 88px;
+  }
+
+  .eval-chrome {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 36px;
+    color: var(--ink-2);
+    pointer-events: none;
+  }
+
+  .eval-chrome a {
+    color: inherit;
+    text-decoration: none;
+    pointer-events: auto;
+  }
+
+  .eval-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--f-seal);
+    color: var(--ink);
+    letter-spacing: 0.18em;
+  }
+
+  .eval-brand .seal {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--seal);
+    color: var(--seal);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--seal) 7%, transparent);
+    box-shadow: 0 1px 0 var(--seal-deep);
+  }
+
+  .eval-nav {
+    display: flex;
+    gap: 24px;
+    font: 10px/1 var(--f-mono);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+
+  .eval-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(340px, 0.58fr);
+    gap: 64px;
+    align-items: end;
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .eval-kicker {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 26px;
+    color: var(--ink-2);
+    font: 11px/1 var(--f-mono);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+  }
+
+  .eval-kicker::before {
+    content: "";
+    width: 44px;
+    height: 1px;
+    background: var(--seal);
+  }
+
+  .eval-title {
+    margin: 0;
+    max-width: 820px;
+    color: var(--ink);
+    font-family: var(--f-display);
+    font-size: clamp(46px, 7vw, 96px);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: 0.08em;
+  }
+
+  .eval-title .thin {
+    color: var(--ink-2);
+    font-weight: 400;
+  }
+
+  .eval-summary {
+    margin: 32px 0 0;
+    max-width: 700px;
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 2;
+    letter-spacing: 0.08em;
+  }
+
+  .eval-oracle {
+    position: relative;
+    min-height: 380px;
+    display: grid;
+    place-items: center;
+  }
+
+  .eval-oracle::before,
+  .eval-oracle::after {
+    content: "";
+    position: absolute;
+    inset: 26px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    animation: eval-spin calc(180s / max(var(--motion), 0.2)) linear infinite;
+  }
+
+  .eval-oracle::after {
+    inset: 78px;
+    border-style: dashed;
+    animation-direction: reverse;
+    animation-duration: calc(240s / max(var(--motion), 0.2));
+  }
+
+  .eval-oracle-core {
+    position: relative;
+    z-index: 1;
+    width: 230px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--bg-paper) 82%, transparent), transparent 72%);
+    box-shadow: 0 0 80px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .eval-oracle-core strong {
+    font-family: var(--f-seal);
+    font-size: 72px;
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  .eval-oracle-core span {
+    position: absolute;
+    bottom: 58px;
+    color: var(--ink-3);
+    font: 9px/1 var(--f-mono);
+    letter-spacing: 0.34em;
+  }
+
+  .eval-seal {
+    position: absolute;
+    right: 54px;
+    bottom: 44px;
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    background: var(--seal);
+    color: #f6f0e2;
+    box-shadow: 0 3px 0 var(--seal-deep);
+    transform: rotate(-7deg);
+    font-family: var(--f-seal);
+    font-size: 30px;
+  }
+
+  .eval-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 36px 0 42px;
+  }
+
+  .eval-tab {
+    min-height: 40px;
+    padding: 0 18px;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    font: 11px/1 var(--f-mono);
+    letter-spacing: 0.22em;
+    transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
+  }
+
+  .eval-tab.is-active {
+    border-color: var(--seal);
+    color: var(--ink);
+    background: color-mix(in srgb, var(--seal) 10%, transparent);
+  }
+
+  .eval-panel {
+    display: none;
+  }
+
+  .eval-panel.is-active {
+    display: block;
+  }
+
+  .eval-section {
+    margin-top: 56px;
+  }
+
+  .eval-section:first-child {
+    margin-top: 0;
+  }
+
+  .eval-section-head {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 28px;
+  }
+
+  .eval-no {
+    color: var(--seal);
+    font: 11px/1.6 var(--f-mono);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+
+  .eval-section h2 {
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+  }
+
+  .eval-section p {
+    margin: 12px 0 0;
+    max-width: 760px;
+    color: var(--ink-2);
+    font-size: 14px;
+    line-height: 2;
+    letter-spacing: 0.08em;
+  }
+
+  .eval-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .eval-grid.two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .eval-card {
+    position: relative;
+    min-height: 230px;
+    padding: 24px;
+    border: 1px solid var(--rule);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--bg-paper) 74%, transparent), color-mix(in srgb, var(--bg-2) 72%, transparent));
+  }
+
+  .eval-card::after {
+    content: "";
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--seal);
+    opacity: 0.72;
+  }
+
+  .eval-card h3 {
+    margin: 0 0 12px;
+    color: var(--ink);
+    font-family: var(--f-display);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .eval-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .eval-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 9px;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    font: 10px/1 var(--f-mono);
+    letter-spacing: 0.12em;
+  }
+
+  .eval-pill.high {
+    border-color: color-mix(in srgb, var(--accent-2) 60%, transparent);
+    color: var(--accent-2);
+  }
+
+  .eval-pill.warn {
+    border-color: color-mix(in srgb, var(--gold) 70%, transparent);
+    color: var(--gold);
+  }
+
+  .eval-pill.stop {
+    border-color: color-mix(in srgb, var(--seal) 70%, transparent);
+    color: var(--seal);
+  }
+
+  .eval-card ul {
+    margin: 0;
+    padding-left: 1.1em;
+    color: var(--ink-2);
+    font-size: 13px;
+    line-height: 1.9;
+  }
+
+  .eval-card li + li {
+    margin-top: 4px;
+  }
+
+  .eval-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+  }
+
+  .eval-matrix th,
+  .eval-matrix td {
+    padding: 16px 14px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-2);
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .eval-matrix th {
+    color: var(--ink);
+    font: 11px/1.4 var(--f-mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .eval-matrix td:first-child {
+    color: var(--ink);
+    font-family: var(--f-display);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .eval-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink-2);
+    font: 10px/1 var(--f-mono);
+    letter-spacing: 0.16em;
+    white-space: nowrap;
+  }
+
+  .eval-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+
+  .eval-status.done::before { background: var(--accent-2); }
+  .eval-status.wait::before { background: var(--gold); }
+  .eval-status.risk::before { background: var(--seal); }
+
+  .eval-flow {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .eval-step {
+    min-height: 150px;
+    padding: 20px;
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--bg-paper) 54%, transparent);
+  }
+
+  .eval-step b {
+    display: block;
+    margin-bottom: 18px;
+    color: var(--seal);
+    font: 11px/1 var(--f-mono);
+    letter-spacing: 0.22em;
+  }
+
+  .eval-step strong {
+    display: block;
+    margin-bottom: 10px;
+    font-family: var(--f-display);
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .eval-step span {
+    color: var(--ink-2);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .eval-result {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 20px;
+    align-items: stretch;
+    margin-top: 40px;
+    border: 1px solid var(--rule-strong);
+    background: color-mix(in srgb, var(--bg-paper) 70%, transparent);
+  }
+
+  .eval-result-main {
+    padding: 30px;
+  }
+
+  .eval-result-main h2 {
+    margin: 0 0 16px;
+  }
+
+  .eval-result-main p {
+    margin: 0;
+  }
+
+  .eval-result-seal {
+    display: grid;
+    place-items: center;
+    min-height: 210px;
+    border-left: 1px solid var(--rule);
+    color: var(--seal);
+    font-family: var(--f-seal);
+    font-size: 92px;
+    background:
+      linear-gradient(135deg, transparent 0 48%, var(--rule) 49% 50%, transparent 51%),
+      linear-gradient(45deg, transparent 0 48%, var(--rule) 49% 50%, transparent 51%);
+  }
+
+  @keyframes eval-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eval-oracle::before,
+    .eval-oracle::after {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .eval-shell {
+      width: min(100vw - 32px, 680px);
+      padding-top: 96px;
+    }
+
+    .eval-chrome {
+      padding: 16px 18px;
+    }
+
+    .eval-nav {
+      display: none;
+    }
+
+    .eval-hero,
+    .eval-result {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .eval-oracle {
+      min-height: 300px;
+    }
+
+    .eval-section-head {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .eval-grid,
+    .eval-grid.two,
+    .eval-flow {
+      grid-template-columns: 1fr;
+    }
+
+    .eval-matrix {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .eval-result-seal {
+      min-height: 150px;
+      border-left: none;
+      border-top: 1px solid var(--rule);
+      font-size: 72px;
+    }
+  }
+</style>
+</head>
+
+<body class="eval-body">
+<div class="grain"></div>
+
+<header class="eval-chrome">
+  <a class="eval-brand" href="./">
+    <span class="seal">命</span>
+    <span>星 の 命 式</span>
+  </a>
+  <nav class="eval-nav" aria-label="page">
+    <a href="./">HOME</a>
+    <a href="#libraries">LIBRARY</a>
+    <a href="#fixtures">FIXTURE</a>
+  </nav>
+</header>
+
+<main class="eval-shell">
+  <section class="eval-hero" aria-labelledby="page-title">
+    <div>
+      <div class="eval-kicker">CALCULATION ENGINE EVALUATION</div>
+      <h1 id="page-title" class="eval-title">命式计算库<br><span class="thin">选型评测看板</span></h1>
+      <p class="eval-summary">
+        当前阶段先评估候选库、对照工具和验证路径。真实排盘结果会在拿到「问真八字」「八字测测专业版 / 测测」的样例输出后继续录入，用于判断 tyme4ts 与 lunar 系列的实际可靠性。
+      </p>
+    </div>
+    <div class="eval-oracle" aria-hidden="true">
+      <div class="eval-oracle-core">
+        <strong>算</strong>
+        <span>SPIKE · ADAPTER</span>
+      </div>
+      <div class="eval-seal">測</div>
+    </div>
+  </section>
+
+  <div class="eval-tabs" role="tablist" aria-label="评测视图">
+    <button class="eval-tab is-active" type="button" data-panel="libraries">候选库</button>
+    <button class="eval-tab" type="button" data-panel="references">对照工具</button>
+    <button class="eval-tab" type="button" data-panel="fixtures">测试样例</button>
+    <button class="eval-tab" type="button" data-panel="conclusion">推荐路线</button>
+  </div>
+
+  <section id="libraries" class="eval-panel is-active">
+    <div class="eval-section" id="libraries-section">
+      <div class="eval-section-head">
+        <div class="eval-no">壹 / 一<br>LIBRARY</div>
+        <div>
+          <h2>候选计算库初筛</h2>
+          <p>本页先展示公开资料层面的评估。下一步会进入代码 Spike，用同一批出生样例验证四柱、节气边界、时辰和大运输出。</p>
+        </div>
+      </div>
+
+      <div class="eval-grid">
+        <article class="eval-card">
+          <h3>tyme4ts</h3>
+          <div class="eval-meta">
+            <span class="eval-pill high">首选 Spike</span>
+            <span class="eval-pill">MIT</span>
+            <span class="eval-pill">TypeScript</span>
+          </div>
+          <ul>
+            <li>6tail 新一代历法库，适合现代 TS 工程。</li>
+            <li>依赖面小，适合前端或同构计算。</li>
+            <li>需要实测八字 API 完整度与节气边界精度。</li>
+          </ul>
+        </article>
+
+        <article class="eval-card">
+          <h3>lunar 系列</h3>
+          <div class="eval-meta">
+            <span class="eval-pill high">成熟基准</span>
+            <span class="eval-pill">MIT</span>
+            <span class="eval-pill">JS / TS</span>
+          </div>
+          <ul>
+            <li>资料和使用案例更多，适合作为对照基准。</li>
+            <li>八字相关能力更直接，便于快速验证。</li>
+            <li>若采用 JS 版本，需要外层类型封装。</li>
+          </ul>
+        </article>
+
+        <article class="eval-card">
+          <h3>lunisolar</h3>
+          <div class="eval-meta">
+            <span class="eval-pill warn">仅参考</span>
+            <span class="eval-pill stop">GPL-3.0</span>
+          </div>
+          <ul>
+            <li>功能覆盖强，适合了解实现思路和能力边界。</li>
+            <li>GPL 许可证对闭源商业产品不友好。</li>
+            <li>不建议作为生产核心依赖。</li>
+          </ul>
+        </article>
+
+        <article class="eval-card">
+          <h3>bazi-calculator</h3>
+          <div class="eval-meta">
+            <span class="eval-pill warn">谨慎评估</span>
+            <span class="eval-pill">Direct Bazi</span>
+          </div>
+          <ul>
+            <li>直接面向八字分析，概念上很接近需求。</li>
+            <li>成熟度、边界样例和维护状态需要验证。</li>
+            <li>可作参考，不宜直接定为核心引擎。</li>
+          </ul>
+        </article>
+
+        <article class="eval-card">
+          <h3>dantalion</h3>
+          <div class="eval-meta">
+            <span class="eval-pill stop">不建议核心依赖</span>
+          </div>
+          <ul>
+            <li>更像生日性格和占卜应用库。</li>
+            <li>与四柱命式计算的结构化需求不匹配。</li>
+            <li>可参考产品包装，不做算法基准。</li>
+          </ul>
+        </article>
+
+        <article class="eval-card">
+          <h3>自研 / 服务化</h3>
+          <div class="eval-meta">
+            <span class="eval-pill warn">后续方案</span>
+          </div>
+          <ul>
+            <li>自研控制力最高，但校验成本过高。</li>
+            <li>后端服务化适合长期扩展和模型编排。</li>
+            <li>MVP 阶段先用 adapter 保留替换空间。</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="references" class="eval-panel">
+    <div class="eval-section">
+      <div class="eval-section-head">
+        <div class="eval-no">貳 / 二<br>REFERENCE</div>
+        <div>
+          <h2>人工对照工具</h2>
+          <p>对照工具不视为绝对真值，而是帮助发现不同库在节气、真太阳时、出生地和流派上的差异。</p>
+        </div>
+      </div>
+
+      <table class="eval-matrix">
+        <thead>
+          <tr>
+            <th>工具</th>
+            <th>定位</th>
+            <th>适合验证</th>
+            <th>注意事项</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>问真八字</td>
+            <td>主对照</td>
+            <td>四柱、节气、大运、流年、藏干、神煞</td>
+            <td>算法闭源；录入时必须记录是否启用真太阳时、出生地和历法设置。</td>
+            <td><span class="eval-status wait">待样例录入</span></td>
+          </tr>
+          <tr>
+            <td>八字测测专业版</td>
+            <td>辅助对照</td>
+            <td>真太阳时、时辰不详、大运、流年、流月、流日</td>
+            <td>适合补充验证，但不单独作为权威结果。</td>
+            <td><span class="eval-status wait">待样例录入</span></td>
+          </tr>
+          <tr>
+            <td>测测</td>
+            <td>体验参考</td>
+            <td>报告结构、解释风格、用户体验</td>
+            <td>更偏综合命理和 AI 问答，算法对照价值弱于专业排盘工具。</td>
+            <td><span class="eval-status done">公开资料已评估</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="fixtures" class="eval-panel">
+    <div class="eval-section" id="fixtures-section">
+      <div class="eval-section-head">
+        <div class="eval-no">參 / 三<br>FIXTURE</div>
+        <div>
+          <h2>样例测试矩阵</h2>
+          <p>第一批样例不追求数量，而是优先覆盖最容易出错的边界。所有样例会保留输入、候选库输出、对照工具输出和最终判定。</p>
+        </div>
+      </div>
+
+      <table class="eval-matrix">
+        <thead>
+          <tr>
+            <th>样例类型</th>
+            <th>验证目标</th>
+            <th>tyme4ts</th>
+            <th>lunar 系列</th>
+            <th>问真/测测</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>普通日期</td>
+            <td>基础四柱、藏干、十神、五行分布</td>
+            <td>待跑</td>
+            <td>待跑</td>
+            <td>待录入</td>
+            <td><span class="eval-status wait">待执行</span></td>
+          </tr>
+          <tr>
+            <td>立春前后</td>
+            <td>年柱切换、月柱切换、节气边界</td>
+            <td>待跑</td>
+            <td>待跑</td>
+            <td>待录入</td>
+            <td><span class="eval-status wait">关键样例</span></td>
+          </tr>
+          <tr>
+            <td>子时边界</td>
+            <td>日柱切换、23:00 归属规则</td>
+            <td>待跑</td>
+            <td>待跑</td>
+            <td>待录入</td>
+            <td><span class="eval-status wait">关键样例</span></td>
+          </tr>
+          <tr>
+            <td>真太阳时</td>
+            <td>出生地经度导致的时辰变化</td>
+            <td>待跑</td>
+            <td>待跑</td>
+            <td>待录入</td>
+            <td><span class="eval-status risk">高风险</span></td>
+          </tr>
+          <tr>
+            <td>时辰不详</td>
+            <td>缺失时柱时的展示和解释输入</td>
+            <td>待跑</td>
+            <td>待跑</td>
+            <td>待录入</td>
+            <td><span class="eval-status wait">待执行</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="conclusion" class="eval-panel">
+    <div class="eval-section">
+      <div class="eval-section-head">
+        <div class="eval-no">肆 / 四<br>ROUTE</div>
+        <div>
+          <h2>推荐执行路线</h2>
+          <p>计算层只产出可信、可复核的命式 JSON。解释层由其他模型完成，两者通过稳定的数据结构解耦。</p>
+        </div>
+      </div>
+
+      <div class="eval-flow">
+        <div class="eval-step">
+          <b>STEP 01</b>
+          <strong>建立 Spike</strong>
+          <span>创建实验目录，同时接入 tyme4ts 与 lunar 系列，先输出四柱和基础结构。</span>
+        </div>
+        <div class="eval-step">
+          <b>STEP 02</b>
+          <strong>录入对照</strong>
+          <span>把问真八字、八字测测专业版、测测的同一批输入结果录入矩阵。</span>
+        </div>
+        <div class="eval-step">
+          <b>STEP 03</b>
+          <strong>建立 Adapter</strong>
+          <span>产品代码只调用 calculateShichusuimei，第三方库封装在内部适配器。</span>
+        </div>
+        <div class="eval-step">
+          <b>STEP 04</b>
+          <strong>冻结 Fixtures</strong>
+          <span>三方结果一致或差异有明确解释后，固化为回归测试样例。</span>
+        </div>
+      </div>
+
+      <div class="eval-result">
+        <div class="eval-result-main">
+          <h2>当前结论</h2>
+          <p>
+            首选验证 tyme4ts，使用 lunar 系列作为成熟基准；lunisolar 仅参考能力设计，不作为生产依赖；问真八字作为主人工对照，八字测测专业版作为辅助对照，测测更多用于观察解释和产品体验。
+          </p>
+        </div>
+        <div class="eval-result-seal" aria-hidden="true">定</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll(".eval-tab"));
+  const panels = Array.from(document.querySelectorAll(".eval-panel"));
+
+  function activatePanel(id) {
+    tabs.forEach((tab) => {
+      tab.classList.toggle("is-active", tab.dataset.panel === id);
+    });
+    panels.forEach((panel) => {
+      panel.classList.toggle("is-active", panel.id === id);
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activatePanel(tab.dataset.panel));
+  });
+
+  const hash = window.location.hash.replace("#", "");
+  if (hash && panels.some((panel) => panel.id === hash)) {
+    activatePanel(hash);
+  }
+</script>
+</body>
+</html>

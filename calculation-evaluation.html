@@ -244,7 +244,7 @@
   </div>
 
   <div class="note warn">
-    第一轮结果：7 个样例中，5 个样例 tyme4ts / lunar-javascript / lunar-typescript 三方一致；1 个子时后样例不一致；1 个时辰不详样例不适用。当前最需要人工对照的是「23:00 后是否换日」规则。
+    第一轮结果：7 个样例中，5 个样例 tyme4ts / lunar-javascript / lunar-typescript 三方一致；1 个子时后样例不一致；1 个时辰不详样例不适用。已确认不一致来自「23:00 后是否换日」规则，而不是库异常。
   </div>
 
   <div class="summary-grid">
@@ -469,7 +469,68 @@
     </table>
   </div>
 
-  <h2>4. 输出结构约束</h2>
+  <h2>4. 子时换日规则拆解</h2>
+  <p>结论：23:00-23:59 是关键分歧区间。sect1 / DefaultEightCharProvider 按次日计算日柱；sect2 / LunarSect2EightCharProvider 保留当日柱。到次日 00:30 后，各方案重新一致。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>样例</th>
+          <th>输入</th>
+          <th>tyme SixtyCycleHour</th>
+          <th>tyme Lunar 默认</th>
+          <th>tyme Lunar sect2</th>
+          <th>lunar sect1</th>
+          <th>lunar sect2</th>
+          <th>需要人工确认</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Z001</td>
+          <td>1988-02-15 22:30:00</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td><span class="status ok">无分歧</span></td>
+        </tr>
+        <tr>
+          <td>Z002</td>
+          <td>1988-02-15 23:00:00</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td><span class="status risk">需确认</span></td>
+        </tr>
+        <tr>
+          <td>Z003</td>
+          <td>1988-02-15 23:30:00</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td><span class="status risk">需确认</span></td>
+        </tr>
+        <tr>
+          <td>Z004</td>
+          <td>1988-02-16 00:30:00</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td><span class="status ok">无分歧</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>5. 输出结构约束</h2>
   <p>无论最终使用哪个库，产品层只依赖统一函数，不直接依赖第三方 API。</p>
   <div class="table-wrap">
     <table>
@@ -505,9 +566,10 @@
     </table>
   </div>
 
-  <h2>5. 下一步</h2>
+  <h2>6. 下一步</h2>
   <ul>
-    <li>用问真八字优先校验 F002A / F002B 和 F003A / F003B，尤其是 1988-02-15 23:30:00 的日柱。</li>
+    <li>用问真八字优先校验 Z002 / Z003：1988-02-15 23:00:00 和 1988-02-15 23:30:00。</li>
+    <li>记录问真八字 / 八字测测是否提供「晚子时」「夜子时」「子初换日」相关设置。</li>
     <li>补充出生地样例，用问真八字或八字测测专业版开启 / 关闭真太阳时，对比时柱变化。</li>
     <li>确定业务规则：23:00 后是否换日、是否支持真太阳时、时辰不详是否只输出三柱。</li>
     <li>规则确认后，把样例冻结为回归 fixtures，再进入正式 adapter 设计。</li>

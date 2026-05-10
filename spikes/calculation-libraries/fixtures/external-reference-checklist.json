@@ -36,7 +36,35 @@
         "sect2_same_day": "戊辰 / 甲寅 / 庚子 / 戊子"
       },
       "externalResults": {
-        "wenzhen-bazi": null,
+        "wenzhen-bazi": {
+          "checkedAt": "2026-05-10",
+          "source": "https://pcbz.iwzwh.com/#/paipan/index",
+          "method": "Chrome UI confirmed the form and frontend API getbasebz8.php was used for repeatable extraction.",
+          "toolInputSettings": {
+            "calendar": "gregorian",
+            "displayedBirthplace": "未知地 北京时间 --",
+            "trueSolarTime": "off",
+            "daylightSavingTime": "off",
+            "gender": "male",
+            "timeInput": "1988-02-15 23:00"
+          },
+          "results": [
+            {
+              "lateZiHourOption": "off",
+              "apiParamYzs": 0,
+              "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+              "lunarDateLabel": "1987年腊月廿九 子时",
+              "ruleInterpretation": "next_day"
+            },
+            {
+              "lateZiHourOption": "on",
+              "apiParamYzs": 1,
+              "pillars": "戊辰 / 甲寅 / 庚子 / 戊子",
+              "lunarDateLabel": "1987年腊月廿八 子时",
+              "ruleInterpretation": "same_day"
+            }
+          ]
+        },
         "bazi-cece-pro": null
       }
     },
@@ -55,7 +83,35 @@
         "sect2_same_day": "戊辰 / 甲寅 / 庚子 / 戊子"
       },
       "externalResults": {
-        "wenzhen-bazi": null,
+        "wenzhen-bazi": {
+          "checkedAt": "2026-05-10",
+          "source": "https://pcbz.iwzwh.com/#/paipan/index",
+          "method": "Chrome UI confirmed the form and frontend API getbasebz8.php was used for repeatable extraction.",
+          "toolInputSettings": {
+            "calendar": "gregorian",
+            "displayedBirthplace": "未知地 北京时间 --",
+            "trueSolarTime": "off",
+            "daylightSavingTime": "off",
+            "gender": "male",
+            "timeInput": "1988-02-15 23:30"
+          },
+          "results": [
+            {
+              "lateZiHourOption": "off",
+              "apiParamYzs": 0,
+              "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+              "lunarDateLabel": "1987年腊月廿九 子时",
+              "ruleInterpretation": "next_day"
+            },
+            {
+              "lateZiHourOption": "on",
+              "apiParamYzs": 1,
+              "pillars": "戊辰 / 甲寅 / 庚子 / 戊子",
+              "lunarDateLabel": "1987年腊月廿八 子时",
+              "ruleInterpretation": "same_day"
+            }
+          ]
+        },
         "bazi-cece-pro": null
       }
     }

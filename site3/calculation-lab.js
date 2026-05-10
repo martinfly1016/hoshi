@@ -786,7 +786,7 @@ function init() {
   calculateCurrent();
 }
 
-if (typeof document !== "undefined") {
+if (typeof document !== "undefined" && document.getElementById("fixture")) {
   init();
 }
 

@@ -530,7 +530,80 @@
     </table>
   </div>
 
-  <h2>5. 输出结构约束</h2>
+  <h2>5. 外部工具录入清单</h2>
+  <p>下一轮需要把问真八字 / 八字测测专业版的结果填进清单。录入时重点不是只抄四柱，还要记录工具设置，否则无法判断差异来自算法还是开关。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>样例</th>
+          <th>输入</th>
+          <th>必须记录的设置</th>
+          <th>候选结果 A</th>
+          <th>候选结果 B</th>
+          <th>问真八字</th>
+          <th>八字测测专业版</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Z002</td>
+          <td>1988-02-15 23:00:00</td>
+          <td>公历/农历、出生地、真太阳时开关、晚子时/夜子时设置、工具版本或截图日期。</td>
+          <td>换日：戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>不换日：戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>待录入</td>
+          <td>待录入</td>
+        </tr>
+        <tr>
+          <td>Z003</td>
+          <td>1988-02-15 23:30:00</td>
+          <td>公历/农历、出生地、真太阳时开关、晚子时/夜子时设置、工具版本或截图日期。</td>
+          <td>换日：戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>不换日：戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>待录入</td>
+          <td>待录入</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>6. Adapter 预览</h2>
+  <p>adapter 已经按显式配置设计：<code>lateZiHourMode: "next_day"</code> 时采用换日；<code>lateZiHourMode: "same_day"</code> 时保留当日；规则未确认时返回 <code>LATE_ZI_HOUR_RULE_PENDING</code>，不输出伪结果。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>配置</th>
+          <th>含义</th>
+          <th>Z002 / Z003 日柱</th>
+          <th>工程处理</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>next_day</code></td>
+          <td>23:00-23:59 按次日计算。</td>
+          <td>辛丑</td>
+          <td>可稳定输出四柱。</td>
+        </tr>
+        <tr>
+          <td><code>same_day</code></td>
+          <td>23:00-23:59 保留当日日柱。</td>
+          <td>庚子</td>
+          <td>可稳定输出四柱。</td>
+        </tr>
+        <tr>
+          <td><code>pending</code></td>
+          <td>规则未确认。</td>
+          <td>不输出</td>
+          <td>返回 <code>LATE_ZI_HOUR_RULE_PENDING</code>。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>7. 输出结构约束</h2>
   <p>无论最终使用哪个库，产品层只依赖统一函数，不直接依赖第三方 API。</p>
   <div class="table-wrap">
     <table>
@@ -566,7 +639,7 @@
     </table>
   </div>
 
-  <h2>6. 下一步</h2>
+  <h2>8. 下一步</h2>
   <ul>
     <li>用问真八字优先校验 Z002 / Z003：1988-02-15 23:00:00 和 1988-02-15 23:30:00。</li>
     <li>记录问真八字 / 八字测测是否提供「晚子时」「夜子时」「子初换日」相关设置。</li>

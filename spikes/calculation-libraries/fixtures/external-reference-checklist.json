@@ -1,0 +1,63 @@
+{
+  "purpose": "Record external tool outputs for rule validation. Fill this file from WenZhen Bazi / Bazi Cece screenshots or manual results.",
+  "tools": [
+    {
+      "id": "wenzhen-bazi",
+      "name": "问真八字",
+      "role": "primary-reference"
+    },
+    {
+      "id": "bazi-cece-pro",
+      "name": "八字测测专业版",
+      "role": "secondary-reference"
+    }
+  ],
+  "requiredSettingsToRecord": [
+    "calendar: gregorian or lunar",
+    "birthplace / timezone",
+    "true solar time: on or off",
+    "late zi hour / night zi hour option if available",
+    "gender if the tool requires it",
+    "tool version or screenshot date"
+  ],
+  "cases": [
+    {
+      "id": "Z002",
+      "goal": "Confirm whether 23:00 is treated as next day or same day.",
+      "input": {
+        "datetime": "1988-02-15 23:00:00",
+        "timezone": "Asia/Tokyo",
+        "calendar": "gregorian",
+        "birthplace": "Japan, exact city TBD",
+        "trueSolarTime": "off"
+      },
+      "libraryCandidates": {
+        "sect1_next_day": "戊辰 / 甲寅 / 辛丑 / 戊子",
+        "sect2_same_day": "戊辰 / 甲寅 / 庚子 / 戊子"
+      },
+      "externalResults": {
+        "wenzhen-bazi": null,
+        "bazi-cece-pro": null
+      }
+    },
+    {
+      "id": "Z003",
+      "goal": "Confirm whether 23:30 is treated as next day or same day.",
+      "input": {
+        "datetime": "1988-02-15 23:30:00",
+        "timezone": "Asia/Tokyo",
+        "calendar": "gregorian",
+        "birthplace": "Japan, exact city TBD",
+        "trueSolarTime": "off"
+      },
+      "libraryCandidates": {
+        "sect1_next_day": "戊辰 / 甲寅 / 辛丑 / 戊子",
+        "sect2_same_day": "戊辰 / 甲寅 / 庚子 / 戊子"
+      },
+      "externalResults": {
+        "wenzhen-bazi": null,
+        "bazi-cece-pro": null
+      }
+    }
+  ]
+}

@@ -102,6 +102,7 @@ type ShichusuimeiInput = {
     useSolarTermMonth: true;
     useTrueSolarTime: false;
     calendar: "gregorian";
+    lateZiHourMode: "pending" | "next_day" | "same_day";
   };
 };
 ```
@@ -117,6 +118,7 @@ type ShichusuimeiInput = {
 | `gender` | 可选 | MVP 不应用于基础四柱，若进入大运再确认 |
 | `useSolarTermMonth` | 固定 true | 月柱必须按节气处理 |
 | `useTrueSolarTime` | MVP false | 暂不做真太阳时精确补正 |
+| `lateZiHourMode` | 待定 | 23:00-23:59 是否按次日计算，需用外部排盘工具确认 |
 
 ## 5. 输出规格
 
@@ -207,6 +209,7 @@ type CalculationWarning =
   | "BIRTH_TIME_UNKNOWN"
   | "TRUE_SOLAR_TIME_NOT_APPLIED"
   | "BIRTHPLACE_APPROXIMATED"
+  | "LATE_ZI_HOUR_RULE_PENDING"
   | "SOLAR_TERM_BOUNDARY_NEEDS_REVIEW"
   | "OUT_OF_SUPPORTED_RANGE";
 ```
@@ -260,16 +263,24 @@ MVP 允许：
 - 出生时间已知时，按时辰确定地支。
 - 出生时间不明时，不输出时柱。
 - 时辰边界样例必须测试。
+- 23:00-23:59 的晚子时/夜子时换日规则必须显式配置，不允许隐藏在第三方库默认值里。
 
 MVP 处理：
 
 - 使用日本标准时间。
 - 暂不做真太阳时。
+- `lateZiHourMode` 在外部工具验证完成前保持 `pending`。
 
 UI 必须提示：
 
 ```text
 出生時間が不明なため、時柱を含む一部の鑑定は簡易表示です。
+```
+
+晚子时规则待确认时，计算层必须返回 warning：
+
+```text
+LATE_ZI_HOUR_RULE_PENDING
 ```
 
 ### 6.5 真太阳时
@@ -476,4 +487,3 @@ POST /api/shichusuimei/calculate
 4. 实现最小 `calculateShichusuimei`。
 5. 先输出结构化命式，不写长文解释。
 6. 通过测试后再接入 `site3` 视觉体系和结果页。
-

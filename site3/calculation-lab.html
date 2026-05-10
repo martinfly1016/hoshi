@@ -265,6 +265,47 @@
     margin-top: 28px;
   }
 
+  .fixtures-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .fixtures-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .secondary-button {
+    width: auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-color: var(--line);
+    background: #fff;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .fixture-run-status {
+    min-height: 20px;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: right;
+  }
+
+  .fixture-run-status.ok {
+    color: var(--ok);
+  }
+
+  .fixture-run-status.fail {
+    color: var(--fail);
+  }
+
   .table-scroll {
     overflow-x: auto;
   }
@@ -281,7 +322,8 @@
 
     .header,
     .workspace,
-    .row {
+    .row,
+    .fixtures-head {
       display: block;
     }
 
@@ -292,6 +334,15 @@
     .panel + .panel,
     .row > * + * {
       margin-top: 14px;
+    }
+
+    .fixtures-actions {
+      align-items: flex-start;
+      margin-top: 12px;
+    }
+
+    .fixture-run-status {
+      text-align: left;
     }
   }
 </style>
@@ -371,12 +422,20 @@
   </section>
 
   <section class="fixtures">
-    <h2>回归样例</h2>
-    <p>每次打开页面都会自动跑一遍核心样例。失败时先检查规则配置，再判断是否为库或 adapter 问题。</p>
+    <div class="fixtures-head">
+      <div>
+        <h2>固定回归测试集</h2>
+        <p>这里验证的是已冻结样例，不随上方表单输入变化。它的状态只有在重新运行测试、修改算法或修改样例后才会变化。</p>
+      </div>
+      <div class="fixtures-actions">
+        <button id="run-fixtures" class="secondary-button" type="button">重新运行回归测试</button>
+        <div id="fixture-run-status" class="fixture-run-status" aria-live="polite">等待运行</div>
+      </div>
+    </div>
     <div id="fixtures" class="table-scroll"></div>
   </section>
 </main>
 
-<script type="module" src="./calculation-lab.js?v=lab-20260510-2"></script>
+<script type="module" src="./calculation-lab.js?v=lab-20260510-3"></script>
 </body>
 </html>

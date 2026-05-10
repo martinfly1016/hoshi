@@ -3,7 +3,7 @@ import {
   LunarHour,
   LunarSect2EightCharProvider,
   SolarTime,
-} from "./vendor/tyme4ts/index.mjs?v=lab-20260510-2";
+} from "./vendor/tyme4ts/index.mjs?v=lab-20260510-3";
 
 const STEM_ELEMENTS = {
   甲: "木",
@@ -529,6 +529,15 @@ function currentClockTime() {
   return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 
+function renderFixtureRunStatus(message, type = "ok") {
+  const status = element("fixture-run-status");
+  if (!status) {
+    return;
+  }
+  status.className = `fixture-run-status ${type}`;
+  status.textContent = message;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -696,8 +705,8 @@ function runFixture(fixture) {
 }
 
 function renderFixtureTable() {
-  const rows = FIXTURES.map((fixture) => {
-    const run = runFixture(fixture);
+  const runs = FIXTURES.map((fixture) => ({ fixture, run: runFixture(fixture) }));
+  const rows = runs.map(({ fixture, run }) => {
     const actual = run.result?.pillarLine || run.error?.message || "ERROR";
     const effective = run.result?.calculationMeta.effectiveBirthDateTime || "-";
     return `
@@ -731,6 +740,9 @@ function renderFixtureTable() {
       <tbody>${rows}</tbody>
     </table>
   `;
+  const passed = runs.filter(({ run }) => run.ok).length;
+  const failed = runs.length - passed;
+  renderFixtureRunStatus(`已运行 ${currentClockTime()}，${passed}/${runs.length} 通过`, failed ? "fail" : "ok");
 }
 
 function populateOptions() {
@@ -751,6 +763,7 @@ function bindEvents() {
     calculateCurrent();
   });
   element("calculate").addEventListener("click", calculateCurrent);
+  element("run-fixtures").addEventListener("click", renderFixtureTable);
   element("time-known").addEventListener("change", () => {
     element("birth-time").disabled = !element("time-known").checked;
   });

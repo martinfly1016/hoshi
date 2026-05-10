@@ -10,7 +10,7 @@
       "id": "bazi-cece-pro",
       "name": "八字测测专业版",
       "role": "secondary-reference",
-      "accessNote": "App Store listing confirms an iPhone app. No official web version was found for Chrome-based extraction on 2026-05-10."
+      "accessNote": "Screenshot samples received on 2026-05-10. The app requires a birthplace and displays the chart using true solar time."
     }
   ],
   "requiredSettingsToRecord": [
@@ -67,15 +67,18 @@
           ]
         },
         "bazi-cece-pro": {
-          "status": "pending_app_capture",
+          "status": "pending_exact_capture",
           "checkedAt": "2026-05-10",
-          "source": "https://apps.apple.com/app/id1167347029",
-          "reason": "八字测测专业版 appears to be iPhone-only, so Chrome cannot directly enter the sample and extract a result.",
+          "source": "user-provided app screenshots",
+          "toolInputSettings": {
+            "birthplace": "北京市",
+            "trueSolarTime": "applied_by_app",
+            "lateZiHourRule": "next_day",
+            "note": "The exact 1988-02-15 23:00 sample was not included. The app behavior was confirmed from adjacent screenshot samples."
+          },
           "requiredCapture": [
-            "Full chart screenshot",
-            "Calendar mode",
-            "True solar time setting",
-            "Late/night zi hour setting if available",
+            "Exact Z002 screenshot with selected birthplace",
+            "Displayed true solar time",
             "Displayed four pillars"
           ]
         }
@@ -126,17 +129,19 @@
           ]
         },
         "bazi-cece-pro": {
-          "status": "pending_app_capture",
+          "status": "captured",
           "checkedAt": "2026-05-10",
-          "source": "https://apps.apple.com/app/id1167347029",
-          "reason": "八字测测专业版 appears to be iPhone-only, so Chrome cannot directly enter the sample and extract a result.",
-          "requiredCapture": [
-            "Full chart screenshot",
-            "Calendar mode",
-            "True solar time setting",
-            "Late/night zi hour setting if available",
-            "Displayed four pillars"
-          ]
+          "source": "user-provided F003B app screenshot",
+          "toolInputSettings": {
+            "birthplace": "北京市",
+            "trueSolarTime": "applied_by_app",
+            "displayedTrueSolarTime": "1988-02-15 23:01",
+            "lateZiHourRule": "next_day",
+            "displayedRuleLabel": "子时换日"
+          },
+          "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+          "ruleInterpretation": "next_day",
+          "note": "The screenshot title is F003B, which corresponds to the 1988-02-15 23:30 boundary sample. Z003/Z004 screenshots supplied separately show 1998 dates and are not used for the 1988 Z003/Z004 fixtures."
         }
       }
     }

@@ -67,20 +67,20 @@
           ]
         },
         "bazi-cece-pro": {
-          "status": "pending_exact_capture",
+          "status": "captured",
           "checkedAt": "2026-05-10",
-          "source": "user-provided app screenshots",
+          "source": "user-provided Z002 app screenshot",
           "toolInputSettings": {
-            "birthplace": "北京市",
+            "birthplace": "北京市 东城区",
+            "timezone": "UTC+8 China",
+            "inputDateTime": "1988-02-15 23:00",
             "trueSolarTime": "applied_by_app",
+            "displayedTrueSolarTime": "1988-02-15 22:31",
             "lateZiHourRule": "next_day",
-            "note": "The exact 1988-02-15 23:00 sample was not included. The app behavior was confirmed from adjacent screenshot samples."
+            "note": "The input standard time is 23:00, but the app converts it to 22:31 true solar time for Beijing Dongcheng, so this sample does not enter zi hour after true solar time adjustment."
           },
-          "requiredCapture": [
-            "Exact Z002 screenshot with selected birthplace",
-            "Displayed true solar time",
-            "Displayed four pillars"
-          ]
+          "pillars": "戊辰 / 甲寅 / 庚子 / 丁亥",
+          "ruleInterpretation": "true_solar_time_shifted_before_zi_hour"
         }
       }
     },

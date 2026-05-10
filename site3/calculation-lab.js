@@ -3,7 +3,7 @@ import {
   LunarHour,
   LunarSect2EightCharProvider,
   SolarTime,
-} from "./vendor/tyme4ts/index.mjs";
+} from "./vendor/tyme4ts/index.mjs?v=lab-20260510-2";
 
 const STEM_ELEMENTS = {
   甲: "木",
@@ -515,6 +515,20 @@ function element(id) {
   return document.getElementById(id);
 }
 
+function renderCalculationStatus(message, type = "ok") {
+  const status = element("calculation-status");
+  if (!status) {
+    return;
+  }
+  status.className = `calc-status ${type}`;
+  status.textContent = message;
+}
+
+function currentClockTime() {
+  const now = new Date();
+  return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -645,8 +659,10 @@ function calculateCurrent() {
   try {
     const result = calculateShichusuimei(readFormInput());
     renderResult(result, fixture);
+    renderCalculationStatus(`已重新计算 ${currentClockTime()}`);
   } catch (error) {
     renderError(error);
+    renderCalculationStatus(`计算失败 ${currentClockTime()}`, "fail");
   }
 }
 

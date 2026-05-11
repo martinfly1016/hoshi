@@ -189,6 +189,23 @@
     font-size: 13px;
   }
 
+  .field-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-height: 23px;
+  }
+
+  .field-heading label {
+    margin: 0;
+  }
+
+  .field-note {
+    color: var(--ink-3);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
   .hint {
     color: var(--ink-3);
     font-size: 12px;
@@ -237,12 +254,12 @@
     text-decoration: line-through;
   }
 
-  .time-note {
+  .field-note.time-note {
     display: none;
   }
 
-  .field.is-time-abandoned .time-note {
-    display: block;
+  .field.is-time-abandoned .field-note.time-note {
+    display: inline;
     color: var(--warn);
   }
 
@@ -944,15 +961,19 @@
         </div>
 
         <div class="field">
-          <label for="birth-time">出生時間</label>
+          <div class="field-heading">
+            <label for="birth-time">出生時間</label>
+            <span class="field-note time-note">時柱は参考</span>
+          </div>
           <input id="birth-time" type="time" step="60" value="10:30" />
-          <p class="hint time-note">出生時間不明として扱い、時柱は参考表示にします。</p>
         </div>
 
         <div class="field">
-          <label for="location">出生地</label>
+          <div class="field-heading">
+            <label for="location">出生地</label>
+            <span class="field-note">県庁所在地基準</span>
+          </div>
           <select id="location"></select>
-          <p class="hint">日本の都道府県庁所在地を基準点として選択します。</p>
         </div>
 
         <div class="field">
@@ -991,6 +1012,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260511-5"></script>
+<script type="module" src="./page.js?v=free-20260511-6"></script>
 </body>
 </html>

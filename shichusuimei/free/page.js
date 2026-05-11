@@ -1,4 +1,4 @@
-import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-5";
+import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-6";
 
 const READING_DELAY_MS = 980;
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
@@ -85,9 +85,9 @@ const WARNING_LABELS = {
 };
 
 const FORMAL_LOCATION_LABELS = {
-  tokyo: "日本 / 東京都 千代田区",
-  osaka: "日本 / 大阪府 大阪市",
-  kyoto: "日本 / 京都府 京都市",
+  tokyo: "東京都 千代田区",
+  osaka: "大阪府 大阪市",
+  kyoto: "京都府 京都市",
 };
 
 const FORMAL_LOCATIONS = LOCATIONS.filter(
@@ -198,7 +198,7 @@ function inputSignature(input = readInput()) {
 }
 
 function displayLocationLabel(location) {
-  return FORMAL_LOCATION_LABELS[location.id] || location.label;
+  return (FORMAL_LOCATION_LABELS[location.id] || location.label).replace(/^日本\s*\/\s*/, "");
 }
 
 function setBusy(isBusy) {
@@ -510,7 +510,7 @@ function renderMeta(result) {
         <tbody>
           <tr><th>入力時間</th><td>${escapeHtml(meta.inputDateTime)}（${escapeHtml(meta.timezone)}）</td></tr>
           <tr><th>有効計算時間</th><td>${escapeHtml(meta.effectiveBirthDateTime)}</td></tr>
-          <tr><th>出生地</th><td>${escapeHtml(FORMAL_LOCATION_LABELS[meta.location.id] || meta.location.label)}</td></tr>
+          <tr><th>出生地</th><td>${escapeHtml(displayLocationLabel(meta.location))}</td></tr>
           <tr><th>時間補正</th><td>${escapeHtml(trueSolar)}</td></tr>
           <tr><th>23:00 子時</th><td>${meta.lateZiHourMode === "same_day" ? "晚子時として当日扱い" : "23:00 で翌日扱い"}</td></tr>
         </tbody>

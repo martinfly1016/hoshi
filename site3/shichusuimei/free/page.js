@@ -1,4 +1,4 @@
-import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-1";
+import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-3";
 
 const READING_DELAY_MS = 980;
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
@@ -16,6 +16,14 @@ const ELEMENT_JA = {
   土: "土",
   金: "金",
   水: "水",
+};
+
+const ELEMENT_CLASS = {
+  木: "wood",
+  火: "fire",
+  土: "earth",
+  金: "metal",
+  水: "water",
 };
 
 const WARNING_LABELS = {
@@ -184,6 +192,17 @@ function elementSummary(result) {
   return `五行では ${strong} が目立ち、${weak} は控えめです。強い要素は自然に使いやすい資質、控えめな要素は意識して補うと安定しやすい領域として見ます。`;
 }
 
+function elementClass(elementName) {
+  return ELEMENT_CLASS[elementName] || "neutral";
+}
+
+function formatDateTimeLabel(value) {
+  const [date = "", time = ""] = String(value).split(" ");
+  const [year, month, day] = date.split("-");
+  if (!year || !month || !day) return escapeHtml(value);
+  return `${year}年${month}月${day}日 ${time}`;
+}
+
 function renderElementBars(result) {
   const counts = result.fiveElements.counts;
   const max = Math.max(1, ...Object.values(counts));
@@ -273,6 +292,63 @@ function renderPillarCards(result) {
   `;
 }
 
+function renderHiddenStemCell(pillar) {
+  const details = pillar.hiddenStemDetails || pillar.hiddenStems.map((stem) => ({ stem, element: null }));
+  return details.map((detail) => `
+    <span class="mini-line ${elementClass(detail.element)}">${escapeHtml(detail.stem)}${detail.element ? `·${escapeHtml(detail.element)}` : ""}</span>
+  `).join("");
+}
+
+function renderHiddenGodCell(pillar) {
+  const details = pillar.hiddenStemDetails || [];
+  if (!details.length) return `<span class="muted">—</span>`;
+  return details.map((detail) => `
+    <span class="mini-line ${elementClass(detail.element)}">${escapeHtml(detail.tenGod)}</span>
+  `).join("");
+}
+
+function renderTraditionalRow(result, label, className, renderer) {
+  return `
+    <div class="bazi-row ${className || ""}">
+      <div class="bazi-label">${label}</div>
+      ${PILLAR_KEYS.map((key) => `<div class="bazi-cell ${key === "day" ? "is-day" : ""}">${renderer(result.pillars[key], key)}</div>`).join("")}
+    </div>
+  `;
+}
+
+function renderTraditionalChart(result) {
+  const meta = result.calculationMeta;
+  const timeLabel = meta.trueSolarTime === "applied" ? "真太陽時" : "計算時刻";
+  const timeText = formatDateTimeLabel(meta.effectiveBirthDateTime);
+  const solarNote = meta.trueSolarTime === "applied"
+    ? `出生地の経度補正 ${meta.trueSolar.offsetMinutes > 0 ? "+" : ""}${meta.trueSolar.offsetMinutes.toFixed(1)}分`
+    : "標準時で計算";
+
+  return `
+    <div class="bazi-meta">
+      <div><span>${timeLabel}</span>：${escapeHtml(timeText)}</div>
+      <div><span>節気基準</span>：月柱は二十四節気を基準に算出 · ${escapeHtml(solarNote)}</div>
+    </div>
+
+    <div class="bazi-board">
+      <div class="bazi-row bazi-head">
+        <div class="bazi-label"></div>
+        ${PILLAR_KEYS.map((key) => `<div class="bazi-cell">${PILLAR_LABELS[key]}</div>`).join("")}
+      </div>
+      ${renderTraditionalRow(result, "干神", "bazi-god", (_pillar, key) => escapeHtml(result.tenGods[key]))}
+      ${renderTraditionalRow(result, "天干", "bazi-stem", (pillar) => `<span class="${elementClass(pillar.element.stem)}">${escapeHtml(pillar.stem)}</span>`)}
+      ${renderTraditionalRow(result, "地支", "bazi-branch", (pillar) => `<span class="${elementClass(pillar.element.branch)}">${escapeHtml(pillar.branch)}</span>`)}
+      ${renderTraditionalRow(result, "藏干", "bazi-detail", (pillar) => renderHiddenStemCell(pillar))}
+      ${renderTraditionalRow(result, "支神", "bazi-detail", (pillar) => renderHiddenGodCell(pillar))}
+      ${renderTraditionalRow(result, "纳音", "bazi-flat", (pillar) => `<span class="${elementClass((pillar.naYin || "").slice(-1))}">${escapeHtml(pillar.naYin || "—")}</span>`)}
+      ${renderTraditionalRow(result, "空亡", "bazi-flat", (pillar) => escapeHtml((pillar.voidBranches || []).join("") || "—"))}
+      ${renderTraditionalRow(result, "地势", "bazi-flat", (pillar) => escapeHtml(pillar.terrainByDay || "—"))}
+      ${renderTraditionalRow(result, "自坐", "bazi-flat", (pillar) => escapeHtml(pillar.terrainSelf || "—"))}
+      ${renderTraditionalRow(result, "神煞", "bazi-shensha", () => `<span class="muted">—</span>`)}
+    </div>
+  `;
+}
+
 function renderMeishikiTable(result) {
   return `
     <div class="table-wrap">
@@ -323,7 +399,7 @@ function renderMeta(result) {
         <tbody>
           <tr><th>入力時間</th><td>${escapeHtml(meta.inputDateTime)}（${escapeHtml(meta.timezone)}）</td></tr>
           <tr><th>有効計算時間</th><td>${escapeHtml(meta.effectiveBirthDateTime)}</td></tr>
-          <tr><th>出生地</th><td>${escapeHtml(meta.location.label)}</td></tr>
+          <tr><th>出生地</th><td>${escapeHtml(FORMAL_LOCATION_LABELS[meta.location.id] || meta.location.label)}</td></tr>
           <tr><th>時間補正</th><td>${escapeHtml(trueSolar)}</td></tr>
           <tr><th>23:00 子時</th><td>${meta.lateZiHourMode === "same_day" ? "晚子時として当日扱い" : "23:00 で翌日扱い"}</td></tr>
         </tbody>
@@ -333,54 +409,30 @@ function renderMeta(result) {
 }
 
 function renderResult(result) {
-  const profile = STEM_PROFILES[result.dayMaster] || {
-    title: "日主の特徴",
-    text: "命式の中心となる日主から、基本的な性質を読み解きます。",
-    tags: [],
-  };
-  const tags = buildTags(result);
-
   element("result").innerHTML = `
     <section class="section">
       <div class="section-title">
-        <h2>命式の概要</h2>
-        <span class="eyebrow">貳 / RESULT</span>
-      </div>
-      <div class="summary">
-        <div class="summary-main">
-          <p class="eyebrow">FOUR PILLARS</p>
-          <div class="pillar-line">${escapeHtml(result.pillarLine)}</div>
-          <p class="summary-text">${escapeHtml(profile.title)}。${escapeHtml(profile.text)}</p>
-          ${renderTags(tags)}
-        </div>
-        <aside class="summary-side">
-          <p class="eyebrow">FIVE ELEMENTS</p>
-          ${renderElementBars(result)}
-          <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-title">
         <h2>命式</h2>
-        <span class="eyebrow">參 / CHART</span>
+        <span class="eyebrow">貳 / CHART</span>
       </div>
-      ${renderPillarCards(result)}
+      ${renderTraditionalChart(result)}
     </section>
 
     <section class="section">
       <div class="section-title">
-        <h2>専門表</h2>
-        <span class="eyebrow">肆 / DETAILS</span>
+        <h2>五行</h2>
+        <span class="eyebrow">參 / ELEMENTS</span>
       </div>
-      ${renderMeishikiTable(result)}
+      <div class="summary-side compact">
+        ${renderElementBars(result)}
+        <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
+      </div>
     </section>
 
     <section class="section">
       <div class="section-title">
         <h2>計算情報</h2>
-        <span class="eyebrow">伍 / META</span>
+        <span class="eyebrow">肆 / META</span>
       </div>
       ${renderMeta(result)}
     </section>
@@ -388,21 +440,9 @@ function renderResult(result) {
     <section class="section">
       <div class="section-title">
         <h2>注意事項</h2>
-        <span class="eyebrow">陸 / NOTES</span>
+        <span class="eyebrow">伍 / NOTES</span>
       </div>
       ${renderWarnings(result)}
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <h2>次に見る</h2>
-        <span class="eyebrow">漆 / NEXT</span>
-      </div>
-      <div class="next-links">
-        <a class="next-link" href="#" aria-disabled="true">相性を見る<span>ふたりの命式から関係性を見る機能を準備中です。</span></a>
-        <a class="next-link" href="#" aria-disabled="true">大運を見る<span>10年周期の流れを読む機能を準備中です。</span></a>
-        <a class="next-link" href="#" aria-disabled="true">もっと深く読む<span>AI 解読と質問機能を準備中です。</span></a>
-      </div>
     </section>
   `;
   revealResult();

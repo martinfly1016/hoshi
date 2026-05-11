@@ -1,4 +1,4 @@
-import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-4";
+import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-5";
 
 const READING_DELAY_MS = 980;
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
@@ -86,12 +86,13 @@ const WARNING_LABELS = {
 
 const FORMAL_LOCATION_LABELS = {
   tokyo: "日本 / 東京都 千代田区",
-  osaka: "日本 / 大阪市",
-  kyoto: "日本 / 京都市",
-  "jp-prefecture-only": "日本 / 都道府県のみ（真太陽時不可）",
+  osaka: "日本 / 大阪府 大阪市",
+  kyoto: "日本 / 京都府 京都市",
 };
 
-const FORMAL_LOCATIONS = LOCATIONS.filter((location) => location.timezone === "Asia/Tokyo");
+const FORMAL_LOCATIONS = LOCATIONS.filter(
+  (location) => location.timezone === "Asia/Tokyo" && location.latitude != null && location.longitude != null,
+);
 
 const STEM_PROFILES = {
   甲: {
@@ -624,7 +625,11 @@ function populateLocations() {
 }
 
 function syncBirthTimeField() {
-  element("birth-time").disabled = !element("time-known").checked;
+  const timeKnown = element("time-known").checked;
+  const birthTime = element("birth-time");
+  birthTime.disabled = !timeKnown;
+  birthTime.setAttribute("aria-disabled", timeKnown ? "false" : "true");
+  birthTime.closest(".field").classList.toggle("is-time-abandoned", !timeKnown);
 }
 
 function markInputChanged() {

@@ -523,6 +523,40 @@
     color: var(--ink-3);
   }
 
+  .element-legend {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    margin: 14px 0;
+  }
+
+  .element-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    background: rgba(255, 255, 255, 0.035);
+    color: var(--ink-2);
+    font-size: 12px;
+  }
+
+  .element-mark,
+  .bazi-icon,
+  .guide-icon {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1;
+  }
+
   .bazi-board {
     width: 100%;
     overflow-x: auto;
@@ -533,8 +567,8 @@
 
   .bazi-row {
     display: grid;
-    grid-template-columns: 112px repeat(4, minmax(118px, 1fr));
-    min-width: 700px;
+    grid-template-columns: 156px repeat(4, minmax(118px, 1fr));
+    min-width: 760px;
     border-bottom: 1px solid rgba(40, 36, 28, 0.08);
   }
 
@@ -560,9 +594,40 @@
 
   .bazi-label {
     justify-items: start;
-    padding-left: 24px;
+    padding-left: 16px;
     color: #515151;
-    font-size: 16px;
+  }
+
+  .bazi-label-content {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-align: left;
+  }
+
+  .bazi-label-content strong,
+  .bazi-head-label {
+    display: block;
+    color: #303030;
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .bazi-label-content small {
+    display: block;
+    max-width: 88px;
+    margin-top: 3px;
+    color: #817b70;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  .bazi-icon {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.38);
+    color: #8f7652;
+    font-size: 13px;
   }
 
   .bazi-cell {
@@ -598,6 +663,38 @@
   .bazi-flat .bazi-cell {
     min-height: 48px;
     font-size: 15px;
+  }
+
+  .chart-guide {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .chart-guide article {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    min-height: 142px;
+    padding: 14px;
+    border: 1px solid var(--rule);
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .chart-guide h3 {
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  .chart-guide p {
+    color: var(--ink-2);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .guide-icon {
+    color: var(--gold);
   }
 
   .mini-line {
@@ -737,8 +834,13 @@
     }
 
     .pillar-grid,
-    .next-links {
+    .next-links,
+    .chart-guide {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .element-legend {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -761,7 +863,9 @@
 
     .form-grid,
     .pillar-grid,
-    .next-links {
+    .next-links,
+    .chart-guide,
+    .element-legend {
       grid-template-columns: 1fr;
     }
 
@@ -857,6 +961,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260511-3"></script>
+<script type="module" src="./page.js?v=free-20260511-4"></script>
 </body>
 </html>

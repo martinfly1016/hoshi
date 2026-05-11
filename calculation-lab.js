@@ -685,6 +685,23 @@ function locationById(id) {
   return LOCATIONS.find((location) => location.id === id) || LOCATIONS[0];
 }
 
+function normalizeInputLocation(input) {
+  const override = input.locationOverride;
+  const latitude = Number(override?.latitude);
+  const longitude = Number(override?.longitude);
+  if (override && Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    return {
+      id: override.id || input.locationId || "custom-location",
+      label: override.label || "出生地",
+      timezone: override.timezone || "Asia/Tokyo",
+      utcOffset: Number.isFinite(Number(override.utcOffset)) ? Number(override.utcOffset) : 9,
+      latitude,
+      longitude,
+    };
+  }
+  return locationById(input.locationId);
+}
+
 function providerForLateZi(mode) {
   if (mode === "next_day") {
     return new DefaultEightCharProvider();
@@ -775,7 +792,7 @@ function buildInputParts(input) {
 }
 
 function calculateShichusuimei(input) {
-  const location = locationById(input.locationId);
+  const location = normalizeInputLocation(input);
   const rawParts = buildInputParts(input);
   const warnings = [];
   let effectiveParts = rawParts;

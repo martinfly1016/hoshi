@@ -1,4 +1,5 @@
-import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-6";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260511-7";
+import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
@@ -84,15 +85,65 @@ const WARNING_LABELS = {
   LATE_ZI_HOUR_MODE_USER_SELECTABLE: "23:00-23:59 は流派により日柱の扱いが分かれる時間帯です。",
 };
 
-const FORMAL_LOCATION_LABELS = {
-  tokyo: "東京都 千代田区",
-  osaka: "大阪府 大阪市",
-  kyoto: "京都府 京都市",
-};
-
-const FORMAL_LOCATIONS = LOCATIONS.filter(
-  (location) => location.timezone === "Asia/Tokyo" && location.latitude != null && location.longitude != null,
-);
+const PREFECTURE_ORDER = [
+  "北海道",
+  "青森県",
+  "岩手県",
+  "宮城県",
+  "秋田県",
+  "山形県",
+  "福島県",
+  "茨城県",
+  "栃木県",
+  "群馬県",
+  "埼玉県",
+  "千葉県",
+  "東京都",
+  "神奈川県",
+  "新潟県",
+  "富山県",
+  "石川県",
+  "福井県",
+  "山梨県",
+  "長野県",
+  "岐阜県",
+  "静岡県",
+  "愛知県",
+  "三重県",
+  "滋賀県",
+  "京都府",
+  "大阪府",
+  "兵庫県",
+  "奈良県",
+  "和歌山県",
+  "鳥取県",
+  "島根県",
+  "岡山県",
+  "広島県",
+  "山口県",
+  "徳島県",
+  "香川県",
+  "愛媛県",
+  "高知県",
+  "福岡県",
+  "佐賀県",
+  "長崎県",
+  "熊本県",
+  "大分県",
+  "宮崎県",
+  "鹿児島県",
+  "沖縄県",
+];
+const DEFAULT_PREFECTURE = "東京都";
+const DEFAULT_MUNICIPALITY_ID = "jp-131016";
+const MUNICIPALITIES_BY_ID = new Map(JAPAN_MUNICIPALITIES.map((location) => [location.id, location]));
+const MUNICIPALITIES_BY_PREFECTURE = JAPAN_MUNICIPALITIES.reduce((groups, location) => {
+  if (!groups.has(location.prefecture)) {
+    groups.set(location.prefecture, []);
+  }
+  groups.get(location.prefecture).push(location);
+  return groups;
+}, new Map());
 
 const STEM_PROFILES = {
   甲: {
@@ -172,6 +223,27 @@ function currentClockTime() {
   return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 
+function municipalitiesForPrefecture(prefecture) {
+  return MUNICIPALITIES_BY_PREFECTURE.get(prefecture) || [];
+}
+
+function selectedMunicipality() {
+  return MUNICIPALITIES_BY_ID.get(element("municipality").value)
+    || MUNICIPALITIES_BY_ID.get(DEFAULT_MUNICIPALITY_ID)
+    || JAPAN_MUNICIPALITIES[0];
+}
+
+function locationOverrideFromMunicipality(location) {
+  return {
+    id: location.id,
+    label: location.label,
+    timezone: location.timezone,
+    utcOffset: location.utcOffset,
+    latitude: location.latitude,
+    longitude: location.longitude,
+  };
+}
+
 function setStatus(message) {
   element("status").textContent = message;
 }
@@ -183,11 +255,13 @@ function delay(milliseconds) {
 }
 
 function readInput() {
+  const location = selectedMunicipality();
   return {
     date: element("birth-date").value,
     timeKnown: element("time-known").checked,
     time: element("birth-time").value || "12:00",
-    locationId: element("location").value,
+    locationId: location.id,
+    locationOverride: locationOverrideFromMunicipality(location),
     timeCalculationMode: element("time-mode").value,
     lateZiHourMode: element("late-zi-mode").value,
   };
@@ -198,7 +272,7 @@ function inputSignature(input = readInput()) {
 }
 
 function displayLocationLabel(location) {
-  return (FORMAL_LOCATION_LABELS[location.id] || location.label).replace(/^日本\s*\/\s*/, "");
+  return (location?.label || "").replace(/^日本\s*\/\s*/, "");
 }
 
 function setBusy(isBusy) {
@@ -617,11 +691,26 @@ async function copyJson() {
   }
 }
 
-function populateLocations() {
-  element("location").innerHTML = FORMAL_LOCATIONS.map(
-    (location) => `<option value="${location.id}">${escapeHtml(displayLocationLabel(location))}</option>`,
+function populateMunicipalities(prefecture, preferredId = "") {
+  const municipalities = municipalitiesForPrefecture(prefecture);
+  element("municipality").innerHTML = municipalities.map(
+    (location) => `<option value="${location.id}">${escapeHtml(location.municipality)}</option>`,
   ).join("");
-  element("location").value = "tokyo";
+
+  const fallbackId = municipalities[0]?.id || DEFAULT_MUNICIPALITY_ID;
+  const defaultId = prefecture === DEFAULT_PREFECTURE ? DEFAULT_MUNICIPALITY_ID : fallbackId;
+  const nextId = municipalities.some((location) => location.id === preferredId) ? preferredId : defaultId;
+  element("municipality").value = nextId;
+}
+
+function populateLocationControls() {
+  const availablePrefectures = new Set(JAPAN_MUNICIPALITIES.map((location) => location.prefecture));
+  const prefectures = PREFECTURE_ORDER.filter((prefecture) => availablePrefectures.has(prefecture));
+  element("prefecture").innerHTML = prefectures.map(
+    (prefecture) => `<option value="${prefecture}">${escapeHtml(prefecture)}</option>`,
+  ).join("");
+  element("prefecture").value = DEFAULT_PREFECTURE;
+  populateMunicipalities(DEFAULT_PREFECTURE, DEFAULT_MUNICIPALITY_ID);
 }
 
 function syncBirthTimeField() {
@@ -652,13 +741,17 @@ function bindEvents() {
   });
   element("copy-json").addEventListener("click", copyJson);
   element("time-known").addEventListener("change", markInputChanged);
-  ["birth-date", "birth-time", "location", "time-mode", "late-zi-mode"].forEach((id) => {
+  element("prefecture").addEventListener("change", () => {
+    populateMunicipalities(element("prefecture").value);
+    markInputChanged();
+  });
+  ["birth-date", "birth-time", "municipality", "time-mode", "late-zi-mode"].forEach((id) => {
     element(id).addEventListener("change", markInputChanged);
   });
 }
 
 function init() {
-  populateLocations();
+  populateLocationControls();
   syncBirthTimeField();
   bindEvents();
   renderInitialState();

@@ -1,5 +1,6 @@
 import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-1";
 
+const READING_DELAY_MS = 980;
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
 const PILLAR_LABELS = {
   year: "年柱",
@@ -23,6 +24,15 @@ const WARNING_LABELS = {
   TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: "真太陽時で計算するには、都市レベルの出生地が必要です。",
   LATE_ZI_HOUR_MODE_USER_SELECTABLE: "23:00-23:59 は流派により日柱の扱いが分かれる時間帯です。",
 };
+
+const FORMAL_LOCATION_LABELS = {
+  tokyo: "日本 / 東京都 千代田区",
+  osaka: "日本 / 大阪市",
+  kyoto: "日本 / 京都市",
+  "jp-prefecture-only": "日本 / 都道府県のみ（真太陽時不可）",
+};
+
+const FORMAL_LOCATIONS = LOCATIONS.filter((location) => location.timezone === "Asia/Tokyo");
 
 const STEM_PROFILES = {
   甲: {
@@ -78,6 +88,8 @@ const STEM_PROFILES = {
 };
 
 let lastResult = null;
+let lastResultInputSignature = "";
+let activeRunId = 0;
 
 function element(id) {
   return document.getElementById(id);
@@ -104,6 +116,12 @@ function setStatus(message) {
   element("status").textContent = message;
 }
 
+function delay(milliseconds) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, milliseconds);
+  });
+}
+
 function readInput() {
   return {
     date: element("birth-date").value,
@@ -113,6 +131,29 @@ function readInput() {
     timeCalculationMode: element("time-mode").value,
     lateZiHourMode: element("late-zi-mode").value,
   };
+}
+
+function inputSignature(input = readInput()) {
+  return JSON.stringify(input);
+}
+
+function displayLocationLabel(location) {
+  return FORMAL_LOCATION_LABELS[location.id] || location.label;
+}
+
+function setBusy(isBusy) {
+  element("calculate-submit").disabled = isBusy;
+  element("copy-json").disabled = isBusy;
+  element("birth-form").setAttribute("aria-busy", isBusy ? "true" : "false");
+}
+
+function setResultClass(className = "") {
+  element("result").className = ["results", className].filter(Boolean).join(" ");
+}
+
+function revealResult() {
+  setResultClass("is-entering");
+  window.setTimeout(() => setResultClass(), 700);
 }
 
 function strongestElements(counts) {
@@ -177,6 +218,33 @@ function renderWarnings(result) {
     <div class="notice-list">
       ${warnings.map((warning) => `<div class="notice">${escapeHtml(WARNING_LABELS[warning] || warning)}</div>`).join("")}
     </div>
+  `;
+}
+
+function renderInitialState() {
+  setResultClass();
+  element("result").innerHTML = `
+    <section class="empty-state">
+      <p class="eyebrow">READY</p>
+      <h2>命式を作成できます</h2>
+      <p>入力内容を整えたあと、鑑定の流れに入ります。</p>
+    </section>
+  `;
+}
+
+function renderCasting() {
+  setResultClass();
+  element("result").innerHTML = `
+    <section class="casting" role="status" aria-live="polite">
+      <div>
+        <div class="casting-mark" aria-hidden="true">
+          <span class="casting-orbit"></span>
+        </div>
+        <p class="eyebrow">READING THE CHART</p>
+        <h2>命式を整えています</h2>
+        <p>暦、節気、出生時刻を合わせています。</p>
+      </div>
+    </section>
   `;
 }
 
@@ -337,10 +405,12 @@ function renderResult(result) {
       </div>
     </section>
   `;
+  revealResult();
 }
 
 function renderError(error) {
   const message = error.message || "計算に失敗しました";
+  setResultClass();
   element("result").innerHTML = `
     <section class="section">
       <div class="error">
@@ -349,24 +419,43 @@ function renderError(error) {
       </div>
     </section>
   `;
+  revealResult();
 }
 
-function calculate() {
+async function calculate() {
+  const runId = activeRunId + 1;
+  activeRunId = runId;
+  const input = readInput();
+  setBusy(true);
+  renderCasting();
+  setStatus("作成中");
+
+  await delay(READING_DELAY_MS);
+  if (runId !== activeRunId) {
+    return;
+  }
+
   try {
-    const result = calculateShichusuimei(readInput());
+    const result = calculateShichusuimei(input);
     lastResult = result;
+    lastResultInputSignature = inputSignature(input);
     renderResult(result);
     setStatus(`作成済 ${currentClockTime()}`);
   } catch (error) {
     lastResult = null;
+    lastResultInputSignature = "";
     renderError(error);
     setStatus(`失敗 ${currentClockTime()}`);
+  } finally {
+    if (runId === activeRunId) {
+      setBusy(false);
+    }
   }
 }
 
 async function copyJson() {
-  if (!lastResult) {
-    setStatus("コピーできる結果がありません");
+  if (!lastResult || lastResultInputSignature !== inputSignature()) {
+    setStatus("コピーできる最新結果がありません");
     return;
   }
   try {
@@ -378,10 +467,27 @@ async function copyJson() {
 }
 
 function populateLocations() {
-  element("location").innerHTML = LOCATIONS.map(
-    (location) => `<option value="${location.id}">${escapeHtml(location.label)}</option>`,
+  element("location").innerHTML = FORMAL_LOCATIONS.map(
+    (location) => `<option value="${location.id}">${escapeHtml(displayLocationLabel(location))}</option>`,
   ).join("");
   element("location").value = "tokyo";
+}
+
+function syncBirthTimeField() {
+  element("birth-time").disabled = !element("time-known").checked;
+}
+
+function markInputChanged() {
+  syncBirthTimeField();
+  if (!lastResult) {
+    setStatus("未作成");
+    return;
+  }
+
+  if (lastResultInputSignature !== inputSignature()) {
+    element("result").classList.add("result-stale");
+    setStatus("条件が変更されました");
+  }
 }
 
 function bindEvents() {
@@ -390,19 +496,18 @@ function bindEvents() {
     calculate();
   });
   element("copy-json").addEventListener("click", copyJson);
-  element("time-known").addEventListener("change", () => {
-    element("birth-time").disabled = !element("time-known").checked;
-    calculate();
-  });
+  element("time-known").addEventListener("change", markInputChanged);
   ["birth-date", "birth-time", "location", "time-mode", "late-zi-mode"].forEach((id) => {
-    element(id).addEventListener("change", calculate);
+    element(id).addEventListener("change", markInputChanged);
   });
 }
 
 function init() {
   populateLocations();
+  syncBirthTimeField();
   bindEvents();
-  calculate();
+  renderInitialState();
+  setStatus("未作成");
 }
 
 init();

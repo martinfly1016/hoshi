@@ -1,4 +1,4 @@
-import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-3";
+import { calculateShichusuimei, LOCATIONS } from "../../calculation-lab.js?v=free-20260511-4";
 
 const READING_DELAY_MS = 980;
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
@@ -24,6 +24,57 @@ const ELEMENT_CLASS = {
   土: "earth",
   金: "metal",
   水: "water",
+};
+
+const ELEMENT_DESCRIPTIONS = {
+  木: "成長、企画、広がり",
+  火: "表現、熱量、直感",
+  土: "安定、蓄積、調整",
+  金: "判断、整理、完成度",
+  水: "知性、流れ、適応",
+};
+
+const ROW_GUIDES = {
+  干神: {
+    icon: "神",
+    hint: "日主から見た天干の働き",
+  },
+  天干: {
+    icon: "天",
+    hint: "表に出やすい性質",
+  },
+  地支: {
+    icon: "地",
+    hint: "季節や土台となる性質",
+  },
+  藏干: {
+    icon: "藏",
+    hint: "地支の内側にある要素",
+  },
+  支神: {
+    icon: "支",
+    hint: "藏干を通変星で見た働き",
+  },
+  纳音: {
+    icon: "音",
+    hint: "柱ごとの象意",
+  },
+  空亡: {
+    icon: "空",
+    hint: "作用が弱まりやすい支",
+  },
+  地势: {
+    icon: "勢",
+    hint: "日主から見た十二運",
+  },
+  自坐: {
+    icon: "坐",
+    hint: "各柱自身の十二運",
+  },
+  神煞: {
+    icon: "煞",
+    hint: "補助的な象意",
+  },
 };
 
 const WARNING_LABELS = {
@@ -307,11 +358,66 @@ function renderHiddenGodCell(pillar) {
   `).join("");
 }
 
+function renderRowLabel(label) {
+  const guide = ROW_GUIDES[label] || { icon: label.slice(0, 1), hint: "" };
+  return `
+    <div class="bazi-label-content">
+      <span class="bazi-icon">${escapeHtml(guide.icon)}</span>
+      <span>
+        <strong>${escapeHtml(label)}</strong>
+        <small>${escapeHtml(guide.hint)}</small>
+      </span>
+    </div>
+  `;
+}
+
 function renderTraditionalRow(result, label, className, renderer) {
   return `
     <div class="bazi-row ${className || ""}">
-      <div class="bazi-label">${label}</div>
+      <div class="bazi-label">${renderRowLabel(label)}</div>
       ${PILLAR_KEYS.map((key) => `<div class="bazi-cell ${key === "day" ? "is-day" : ""}">${renderer(result.pillars[key], key)}</div>`).join("")}
+    </div>
+  `;
+}
+
+function renderElementLegend() {
+  return `
+    <div class="element-legend" aria-label="五行の色分け">
+      ${ELEMENT_LABELS.map((name) => `
+        <div class="element-chip">
+          <span class="element-mark ${elementClass(name)}">${name}</span>
+          <span>${escapeHtml(ELEMENT_DESCRIPTIONS[name])}</span>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderChartGuide(result) {
+  const dayStem = result.pillars.day.stem;
+  const dayElement = result.pillars.day.element.stem;
+  return `
+    <div class="chart-guide">
+      <article>
+        <span class="guide-icon">日</span>
+        <h3>まず日主を見る</h3>
+        <p>この命式の中心は日柱の天干「<strong class="${elementClass(dayElement)}">${escapeHtml(dayStem)}</strong>」。性質を読む起点になります。</p>
+      </article>
+      <article>
+        <span class="guide-icon">神</span>
+        <h3>干神・支神を見る</h3>
+        <p>日主から見た関係性です。行動の出方、得意な役割、意識しやすいテーマを読みます。</p>
+      </article>
+      <article>
+        <span class="guide-icon">藏</span>
+        <h3>藏干を見る</h3>
+        <p>地支の内側にある要素です。表には出にくい本音、環境、潜在的な資質として扱います。</p>
+      </article>
+      <article>
+        <span class="guide-icon">五</span>
+        <h3>五行の偏りを見る</h3>
+        <p>木・火・土・金・水の強弱で、使いやすい力と補いたい力を大まかに把握します。</p>
+      </article>
     </div>
   `;
 }
@@ -330,9 +436,11 @@ function renderTraditionalChart(result) {
       <div><span>節気基準</span>：月柱は二十四節気を基準に算出 · ${escapeHtml(solarNote)}</div>
     </div>
 
+    ${renderElementLegend()}
+
     <div class="bazi-board">
       <div class="bazi-row bazi-head">
-        <div class="bazi-label"></div>
+        <div class="bazi-label"><span class="bazi-head-label">項目</span></div>
         ${PILLAR_KEYS.map((key) => `<div class="bazi-cell">${PILLAR_LABELS[key]}</div>`).join("")}
       </div>
       ${renderTraditionalRow(result, "干神", "bazi-god", (_pillar, key) => escapeHtml(result.tenGods[key]))}
@@ -346,6 +454,8 @@ function renderTraditionalChart(result) {
       ${renderTraditionalRow(result, "自坐", "bazi-flat", (pillar) => escapeHtml(pillar.terrainSelf || "—"))}
       ${renderTraditionalRow(result, "神煞", "bazi-shensha", () => `<span class="muted">—</span>`)}
     </div>
+
+    ${renderChartGuide(result)}
   `;
 }
 

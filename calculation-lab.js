@@ -348,10 +348,29 @@ function providerForLateZi(mode) {
   return new LunarSect2EightCharProvider();
 }
 
-function normalizePillar(pillar, source = "user_input", confidence = "confirmed") {
+function hiddenStemType(type) {
+  if (type === 2) return "main";
+  if (type === 1) return "middle";
+  return "residual";
+}
+
+function collectHiddenStemDetails(pillar, dayStem) {
+  return pillar.getEarthBranch().getHideHeavenStems().map((stemItem) => {
+    const stem = stemItem.getHeavenStem();
+    return {
+      stem: stem.toString(),
+      element: stem.getElement().toString(),
+      tenGod: dayStem.getTenStar(stem).toString(),
+      type: hiddenStemType(stemItem.getType()),
+    };
+  });
+}
+
+function normalizePillar(pillar, dayStem, source = "user_input", confidence = "confirmed") {
   const text = pillar.toString();
   const stem = text.slice(0, 1);
   const branch = text.slice(1, 2);
+  const hiddenStemDetails = collectHiddenStemDetails(pillar, dayStem);
   return {
     text,
     stem,
@@ -360,7 +379,12 @@ function normalizePillar(pillar, source = "user_input", confidence = "confirmed"
       stem: STEM_ELEMENTS[stem],
       branch: BRANCH_ELEMENTS[branch],
     },
-    hiddenStems: pillar.getEarthBranch().getHideHeavenStems().map((stemItem) => stemItem.toString()),
+    hiddenStems: hiddenStemDetails.map((detail) => detail.stem),
+    hiddenStemDetails,
+    naYin: pillar.getSound().toString(),
+    voidBranches: pillar.getExtraEarthBranches().map((branchItem) => branchItem.toString()),
+    terrainByDay: dayStem.getTerrain(pillar.getEarthBranch()).toString(),
+    terrainSelf: pillar.getHeavenStem().getTerrain(pillar.getEarthBranch()).toString(),
     source,
     confidence,
   };
@@ -461,13 +485,14 @@ function calculateShichusuimei(input) {
     day: { raw: eightChar.getDay() },
     hour: { raw: eightChar.getHour() },
   };
+  const dayStem = rawPillars.day.raw.getHeavenStem();
   const hourSource = input.timeKnown ? "user_input" : "default_noon";
   const hourConfidence = input.timeKnown ? "confirmed" : "low";
   const pillarsWithRaw = {
-    year: { raw: rawPillars.year.raw, ...normalizePillar(rawPillars.year.raw) },
-    month: { raw: rawPillars.month.raw, ...normalizePillar(rawPillars.month.raw) },
-    day: { raw: rawPillars.day.raw, ...normalizePillar(rawPillars.day.raw) },
-    hour: { raw: rawPillars.hour.raw, ...normalizePillar(rawPillars.hour.raw, hourSource, hourConfidence) },
+    year: { raw: rawPillars.year.raw, ...normalizePillar(rawPillars.year.raw, dayStem) },
+    month: { raw: rawPillars.month.raw, ...normalizePillar(rawPillars.month.raw, dayStem) },
+    day: { raw: rawPillars.day.raw, ...normalizePillar(rawPillars.day.raw, dayStem) },
+    hour: { raw: rawPillars.hour.raw, ...normalizePillar(rawPillars.hour.raw, dayStem, hourSource, hourConfidence) },
   };
   const tenGods = collectTenGods(pillarsWithRaw);
   const pillars = stripRawPillars(pillarsWithRaw);

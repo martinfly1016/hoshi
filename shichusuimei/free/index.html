@@ -411,6 +411,10 @@
     padding: 22px;
   }
 
+  .summary-side.compact {
+    max-width: 520px;
+  }
+
   .pillar-line {
     margin-top: 10px;
     font-family: var(--font-display);
@@ -505,6 +509,124 @@
     width: 100%;
     overflow-x: auto;
     border: 1px solid var(--rule);
+  }
+
+  .bazi-meta {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+    color: var(--ink-2);
+    font-size: 14px;
+  }
+
+  .bazi-meta span {
+    color: var(--ink-3);
+  }
+
+  .bazi-board {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    background: rgba(239, 235, 226, 0.9);
+    color: #414141;
+  }
+
+  .bazi-row {
+    display: grid;
+    grid-template-columns: 112px repeat(4, minmax(118px, 1fr));
+    min-width: 700px;
+    border-bottom: 1px solid rgba(40, 36, 28, 0.08);
+  }
+
+  .bazi-row:last-child {
+    border-bottom: 0;
+  }
+
+  .bazi-head {
+    background: rgba(225, 220, 209, 0.55);
+    color: #313131;
+    font-weight: 700;
+  }
+
+  .bazi-label,
+  .bazi-cell {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    min-height: 48px;
+    padding: 9px 10px;
+    text-align: center;
+  }
+
+  .bazi-label {
+    justify-items: start;
+    padding-left: 24px;
+    color: #515151;
+    font-size: 16px;
+  }
+
+  .bazi-cell {
+    border-left: 1px solid rgba(40, 36, 28, 0.05);
+  }
+
+  .bazi-cell.is-day {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  .bazi-god .bazi-cell {
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .bazi-stem .bazi-cell,
+  .bazi-branch .bazi-cell {
+    min-height: 72px;
+    font-family: var(--font-display);
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .bazi-detail .bazi-cell,
+  .bazi-shensha .bazi-cell {
+    min-height: 92px;
+    gap: 4px;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .bazi-flat .bazi-cell {
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  .mini-line {
+    display: block;
+  }
+
+  .wood {
+    color: #26906b;
+  }
+
+  .fire {
+    color: #d24f4a;
+  }
+
+  .earth {
+    color: #8f7652;
+  }
+
+  .metal {
+    color: #c39628;
+  }
+
+  .water {
+    color: #2f80c8;
+  }
+
+  .neutral,
+  .muted {
+    color: #8d887e;
   }
 
   table {
@@ -735,6 +857,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260511-2"></script>
+<script type="module" src="./page.js?v=free-20260511-3"></script>
 </body>
 </html>

@@ -1027,8 +1027,8 @@
 
     .god-chart {
       min-width: 0;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 14px 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px 8px;
     }
 
     .god-track {
@@ -1095,9 +1095,13 @@
 
   html {
     scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   body {
+    max-width: 100%;
+    overflow-x: hidden;
     background:
       radial-gradient(circle at 15% 0%, rgba(255, 228, 194, 0.92), transparent 30%),
       radial-gradient(circle at 100% 10%, rgba(255, 211, 182, 0.58), transparent 26%),
@@ -1117,7 +1121,9 @@
 
   .shell {
     width: min(1160px, calc(100vw - 28px));
+    max-width: 100%;
     padding: 18px 0 56px;
+    overflow-x: clip;
   }
 
   .topbar {
@@ -1285,6 +1291,8 @@
   .results {
     gap: 18px;
     margin-top: 28px;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .results.is-entering .section {
@@ -1303,6 +1311,9 @@
 
   .insight-card {
     padding: 22px;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
   }
 
   .section[id] {
@@ -1318,6 +1329,7 @@
     overflow-x: auto;
     margin: 0 0 2px;
     padding: 2px 2px 8px;
+    max-width: 100%;
     scrollbar-width: none;
   }
 
@@ -1363,6 +1375,7 @@
     line-height: 1.2;
     letter-spacing: 0.04em;
     color: #5c4535;
+    overflow-wrap: anywhere;
   }
 
   .card-kicker {
@@ -1418,6 +1431,7 @@
     grid-template-columns: minmax(0, 1fr) 340px;
     gap: 18px;
     align-items: center;
+    min-width: 0;
   }
 
   .overview-copy {
@@ -1528,6 +1542,7 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
     margin-top: 16px;
+    min-width: 0;
   }
 
   .metric-card,
@@ -1573,6 +1588,8 @@
     border: 1px solid rgba(236, 219, 199, 0.94);
     border-radius: 24px;
     background: rgba(255, 252, 248, 0.7);
+    max-width: 100%;
+    min-width: 0;
   }
 
   .element-legend {
@@ -1648,6 +1665,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
     margin-top: 14px;
+    min-width: 0;
   }
 
   .detail-card,
@@ -1676,6 +1694,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     margin-top: 14px;
+    min-width: 0;
   }
 
   .theme-head {
@@ -1694,6 +1713,7 @@
 
   .god-chart-card {
     overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .god-chart {
@@ -1752,11 +1772,13 @@
 
   .chart-shell {
     padding: 16px;
+    overflow-x: auto;
   }
 
   .pillar-grid {
     gap: 12px;
     margin-top: 14px;
+    min-width: 0;
   }
 
   .pillar {
@@ -1857,6 +1879,7 @@
   .meta-stack {
     display: grid;
     gap: 12px;
+    min-width: 0;
   }
 
   .results.mobile-tabbed .insight-card {
@@ -1874,6 +1897,7 @@
   .mini-meta-list {
     display: grid;
     gap: 8px;
+    min-width: 0;
   }
 
   .mini-meta-list span {
@@ -1997,6 +2021,11 @@
       padding: 14px;
     }
 
+    .god-chart {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px 8px;
+    }
+
     .chart-shell,
     .soft-panel,
     .table-wrap {
@@ -2108,6 +2137,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260512-11"></script>
+<script type="module" src="./page.js?v=free-20260512-12"></script>
 </body>
 </html>

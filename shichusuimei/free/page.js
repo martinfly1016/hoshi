@@ -287,10 +287,21 @@ const STRUCTURE_GUIDES = {
     text: "地支の内側に潜む要素です。潜在的な資質や土台の流れを見ます。",
   },
 };
+const RESULT_SECTION_TABS = [
+  { id: "card-day-master", label: "日主", query: "day-master" },
+  { id: "card-elements", label: "五行", query: "elements" },
+  { id: "card-structure", label: "十神", query: "structure" },
+  { id: "card-chart", label: "命盤", query: "chart" },
+  { id: "card-meta", label: "補足", query: "meta" },
+];
+const DEFAULT_RESULT_SECTION_ID = RESULT_SECTION_TABS[0].id;
+const MOBILE_RESULTS_MEDIA = window.matchMedia("(max-width: 760px)");
+const URL_PARAMS = new URLSearchParams(window.location.search);
 
 let lastResult = null;
 let lastResultInputSignature = "";
 let activeRunId = 0;
+let activeResultSectionId = resolveResultSectionId(URL_PARAMS.get("section"));
 
 function element(id) {
   return document.getElementById(id);
@@ -311,6 +322,12 @@ function pad(value) {
 function currentClockTime() {
   const now = new Date();
   return `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+
+function resolveResultSectionId(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  const match = RESULT_SECTION_TABS.find((item) => item.id === normalized || item.query === normalized);
+  return match ? match.id : DEFAULT_RESULT_SECTION_ID;
 }
 
 function municipalitiesForPrefecture(prefecture) {
@@ -725,11 +742,14 @@ function renderTokenList(items, renderer, emptyLabel = "—") {
 function renderSectionRail() {
   return `
     <nav class="result-rail" aria-label="結果ナビゲーション">
-      <a class="rail-link" href="#card-day-master">日主</a>
-      <a class="rail-link" href="#card-elements">五行</a>
-      <a class="rail-link" href="#card-structure">十神</a>
-      <a class="rail-link" href="#card-chart">命盤</a>
-      <a class="rail-link" href="#card-meta">補足</a>
+      ${RESULT_SECTION_TABS.map((item) => `
+        <button
+          type="button"
+          class="rail-link"
+          data-target="${item.id}"
+          aria-pressed="${item.id === activeResultSectionId ? "true" : "false"}"
+        >${item.label}</button>
+      `).join("")}
     </nav>
   `;
 }
@@ -1088,6 +1108,13 @@ function renderResult(result) {
       </div>
     </section>
   `;
+  bindResultRail();
+  syncResultPresentation(false);
+  if (URL_PARAMS.get("autocalc") === "1") {
+    window.setTimeout(() => {
+      activateResultSection(activeResultSectionId, true);
+    }, 80);
+  }
   revealResult();
 }
 
@@ -1103,6 +1130,51 @@ function renderError(error) {
     </section>
   `;
   revealResult();
+}
+
+function bindResultRail() {
+  const rail = element("result").querySelector(".result-rail");
+  if (!rail || rail.dataset.bound === "true") return;
+  rail.dataset.bound = "true";
+  rail.addEventListener("click", (event) => {
+    const button = event.target.closest(".rail-link[data-target]");
+    if (!button) return;
+    activateResultSection(button.dataset.target, true);
+  });
+}
+
+function activateResultSection(targetId, shouldScroll = true) {
+  activeResultSectionId = resolveResultSectionId(targetId);
+  syncResultPresentation(shouldScroll);
+}
+
+function syncResultPresentation(shouldScroll = false) {
+  const result = element("result");
+  if (!result || !result.querySelector(".result-rail")) return;
+
+  const mobileTabbed = MOBILE_RESULTS_MEDIA.matches;
+  result.classList.toggle("mobile-tabbed", mobileTabbed);
+
+  RESULT_SECTION_TABS.forEach((item) => {
+    const section = element(item.id);
+    const button = result.querySelector(`.rail-link[data-target="${item.id}"]`);
+    const isActive = item.id === activeResultSectionId;
+    if (section) {
+      section.classList.toggle("is-active", isActive);
+      section.toggleAttribute("hidden", mobileTabbed && !isActive);
+    }
+    if (button) {
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
+    }
+  });
+
+  if (shouldScroll) {
+    const activeSection = element(activeResultSectionId);
+    if (activeSection) {
+      activeSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
 }
 
 async function calculate() {
@@ -1214,6 +1286,12 @@ function init() {
   bindEvents();
   renderInitialState();
   setStatus("未作成");
+  MOBILE_RESULTS_MEDIA.addEventListener("change", () => syncResultPresentation(false));
+  if (URL_PARAMS.get("autocalc") === "1") {
+    window.setTimeout(() => {
+      calculate();
+    }, 120);
+  }
 }
 
 init();

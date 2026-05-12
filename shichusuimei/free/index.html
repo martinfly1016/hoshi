@@ -1337,6 +1337,16 @@
     color: #8a664f;
     white-space: nowrap;
     box-shadow: 0 8px 18px rgba(188, 147, 111, 0.08);
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+  }
+
+  .rail-link.is-active,
+  .rail-link[aria-pressed="true"] {
+    border-color: rgba(226, 151, 99, 0.92);
+    background: linear-gradient(135deg, rgba(252, 216, 190, 0.96), rgba(255, 244, 232, 0.96));
+    color: #9b5f3d;
+    transform: translateY(-1px);
   }
 
   .card-head {
@@ -1849,6 +1859,14 @@
     gap: 12px;
   }
 
+  .results.mobile-tabbed .insight-card {
+    display: none;
+  }
+
+  .results.mobile-tabbed .insight-card.is-active {
+    display: block;
+  }
+
   .auxiliary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1937,6 +1955,10 @@
       top: 6px;
       margin-bottom: 0;
       padding-bottom: 6px;
+    }
+
+    .results.mobile-tabbed {
+      gap: 10px;
     }
 
     .insight-card,
@@ -2086,6 +2108,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260512-9"></script>
+<script type="module" src="./page.js?v=free-20260512-11"></script>
 </body>
 </html>

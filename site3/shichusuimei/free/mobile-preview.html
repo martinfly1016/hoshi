@@ -172,6 +172,23 @@
       padding-top: 18px;
     }
 
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .toolbar button,
+    .toolbar a {
+      width: 100%;
+      min-width: 0;
+      padding: 0 10px;
+    }
+
+    .toolbar a {
+      grid-column: 1 / -1;
+    }
+
     .device {
       width: calc(100vw - 20px);
       overflow-x: auto;

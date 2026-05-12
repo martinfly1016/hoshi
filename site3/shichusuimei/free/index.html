@@ -1725,6 +1725,10 @@
     padding-top: 8px;
   }
 
+  .god-mobile-list {
+    display: none;
+  }
+
   .god-col {
     display: grid;
     gap: 8px;
@@ -1768,6 +1772,51 @@
   .god-percent {
     color: var(--ink-3);
     font-size: 12px;
+  }
+
+  .god-mobile-list {
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .god-mobile-item {
+    display: grid;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(223, 205, 183, 0.5);
+  }
+
+  .god-mobile-item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .god-mobile-head {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    color: #604735;
+    min-width: 0;
+  }
+
+  .god-mobile-head strong,
+  .god-mobile-head span:last-child {
+    min-width: 0;
+  }
+
+  .god-mobile-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(229, 214, 197, 0.72);
+    overflow: hidden;
+  }
+
+  .god-mobile-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
   }
 
   .chart-shell {
@@ -2022,8 +2071,11 @@
     }
 
     .god-chart {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px 8px;
+      display: none;
+    }
+
+    .god-mobile-list {
+      display: grid;
     }
 
     .chart-shell,
@@ -2137,6 +2189,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260512-12"></script>
+<script type="module" src="./page.js?v=free-20260512-13"></script>
 </body>
 </html>

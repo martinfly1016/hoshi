@@ -73,8 +73,8 @@ Minimum desktop checks:
 
 Preferred device baseline:
 
-- `iPhone SE (3rd generation)` for narrow-width stress
-- Optionally add one larger iPhone later
+- `iPhone 16 Pro` as the default mobile acceptance device
+- `iPhone SE (3rd generation)` only as an optional narrow-width stress device when a layout is close to breaking
 
 ### simctl environment
 
@@ -146,7 +146,7 @@ Useful commands with the wrapper:
 4. Long tables stay inside their own scroll containers.
 5. No text overlaps, clipped buttons, or accidental two-column squeeze.
 6. `十神` must use a mobile-readable structure, not an over-compressed chart.
-7. `mobile-preview.html` itself must also fit within a 390px wide viewport.
+7. `mobile-preview.html` must reflect the current default device baseline (`iPhone 16 Pro`, 402px wide viewport).
 
 ## Minimum regression pass after each UI change
 

@@ -896,6 +896,12 @@ function renderTenGodChart(result) {
   const themes = aggregateTenGodThemes(result);
   const themeMap = new Map(themes.map((item) => [item.name, item]));
   const total = Math.max(1, themes.reduce((sum, item) => sum + item.total, 0));
+  const orderedEntries = TEN_GOD_ORDER.filter((name) => name !== "日主").map((name) => {
+    const item = themeMap.get(name) || { total: 0 };
+    const percent = Math.round((item.total / total) * 100);
+    const toneClass = TEN_GOD_TONE_CLASS[name] || "earth";
+    return { name, item, percent, toneClass };
+  });
   return `
     <div class="god-chart-card">
       <div class="card-subhead">
@@ -903,11 +909,7 @@ function renderTenGodChart(result) {
         <p>天干と藏干に現れる十神の出現率です。</p>
       </div>
       <div class="god-chart">
-        ${TEN_GOD_ORDER.filter((name) => name !== "日主").map((name) => {
-          const item = themeMap.get(name) || { total: 0 };
-          const percent = Math.round((item.total / total) * 100);
-          const toneClass = TEN_GOD_TONE_CLASS[name] || "earth";
-          return `
+        ${orderedEntries.map(({ name, item, percent, toneClass }) => `
             <article class="god-col ${item.total === 0 ? "is-empty" : ""}">
               <div class="god-track">
                 <span class="god-fill ${toneClass}" style="height:${item.total === 0 ? 6 : Math.max(18, percent)}%"></span>
@@ -916,8 +918,21 @@ function renderTenGodChart(result) {
               <strong class="god-name">${escapeHtml(name)}</strong>
               <span class="god-percent">${percent}%</span>
             </article>
-          `;
-        }).join("")}
+        `).join("")}
+      </div>
+      <div class="god-mobile-list">
+        ${orderedEntries.map(({ name, item, percent, toneClass }) => `
+          <article class="god-mobile-item ${item.total === 0 ? "is-empty" : ""}">
+            <div class="god-mobile-head">
+              <span class="god-icon ${toneClass}">${escapeHtml(TEN_GOD_PROFILES[name]?.icon || name.slice(0, 1))}</span>
+              <strong>${escapeHtml(name)}</strong>
+              <span>${percent}%</span>
+            </div>
+            <div class="god-mobile-track">
+              <span class="god-mobile-fill ${toneClass}" style="width:${item.total === 0 ? 0 : Math.max(10, percent)}%"></span>
+            </div>
+          </article>
+        `).join("")}
       </div>
     </div>
   `;

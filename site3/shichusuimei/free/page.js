@@ -200,6 +200,19 @@ const STEM_PROFILES = {
 
 const STEM_ORDER = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
 const TEN_GOD_ORDER = ["比肩", "劫财", "食神", "伤官", "偏财", "正财", "七杀", "正官", "偏印", "正印", "日主"];
+const TEN_GOD_TONE_CLASS = {
+  比肩: "earth",
+  劫财: "earth",
+  食神: "metal",
+  伤官: "metal",
+  偏财: "water",
+  正财: "water",
+  七杀: "wood",
+  正官: "wood",
+  偏印: "fire",
+  正印: "fire",
+  日主: "earth",
+};
 const TEN_GOD_PROFILES = {
   日主: {
     icon: "日",
@@ -498,6 +511,31 @@ function elementStatusLabel(value, min, max) {
   return "中位";
 }
 
+function elementPercentages(result) {
+  const counts = result.fiveElements.counts;
+  const total = Math.max(1, Object.values(counts).reduce((sum, value) => sum + value, 0));
+  return Object.fromEntries(ELEMENT_LABELS.map((name) => [name, Math.round(((counts[name] || 0) / total) * 100)]));
+}
+
+function balanceTypeLabel(result) {
+  const values = Object.values(result.fiveElements.counts);
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const missing = values.filter((value) => value === 0).length;
+  if (max - min <= 1 && missing === 0) return "均衡型";
+  if (strongestElements(result.fiveElements.counts).includes(result.pillars.day.element.stem)) return "日主強め";
+  if (missing >= 2) return "偏り型";
+  return "混合型";
+}
+
+function mainTenGodLabel(result) {
+  return topHighlights(
+    aggregateTenGodThemes(result).filter((item) => item.name !== "日主"),
+    (item) => item.name,
+    2,
+  ) || "—";
+}
+
 function formatDateTimeLabel(value) {
   const [date = "", time = ""] = String(value).split(" ");
   const [year, month, day] = date.split("-");
@@ -516,7 +554,7 @@ function renderElementBars(result) {
         return `
           <div class="element-row">
             <span>${name}</span>
-            <div class="bar"><span style="width:${width}%"></span></div>
+            <div class="bar"><span class="${elementClass(name)}" style="width:${width}%"></span></div>
             <strong>${value}</strong>
           </div>
         `;
@@ -684,85 +722,148 @@ function renderTokenList(items, renderer, emptyLabel = "—") {
   return `<div class="token-list">${items.map(renderer).join("")}</div>`;
 }
 
+function renderSectionRail() {
+  return `
+    <nav class="result-rail" aria-label="結果ナビゲーション">
+      <a class="rail-link" href="#card-day-master">日主</a>
+      <a class="rail-link" href="#card-elements">五行</a>
+      <a class="rail-link" href="#card-structure">十神</a>
+      <a class="rail-link" href="#card-chart">命盤</a>
+      <a class="rail-link" href="#card-meta">補足</a>
+    </nav>
+  `;
+}
+
+function renderFiveElementWheel(result) {
+  const percentages = elementPercentages(result);
+  const dayElement = result.pillars.day.element.stem;
+  const layout = {
+    火: { x: 160, y: 58 },
+    土: { x: 246, y: 120 },
+    金: { x: 214, y: 228 },
+    水: { x: 106, y: 228 },
+    木: { x: 74, y: 120 },
+  };
+
+  return `
+    <div class="wheel-wrap">
+      <svg class="element-wheel" viewBox="0 0 320 300" role="img" aria-label="五行バランス図">
+        <circle class="wheel-halo" cx="160" cy="150" r="118"></circle>
+        <circle class="wheel-ring" cx="160" cy="150" r="96"></circle>
+        ${ELEMENT_LABELS.map((name) => `
+          <line class="wheel-spoke" x1="160" y1="150" x2="${layout[name].x}" y2="${layout[name].y}"></line>
+        `).join("")}
+        ${ELEMENT_LABELS.map((name) => `
+          <g class="wheel-node ${elementClass(name)} ${name === dayElement ? "is-active" : ""}" transform="translate(${layout[name].x} ${layout[name].y})">
+            <circle r="${name === dayElement ? 38 : 34}"></circle>
+            <text class="wheel-char" x="0" y="-4">${name}</text>
+            <text class="wheel-percent" x="0" y="18">${percentages[name]}%</text>
+          </g>
+        `).join("")}
+        <g class="wheel-center">
+          <circle cx="160" cy="150" r="34"></circle>
+          <text class="wheel-center-label" x="160" y="145">日主</text>
+          <text class="wheel-center-value" x="160" y="168">${escapeHtml(dayMasterLabel(result))}</text>
+        </g>
+      </svg>
+    </div>
+  `;
+}
+
 function renderDayMasterSection(result) {
   const profile = STEM_PROFILES[result.dayMaster] || { title: "日主の説明", text: "", tags: [] };
   const dayPillar = result.pillars.day;
   const dayElement = dayPillar.element.stem;
+  const weakElements = ELEMENT_LABELS.filter((name) => (result.fiveElements.counts[name] || 0) === 0);
+  const supportLabel = weakElements.length ? weakElements.join("・") : weakestElements(result.fiveElements.counts).join("・");
   return `
-    <p class="section-copy">第1歩は日主です。日主は日柱の天干で、命主本人の性質を読む起点になります。</p>
-    <div class="summary">
-      <article class="summary-main">
-        <p class="eyebrow">DAY MASTER</p>
+    <div class="card-head">
+      <div>
+        <p class="card-kicker">STEP 1</p>
+        <h2>日主から自分の核を見る</h2>
+      </div>
+      <span class="balance-badge">${escapeHtml(balanceTypeLabel(result))}</span>
+    </div>
+    <p class="section-copy">日主は日柱の天干で、命主本人の性質を読む起点です。まずはここを中心に命式全体を見ます。</p>
+    <div class="overview-shell">
+      <div class="overview-copy">
         <div class="value-display ${elementClass(dayElement)}">${escapeHtml(dayMasterLabel(result))}</div>
         <p class="lead-copy">この命式では、日主は日柱の天干「${escapeHtml(dayPillar.stem)}」です。</p>
         <h3 class="card-title">${escapeHtml(profile.title)}</h3>
         <p class="summary-text">${escapeHtml(profile.text)}</p>
         ${renderTags(profile.tags)}
+      </div>
+      ${renderFiveElementWheel(result)}
+    </div>
+    <div class="metric-grid">
+      <article class="metric-card">
+        <span class="metric-label">日柱</span>
+        <strong class="metric-value">${escapeHtml(dayPillar.text)}</strong>
+        <p>${escapeHtml(dayPillar.hiddenStems.join("・") || "—")}</p>
       </article>
-      <article class="summary-side">
-        <div class="fact-list">
-          <div class="fact-row"><span>日柱</span><strong>${escapeHtml(dayPillar.text)}</strong></div>
-          <div class="fact-row"><span>日主</span><strong class="${elementClass(dayElement)}">${escapeHtml(dayMasterLabel(result))}</strong></div>
-          <div class="fact-row"><span>自坐</span><strong>${escapeHtml(dayPillar.terrainSelf || "—")}</strong></div>
-          <div class="fact-row"><span>藏干</span><strong>${escapeHtml(dayPillar.hiddenStems.join("・") || "—")}</strong></div>
-          <div class="fact-row"><span>日主の五行</span><strong>${escapeHtml(ELEMENT_DESCRIPTIONS[dayElement] || "—")}</strong></div>
-        </div>
+      <article class="metric-card">
+        <span class="metric-label">主導五行</span>
+        <strong class="metric-value">${escapeHtml(strongestElements(result.fiveElements.counts).join("・"))}</strong>
+        <p>環境で流れやすい要素</p>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">補いたい五行</span>
+        <strong class="metric-value">${escapeHtml(supportLabel)}</strong>
+        <p>意識して整えると安定</p>
+      </article>
+      <article class="metric-card">
+        <span class="metric-label">主要十神</span>
+        <strong class="metric-value">${escapeHtml(mainTenGodLabel(result))}</strong>
+        <p>命式内で重なりやすい役割</p>
       </article>
     </div>
   `;
 }
 
-function renderElementStateTable(result) {
+function renderElementStateCards(result) {
   const counts = result.fiveElements.counts;
+  const percentages = elementPercentages(result);
   const values = Object.values(counts);
   const max = Math.max(...values);
   const min = Math.min(...values);
   return `
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>五行</th>
-            <th>数量</th>
-            <th>状態</th>
-            <th>特質</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${ELEMENT_LABELS.map((name) => `
-            <tr>
-              <td><span class="table-mark ${elementClass(name)}">${name}</span></td>
-              <td>${counts[name] || 0}</td>
-              <td>${elementStatusLabel(counts[name] || 0, min, max)}</td>
-              <td>${escapeHtml(ELEMENT_DESCRIPTIONS[name])}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
+    <div class="element-stat-grid">
+      ${ELEMENT_LABELS.map((name) => `
+        <article class="element-stat-card">
+          <span class="table-mark ${elementClass(name)}">${name}</span>
+          <strong class="metric-value">${percentages[name]}%</strong>
+          <span class="stat-state">${elementStatusLabel(counts[name] || 0, min, max)}</span>
+          <p>${escapeHtml(ELEMENT_DESCRIPTIONS[name])}</p>
+        </article>
+      `).join("")}
     </div>
   `;
 }
 
 function renderFiveElementsSection(result) {
   return `
-    <p class="section-copy">第2歩は八字全体の五行状態です。ここでは命主を取り巻く全体環境として、木火土金水の偏りをまとめて見ます。</p>
-    ${renderElementLegend()}
-    <div class="summary">
-      <article class="summary-main">
-        ${renderElementBars(result)}
-        <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
-      </article>
-      ${renderElementStateTable(result)}
+    <div class="card-head">
+      <div>
+        <p class="card-kicker">STEP 2</p>
+        <h2>五行の環境をまとめて見る</h2>
+      </div>
     </div>
+    <p class="section-copy">ここでは命主を取り巻く全体環境として、木火土金水の偏りをひとまとまりで見ます。</p>
+    ${renderElementLegend()}
+    <div class="soft-panel">
+      ${renderElementBars(result)}
+      <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
+    </div>
+    ${renderElementStateCards(result)}
   `;
 }
 
 function renderStructureGuideCards() {
   return `
-    <div class="chart-guide">
+    <div class="detail-grid">
       ${Object.entries(STRUCTURE_GUIDES).map(([, guide]) => `
-        <article>
-          <span class="guide-icon">${escapeHtml(guide.icon)}</span>
+        <article class="detail-card">
+          <span class="guide-icon warm">${escapeHtml(guide.icon)}</span>
           <h3>${escapeHtml(guide.title)}</h3>
           <p>${escapeHtml(guide.text)}</p>
         </article>
@@ -771,7 +872,38 @@ function renderStructureGuideCards() {
   `;
 }
 
-function renderStructureTable(result) {
+function renderTenGodChart(result) {
+  const themes = aggregateTenGodThemes(result);
+  const themeMap = new Map(themes.map((item) => [item.name, item]));
+  const total = Math.max(1, themes.reduce((sum, item) => sum + item.total, 0));
+  return `
+    <div class="god-chart-card">
+      <div class="card-subhead">
+        <h3>十神占比</h3>
+        <p>天干と藏干に現れる十神の出現率です。</p>
+      </div>
+      <div class="god-chart">
+        ${TEN_GOD_ORDER.filter((name) => name !== "日主").map((name) => {
+          const item = themeMap.get(name) || { total: 0 };
+          const percent = Math.round((item.total / total) * 100);
+          const toneClass = TEN_GOD_TONE_CLASS[name] || "earth";
+          return `
+            <article class="god-col ${item.total === 0 ? "is-empty" : ""}">
+              <div class="god-track">
+                <span class="god-fill ${toneClass}" style="height:${item.total === 0 ? 6 : Math.max(18, percent)}%"></span>
+              </div>
+              <span class="god-icon ${toneClass}">${escapeHtml(TEN_GOD_PROFILES[name]?.icon || name.slice(0, 1))}</span>
+              <strong class="god-name">${escapeHtml(name)}</strong>
+              <span class="god-percent">${percent}%</span>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderStructureCards(result) {
   const heavenlyGods = collectHeavenlyGodEntries(result);
   const hiddenGods = aggregateHiddenGodCounts(result);
   const hiddenStems = aggregateHiddenStemCounts(result);
@@ -784,54 +916,46 @@ function renderStructureTable(result) {
   ));
 
   return `
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>構成</th>
-            <th>命式内の出現</th>
-            <th>見方</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>干神</th>
-            <td>
-              ${renderTokenList(heavenlyGods, (item) => `
-                <span class="token">
-                  <span class="token-subtle">${escapeHtml(item.pillarLabel)}</span>
-                  <strong>${escapeHtml(item.name)}</strong>
-                </span>
-              `)}
-            </td>
-            <td>表に出やすい役割です。四柱では ${escapeHtml(heavenlyGods.map((item) => item.name).join("、"))} が見えています。</td>
-          </tr>
-          <tr>
-            <th>支神</th>
-            <td>
-              ${renderTokenList(hiddenGods, (item) => `
-                <span class="token">
-                  <strong>${escapeHtml(item.name)}</strong>
-                  <span class="token-subtle">×${item.total}</span>
-                </span>
-              `)}
-            </td>
-            <td>地支の内側で動くテーマです。主には ${escapeHtml(hiddenGodHighlight || "—")} が重なっています。</td>
-          </tr>
-          <tr>
-            <th>藏干</th>
-            <td>
-              ${renderTokenList(hiddenStems, (item) => `
-                <span class="token">
-                  <strong class="${elementClass(item.element)}">${escapeHtml(item.stem)}${escapeHtml(item.element)}</strong>
-                  <span class="token-subtle">×${item.total}</span>
-                </span>
-              `)}
-            </td>
-            <td>潜在的な構成要素です。主には ${escapeHtml(hiddenStemHighlight || "—")} が土台として入っています。</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="detail-grid">
+      <article class="detail-card">
+        <div class="card-subhead">
+          <h3>干神</h3>
+          <p>表に出やすい役割</p>
+        </div>
+        ${renderTokenList(heavenlyGods, (item) => `
+          <span class="token">
+            <span class="token-subtle">${escapeHtml(item.pillarLabel)}</span>
+            <strong>${escapeHtml(item.name)}</strong>
+          </span>
+        `)}
+        <p>${escapeHtml(`四柱では ${heavenlyGods.map((item) => item.name).join("、")} が見えています。`)}</p>
+      </article>
+      <article class="detail-card">
+        <div class="card-subhead">
+          <h3>支神</h3>
+          <p>内側で動く十神テーマ</p>
+        </div>
+        ${renderTokenList(hiddenGods, (item) => `
+          <span class="token">
+            <strong>${escapeHtml(item.name)}</strong>
+            <span class="token-subtle">×${item.total}</span>
+          </span>
+        `)}
+        <p>${escapeHtml(`主には ${hiddenGodHighlight || "—"} が重なっています。`)}</p>
+      </article>
+      <article class="detail-card">
+        <div class="card-subhead">
+          <h3>藏干</h3>
+          <p>潜在的な土台要素</p>
+        </div>
+        ${renderTokenList(hiddenStems, (item) => `
+          <span class="token">
+            <strong class="${elementClass(item.element)}">${escapeHtml(item.stem)}${escapeHtml(item.element)}</strong>
+            <span class="token-subtle">×${item.total}</span>
+          </span>
+        `)}
+        <p>${escapeHtml(`主には ${hiddenStemHighlight || "—"} が土台として入っています。`)}</p>
+      </article>
     </div>
   `;
 }
@@ -862,10 +986,41 @@ function renderTenGodThemeCards(result) {
 
 function renderStructureSection(result) {
   return `
-    <p class="section-copy">第3歩は干神・支神・藏干です。ここでは命式の中に何が出ているかを並べ、その構成から主なテーマを整理します。</p>
+    <div class="card-head">
+      <div>
+        <p class="card-kicker">STEP 3</p>
+        <h2>干神・支神・藏干の構成を見る</h2>
+      </div>
+    </div>
+    <p class="section-copy">命式の中に何が出ているかを並べ、そこから主要テーマを整理します。</p>
+    ${renderTenGodChart(result)}
     ${renderStructureGuideCards()}
-    ${renderStructureTable(result)}
+    ${renderStructureCards(result)}
     ${renderTenGodThemeCards(result)}
+  `;
+}
+
+function renderAuxiliaryCard(result) {
+  return `
+    <div class="detail-grid auxiliary-grid">
+      ${PILLAR_KEYS.map((key) => {
+        const pillar = result.pillars[key];
+        return `
+          <article class="detail-card compact-pillar">
+            <div class="card-subhead">
+              <h3>${escapeHtml(PILLAR_LABELS[key])}</h3>
+              <p>${escapeHtml(pillar.text)}</p>
+            </div>
+            <div class="mini-meta-list">
+              <span><strong>納音</strong>${escapeHtml(pillar.naYin || "—")}</span>
+              <span><strong>空亡</strong>${escapeHtml((pillar.voidBranches || []).join("") || "—")}</span>
+              <span><strong>地勢</strong>${escapeHtml(pillar.terrainByDay || "—")}</span>
+              <span><strong>自坐</strong>${escapeHtml(pillar.terrainSelf || "—")}</span>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
   `;
 }
 
@@ -891,52 +1046,46 @@ function renderMeta(result) {
 
 function renderResult(result) {
   element("result").innerHTML = `
-    <section class="section">
-      <div class="section-title">
-        <h2>命式盤</h2>
-        <span class="eyebrow">BASE / CHART</span>
-      </div>
-      ${renderTraditionalChart(result)}
-    </section>
+    ${renderSectionRail()}
 
-    <section class="section">
-      <div class="section-title">
-        <h2>日主</h2>
-        <span class="eyebrow">STEP 1 / DAY MASTER</span>
-      </div>
+    <section id="card-day-master" class="section insight-card">
       ${renderDayMasterSection(result)}
     </section>
 
-    <section class="section">
-      <div class="section-title">
-        <h2>五行状態</h2>
-        <span class="eyebrow">STEP 2 / ELEMENTS</span>
-      </div>
+    <section id="card-elements" class="section insight-card">
       ${renderFiveElementsSection(result)}
     </section>
 
-    <section class="section">
-      <div class="section-title">
-        <h2>干神・支神・藏干</h2>
-        <span class="eyebrow">STEP 3 / STRUCTURE</span>
-      </div>
+    <section id="card-structure" class="section insight-card">
       ${renderStructureSection(result)}
     </section>
 
-    <section class="section">
-      <div class="section-title">
-        <h2>計算情報</h2>
-        <span class="eyebrow">META</span>
+    <section id="card-chart" class="section insight-card">
+      <div class="card-head">
+        <div>
+          <p class="card-kicker">BASE / CHART</p>
+          <h2>命式盤をそのまま確認する</h2>
+        </div>
       </div>
-      ${renderMeta(result)}
+      <p class="section-copy">まずは四柱そのものを確認し、そのあとに納音・空亡・地勢・自坐の補足を見られるようにしています。</p>
+      ${renderPillarCards(result)}
+      <div class="chart-shell">
+        ${renderTraditionalChart(result)}
+      </div>
+      ${renderAuxiliaryCard(result)}
     </section>
 
-    <section class="section">
-      <div class="section-title">
-        <h2>注意事項</h2>
-        <span class="eyebrow">NOTES</span>
+    <section id="card-meta" class="section insight-card">
+      <div class="card-head">
+        <div>
+          <p class="card-kicker">META / NOTES</p>
+          <h2>計算条件と注意事項</h2>
+        </div>
       </div>
-      ${renderWarnings(result)}
+      <div class="meta-stack">
+        ${renderMeta(result)}
+        ${renderWarnings(result)}
+      </div>
     </section>
   `;
   revealResult();

@@ -223,6 +223,8 @@
 </main>
 
 <script>
+  const params = new URLSearchParams(window.location.search);
+  const initialSection = params.get('section') || 'day-master';
   const buttons = Array.from(document.querySelectorAll('[data-section]'));
   const resultFrame = document.getElementById('result-frame');
 
@@ -238,6 +240,8 @@
       setActive(button.dataset.section);
     });
   });
+
+  setActive(initialSection);
 </script>
 </body>
 </html>

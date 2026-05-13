@@ -137,6 +137,7 @@ Useful commands with the wrapper:
 6. Result content remains readable after calculation.
 7. `十神` and `命盤` are still understandable on a real phone viewport.
 8. Safari bottom toolbar must not hide critical actions or create false horizontal overflow.
+9. Native `date` / `time` inputs must stay full-width on iPhone Safari and must not fall back to oversized or centered system text.
 
 ## Mobile acceptance checklist
 

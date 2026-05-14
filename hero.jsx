@@ -23,19 +23,13 @@ function Hero({ onEnter }) {
         </h1>
 
         <button className="hero-cta" onClick={onEnter}>
-          <span>無料にて卜を乞う</span>
+          <span>無料で命式を見る</span>
           <span className="arrow"></span>
-          <span className="seal-mini">卜</span>
+          <span className="seal-mini">命</span>
         </button>
 
-        <div style={{
-          marginTop: 28,
-          fontSize: 11,
-          letterSpacing: '0.3em',
-          color: 'var(--ink-3)',
-          fontFamily: 'var(--f-mono)',
-        }}>
-          生年月日と時辰、出生の地を奉ぜよ ── 星辰、汝が命式を顕さん
+        <div className="hero-lead">
+          生年月日・出生時刻・出生地から、命式をひらきます。
         </div>
       </div>
 

@@ -1,11 +1,7 @@
 import {
-  ChildLimit,
   DefaultEightCharProvider,
-  Gender,
   LunarHour,
   LunarSect2EightCharProvider,
-  SixtyCycleYear,
-  SolarDay,
   SolarTime,
 } from "./vendor/tyme4ts/index.mjs?v=lab-20260510-3";
 
@@ -787,146 +783,6 @@ function buildPillarLine(pillars) {
   return PILLAR_KEYS.map((key) => pillars[key].text).join(" / ");
 }
 
-function normalizeGender(value) {
-  if (value === "male" || value === "man") return "male";
-  if (value === "female" || value === "woman") return "female";
-  return "unspecified";
-}
-
-function tymeGender(value) {
-  const gender = normalizeGender(value);
-  if (gender === "male") return Gender.MAN;
-  if (gender === "female") return Gender.WOMAN;
-  return null;
-}
-
-function formatSolarDateTime(solarTime) {
-  return formatLocal({
-    year: solarTime.getYear(),
-    month: solarTime.getMonth(),
-    day: solarTime.getDay(),
-    hour: solarTime.getHour(),
-    minute: solarTime.getMinute(),
-    second: solarTime.getSecond(),
-  });
-}
-
-function normalizeCycle(cycle, dayStem, source = "luck_cycle", confidence = "reference") {
-  return {
-    ...normalizePillar(cycle, dayStem, source, confidence),
-    heavenlyTenGod: dayStem.getTenStar(cycle.getHeavenStem()).toString(),
-  };
-}
-
-function buildDecadeFortunes(solarTime, genderValue, dayStem) {
-  const gender = tymeGender(genderValue);
-  if (gender == null) {
-    return {
-      status: "requires_gender",
-      provider: "tyme4ts-default-child-limit",
-      items: [],
-      note: "大運は性別によって順行・逆行が変わるため、検証には性別指定が必要です。",
-    };
-  }
-
-  const childLimit = ChildLimit.fromSolarTime(solarTime, gender);
-  const startFortune = childLimit.getStartDecadeFortune();
-  const items = Array.from({ length: 8 }, (_, index) => {
-    const decade = startFortune.next(index);
-    const cycle = decade.getSixtyCycle();
-    return {
-      index: index + 1,
-      name: decade.getName(),
-      startAge: decade.getStartAge(),
-      endAge: decade.getEndAge(),
-      startYear: decade.getStartSixtyCycleYear().getYear(),
-      endYear: decade.getEndSixtyCycleYear().getYear(),
-      pillar: normalizeCycle(cycle, dayStem, "decade_fortune", "reference"),
-    };
-  });
-
-  return {
-    status: "ok",
-    provider: "tyme4ts-default-child-limit",
-    direction: childLimit.isForward() ? "forward" : "backward",
-    gender: normalizeGender(genderValue),
-    startOffset: {
-      years: childLimit.getYearCount(),
-      months: childLimit.getMonthCount(),
-      days: childLimit.getDayCount(),
-      hours: childLimit.getHourCount(),
-      minutes: childLimit.getMinuteCount(),
-    },
-    startTime: formatSolarDateTime(childLimit.getStartTime()),
-    endTime: formatSolarDateTime(childLimit.getEndTime()),
-    items,
-  };
-}
-
-function buildAnnualFortunes(year, dayStem) {
-  return Array.from({ length: 10 }, (_, index) => {
-    const targetYear = year + index;
-    const cycle = SixtyCycleYear.fromYear(targetYear).getSixtyCycle();
-    return {
-      year: targetYear,
-      name: cycle.getName(),
-      pillar: normalizeCycle(cycle, dayStem, "annual_fortune", "reference"),
-    };
-  });
-}
-
-function buildMonthlyFortunes(year, dayStem) {
-  return SixtyCycleYear.fromYear(year).getMonths().map((month, index) => {
-    const firstDay = month.getFirstDay().getSolarDay();
-    const cycle = month.getSixtyCycle();
-    return {
-      index: index + 1,
-      solarStartDate: `${firstDay.getYear()}-${pad(firstDay.getMonth())}-${pad(firstDay.getDay())}`,
-      name: cycle.getName(),
-      pillar: normalizeCycle(cycle, dayStem, "monthly_fortune", "reference"),
-    };
-  });
-}
-
-function buildDailyFortunes(year, month, day, dayStem) {
-  const start = SolarDay.fromYmd(year, month, day);
-  return Array.from({ length: 14 }, (_, index) => {
-    const solarDay = start.next(index);
-    const cycle = solarDay.getSixtyCycleDay().getSixtyCycle();
-    return {
-      date: `${solarDay.getYear()}-${pad(solarDay.getMonth())}-${pad(solarDay.getDay())}`,
-      name: cycle.getName(),
-      pillar: normalizeCycle(cycle, dayStem, "daily_fortune", "reference"),
-    };
-  });
-}
-
-function normalizeFortuneDate(input, fallbackParts) {
-  const today = new Date();
-  const parsedDate = input.fortuneDate ? parseDate(input.fortuneDate) : null;
-  return {
-    year: Number(input.fortuneYear) || parsedDate?.year || today.getFullYear(),
-    month: parsedDate?.month || today.getMonth() + 1,
-    day: parsedDate?.day || today.getDate(),
-    fallbackBirthYear: fallbackParts.year,
-  };
-}
-
-function buildLuckCycles(input, solarTime, dayStem, effectiveParts) {
-  const target = normalizeFortuneDate(input, effectiveParts);
-  return {
-    target,
-    decadeFortunes: buildDecadeFortunes(solarTime, input.gender, dayStem),
-    annualFortunes: buildAnnualFortunes(target.year, dayStem),
-    monthlyFortunes: buildMonthlyFortunes(target.year, dayStem),
-    dailyFortunes: buildDailyFortunes(target.year, target.month, target.day, dayStem),
-    notes: [
-      "大運は tyme4ts の DefaultChildLimitProvider による初版検証値です。",
-      "流年・流月・流日は干支暦の周期表示で、吉凶断定ではありません。",
-    ],
-  };
-}
-
 function buildInputParts(input) {
   const date = parseDate(input.date);
   const time = input.timeKnown ? parseTime(input.time) : { hour: 12, minute: 0, second: 0 };
@@ -1034,7 +890,6 @@ function calculateShichusuimei(input) {
     fiveElements: {
       counts: countElements(pillars),
     },
-    luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts),
   };
 }
 

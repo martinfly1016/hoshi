@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260514-luck-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260511-7";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -199,10 +199,6 @@ const STEM_PROFILES = {
 };
 
 const STEM_ORDER = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
-const STEM_YINYANG = {
-  甲: "陽", 乙: "陰", 丙: "陽", 丁: "陰", 戊: "陽",
-  己: "陰", 庚: "陽", 辛: "陰", 壬: "陽", 癸: "陰",
-};
 const TEN_GOD_ORDER = ["比肩", "劫财", "食神", "伤官", "偏财", "正财", "七杀", "正官", "偏印", "正印", "日主"];
 const TEN_GOD_TONE_CLASS = {
   比肩: "earth",
@@ -295,8 +291,6 @@ const RESULT_SECTION_TABS = [
   { id: "card-day-master", label: "日主", query: "day-master" },
   { id: "card-elements", label: "五行", query: "elements" },
   { id: "card-structure", label: "十神", query: "structure" },
-  { id: "card-interpretation", label: "解説", query: "reading" },
-  { id: "card-luck", label: "運勢", query: "luck" },
   { id: "card-chart", label: "命盤", query: "chart" },
   { id: "card-meta", label: "補足", query: "meta" },
 ];
@@ -373,7 +367,6 @@ function readInput() {
     date: element("birth-date").value,
     timeKnown: element("time-known").checked,
     time: element("birth-time").value || "12:00",
-    gender: element("gender").value,
     locationId: location.id,
     locationOverride: locationOverrideFromMunicipality(location),
     timeCalculationMode: element("time-mode").value,
@@ -1042,233 +1035,6 @@ function renderStructureSection(result) {
   `;
 }
 
-function dayMasterTypeLabel(result) {
-  const stem = result.dayMaster;
-  const element = result.pillars.day.element.stem;
-  return `${STEM_YINYANG[stem] || ""}${ELEMENT_JA[element] || element}`;
-}
-
-function elementBalancingAdvice(result) {
-  const counts = result.fiveElements.counts;
-  const missing = ELEMENT_LABELS.filter((name) => (counts[name] || 0) === 0);
-  const support = missing.length ? missing : weakestElements(counts);
-  const advice = {
-    木: "学び直し、計画づくり、植物や自然に触れる時間を増やすと、成長と方向づけを補いやすくなります。",
-    火: "朝日を浴びる、発信や表現の機会を作る、温かい場に参加するなど、熱量を外へ出す行動が助けになります。",
-    土: "生活リズム、食事、片づけ、貯蓄計画など、毎日の土台を整えるほど安定感が出やすくなります。",
-    金: "金属の小物やアクセサリー、白・金色系の持ち物、道具の整理、ルール化によって判断力を補いやすくなります。",
-    水: "休息、読書、移動、水辺の散歩、情報収集など、流れと柔軟性を作る行動が合いやすいです。",
-  };
-  return {
-    support,
-    text: support.map((name) => `${name}: ${advice[name]}`).join(" "),
-  };
-}
-
-function renderInterpretationSummary(result) {
-  const profile = STEM_PROFILES[result.dayMaster] || { title: "日主の説明", text: "", tags: [] };
-  const typeLabel = dayMasterTypeLabel(result);
-  const mainThemes = aggregateTenGodThemes(result).filter((item) => item.name !== "日主").slice(0, 3);
-  const themeText = mainThemes.map((item) => {
-    const tags = tenGodKeywords(item.name);
-    return `${item.name}${tags ? `（${tags}）` : ""}`;
-  }).join("、");
-  return `
-    <div class="reading-lead">
-      <div>
-        <span class="metric-label">日主タイプ</span>
-        <strong class="reading-type ${elementClass(result.pillars.day.element.stem)}">${escapeHtml(typeLabel)}</strong>
-      </div>
-      <p>${escapeHtml(`この命式の日主は「${result.dayMaster}」で、${typeLabel}の性質として読みます。${profile.text}`)}</p>
-      <p>${escapeHtml(`十神では ${themeText || "大きな偏りなし"} が目立ち、表に出やすい行動と内側で動く欲求を分けて確認します。`)}</p>
-    </div>
-  `;
-}
-
-function renderBalancingSection(result) {
-  const balance = elementBalancingAdvice(result);
-  return `
-    <div class="soft-panel reading-panel">
-      <div class="card-subhead">
-        <h3>五行バランスと整え方</h3>
-        <p>不足・控えめな五行を、生活上の比喩として補う初版ガイドです。</p>
-      </div>
-      ${renderElementBars(result)}
-      <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
-      <p class="summary-text">${escapeHtml(`補いたい候補は ${balance.support.join("・")} です。${balance.text}`)}</p>
-    </div>
-  `;
-}
-
-function renderLifeThemeCards(result) {
-  const themes = aggregateTenGodThemes(result).filter((item) => item.name !== "日主");
-  const primary = themes[0]?.name || "日主";
-  const secondary = themes[1]?.name || primary;
-  const hidden = aggregateHiddenGodCounts(result)[0]?.name || secondary;
-  const primaryProfile = TEN_GOD_PROFILES[primary] || TEN_GOD_PROFILES["日主"];
-  const secondaryProfile = TEN_GOD_PROFILES[secondary] || TEN_GOD_PROFILES["日主"];
-  const hiddenProfile = TEN_GOD_PROFILES[hidden] || TEN_GOD_PROFILES["日主"];
-  const cards = [
-    {
-      title: "性格の核",
-      text: `${primary} が主題として出ています。${primaryProfile.text} 日主の性質と合わせると、無意識に選びやすい判断基準が見えてきます。`,
-    },
-    {
-      title: "仕事・役割",
-      text: `${secondary} の働きから、仕事では ${secondaryProfile.tags.join("・")} の場面で力を使いやすいと読みます。向いている職種断定ではなく、力を出しやすい役割の仮説です。`,
-    },
-    {
-      title: "恋愛・対人",
-      text: `${hidden} は内側で動くテーマとして見ます。${hiddenProfile.text} 関係性では、表に出る態度と本音のズレを確認すると読みが深まります。`,
-    },
-    {
-      title: "財運・現実面",
-      text: `財星（偏财・正财）や官星（七杀・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
-    },
-  ];
-  return `
-    <div class="theme-grid reading-theme-grid">
-      ${cards.map((card) => `
-        <article class="theme-card">
-          <h3>${escapeHtml(card.title)}</h3>
-          <p>${escapeHtml(card.text)}</p>
-        </article>
-      `).join("")}
-    </div>
-  `;
-}
-
-function renderInterpretationSection(result) {
-  return `
-    <div class="card-head">
-      <div>
-        <p class="card-kicker">READING / DRAFT</p>
-        <h2>命式の初版解説文</h2>
-      </div>
-      <span class="balance-badge">検証用</span>
-    </div>
-    <p class="section-copy">この解説は、排盤結果からルールベースで作る初版文案です。吉凶を断定せず、日本ユーザーに命式の見方を説明する目的で配置しています。</p>
-    ${renderInterpretationSummary(result)}
-    ${renderBalancingSection(result)}
-    ${renderLifeThemeCards(result)}
-    <p class="notice">注意: 現段階の解説は検証用です。出生時間不明、真太陽時、23:00 子時の流派差により、時柱や一部解釈は変わる可能性があります。</p>
-  `;
-}
-
-function directionLabel(value) {
-  if (value === "forward") return "順行";
-  if (value === "backward") return "逆行";
-  return "未判定";
-}
-
-function genderLabel(value) {
-  if (value === "male") return "男性";
-  if (value === "female") return "女性";
-  return "未指定";
-}
-
-function renderLuckTable(items, columns) {
-  if (!items?.length) {
-    return `<p class="notice">表示できるデータがありません。</p>`;
-  }
-  return `
-    <div class="table-wrap luck-table-wrap">
-      <table class="luck-table">
-        <thead>
-          <tr>${columns.map((column) => `<th>${escapeHtml(column.label)}</th>`).join("")}</tr>
-        </thead>
-        <tbody>
-          ${items.map((item) => `
-            <tr>${columns.map((column) => `<td>${escapeHtml(column.value(item))}</td>`).join("")}</tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
-function renderDecadeFortunes(result) {
-  const decade = result.luckCycles?.decadeFortunes;
-  if (!decade || decade.status !== "ok") {
-    return `
-      <div class="soft-panel reading-panel">
-        <div class="card-subhead">
-          <h3>大運</h3>
-          <p>大運は性別によって順行・逆行が変わります。</p>
-        </div>
-        <p class="notice">${escapeHtml(decade?.note || "性別を選択して再計算してください。")}</p>
-      </div>
-    `;
-  }
-  return `
-    <div class="soft-panel reading-panel">
-      <div class="card-subhead">
-        <h3>大運</h3>
-        <p>${escapeHtml(`${genderLabel(decade.gender)} / ${directionLabel(decade.direction)} / 起運 ${decade.startTime}`)}</p>
-      </div>
-      ${renderLuckTable(decade.items, [
-        { label: "順", value: (item) => item.index },
-        { label: "大運", value: (item) => item.name },
-        { label: "年齢", value: (item) => `${item.startAge}-${item.endAge}歳` },
-        { label: "期間", value: (item) => `${item.startYear}-${item.endYear}` },
-        { label: "十神", value: (item) => item.pillar.heavenlyTenGod || "—" },
-      ])}
-    </div>
-  `;
-}
-
-function renderLuckCyclesSection(result) {
-  const luck = result.luckCycles || {};
-  const target = luck.target || {};
-  return `
-    <div class="card-head">
-      <div>
-        <p class="card-kicker">LUCK / CYCLES</p>
-        <h2>大運・流年・流月・流日の初版排盤</h2>
-      </div>
-      <span class="balance-badge">${escapeHtml(`${target.year || "—"}年`)}</span>
-    </div>
-    <p class="section-copy">ここでは運勢周期の干支を検証用に並べます。解釈文への反映は、計算結果の確認後に段階的に進めます。</p>
-    ${renderDecadeFortunes(result)}
-    <div class="luck-grid">
-      <article class="detail-card">
-        <div class="card-subhead">
-          <h3>流年</h3>
-          <p>${escapeHtml(`${target.year || "—"}年から10年`)}</p>
-        </div>
-        ${renderLuckTable(luck.annualFortunes || [], [
-          { label: "年", value: (item) => item.year },
-          { label: "干支", value: (item) => item.name },
-          { label: "五行", value: (item) => `${item.pillar.element.stem}/${item.pillar.element.branch}` },
-        ])}
-      </article>
-      <article class="detail-card">
-        <div class="card-subhead">
-          <h3>流月</h3>
-          <p>${escapeHtml(`${target.year || "—"}年の節月`)}</p>
-        </div>
-        ${renderLuckTable(luck.monthlyFortunes || [], [
-          { label: "月", value: (item) => item.index },
-          { label: "開始", value: (item) => item.solarStartDate },
-          { label: "干支", value: (item) => item.name },
-        ])}
-      </article>
-      <article class="detail-card">
-        <div class="card-subhead">
-          <h3>流日</h3>
-          <p>${escapeHtml(`${target.year || "—"}-${pad(target.month || 1)}-${pad(target.day || 1)} から14日`)}</p>
-        </div>
-        ${renderLuckTable(luck.dailyFortunes || [], [
-          { label: "日付", value: (item) => item.date },
-          { label: "干支", value: (item) => item.name },
-          { label: "五行", value: (item) => `${item.pillar.element.stem}/${item.pillar.element.branch}` },
-        ])}
-      </article>
-    </div>
-    ${(luck.notes || []).map((note) => `<p class="notice">${escapeHtml(note)}</p>`).join("")}
-  `;
-}
-
 function renderAuxiliaryCard(result) {
   return `
     <div class="detail-grid auxiliary-grid">
@@ -1327,14 +1093,6 @@ function renderResult(result) {
 
     <section id="card-structure" class="section insight-card">
       ${renderStructureSection(result)}
-    </section>
-
-    <section id="card-interpretation" class="section insight-card">
-      ${renderInterpretationSection(result)}
-    </section>
-
-    <section id="card-luck" class="section insight-card">
-      ${renderLuckCyclesSection(result)}
     </section>
 
     <section id="card-chart" class="section insight-card">
@@ -1532,7 +1290,7 @@ function bindEvents() {
     populateMunicipalities(element("prefecture").value);
     markInputChanged();
   });
-  ["birth-date", "birth-time", "gender", "municipality", "time-mode", "late-zi-mode"].forEach((id) => {
+  ["birth-date", "birth-time", "municipality", "time-mode", "late-zi-mode"].forEach((id) => {
     element(id).addEventListener("change", markInputChanged);
   });
 }

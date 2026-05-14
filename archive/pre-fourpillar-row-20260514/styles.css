@@ -1100,17 +1100,9 @@ input, select { font-family: inherit; color: inherit; }
     left: 18px;
     letter-spacing: 0.24em;
   }
-  .pillars { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-  .pillar { padding: 12px 4px; min-width: 0; }
-  .pillar .lbl { font-size: 9px; letter-spacing: 0.16em; }
-  .pillar .gz { margin-top: 6px; }
-  .pillar .gz .top, .pillar .gz .btm { font-size: 21px; }
-  .pillar .nayin {
-    font-size: 9px;
-    letter-spacing: 0.04em;
-    line-height: 1.45;
-    overflow-wrap: anywhere;
-  }
+  .pillars { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pillar { padding: 14px 6px; }
+  .pillar .gz .top, .pillar .gz .btm { font-size: 22px; }
   .result-wide { overflow-x: visible; }
   .bazi-board-lite { min-width: 0; }
   .bazi-lite-row strong { font-size: 13px; }

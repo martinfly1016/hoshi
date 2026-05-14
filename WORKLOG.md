@@ -21,7 +21,7 @@
 | v0.2.1 | 2026-05-15 00:02 JST | 用户首页 | 首页 `/index.html` | 按产品需求文档调整用户结果体验：姓名/性别改为非必填；结果先显示日文摘要、关键标签、日主/性格/恋爱/仕事解说，再显示五行和专业命式表 | `/index.html?v=20260515-user-reading-1` | `/archive/pre-user-reading-prd-20260514/index.html?v=20260515-pre-user-reading-1` | main `84e62b1` / gh-pages `bd167e1` |
 | v0.2.2 | 2026-05-15 00:08 JST | 用户首页 | 首页结果区 `/index.html` | 将后台已算出的四柱、五行、十神进一步转成图文解说：新增四柱时间层级卡、五行强弱状态卡、十神角色卡 | `/index.html?v=20260515-visual-reading-1` | `/archive/pre-user-visual-reading-20260515/index.html?v=20260515-pre-visual-reading-1` | main `201e714` / gh-pages `6c66d14` |
 | v0.2.3 | 2026-05-15 00:15 JST | 用户首页 | 首页结果区 `/index.html` | 在用户页加入大运、流年初版计算展示与解说；未选性别时提示大运需性别，流年直接展示今年起的年度干支主题 | `/index.html?v=20260515-luck-reading-1` | `/archive/pre-user-luck-reading-20260515/index.html?v=20260515-pre-luck-reading-1` | main `b80da28` / gh-pages `ea3d0fd` |
-| v0.2.4 | 2026-05-15 00:20 JST | 用户首页 | 首页结果区 `/index.html` | 增强当前十年大运解说：自动识别当前年份所在大运并高亮，补充工作、财运、恋爱/对人、读法四维说明 | `/index.html?v=20260515-current-decade-1` | `/archive/pre-current-decade-reading-20260515/index.html?v=20260515-pre-current-decade-1` | 本次发布 |
+| v0.2.4 | 2026-05-15 00:20 JST | 用户首页 | 首页结果区 `/index.html` | 增强当前十年大运解说：自动识别当前年份所在大运并高亮，补充工作、财运、恋爱/对人、读法四维说明 | `/index.html?v=20260515-current-decade-1` | `/archive/pre-current-decade-reading-20260515/index.html?v=20260515-pre-current-decade-1` | main `49b08e8` / gh-pages `b1d1bfe` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

@@ -2,6 +2,17 @@
 
 用于记录项目开发过程中的关键进展、需求决策、Case study、问题排查和经验教训。
 
+## 版本记录
+
+| 版本 | 更新时间 | 类型 | 页面/范围 | 主要内容 | 新版地址 | 对比/归档地址 | 提交 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| v0.1.0 | 2026-05-14 23:00 JST | 功能发布 | 用户首页 `/index.html` | 接入后台验证页同一套 `calculateShichusuimei()`，显示真实四柱、日主、五行、十神、藏干、纳音、空亡、地势、自坐和真太阳时信息 | `/index.html?v=20260514-usercalc-3` | `/archive/pre-usercalc-20260514/index.html?v=20260514-archive-2` | main `bb5bea4` / gh-pages `1c26458` |
+| v0.1.1 | 2026-05-14 23:05 JST | 归档 | 用户首页旧版 | 发布用户页接入算法前的旧版快照，便于对比 | `/index.html?v=20260514-usercalc-3` | `/archive/pre-usercalc-20260514/index.html?v=20260514-archive-2` | main `2cc0875` / gh-pages `f3accd8` |
+| v0.1.2 | 2026-05-14 23:13 JST | 视觉修正 | 用户首页移动端 | 优化手机端顶部、结果卡、命式要点与命式详情表格窄屏展示 | `/index.html?v=20260514-mobilefix-2` | `/archive/pre-mobilefix-20260514/index.html?v=20260514-pre-mobilefix-2` | main `aed7d6b` / gh-pages `b89280f` |
+| v0.1.3 | 2026-05-14 23:19 JST | 视觉修正 | 用户首页移动端四柱 | 修正手机端基础八字四柱从 2×2 改回横向一排四列展示 | `/index.html?v=20260514-fourpillar-row-1` | `/archive/pre-fourpillar-row-20260514/index.html?v=20260514-pre-fourpillar-row-1` | main `128478a` / gh-pages `37c6d26` |
+
+> 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
+
 ## 2026-05-14
 
 - 初始化协作上下文：项目仓库已拉取到本地 `/Users/cathy/.openclaw/workspace/hoshi`。

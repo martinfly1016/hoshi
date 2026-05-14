@@ -318,28 +318,6 @@ const PILLAR_LABELS = {
   day: '日柱',
   hour: '時柱',
 };
-const PILLAR_READING = {
-  year: {
-    icon: '根',
-    title: '年柱はルーツと外側の環境',
-    text: '家族、育った環境、社会から見えやすい雰囲気を見ます。',
-  },
-  month: {
-    icon: '場',
-    title: '月柱は社会性と仕事の土台',
-    text: '季節の力が強く出る柱で、仕事や役割、社会での使い方を見ます。',
-  },
-  day: {
-    icon: '我',
-    title: '日柱は本人と大切な関係',
-    text: '日主を含む中心の柱です。本人の核と、近い関係性の傾向を見ます。',
-  },
-  hour: {
-    icon: '芽',
-    title: '時柱は未来と内側の可能性',
-    text: '出生時間から出す柱です。内面、晩年、これから育つテーマを見ます。',
-  },
-};
 const ELEMENT_LABELS = ['木', '火', '土', '金', '水'];
 const ELEMENT_CLASS = {
   木: 'wood',
@@ -381,18 +359,6 @@ const TEN_GOD_READING = {
   正官: { tags: ['規律', '責任', '信頼'], text: '秩序や役割意識を重んじ、きちんと形にしていく星です。' },
   偏印: { tags: ['直感', '独自視点', '再編集'], text: '独自の見方やひらめきで情報を再解釈しやすい星です。' },
   正印: { tags: ['学習', '保護', '吸収'], text: '知識や型を吸収し、守られながら安定して伸びやすい星です。' },
-};
-const TEN_GOD_GROUPS = {
-  比肩: { role: '自分軸', icon: '自', text: '自立心、同じ立場の仲間、対等な関係を表します。' },
-  劫财: { role: '競争と仲間', icon: '競', text: '競争心、巻き込み力、強い突破力として出ます。' },
-  食神: { role: '表現と楽しさ', icon: '表', text: '自然な表現、楽しさ、育てる力として現れます。' },
-  伤官: { role: '感性と改善', icon: '鋭', text: '鋭い感覚、批評性、型を越える才能として出ます。' },
-  偏财: { role: '機会と対人', icon: '機', text: '人や機会に素早く反応し、現場で流れをつかむ力です。' },
-  正财: { role: '管理と積み上げ', icon: '積', text: '現実感覚、管理、安定した積み上げを表します。' },
-  七杀: { role: '決断と負荷対応', icon: '決', text: '緊張感の中で決める力、責任ある局面への強さです。' },
-  正官: { role: '信頼と秩序', icon: '秩', text: '役割意識、社会的信用、ルールの中で整える力です。' },
-  偏印: { role: '直感と再編集', icon: '直', text: '独自視点、直感、情報を組み替える力として出ます。' },
-  正印: { role: '学習と保護', icon: '学', text: '学び、吸収、守られながら伸びる力を表します。' },
 };
 
 function elementClass(elementName) {
@@ -485,38 +451,6 @@ function mainThemeText(tenGods) {
   return names.map((name) => `${name}（${(TEN_GOD_READING[name]?.tags || []).join('・')}）`).join('、');
 }
 
-function elementStateLabel(calculation, name) {
-  const counts = calculation.fiveElements.counts;
-  const values = Object.values(counts);
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const value = counts[name] || 0;
-  if (value === 0) return '不足';
-  if (max === min) return '均衡';
-  if (value === max) return '強め';
-  if (value === min) return '控えめ';
-  return '中位';
-}
-
-function elementGuideText(name) {
-  const guide = {
-    木: '成長、企画、広がりを表します。新しい方向へ伸びる力です。',
-    火: '表現、熱量、直感を表します。外へ伝える力です。',
-    土: '安定、蓄積、調整を表します。場を支える力です。',
-    金: '判断、整理、完成度を表します。形を整える力です。',
-    水: '知性、流れ、適応を表します。情報を受け取り変化する力です。',
-  };
-  return guide[name] || '';
-}
-
-function topTenGodEntries(calculation) {
-  return collectTenGods(calculation).slice(0, 5).map(([name, total]) => ({
-    name,
-    total,
-    ...(TEN_GOD_GROUPS[name] || { role: name, icon: name?.slice(0, 1) || '星', text: TEN_GOD_READING[name]?.text || '' }),
-  }));
-}
-
 function ResultPreview({ id, name, calculation, profile }) {
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
@@ -530,7 +464,6 @@ function ResultPreview({ id, name, calculation, profile }) {
   const strong = strongestElements(calculation).join('・');
   const weakAdvice = balanceAdvice(calculation);
   const tags = readingTags(calculation, tenGods);
-  const tenGodRoles = topTenGodEntries(calculation);
 
   return (
     <div className="result-card" id={id}>
@@ -576,27 +509,6 @@ function ResultPreview({ id, name, calculation, profile }) {
           <span>真太陽時：{formatDateTimeLabel(meta.effectiveBirthDateTime)}</span>
           <span>出生地：{stripJapan(meta.location?.label)}</span>
           <span>日主：{calculation.dayMaster}{calculation.pillars.day.element.stem}</span>
-        </div>
-      </div>
-
-      <div className="result-wide visual-block">
-        <div className="section-caption">四柱を図で読む</div>
-        <div className="pillar-guide-grid">
-          {PILLAR_KEYS.map((key) => {
-            const pillar = calculation.pillars[key];
-            const guide = PILLAR_READING[key];
-            return (
-              <article className={`pillar-guide ${key === 'day' ? 'is-focus' : ''}`} key={key}>
-                <div className="pillar-guide-icon">{guide.icon}</div>
-                <div>
-                  <span>{PILLAR_LABELS[key]} · {pillar.text}</span>
-                  <h3>{guide.title}</h3>
-                  <p>{guide.text}</p>
-                  <small>{calculation.tenGods[key]} / {pillar.hiddenStems.join('・') || '—'}</small>
-                </div>
-              </article>
-            );
-          })}
         </div>
       </div>
 
@@ -653,33 +565,6 @@ function ResultPreview({ id, name, calculation, profile }) {
           五行は木・火・土・金・水のバランスを見ます。この命式では {strong} が出やすく、
           {weakAdvice.support.join('・')} を生活の中で意識すると整いやすい配置です。{weakAdvice.text}
         </p>
-        <div className="element-guide-grid">
-          {ELEMENT_LABELS.map((name) => (
-            <article className={`element-guide ${elementClass(name)}`} key={name}>
-              <span className="element-symbol">{name}</span>
-              <div>
-                <strong>{elementStateLabel(calculation, name)}</strong>
-                <p>{elementGuideText(name)}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div className="result-wide visual-block">
-        <div className="section-caption">通変星を役割で読む</div>
-        <div className="ten-god-map">
-          {tenGodRoles.map((item) => (
-            <article key={item.name}>
-              <span className="god-symbol">{item.icon}</span>
-              <div>
-                <strong>{item.name} · {item.role}</strong>
-                <p>{item.text}</p>
-                <small>命式内の出現: {item.total}</small>
-              </div>
-            </article>
-          ))}
-        </div>
       </div>
 
       <div className="result-wide">

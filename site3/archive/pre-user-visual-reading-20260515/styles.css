@@ -808,10 +808,6 @@ input, select { font-family: inherit; color: inherit; }
   border-top: 1px solid var(--rule);
   padding-top: 28px;
 }
-.visual-block {
-  display: grid;
-  gap: 16px;
-}
 .result-summary {
   border-top: 0;
   padding-top: 0;
@@ -893,110 +889,6 @@ input, select { font-family: inherit; color: inherit; }
 }
 .balance-copy {
   margin-top: 16px;
-}
-.pillar-guide-grid,
-.element-guide-grid,
-.ten-god-map {
-  display: grid;
-  gap: 12px;
-}
-.pillar-guide-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.pillar-guide,
-.element-guide,
-.ten-god-map article {
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-  min-width: 0;
-}
-.pillar-guide {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 14px;
-  padding: 16px;
-}
-.pillar-guide.is-focus {
-  border-color: var(--gold);
-  background: color-mix(in srgb, var(--gold) 8%, transparent);
-}
-.pillar-guide-icon,
-.god-symbol,
-.element-symbol {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 18px;
-}
-.pillar-guide span,
-.ten-god-map small {
-  display: block;
-  color: var(--ink-3);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  line-height: 1.6;
-}
-.pillar-guide h3 {
-  margin: 8px 0;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1.55;
-}
-.pillar-guide p,
-.element-guide p,
-.ten-god-map p {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 12px;
-  line-height: 1.85;
-  letter-spacing: 0.06em;
-}
-.pillar-guide small {
-  display: block;
-  margin-top: 10px;
-  color: var(--ink-3);
-  font-size: 11px;
-  line-height: 1.6;
-}
-.element-guide-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  margin-top: 18px;
-}
-.element-guide,
-.ten-god-map article {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
-  padding: 14px;
-}
-.element-guide strong,
-.ten-god-map strong {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  line-height: 1.5;
-}
-.element-symbol {
-  color: currentColor;
-}
-.ten-god-map {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.god-symbol {
-  color: var(--accent);
 }
 .reading-grid {
   display: grid;
@@ -1322,9 +1214,6 @@ input, select { font-family: inherit; color: inherit; }
     overflow-wrap: anywhere;
   }
   .reading-grid,
-  .pillar-guide-grid,
-  .element-guide-grid,
-  .ten-god-map,
   .next-actions {
     grid-template-columns: 1fr;
   }

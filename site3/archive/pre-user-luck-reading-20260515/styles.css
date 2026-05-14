@@ -998,83 +998,6 @@ input, select { font-family: inherit; color: inherit; }
 .god-symbol {
   color: var(--accent);
 }
-.luck-summary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-.luck-summary > div,
-.luck-note,
-.luck-card {
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-  min-width: 0;
-}
-.luck-summary > div {
-  padding: 18px;
-}
-.luck-summary h3,
-.luck-card h3 {
-  margin: 0 0 10px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  line-height: 1.55;
-}
-.luck-summary p,
-.luck-note p,
-.luck-card p,
-.luck-card small {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 12px;
-  line-height: 1.85;
-  letter-spacing: 0.06em;
-}
-.luck-note {
-  padding: 18px;
-}
-.luck-note strong {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-weight: 500;
-  letter-spacing: 0.12em;
-}
-.luck-reading-grid {
-  display: grid;
-  gap: 12px;
-}
-.decade-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.annual-grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-.luck-card {
-  padding: 14px;
-}
-.luck-card.is-current {
-  border-color: var(--gold);
-  background: color-mix(in srgb, var(--gold) 8%, transparent);
-}
-.luck-chip {
-  display: inline-block;
-  margin-bottom: 10px;
-  border: 1px solid var(--rule-strong);
-  padding: 5px 8px;
-  color: var(--ink-3);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-}
-.luck-card small {
-  display: block;
-  margin-top: 10px;
-}
 .reading-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1402,9 +1325,6 @@ input, select { font-family: inherit; color: inherit; }
   .pillar-guide-grid,
   .element-guide-grid,
   .ten-god-map,
-  .luck-summary,
-  .decade-grid,
-  .annual-grid,
   .next-actions {
     grid-template-columns: 1fr;
   }

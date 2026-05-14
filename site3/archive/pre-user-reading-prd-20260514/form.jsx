@@ -78,7 +78,7 @@ function FormField({ num, ja, romaji, hint, children }) {
 
 function Rite({ onBack, onSubmitDone }) {
   const [name, setName] = React.useState('');
-  const [gender, setGender] = React.useState('gen');
+  const [gender, setGender] = React.useState('');
   const [calendar, setCalendar] = React.useState('seireki'); // seireki | kyureki
   const [year, setYear]   = React.useState('');
   const [month, setMonth] = React.useState('');
@@ -96,7 +96,7 @@ function Rite({ onBack, onSubmitDone }) {
 
   const locations = locationOptions();
   const selectedLocation = findLocation(locationId);
-  const valid = year && month && day && locationId && (unsure || birthTime || shi);
+  const valid = name && gender && year && month && day && locationId && (unsure || birthTime || shi);
 
   const submit = () => {
     if (!valid || busy) return;
@@ -118,7 +118,6 @@ function Rite({ onBack, onSubmitDone }) {
           locationOverride: selectedLocation,
           timeCalculationMode: 'true_solar_time',
           lateZiHourMode: 'same_day',
-          gender: gender === 'yang' ? 'male' : gender === 'yin' ? 'female' : 'unspecified',
         };
         const calculated = api.calculateShichusuimei(input);
         setResult({ input, chart: calculated, profile: { name, gender, location: selectedLocation, shi, unsure } });
@@ -161,16 +160,16 @@ function Rite({ onBack, onSubmitDone }) {
 
       <div className="rite-main">
         <div className="rite-intro">
-          <h2>生年月日から、あなたの命式を作成します</h2>
+          <h2>命式を編むに、四つの徴を奉ぜよ</h2>
           <p>
-            四柱推命では、生年月日・出生時間・出生地から命式を作ります。<br/>
-            結果では日主、五行バランス、通変星をもとに、性格・恋愛・仕事の傾向をやさしく整理します。
-            入力内容はこの端末上で計算し、サーバーには保存しません。
+            星辰の巡りは古より変わらず、人の命式もまた然り。<br/>
+            汝が名・性・生辰・出生の地を以て、二十八宿と十二支を擦り合わせ、
+            その吉凶悔吝を顕さん。記したる事項は卜算のみに用い、外に漏らさず。
           </p>
         </div>
 
         <FormField num="壹 / 一" ja="名 諱" romaji="NA · IMINA"
-          hint="任意。結果表示用の名前です">
+          hint="本名でも、字（あざな）でも可">
           <div className="input-line with-mark" data-mark="NAME">
             <input
               type="text"
@@ -180,8 +179,7 @@ function Rite({ onBack, onSubmitDone }) {
           </div>
         </FormField>
 
-        <FormField num="壹 / 二" ja="性 別" romaji="SEI · BETSU"
-          hint="任意。大運を見る時だけ順逆計算に使います">
+        <FormField num="壹 / 二" ja="性 別" romaji="SEI · BETSU">
           <div className="gender-row">
             {[
               { key: 'yang', ja: '陽 / 男', sym: '☰' },
@@ -275,8 +273,8 @@ function Rite({ onBack, onSubmitDone }) {
 
         <div className="rite-submit">
           <div className="legal">
-            出生時間が不明でも鑑定できます。<br/>
-            その場合、時柱は12:00の仮計算として表示します。
+            記入内容は卜算と汝個人の鑑定書のみに用ふ。<br/>
+            星辰の前にて、虚妄を語る勿れ。
           </div>
           <button className={`submit-btn ${busy ? 'busy' : ''}`}
             disabled={!valid || busy}
@@ -332,34 +330,6 @@ const WARNING_LABELS = {
   TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: '真太陽時計算には出生地の経緯度が必要です。',
   LATE_ZI_HOUR_MODE_USER_SELECTABLE: '23:00台は晚子時/子初換日で流派差が出ます。',
 };
-const STEM_YINYANG = {
-  甲: '陽', 乙: '陰', 丙: '陽', 丁: '陰', 戊: '陽',
-  己: '陰', 庚: '陽', 辛: '陰', 壬: '陽', 癸: '陰',
-};
-const STEM_READING = {
-  甲: { title: '大樹のようにまっすぐ伸びる人', text: '理想を掲げ、時間をかけて形にしていく力があります。焦らず根を張るほど、信頼が育ちます。', tags: ['誠実', '成長志向', '長期戦'] },
-  乙: { title: '草花のようにしなやかに場を読む人', text: '柔らかな感受性と調整力があります。人との関係の中で才能が開きやすいタイプです。', tags: ['柔軟', '協調', '美意識'] },
-  丙: { title: '太陽のように場を明るくする人', text: '明るさと表現力で人を惹きつけます。隠すより見せることで運が動きやすいタイプです。', tags: ['表現力', '率直', '求心力'] },
-  丁: { title: '灯火のように心を照らす人', text: '細やかな洞察と集中力があります。小さな違和感を拾い、丁寧に磨くほど強みになります。', tags: ['洞察', '集中', '繊細'] },
-  戊: { title: '山のように安定をつくる人', text: '物事を受け止め、場の土台を整える力があります。信頼を積むほど大きな役割を任されます。', tags: ['安定', '包容', '責任感'] },
-  己: { title: '田畑のように人や環境を育てる人', text: '現実感覚と育成力があります。人や環境を整えながら成果へつなげることが得意です。', tags: ['育成', '実務', '調整役'] },
-  庚: { title: '鋼のように道を切り開く人', text: '決断力と突破力があります。曖昧な状況を整理し、必要な一手を打つことで力を発揮します。', tags: ['決断', '突破', '実行'] },
-  辛: { title: '宝石のように磨かれて光る人', text: '繊細な美意識と基準の高さがあります。細部を磨き、質を高めるほど存在感が増します。', tags: ['美意識', '精密', '洗練'] },
-  壬: { title: '大河のように広がる人', text: '視野が広く、変化に乗る力があります。固定されすぎない環境で発想が広がります。', tags: ['自由', '構想', '移動'] },
-  癸: { title: '雨露のように静かに満たす人', text: '観察力と知性があり、静かに情報を集めて本質へ近づくタイプです。', tags: ['観察', '知性', '内省'] },
-};
-const TEN_GOD_READING = {
-  比肩: { tags: ['自立', '対等', '芯の強さ'], text: '自分の判断で立ち、同じ立場の相手と並走しやすい星です。' },
-  劫财: { tags: ['競争', '突破', '巻き込み'], text: '競争心と突破力が前に出やすく、人や状況を動かしながら進む星です。' },
-  食神: { tags: ['表現', '余裕', '育成'], text: '自然体の表現、楽しさ、育てる力として出やすい星です。' },
-  伤官: { tags: ['批評', '才気', '鋭さ'], text: '感覚が鋭く、型を破って言語化したり改善したりする星です。' },
-  偏财: { tags: ['機動力', '対人', '現場感'], text: '人や機会に素早く反応し、流れをつかみにいく星です。' },
-  正财: { tags: ['実務', '管理', '積み上げ'], text: '現実感覚が強く、着実に管理しながら成果へつなぐ星です。' },
-  七杀: { tags: ['緊張感', '決断', '負荷対応'], text: 'プレッシャーの中で判断し、厳しい局面を切り抜ける力として出ます。' },
-  正官: { tags: ['規律', '責任', '信頼'], text: '秩序や役割意識を重んじ、きちんと形にしていく星です。' },
-  偏印: { tags: ['直感', '独自視点', '再編集'], text: '独自の見方やひらめきで情報を再解釈しやすい星です。' },
-  正印: { tags: ['学習', '保護', '吸収'], text: '知識や型を吸収し、守られながら安定して伸びやすい星です。' },
-};
 
 function elementClass(elementName) {
   return ELEMENT_CLASS[elementName] || 'neutral';
@@ -405,81 +375,14 @@ function collectTenGods(result) {
     .slice(0, 6);
 }
 
-function strongestElements(result) {
-  const entries = Object.entries(result.fiveElements.counts);
-  const max = Math.max(...entries.map(([, value]) => value));
-  return entries.filter(([, value]) => value === max).map(([name]) => name);
-}
-
-function weakestElements(result) {
-  const entries = Object.entries(result.fiveElements.counts);
-  const min = Math.min(...entries.map(([, value]) => value));
-  return entries.filter(([, value]) => value === min).map(([name]) => name);
-}
-
-function dayMasterType(calculation) {
-  const stem = calculation.dayMaster;
-  const element = calculation.pillars.day.element.stem;
-  return `${STEM_YINYANG[stem] || ''}${element}`;
-}
-
-function readingTags(calculation, tenGods) {
-  const stemTags = STEM_READING[calculation.dayMaster]?.tags || [];
-  const godTags = tenGods.slice(0, 2).flatMap(([god]) => TEN_GOD_READING[god]?.tags || []);
-  return [...stemTags, ...godTags].slice(0, 6);
-}
-
-function balanceAdvice(calculation) {
-  const missing = ELEMENT_LABELS.filter((name) => (calculation.fiveElements.counts[name] || 0) === 0);
-  const support = missing.length ? missing : weakestElements(calculation);
-  const advice = {
-    木: '学び直し、計画づくり、自然に触れる時間が助けになります。',
-    火: '発信、表現、朝日や温かい場に触れる行動が助けになります。',
-    土: '生活リズム、食事、片づけ、貯蓄計画など土台づくりが合います。',
-    金: '金属アクセサリー、白や金色の小物、道具の整理、ルール化が助けになります。',
-    水: '休息、読書、移動、水辺の散歩、情報収集で流れを作ると安定しやすいです。',
-  };
-  return {
-    support,
-    text: support.map((name) => advice[name]).join(' '),
-  };
-}
-
-function mainThemeText(tenGods) {
-  const names = tenGods.slice(0, 3).map(([god]) => god);
-  if (!names.length) return '目立つ通変星に大きな偏りはありません。';
-  return names.map((name) => `${name}（${(TEN_GOD_READING[name]?.tags || []).join('・')}）`).join('、');
-}
-
 function ResultPreview({ id, name, calculation, profile }) {
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
   const hiddenStems = collectHiddenStems(calculation);
   const meta = calculation.calculationMeta;
-  const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '', tags: [] };
-  const primaryGod = tenGods[0]?.[0];
-  const secondaryGod = tenGods[1]?.[0] || primaryGod;
-  const primaryGodReading = TEN_GOD_READING[primaryGod] || { tags: [], text: '通変星の出方を見ながら、表に出やすい行動傾向を読みます。' };
-  const secondaryGodReading = TEN_GOD_READING[secondaryGod] || primaryGodReading;
-  const strong = strongestElements(calculation).join('・');
-  const weakAdvice = balanceAdvice(calculation);
-  const tags = readingTags(calculation, tenGods);
 
   return (
     <div className="result-card" id={id}>
-      <div className="result-summary result-wide">
-        <div className="summary-kicker">四柱推命 無料鑑定</div>
-        <h2>{name || 'あなた'}の命式は、{dayMasterType(calculation)}の日主を中心に読みます</h2>
-        <p>
-          {stemReading.text}
-          五行では {strong} が目立ち、補いたい候補は {weakAdvice.support.join('・')} です。
-          通変星では {mainThemeText(tenGods)} がテーマとして現れています。
-        </p>
-        <div className="result-tags">
-          {tags.map((tag) => <span key={tag}>{tag}</span>)}
-        </div>
-      </div>
-
       <div>
         <div style={{
           fontFamily: 'var(--f-display)',
@@ -520,33 +423,7 @@ function ResultPreview({ id, name, calculation, profile }) {
         <div className="row"><span>藏干</span><span className="v">{hiddenStems.slice(0, 4).map(item => `${item.stem}${item.element}`).join('・') || '—'}</span></div>
         <div className="row"><span>時柱</span><span className="v">{profile.unsure ? '不詳 / 午時仮計算' : calculation.pillars.hour.text}</span></div>
         <div style={{ marginTop: 10, fontSize: 12, lineHeight: 2.0, color: 'var(--ink-3)' }}>
-          ※ 結果は四柱推命の命式をわかりやすく整理したものです。断定ではなく、自分を理解するためのヒントとしてご覧ください。
-        </div>
-      </div>
-
-      <div className="result-wide reading-block">
-        <div className="section-caption">あなたの本質</div>
-        <div className="reading-grid">
-          <article>
-            <span>日主</span>
-            <h3>{stemReading.title}</h3>
-            <p>{stemReading.text}</p>
-          </article>
-          <article>
-            <span>性格の傾向</span>
-            <h3>{primaryGod || '命式全体'}</h3>
-            <p>{primaryGodReading.text}</p>
-          </article>
-          <article>
-            <span>恋愛・対人</span>
-            <h3>{secondaryGod || '関係性'}</h3>
-            <p>関係性では、表に出る態度と内側の欲求のバランスを見ます。{secondaryGodReading.text}</p>
-          </article>
-          <article>
-            <span>仕事・才能</span>
-            <h3>{strong || '五行バランス'}</h3>
-            <p>仕事では、自然に使いやすい五行と通変星の組み合わせが強みになります。無理に職種を断定せず、力を出しやすい役割として見ます。</p>
-          </article>
+          ※ この表示は后台検証ページと同じ計算核心を使用しています。鑑定文と見せ方は今後ユーザー向けに調整します。
         </div>
       </div>
 
@@ -561,10 +438,6 @@ function ResultPreview({ id, name, calculation, profile }) {
             </div>
           ))}
         </div>
-        <p className="balance-copy">
-          五行は木・火・土・金・水のバランスを見ます。この命式では {strong} が出やすく、
-          {weakAdvice.support.join('・')} を生活の中で意識すると整いやすい配置です。{weakAdvice.text}
-        </p>
       </div>
 
       <div className="result-wide">
@@ -616,13 +489,6 @@ function ResultPreview({ id, name, calculation, profile }) {
           ))}
         </div>
       )}
-
-      <div className="result-wide next-actions">
-        <button disabled>相性を見る <span>準備中</span></button>
-        <button disabled>大運を見る <span>準備中</span></button>
-        <button disabled>流年を見る <span>準備中</span></button>
-        <button disabled>結果を保存する <span>準備中</span></button>
-      </div>
     </div>
   );
 }

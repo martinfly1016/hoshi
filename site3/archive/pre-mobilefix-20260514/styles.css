@@ -908,13 +908,8 @@ input, select { font-family: inherit; color: inherit; }
 
 @media (max-width: 1080px) {
   .chrome {
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 18px 14px;
+    padding: 14px 18px;
     gap: 10px;
-    background: linear-gradient(180deg,
-      color-mix(in srgb, var(--bg) 92%, transparent) 0%,
-      color-mix(in srgb, var(--bg) 72%, transparent) 72%,
-      transparent 100%);
-    backdrop-filter: blur(8px);
   }
   .chrome > *:last-child { display: none; }       /* hide era stamp on tablet */
   .chrome .mark { font-size: 12px; gap: 8px; }
@@ -1096,15 +1091,11 @@ input, select { font-family: inherit; color: inherit; }
     gap: 28px;
     margin-top: 48px;
   }
-  .result-card::before {
-    left: 18px;
-    letter-spacing: 0.24em;
-  }
   .pillars { grid-template-columns: 1fr 1fr; gap: 8px; }
   .pillar { padding: 14px 6px; }
   .pillar .gz .top, .pillar .gz .btm { font-size: 22px; }
-  .result-wide { overflow-x: visible; }
-  .bazi-board-lite { min-width: 0; }
+  .result-wide { overflow-x: auto; }
+  .bazi-board-lite { min-width: 640px; }
   .bazi-lite-row strong { font-size: 13px; }
 
   .seal-overlay .stamp {
@@ -1129,77 +1120,4 @@ input, select { font-family: inherit; color: inherit; }
 
   .gender-row { flex-direction: column; }
   .gender-btn { flex-direction: row; }
-}
-
-@media (max-width: 520px) {
-  .chrome {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-  }
-  .chrome nav {
-    justify-content: flex-end;
-    gap: 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .chrome nav::-webkit-scrollbar { display: none; }
-  .chrome nav button {
-    white-space: nowrap;
-    flex: 0 0 auto;
-  }
-
-  .result-card {
-    margin-left: -2px;
-    margin-right: -2px;
-    padding: 30px 18px 24px;
-  }
-  .result-card::before {
-    top: -12px;
-    left: 16px;
-    padding: 0 10px;
-  }
-  .divinations .row {
-    display: grid;
-    grid-template-columns: minmax(72px, 0.4fr) minmax(0, 1fr);
-    gap: 14px;
-  }
-  .divinations .row .v {
-    text-align: right;
-    overflow-wrap: anywhere;
-  }
-
-  .bazi-board-lite {
-    border: 0;
-    display: grid;
-    gap: 12px;
-  }
-  .bazi-lite-row {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    border: 1px solid var(--rule);
-    min-height: 0;
-    background: color-mix(in srgb, var(--ink) 2%, transparent);
-  }
-  .bazi-lite-row > span {
-    grid-column: 1 / -1;
-    border-right: 0;
-    border-bottom: 1px solid var(--rule);
-    padding: 10px 12px;
-  }
-  .bazi-lite-row > strong {
-    min-height: 48px;
-    padding: 12px 6px;
-    font-size: 16px;
-  }
-  .bazi-lite-row.compact > strong {
-    min-height: 44px;
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    overflow-wrap: anywhere;
-  }
-  .bazi-lite-row.head > strong {
-    font-size: 13px;
-    color: var(--ink);
-  }
 }

@@ -17,7 +17,7 @@
 | v0.1.1 | 2026-05-14 23:05 JST | 归档 | 用户首页旧版 | 发布用户页接入算法前的旧版快照，便于对比 | `/index.html?v=20260514-usercalc-3` | `/archive/pre-usercalc-20260514/index.html?v=20260514-archive-2` | main `2cc0875` / gh-pages `f3accd8` |
 | v0.1.2 | 2026-05-14 23:13 JST | 视觉修正 | 用户首页移动端 | 优化手机端顶部、结果卡、命式要点与命式详情表格窄屏展示 | `/index.html?v=20260514-mobilefix-2` | `/archive/pre-mobilefix-20260514/index.html?v=20260514-pre-mobilefix-2` | main `aed7d6b` / gh-pages `b89280f` |
 | v0.1.3 | 2026-05-14 23:19 JST | 视觉修正 | 用户首页移动端四柱 | 修正手机端基础八字四柱从 2×2 改回横向一排四列展示 | `/index.html?v=20260514-fourpillar-row-1` | `/archive/pre-fourpillar-row-20260514/index.html?v=20260514-pre-fourpillar-row-1` | main `128478a` / gh-pages `37c6d26` |
-| v0.2.0 | 2026-05-14 23:51 JST | 后台算法 | 后台验证页 `/shichusuimei/free/index.html` | 增加日主/五行/十神基础解说文；新增性别输入；加入大运、流年、流月、流日初版排盘展示 | `/shichusuimei/free/index.html?v=20260514-reading-luck-1` | `/archive/pre-backend-reading-luck-20260514/shichusuimei/free/index.html?v=20260514-pre-reading-luck-1` | 本次发布 |
+| v0.2.0 | 2026-05-14 23:51 JST | 后台算法 | 后台验证页 `/shichusuimei/free/index.html` | 增加日主/五行/十神基础解说文；新增性别输入；加入大运、流年、流月、流日初版排盘展示 | `/shichusuimei/free/index.html?v=20260514-reading-luck-1` | `/archive/pre-backend-reading-luck-20260514/shichusuimei/free/index.html?v=20260514-pre-reading-luck-1` | main `5390de2` / gh-pages `86371c1` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

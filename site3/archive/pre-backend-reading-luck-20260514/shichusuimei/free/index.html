@@ -1856,48 +1856,6 @@
     border-radius: inherit;
   }
 
-  .reading-lead,
-  .reading-panel {
-    display: grid;
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .reading-type {
-    display: block;
-    margin-top: 4px;
-    color: #604735;
-    font-size: clamp(30px, 6vw, 44px);
-    line-height: 1;
-  }
-
-  .reading-theme-grid {
-    margin-bottom: 14px;
-  }
-
-  .luck-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 14px;
-    min-width: 0;
-  }
-
-  .luck-grid .detail-card {
-    overflow: hidden;
-  }
-
-  .luck-table-wrap {
-    padding: 0;
-    max-height: 420px;
-    overflow: auto;
-  }
-
-  .luck-table {
-    min-width: 360px;
-    font-size: 13px;
-  }
-
   .chart-shell {
     padding: 16px;
     overflow-x: auto;
@@ -2057,7 +2015,6 @@
     .pillar-grid,
     .detail-grid,
     .theme-grid,
-    .luck-grid,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2133,7 +2090,6 @@
     .pillar-grid,
     .detail-grid,
     .theme-grid,
-    .luck-grid,
     .auxiliary-grid {
       grid-template-columns: 1fr;
     }
@@ -2220,18 +2176,6 @@
 
         <div class="field">
           <div class="field-heading">
-            <label for="gender">性別</label>
-            <span class="field-note">大運に使用</span>
-          </div>
-          <select id="gender">
-            <option value="unspecified">指定しない</option>
-            <option value="female">女性</option>
-            <option value="male">男性</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <div class="field-heading">
             <label for="prefecture">都道府県</label>
             <span class="field-note">日本のみ</span>
           </div>
@@ -2282,6 +2226,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260514-luck-1"></script>
+<script type="module" src="./page.js?v=free-20260512-13"></script>
 </body>
 </html>

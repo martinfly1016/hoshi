@@ -517,31 +517,6 @@ function topTenGodEntries(calculation) {
   }));
 }
 
-function genderLabel(value) {
-  if (value === 'male') return '男性';
-  if (value === 'female') return '女性';
-  return '未指定';
-}
-
-function directionLabel(value) {
-  if (value === 'forward') return '順行';
-  if (value === 'backward') return '逆行';
-  return '未判定';
-}
-
-function cycleReading(pillar) {
-  if (!pillar) return '';
-  const stemElement = pillar.element?.stem || '';
-  const branchElement = pillar.element?.branch || '';
-  const god = pillar.heavenlyTenGod;
-  const godText = TEN_GOD_GROUPS[god]?.role || TEN_GOD_READING[god]?.tags?.join('・') || 'テーマ';
-  return `${stemElement}${branchElement ? `と${branchElement}` : ''}の気が巡り、${god ? `${god}（${godText}）` : '命式のテーマ'}が表に出やすい時期として見ます。`;
-}
-
-function currentAnnualFortune(calculation) {
-  return calculation.luckCycles?.annualFortunes?.[0] || null;
-}
-
 function ResultPreview({ id, name, calculation, profile }) {
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
@@ -556,10 +531,6 @@ function ResultPreview({ id, name, calculation, profile }) {
   const weakAdvice = balanceAdvice(calculation);
   const tags = readingTags(calculation, tenGods);
   const tenGodRoles = topTenGodEntries(calculation);
-  const luck = calculation.luckCycles || {};
-  const decade = luck.decadeFortunes;
-  const annualFortunes = (luck.annualFortunes || []).slice(0, 6);
-  const currentAnnual = currentAnnualFortune(calculation);
 
   return (
     <div className="result-card" id={id}>
@@ -711,51 +682,6 @@ function ResultPreview({ id, name, calculation, profile }) {
         </div>
       </div>
 
-      <div className="result-wide visual-block">
-        <div className="section-caption">大運・流年を見る</div>
-        <div className="luck-summary">
-          <div>
-            <span className="summary-kicker">CURRENT YEAR</span>
-            <h3>{currentAnnual ? `${currentAnnual.year}年 · ${currentAnnual.name}` : '流年'}</h3>
-            <p>{currentAnnual ? cycleReading(currentAnnual.pillar) : '今年の干支を命式と合わせて読みます。'}</p>
-          </div>
-          <div>
-            <span className="summary-kicker">DECADE FLOW</span>
-            <h3>大運は10年単位の流れ</h3>
-            <p>大運は人生の背景に流れる大きな運の周期です。性別により順行・逆行が変わるため、正確に見る場合は性別指定が必要です。</p>
-          </div>
-        </div>
-
-        {decade?.status === 'ok' ? (
-          <div className="luck-reading-grid decade-grid">
-            {decade.items.slice(0, 4).map((item) => (
-              <article className="luck-card" key={`${item.index}-${item.name}`}>
-                <span className="luck-chip">{item.startAge}-{item.endAge}歳</span>
-                <h3>{item.name}</h3>
-                <p>{item.startYear}年 - {item.endYear}年 / {genderLabel(decade.gender)}・{directionLabel(decade.direction)}</p>
-                <small>{cycleReading(item.pillar)}</small>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="luck-note">
-            <strong>大運を表示するには性別を選択してください</strong>
-            <p>現在は「無 / 不問」のため、大運の順逆を確定できません。フォーム上部の性別で「陽 / 男」または「陰 / 女」を選ぶと、大運表と解説を表示します。</p>
-          </div>
-        )}
-
-        <div className="luck-reading-grid annual-grid">
-          {annualFortunes.map((item) => (
-            <article className={`luck-card ${item === currentAnnual ? 'is-current' : ''}`} key={item.year}>
-              <span className="luck-chip">{item.year}</span>
-              <h3>{item.name}</h3>
-              <p>{item.pillar.heavenlyTenGod || '—'} / {item.pillar.element.stem}・{item.pillar.element.branch}</p>
-              <small>{cycleReading(item.pillar)}</small>
-            </article>
-          ))}
-        </div>
-      </div>
-
       <div className="result-wide">
         <div className="section-caption">命式詳細</div>
         <div className="bazi-board-lite">
@@ -808,8 +734,8 @@ function ResultPreview({ id, name, calculation, profile }) {
 
       <div className="result-wide next-actions">
         <button disabled>相性を見る <span>準備中</span></button>
-        <button disabled>大運を見る <span>表示中</span></button>
-        <button disabled>流年を見る <span>表示中</span></button>
+        <button disabled>大運を見る <span>準備中</span></button>
+        <button disabled>流年を見る <span>準備中</span></button>
         <button disabled>結果を保存する <span>準備中</span></button>
       </div>
     </div>

@@ -322,16 +322,6 @@ input, select { font-family: inherit; color: inherit; }
   box-shadow: 0 2px 0 color-mix(in srgb, var(--seal) 50%, black);
 }
 
-.hero-lead {
-  margin-top: 28px;
-  max-width: 560px;
-  font-size: 12px;
-  line-height: 2;
-  letter-spacing: 0.14em;
-  color: var(--ink-3);
-  font-family: var(--f-body);
-}
-
 .hero-chart {
   grid-column: 2 / 3;
   position: relative;
@@ -1311,22 +1301,11 @@ input, select { font-family: inherit; color: inherit; }
     margin-top: 28px;
     padding: 16px 22px 16px 24px;
     font-size: 14px;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.32em;
     gap: 14px;
-    max-width: 100%;
-    white-space: nowrap;
   }
   .hero-cta .arrow { width: 22px; }
   .hero-cta .seal-mini { width: 24px; height: 24px; font-size: 12px; top: -8px; right: -8px; }
-
-  .hero-lead {
-    margin-top: 22px;
-    max-width: 100%;
-    font-size: 13px;
-    line-height: 1.9;
-    letter-spacing: 0.04em;
-    color: var(--ink-2);
-  }
 
   /* offset hero variant collapses to centered on mobile */
   [data-hero='offset'] .hero { grid-template-columns: 1fr; padding-left: 22px; }
@@ -1475,16 +1454,6 @@ input, select { font-family: inherit; color: inherit; }
 
   .hero { padding: 80px 16px 48px; }
   .hero-title { font-size: clamp(48px, 18vw, 80px); }
-  .hero-title .small { letter-spacing: 0.28em; }
-  .hero-meta { font-size: 11px; letter-spacing: 0.2em; gap: 14px; }
-  .hero-cta {
-    width: 100%;
-    justify-content: center;
-    padding: 16px 40px 16px 22px;
-    font-size: 14px;
-    letter-spacing: 0.12em;
-  }
-  .hero-lead { font-size: 12px; letter-spacing: 0.03em; }
   .rite { padding: 80px 16px 80px; }
 
   .chips { grid-template-columns: repeat(3, 1fr); }
@@ -1513,7 +1482,6 @@ input, select { font-family: inherit; color: inherit; }
     white-space: nowrap;
     flex: 0 0 auto;
   }
-  .chrome nav button:nth-child(n+3) { display: none; }
 
   .result-card {
     margin-left: -2px;

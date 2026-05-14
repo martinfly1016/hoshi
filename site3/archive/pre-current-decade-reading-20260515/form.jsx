@@ -542,33 +542,6 @@ function currentAnnualFortune(calculation) {
   return calculation.luckCycles?.annualFortunes?.[0] || null;
 }
 
-function currentDecadeFortune(decade, targetYear) {
-  if (!decade || decade.status !== 'ok') return null;
-  const items = decade.items || [];
-  return items.find((item) => item.startYear <= targetYear && targetYear <= item.endYear)
-    || items.find((item) => targetYear < item.startYear)
-    || items[items.length - 1]
-    || null;
-}
-
-function decadeTheme(item) {
-  if (!item) return null;
-  const god = item.pillar?.heavenlyTenGod;
-  const role = TEN_GOD_GROUPS[god]?.role || TEN_GOD_READING[god]?.tags?.join('・') || '命式のテーマ';
-  const element = item.pillar?.element?.stem || '';
-  const branch = item.pillar?.element?.branch || '';
-  return {
-    title: `${item.name}の10年は「${role}」を育てる時期`,
-    intro: `${item.startYear}年から${item.endYear}年、${item.startAge}歳から${item.endAge}歳にかけての大きな流れです。${element}${branch ? `と${branch}` : ''}の気が巡り、${god || '通変星'}のテーマが背景に出やすくなります。`,
-    work: `仕事では、${role}をどう使うかが焦点になります。新しい肩書きの断定ではなく、役割の取り方・責任の持ち方・動き方の癖として読みます。`,
-    money: god === '偏财' || god === '正财'
-      ? '財星が出るため、収入断定ではなく、現実管理・対人機会・お金の扱い方を整える10年として見ます。'
-      : '財運は直接の金額ではなく、五行と通変星の使い方から、機会を受け取る姿勢や管理力として見ます。',
-    love: '恋愛や対人では、表に出る態度と内側の欲求が変わりやすい時期です。相手との役割分担を固定しすぎないことが読みのポイントです。',
-    care: '大運は10年単位の背景運です。年ごとの流年と重ねることで、強く出る年・調整したい年を見ていきます。',
-  };
-}
-
 function ResultPreview({ id, name, calculation, profile }) {
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
@@ -587,8 +560,6 @@ function ResultPreview({ id, name, calculation, profile }) {
   const decade = luck.decadeFortunes;
   const annualFortunes = (luck.annualFortunes || []).slice(0, 6);
   const currentAnnual = currentAnnualFortune(calculation);
-  const currentDecade = currentDecadeFortune(decade, luck.target?.year || currentAnnual?.year);
-  const currentDecadeTheme = decadeTheme(currentDecade);
 
   return (
     <div className="result-card" id={id}>
@@ -756,31 +727,16 @@ function ResultPreview({ id, name, calculation, profile }) {
         </div>
 
         {decade?.status === 'ok' ? (
-          <React.Fragment>
-            {currentDecadeTheme && (
-              <div className="current-decade-card">
-                <span className="luck-chip">現在の大運</span>
-                <h3>{currentDecadeTheme.title}</h3>
-                <p>{currentDecadeTheme.intro}</p>
-                <div className="decade-theme-grid">
-                  <article><strong>仕事</strong><p>{currentDecadeTheme.work}</p></article>
-                  <article><strong>財運</strong><p>{currentDecadeTheme.money}</p></article>
-                  <article><strong>恋愛・対人</strong><p>{currentDecadeTheme.love}</p></article>
-                  <article><strong>読み方</strong><p>{currentDecadeTheme.care}</p></article>
-                </div>
-              </div>
-            )}
-            <div className="luck-reading-grid decade-grid">
-              {decade.items.slice(0, 4).map((item) => (
-                <article className={`luck-card ${item === currentDecade ? 'is-current' : ''}`} key={`${item.index}-${item.name}`}>
-                  <span className="luck-chip">{item.startAge}-{item.endAge}歳</span>
-                  <h3>{item.name}</h3>
-                  <p>{item.startYear}年 - {item.endYear}年 / {genderLabel(decade.gender)}・{directionLabel(decade.direction)}</p>
-                  <small>{cycleReading(item.pillar)}</small>
-                </article>
-              ))}
-            </div>
-          </React.Fragment>
+          <div className="luck-reading-grid decade-grid">
+            {decade.items.slice(0, 4).map((item) => (
+              <article className="luck-card" key={`${item.index}-${item.name}`}>
+                <span className="luck-chip">{item.startAge}-{item.endAge}歳</span>
+                <h3>{item.name}</h3>
+                <p>{item.startYear}年 - {item.endYear}年 / {genderLabel(decade.gender)}・{directionLabel(decade.direction)}</p>
+                <small>{cycleReading(item.pillar)}</small>
+              </article>
+            ))}
+          </div>
         ) : (
           <div className="luck-note">
             <strong>大運を表示するには性別を選択してください</strong>

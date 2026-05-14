@@ -1005,8 +1005,7 @@ input, select { font-family: inherit; color: inherit; }
 }
 .luck-summary > div,
 .luck-note,
-.luck-card,
-.current-decade-card {
+.luck-card {
   border: 1px solid var(--rule);
   background: color-mix(in srgb, var(--ink) 3%, transparent);
   min-width: 0;
@@ -1015,8 +1014,7 @@ input, select { font-family: inherit; color: inherit; }
   padding: 18px;
 }
 .luck-summary h3,
-.luck-card h3,
-.current-decade-card h3 {
+.luck-card h3 {
   margin: 0 0 10px;
   color: var(--ink);
   font-family: var(--f-display);
@@ -1028,8 +1026,7 @@ input, select { font-family: inherit; color: inherit; }
 .luck-summary p,
 .luck-note p,
 .luck-card p,
-.luck-card small,
-.current-decade-card p {
+.luck-card small {
   margin: 0;
   color: var(--ink-2);
   font-size: 12px;
@@ -1060,33 +1057,9 @@ input, select { font-family: inherit; color: inherit; }
 .luck-card {
   padding: 14px;
 }
-.luck-card.is-current,
-.current-decade-card {
+.luck-card.is-current {
   border-color: var(--gold);
   background: color-mix(in srgb, var(--gold) 8%, transparent);
-}
-.current-decade-card {
-  display: grid;
-  gap: 14px;
-  padding: 18px;
-}
-.decade-theme-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-.decade-theme-grid article {
-  border: 1px dashed var(--rule);
-  padding: 12px;
-  min-width: 0;
-}
-.decade-theme-grid strong {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-weight: 500;
-  letter-spacing: 0.12em;
 }
 .luck-chip {
   display: inline-block;
@@ -1432,7 +1405,6 @@ input, select { font-family: inherit; color: inherit; }
   .luck-summary,
   .decade-grid,
   .annual-grid,
-  .decade-theme-grid,
   .next-actions {
     grid-template-columns: 1fr;
   }

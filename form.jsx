@@ -167,24 +167,24 @@ function Rite({ onBack, onSubmitDone }) {
           </p>
         </div>
 
-        <FormField num="壹 / 一" ja="名 諱" romaji="NA · IMINA"
-          hint="任意。結果表示用の名前です">
+        <FormField num="壹 / 一" ja="お名前" romaji="O · NA · MAE"
+          hint="※ 省略可。結果画面での呼び名として使用します">
           <div className="input-line with-mark" data-mark="NAME">
             <input
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              placeholder="例 ）藤原 朔" />
+              placeholder="例 ）田中 太郎" />
           </div>
         </FormField>
 
         <FormField num="壹 / 二" ja="性 別" romaji="SEI · BETSU"
-          hint="任意。大運を見る時だけ順逆計算に使います">
+          hint="※ 大運（10年ごとの運勢）の順逆計算に影響します">
           <div className="gender-row">
             {[
-              { key: 'yang', ja: '陽 / 男', sym: '☰' },
-              { key: 'yin',  ja: '陰 / 女', sym: '☷' },
-              { key: 'gen',  ja: '無 / 不問', sym: '☯' },
+              { key: 'yang', ja: '男性 (陽)', sym: '☰' },
+              { key: 'yin',  ja: '女性 (陰)', sym: '☷' },
+              { key: 'gen',  ja: '選択しない', sym: '☯' },
             ].map(g => (
               <button key={g.key}
                 className={`gender-btn ${gender === g.key ? 'on' : ''}`}
@@ -197,7 +197,7 @@ function Rite({ onBack, onSubmitDone }) {
         </FormField>
 
         <FormField num="貳 / 一" ja="生年月日" romaji="SEI · NEN · GAPPI"
-          hint="西暦と旧暦は切替可。出生時の暦に合わせよ">
+          hint="誕生日の暦（西暦または旧暦）を選択し、入力してください">
           <div className="toggle-row">
             <button className={calendar === 'seireki' ? 'on' : ''}
               onClick={() => setCalendar('seireki')}>西　暦</button>
@@ -207,7 +207,7 @@ function Rite({ onBack, onSubmitDone }) {
           <div className="input-row">
             <div className="input-line with-mark" data-mark="年 / Y">
               <input value={year} onChange={e => setYear(e.target.value)}
-                placeholder={calendar === 'seireki' ? '1996' : '丙子'} />
+                placeholder={calendar === 'seireki' ? '1996' : '1996 (丙子)'} />
             </div>
             <div className="input-line with-mark" data-mark="月 / M">
               <input value={month} onChange={e => setMonth(e.target.value)}
@@ -220,13 +220,13 @@ function Rite({ onBack, onSubmitDone }) {
           </div>
           {calendar === 'kyureki' && (
             <div style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.2em' }}>
-              ※ 旧暦・閏月の場合は月の下に「閏」を添えよ
+              ※ 旧暦・閏月の場合は「閏月」を指定してください
             </div>
           )}
         </FormField>
 
-        <FormField num="參 / 一" ja="時 辰" romaji="JI · SHIN"
-          hint="正確な出生時刻があれば入力。不詳の場合はその旨を選べ">
+        <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEI · JI · KAN"
+          hint="正確な出生時間がわかる場合は入力してください。不明な場合は「時間不明」を選択してください">
           <div className="input-line with-mark" data-mark="時刻">
             <input
               type="time"
@@ -249,15 +249,15 @@ function Rite({ onBack, onSubmitDone }) {
             <button
               className={`chip full-w ${unsure ? 'on' : ''}`}
               onClick={() => { setUnsure(true); setShi(''); }}>
-              ── 不詳 / 時辰を識らず ──
+              ── 時間不明 ──
             </button>
           </div>
         </FormField>
 
-        <FormField num="肆 / 一" ja="出生の地" romaji="SHUSSEI · NO · CHI"
-          hint="経緯度の補正に用いる。最寄りの都府県と市町村を記せ">
+        <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEI · CHI"
+          hint="正確な自然時（太陽の南中時刻）を計算するための時差補正に使用します。一番近い場所を選んでください">
           <div className="input-row two">
-            <div className="input-line with-mark" data-mark="都府県">
+            <div className="input-line with-mark" data-mark="都道府県">
               <select value={locationId} onChange={e => setLocationId(e.target.value)}>
                 {locations.map(location => (
                   <option key={location.id} value={location.id}>{stripJapan(location.label)}</option>
@@ -266,7 +266,7 @@ function Rite({ onBack, onSubmitDone }) {
             </div>
             <div className="input-line with-mark" data-mark="市町村">
               <input value={city} onChange={e => setCity(e.target.value)}
-                placeholder="任意メモ：例 ）京都市 上京区" />
+                placeholder="※ 省略可 （例：京都市 上京区）" />
             </div>
           </div>
         </FormField>

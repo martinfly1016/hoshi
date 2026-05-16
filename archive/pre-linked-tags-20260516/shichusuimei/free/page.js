@@ -556,100 +556,16 @@ function buildStructuredTags(result) {
   const dominant = result.fiveElements.dominant || strongestElements(result.fiveElements.counts);
   const weak = result.fiveElements.missing?.length ? result.fiveElements.missing : (result.fiveElements.weak || weakestElements(result.fiveElements.counts));
   const tenGods = aggregateTenGodThemes(result).filter((item) => item.name !== "日主").slice(0, 2);
-  const currentDecade = findCurrentDecadeFortune(result);
-  const trend = fortuneTrendTag(result);
   const tags = [
-    {
-      tone: "pattern",
-      label: "格局",
-      value: result.pattern?.name || "格局",
-      target: "page-detail",
-      anchor: "anchor-pattern-strength",
-      description: result.pattern?.text || "月令と透干から命式の大枠を見ます。",
-      evidence: "月令・天干",
-    },
-    {
-      tone: "strength",
-      label: "身強弱",
-      value: result.strength?.status || balanceTypeLabel(result),
-      target: "page-detail",
-      anchor: "anchor-pattern-strength",
-      description: result.strength?.text || "日主の勢いを月令と五行構成から見ます。",
-      evidence: `日主${result.dayMaster} / 月支${result.pillars.month.branch}`,
-    },
-    {
-      tone: "core",
-      label: "性格",
-      value: dayMasterLabel(result),
-      target: "page-meishiki",
-      anchor: "anchor-day-master",
-      description: profile.text,
-      evidence: "日柱天干",
-    },
-    {
-      tone: "element",
-      label: "強五行",
-      value: dominant.slice(0, 2).join("・"),
-      target: "page-detail",
-      anchor: "anchor-five-elements",
-      description: `${dominant.join("・")} が命式全体で前に出やすい五行です。`,
-      evidence: "天干・地支藏干・月令補正",
-    },
-    {
-      tone: result.fiveElements.missing?.length ? "warning" : "support",
-      label: result.fiveElements.missing?.length ? "缺五行" : "補五行",
-      value: weak.slice(0, 2).join("・"),
-      target: "page-detail",
-      anchor: "anchor-five-elements",
-      description: `${weak.join("・")} は意識して補うと全体が整いやすい候補です。`,
-      evidence: "五行構成比",
-    },
-    {
-      tone: "support",
-      label: "好运来源",
-      value: [result.yongShen?.primary, result.yongShen?.secondary].filter(Boolean).join("・") || "用神",
-      target: "page-detail",
-      anchor: "anchor-pattern-strength",
-      description: result.yongShen?.text || "命式の偏りを整える要素を見ます。",
-      evidence: "調候・用神",
-    },
-    ...tenGods.map((item) => ({
-      tone: "god",
-      label: "主要课题",
-      value: item.name,
-      target: "page-detail",
-      anchor: "anchor-life-themes",
-      description: TEN_GOD_PROFILES[item.name]?.text || "命式で重なる十神テーマです。",
-      evidence: `出現${item.total} / 干神${item.heavenly}・支神${item.hidden}`,
-    })),
-    {
-      tone: "source",
-      label: "婚姻宮",
-      value: "日支",
-      target: "page-detail",
-      anchor: "anchor-marriage-palace",
-      description: "親密な関係や婚姻の読みは、日柱の地支を中心に見ます。",
-      evidence: `日柱 ${result.pillars.day.text}`,
-    },
-    {
-      tone: "trend",
-      label: "走势",
-      value: trend,
-      target: "page-luck",
-      anchor: "anchor-luck-overview",
-      description: currentDecade ? `現在は ${currentDecade.name}（${currentDecade.startYear}-${currentDecade.endYear}）の大運にいます。` : "性別を選ぶと大運の流れを定位できます。",
-      evidence: currentDecade ? `現在大運 ${currentDecade.name}` : "大運未判定",
-    },
+    { tone: "core", label: "日主", value: dayMasterLabel(result) },
+    { tone: "source", label: "根拠", value: "日柱天干" },
+    ...profile.tags.slice(0, 2).map((value) => ({ tone: "trait", label: "性質", value })),
+    ...dominant.slice(0, 2).map((value) => ({ tone: "element", label: "強", value })),
+    ...weak.slice(0, 2).map((value) => ({ tone: result.fiveElements.missing?.includes(value) ? "warning" : "support", label: result.fiveElements.missing?.includes(value) ? "缺" : "補", value })),
+    ...tenGods.map((item) => ({ tone: "god", label: "十神", value: item.name })),
+    { tone: "source", label: "定位", value: "日支=婚姻宮" },
   ];
-  return tags.slice(0, 9);
-}
-
-function fortuneTrendTag(result) {
-  const currentDecade = findCurrentDecadeFortune(result);
-  if (!currentDecade) return "大運確認";
-  if (currentDecade.index >= 4) return "大器晩成";
-  if (currentDecade.index >= 3) return "中盤伸長";
-  return "早期展開";
+  return tags.slice(0, 10);
 }
 
 function elementSummary(result) {
@@ -855,10 +771,6 @@ function normalizeTag(tag) {
     tone: tag.tone || "trait",
     label: tag.label || "",
     value: tag.value || "",
-    target: tag.target || "",
-    anchor: tag.anchor || "",
-    description: tag.description || "",
-    evidence: tag.evidence || "",
   };
 }
 
@@ -868,20 +780,10 @@ function renderTags(tags, className = "") {
     <div class="tags ${escapeHtml(className)}">
       ${tags.map((tag) => {
         const item = normalizeTag(tag);
-        const content = `
-          ${item.label ? `<small>${escapeHtml(item.label)}</small>` : ""}
-          <strong>${escapeHtml(item.value)}</strong>
-        `;
-        if (item.target || item.anchor) {
-          return `
-            <button class="tag tag-${escapeHtml(item.tone)} tag-button" type="button" data-target-section="${escapeHtml(item.target || "page-detail")}" data-anchor="${escapeHtml(item.anchor || "")}">
-              ${content}
-            </button>
-          `;
-        }
         return `
           <span class="tag tag-${escapeHtml(item.tone)}">
-            ${content}
+            ${item.label ? `<small>${escapeHtml(item.label)}</small>` : ""}
+            <strong>${escapeHtml(item.value)}</strong>
           </span>
         `;
       }).join("")}
@@ -889,40 +791,18 @@ function renderTags(tags, className = "") {
   `;
 }
 
-function renderTagDetailCards(tags) {
-  return `
-    <div class="tag-detail-grid">
-      ${tags.map((tag) => `
-        <article class="tag-detail-card">
-          <div class="tag-detail-head">
-            <span class="tag tag-${escapeHtml(tag.tone)}">
-              <small>${escapeHtml(tag.label)}</small>
-              <strong>${escapeHtml(tag.value)}</strong>
-            </span>
-            <button class="tag-jump" type="button" data-target-section="${escapeHtml(tag.target || "page-detail")}" data-anchor="${escapeHtml(tag.anchor || "")}">詳解へ</button>
-          </div>
-          <p>${escapeHtml(tag.description || "")}</p>
-          <span class="tag-evidence">${escapeHtml(tag.evidence || "")}</span>
-        </article>
-      `).join("")}
-    </div>
-  `;
-}
-
 function renderTagOverview(result) {
-  const tags = buildStructuredTags(result);
   return `
-    <section class="tag-overview" id="anchor-tag-overview">
+    <section class="tag-overview">
       <div class="card-subhead">
         <div>
           <p class="card-kicker">READING TAGS</p>
-          <h3>命式タグ索引</h3>
+          <h3>命式タグ</h3>
         </div>
-        <span class="balance-badge">クリックで詳解へ</span>
+        <span class="balance-badge">要点整理</span>
       </div>
-      <p class="summary-text">タグは装飾ではなく、命式の重要論点への索引として使います。各タグに「どこを見ているか」と「詳解の場所」を持たせ、クリックすると該当する説明へ移動します。</p>
-      ${renderTags(tags, "is-primary-tags")}
-      ${renderTagDetailCards(tags)}
+      <p class="summary-text">タグは装飾ではなく、読みの入口と根拠を短く整理するために使います。性質、五行、十神、四柱定位を同じルールで表示します。</p>
+      ${renderTags(buildStructuredTags(result), "is-primary-tags")}
     </section>
   `;
 }
@@ -1140,7 +1020,7 @@ function renderDayMasterSection(result) {
   const weakElements = ELEMENT_LABELS.filter((name) => (result.fiveElements.counts[name] || 0) === 0);
   const supportLabel = weakElements.length ? weakElements.join("・") : weakestElements(result.fiveElements.counts).join("・");
   return `
-    <div class="card-head" id="anchor-five-elements">
+    <div class="card-head">
       <div>
         <p class="card-kicker">STEP 1</p>
         <h2>日主から自分の核を見る</h2>
@@ -1278,7 +1158,7 @@ function renderSeasonalElementStates(result) {
 
 function renderFiveElementsSection(result) {
   return `
-    <div class="card-head" id="anchor-day-master">
+    <div class="card-head">
       <div>
         <p class="card-kicker">STEP 2</p>
         <h2>五行の環境をまとめて見る</h2>
@@ -1299,43 +1179,6 @@ function renderFiveElementsSection(result) {
     ${renderSeasonalElementStates(result)}
     ${renderFiveElementAlgorithmPanel(result)}
     ${renderElementStateCards(result)}
-  `;
-}
-
-function renderPatternStrengthSection(result) {
-  const yong = result.yongShen || {};
-  const yongValue = [yong.primary, yong.secondary].filter(Boolean).join("・") || "—";
-  return `
-    <div class="soft-panel reading-panel pattern-strength-panel" id="anchor-pattern-strength">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">格局 / 身強身弱 / 用神</p>
-          <h3>命式タグの主要根拠</h3>
-        </div>
-        <span class="balance-badge">核心判定</span>
-      </div>
-      <p class="summary-text">ここでは、命式タグで表示した「格局」「身強身弱」「好运来源」がどの判定から来ているかをまとめます。詳細文に入る前の判定根拠です。</p>
-      <div class="tag-explain-grid">
-        <article class="mini-reading-card">
-          <span class="metric-label">格局タグ</span>
-          <strong class="metric-value">${escapeHtml(result.pattern?.name || "—")}</strong>
-          <p>${escapeHtml(result.pattern?.text || "月令と天干の出方から命式の大枠を読みます。")}</p>
-          <span class="tag-evidence">${escapeHtml(result.pattern?.revealed ? "天干に透出あり" : "月令中心の判定")}</span>
-        </article>
-        <article class="mini-reading-card">
-          <span class="metric-label">身強身弱タグ</span>
-          <strong class="metric-value">${escapeHtml(result.strength?.status || "—")}</strong>
-          <p>${escapeHtml(result.strength?.text || "日主の勢いを月令と五行構成から判定します。")}</p>
-          <span class="tag-evidence">${escapeHtml(`日主 ${result.dayMaster} / 比率 ${result.strength?.ratio ?? "—"}`)}</span>
-        </article>
-        <article class="mini-reading-card">
-          <span class="metric-label">好运来源タグ</span>
-          <strong class="metric-value">${escapeHtml(yongValue)}</strong>
-          <p>${escapeHtml(yong.text || "命式を整える候補を用神・調候として扱います。")}</p>
-          <span class="tag-evidence">用神・調候</span>
-        </article>
-      </div>
-    </div>
   `;
 }
 
@@ -1482,7 +1325,7 @@ function renderTenGodThemeCards(result) {
 
 function renderStructureSection(result) {
   return `
-    <div class="card-head" id="anchor-ten-gods">
+    <div class="card-head">
       <div>
         <p class="card-kicker">STEP 3</p>
         <h2>干神・支神・藏干の構成を見る</h2>
@@ -1528,7 +1371,7 @@ function renderInterpretationSummary(result) {
     return `${item.name}${tags ? `（${tags}）` : ""}`;
   }).join("、");
   return `
-    <div class="reading-lead" id="anchor-interpretation-summary">
+    <div class="reading-lead">
       <div>
         <span class="metric-label">日主タイプ</span>
         <strong class="reading-type ${elementClass(result.pillars.day.element.stem)}">${escapeHtml(typeLabel)}</strong>
@@ -1542,7 +1385,7 @@ function renderInterpretationSummary(result) {
 function renderBalancingSection(result) {
   const balance = elementBalancingAdvice(result);
   return `
-    <div class="soft-panel reading-panel" id="anchor-balancing">
+    <div class="soft-panel reading-panel">
       <div class="card-subhead">
         <h3>五行バランスと整え方</h3>
         <p>不足・控えめな五行を、生活上の比喩として補う初版ガイドです。</p>
@@ -1581,7 +1424,7 @@ function renderLifeThemeCards(result) {
     },
   ];
   return `
-    <div class="theme-grid reading-theme-grid" id="anchor-life-themes">
+    <div class="theme-grid reading-theme-grid">
       ${cards.map((card) => `
         <article class="theme-card">
           <h3>${escapeHtml(card.title)}</h3>
@@ -1625,7 +1468,7 @@ function dayMarriagePalaceReading(result) {
 function renderMarriagePalaceDetail(result) {
   const reading = dayMarriagePalaceReading(result);
   return `
-    <div class="soft-panel marriage-palace-panel" id="anchor-marriage-palace">
+    <div class="soft-panel marriage-palace-panel">
       <div class="card-subhead">
         <div>
           <p class="card-kicker">日柱 / 婚姻宮</p>
@@ -1658,7 +1501,7 @@ function renderMarriagePalaceDetail(result) {
 
 function renderReadingSourceMap(result) {
   return `
-    <div class="soft-panel reading-source-panel" id="anchor-source-map">
+    <div class="soft-panel reading-source-panel">
       <div class="card-subhead">
         <div>
           <p class="card-kicker">読み取り位置</p>
@@ -1876,7 +1719,7 @@ function renderMeishikiPage(result) {
       })}
       ${renderTagOverview(result)}
       ${renderMeishikiSummaryCards(result)}
-      <section class="page-block" id="anchor-chart">
+      <section class="page-block">
         ${renderChartSection(result)}
       </section>
       <section class="page-block">
@@ -1899,9 +1742,6 @@ function renderDetailPage(result) {
           { label: "定位", text: "どこを根拠に読むか" },
         ],
       })}
-      <section class="page-block">
-        ${renderPatternStrengthSection(result)}
-      </section>
       <section class="page-block">
         ${renderFiveElementsSection(result)}
       </section>
@@ -2013,7 +1853,7 @@ function renderLuckOverviewCards(result) {
     },
   ];
   return `
-    <div class="summary-mini-grid luck-overview-grid" id="anchor-luck-overview">
+    <div class="summary-mini-grid luck-overview-grid">
       ${cards.map((card) => `
         <article class="mini-reading-card">
           <span class="metric-label">${escapeHtml(card.label)}</span>
@@ -2192,16 +2032,7 @@ function renderError(error) {
 }
 
 function bindResultRail() {
-  const result = element("result");
-  if (result.dataset.tagNavigationBound !== "true") {
-    result.dataset.tagNavigationBound = "true";
-    result.addEventListener("click", (event) => {
-      const tag = event.target.closest("[data-target-section][data-anchor]");
-      if (!tag) return;
-      navigateToResultAnchor(tag.dataset.targetSection, tag.dataset.anchor);
-    });
-  }
-  const rail = result.querySelector(".result-rail");
+  const rail = element("result").querySelector(".result-rail");
   if (!rail || rail.dataset.bound === "true") return;
   rail.dataset.bound = "true";
   rail.addEventListener("click", (event) => {
@@ -2214,19 +2045,6 @@ function bindResultRail() {
 function activateResultSection(targetId, shouldScroll = true) {
   activeResultSectionId = resolveResultSectionId(targetId);
   syncResultPresentation(shouldScroll);
-}
-
-function navigateToResultAnchor(targetId, anchorId) {
-  activeResultSectionId = resolveResultSectionId(targetId);
-  syncResultPresentation(false);
-  window.setTimeout(() => {
-    const target = anchorId ? element(anchorId) : element(activeResultSectionId);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      target.classList.add("is-anchor-highlighted");
-      window.setTimeout(() => target.classList.remove("is-anchor-highlighted"), 1400);
-    }
-  }, 80);
 }
 
 function syncResultPresentation(shouldScroll = false) {

@@ -1620,85 +1620,6 @@
     margin-top: 0;
   }
 
-  .tag-button {
-    cursor: pointer;
-    appearance: none;
-    font-family: inherit;
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-  }
-
-  .tag-button:hover,
-  .tag-button:focus-visible {
-    transform: translateY(-1px);
-    border-color: rgba(165, 97, 69, 0.46);
-    box-shadow: 0 8px 18px rgba(100, 70, 48, 0.12);
-    outline: none;
-  }
-
-  .tag-detail-grid,
-  .tag-explain-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .tag-detail-card {
-    display: grid;
-    gap: 10px;
-    min-width: 0;
-    padding: 14px;
-    border: 1px solid rgba(213, 190, 166, 0.72);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.62);
-  }
-
-  .tag-detail-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .tag-detail-card p {
-    color: #7f6651;
-    font-size: 13px;
-    line-height: 1.65;
-  }
-
-  .tag-evidence {
-    color: #a58a72;
-    font-size: 12px;
-    line-height: 1.4;
-  }
-
-  .tag-jump {
-    flex: 0 0 auto;
-    min-height: 28px;
-    padding: 0 10px;
-    border: 1px solid rgba(196, 160, 126, 0.52);
-    border-radius: 999px;
-    background: rgba(255, 250, 244, 0.84);
-    color: #9a6d42;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .is-anchor-highlighted {
-    animation: anchorPulse 1.4s ease;
-  }
-
-  @keyframes anchorPulse {
-    0%,
-    100% {
-      box-shadow: none;
-    }
-    35% {
-      box-shadow: 0 0 0 4px rgba(210, 138, 91, 0.18);
-    }
-  }
-
   .tag small {
     margin-right: 8px;
     color: rgba(95, 72, 54, 0.62);
@@ -1754,24 +1675,6 @@
     border-color: rgba(174, 138, 92, 0.26);
     background: rgba(255, 246, 231, 0.92);
     color: #9a6d42;
-  }
-
-  .tag-pattern {
-    border-color: rgba(156, 83, 124, 0.28);
-    background: rgba(251, 234, 243, 0.92);
-    color: #9b527b;
-  }
-
-  .tag-strength {
-    border-color: rgba(87, 117, 164, 0.28);
-    background: rgba(232, 240, 252, 0.92);
-    color: #536fa0;
-  }
-
-  .tag-trend {
-    border-color: rgba(104, 126, 74, 0.28);
-    background: rgba(241, 247, 228, 0.92);
-    color: #677d45;
   }
 
   .overview-shell {
@@ -2641,8 +2544,6 @@
     .summary-mini-grid,
     .algorithm-grid,
     .algorithm-meta,
-    .tag-detail-grid,
-    .tag-explain-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2758,8 +2659,6 @@
     .summary-mini-grid,
     .algorithm-grid,
     .algorithm-meta,
-    .tag-detail-grid,
-    .tag-explain-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: 1fr;
@@ -2910,6 +2809,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260516-linked-tags-1"></script>
+<script type="module" src="./page.js?v=free-20260516-tags-1"></script>
 </body>
 </html>

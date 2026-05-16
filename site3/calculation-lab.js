@@ -731,6 +731,41 @@ function collectHiddenStemDetails(pillar, dayStem) {
   });
 }
 
+const STEM_LIFE_STAGES = {
+  '甲': ['亥','子','寅','卯','辰','巳','午','未','申','酉','戌','亥'], // Simplified placeholder array
+};
+
+const LIFE_STAGES = ['長生','沐浴','冠帯','建禄','帝旺','衰','病','死','墓','絶','胎','養'];
+
+function getLifeStage(stem, branch) {
+  // Mapping for Yang Stems (Clockwise)
+  const yangMap = {
+    '甲': '亥', '丙': '寅', '戊': '寅', '庚': '巳', '壬': '申'
+  };
+  // Mapping for Yin Stems (Counter-clockwise)
+  const yinMap = {
+    '乙': '午', '丁': '酉', '己': '酉', '辛': '子', '癸': '卯'
+  };
+
+  const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  
+  if (yangMap[stem]) {
+    const startIdx = branches.indexOf(yangMap[stem]);
+    const targetIdx = branches.indexOf(branch);
+    const diff = (targetIdx - startIdx + 12) % 12;
+    return LIFE_STAGES[diff];
+  }
+  
+  if (yinMap[stem]) {
+    const startIdx = branches.indexOf(yinMap[stem]);
+    const targetIdx = branches.indexOf(branch);
+    const diff = (startIdx - targetIdx + 12) % 12;
+    return LIFE_STAGES[diff];
+  }
+
+  return '—';
+}
+
 function normalizePillar(pillar, dayStem, source = "user_input", confidence = "confirmed") {
   const text = pillar.toString();
   const stem = text.slice(0, 1);
@@ -748,12 +783,14 @@ function normalizePillar(pillar, dayStem, source = "user_input", confidence = "c
     hiddenStemDetails,
     naYin: pillar.getSound().toString(),
     voidBranches: pillar.getExtraEarthBranches().map((branchItem) => branchItem.toString()),
+    lifeStage: getLifeStage(stem, branch), // NEW: Twelve Growth Phases
     terrainByDay: dayStem.getTerrain(pillar.getEarthBranch()).toString(),
     terrainSelf: pillar.getHeavenStem().getTerrain(pillar.getEarthBranch()).toString(),
     source,
     confidence,
   };
 }
+
 
 function collectTenGods(pillars) {
   const dayStem = pillars.day.raw.getHeavenStem();
@@ -774,14 +811,71 @@ function stripRawPillars(pillars) {
   return out;
 }
 
+const BRANCH_HIDDEN_QI = {
+  '子': [{ stem: '癸', weight: 100 }],
+  '丑': [{ stem: '己', weight: 60 }, { stem: '辛', weight: 30 }, { stem: '癸', weight: 10 }],
+  '寅': [{ stem: '甲', weight: 60 }, { stem: '丙', weight: 30 }, { stem: '戊', weight: 10 }],
+  '卯': [{ stem: '乙', weight: 100 }],
+  '辰': [{ stem: '戊', weight: 60 }, { stem: '乙', weight: 30 }, { stem: '癸', weight: 10 }],
+  '巳': [{ stem: '丙', weight: 60 }, { stem: '庚', weight: 30 }, { stem: '戊', weight: 10 }],
+  '午': [{ stem: '丁', weight: 70 }, { stem: '己', weight: 30 }],
+  '未': [{ stem: '己', weight: 60 }, { stem: '丁', weight: 30 }, { stem: '乙', weight: 10 }],
+  '申': [{ stem: '庚', weight: 60 }, { stem: '壬', weight: 30 }, { stem: '戊', weight: 10 }],
+  '酉': [{ stem: '辛', weight: 100 }],
+  '戌': [{ stem: '戊', weight: 60 }, { stem: '辛', weight: 30 }, { stem: '丁', weight: 10 }],
+  '亥': [{ stem: '壬', weight: 70 }, { stem: '甲', weight: 30 }],
+};
+
+const SEASONAL_ELEMENT_STRENGTH = {
+  // Spring: Wood strong, Fire birth, Water death
+  '寅': { '木': 1.2, '火': 1.1, '土': 0.8, '金': 0.7, '水': 0.9 },
+  '卯': { '木': 1.3, '火': 1.1, '土': 0.7, '金': 0.6, '水': 0.8 },
+  '辰': { '木': 1.1, '火': 1.0, '土': 1.2, '金': 0.8, '水': 0.9 },
+  // Summer: Fire strong, Earth birth, Wood death
+  '巳': { '木': 0.9, '火': 1.2, '土': 1.1, '金': 0.8, '水': 0.7 },
+  '午': { '木': 0.8, '火': 1.3, '土': 1.1, '金': 0.7, '水': 0.6 },
+  '未': { '木': 0.9, '火': 1.1, '土': 1.2, '金': 0.9, '水': 0.8 },
+  // Autumn: Metal strong, Water birth, Fire death
+  '申': { '木': 0.7, '火': 0.8, '土': 0.9, '金': 1.2, '水': 1.1 },
+  '酉': { '木': 0.6, '火': 0.7, '土': 0.8, '金': 1.3, '水': 1.1 },
+  '戌': { '木': 0.8, '火': 0.9, '土': 1.2, '金': 1.1, '水': 1.0 },
+  // Winter: Water strong, Wood birth, Metal death
+  '亥': { '木': 1.1, '火': 0.7, '土': 0.8, '金': 0.9, '水': 1.2 },
+  '子': { '木': 1.1, '火': 0.6, '土': 0.7, '金': 0.8, '水': 1.3 },
+  '丑': { '木': 1.0, '火': 0.8, '土': 1.2, '金': 0.9, '水': 1.1 },
+};
+
 function countElements(pillars) {
-  const counts = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
-  for (const key of PILLAR_KEYS) {
-    counts[pillars[key].element.stem] += 1;
-    counts[pillars[key].element.branch] += 1;
-  }
-  return counts;
+  const points = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
+  const monthBranch = pillars.month.branch;
+  const seasonalWeights = SEASONAL_ELEMENT_STRENGTH[monthBranch] || {};
+
+  PILLAR_KEYS.forEach((key) => {
+    const isMonth = key === "month";
+    const multiplier = isMonth ? 2.5 : 1.0;
+    
+    // 1. Stems (Base 10 points)
+    const sElement = pillars[key].element.stem;
+    points[sElement] += 10 * multiplier * (seasonalWeights[sElement] || 1.0);
+    
+    // 2. Branches (Based on Hidden Qi points total 20)
+    const branch = pillars[key].branch;
+    const hiddenQi = BRANCH_HIDDEN_QI[branch] || [];
+    hiddenQi.forEach(qi => {
+      const qElement = STEM_ELEMENTS[qi.stem];
+      const qWeight = qi.weight / 100;
+      points[qElement] += 20 * qWeight * multiplier * (seasonalWeights[qElement] || 1.0);
+    });
+  });
+
+  // Normalize to small integers for display (divide by 10 and round)
+  const result = {};
+  Object.keys(points).forEach(k => {
+    result[k] = Math.round(points[k] / 5); 
+  });
+  return result;
 }
+
 
 function buildPillarLine(pillars) {
   return PILLAR_KEYS.map((key) => pillars[key].text).join(" / ");
@@ -1054,6 +1148,14 @@ function analyzeClimateBalance(luckPillar, birthMonthBranch) {
   return null;
 }
 
+const STEM_HE_6 = {
+  '甲己': '干合（土）：誠実な結びつき。異なる個性が補い合い、新しい価値を生む関係。',
+  '乙庚': '干合（金）：正義の結びつき。意志の強さと柔軟さが融合し、目標へ進む絆。',
+  '丙辛': '干合（水）：威厳の結びつき。華やかさと繊細さが溶け合い、潤いをもたらす協力。',
+  '丁壬': '干合（木）：慈愛の結びつき。情熱と冷静さが調和し、生命力を育む関係。',
+  '戊癸': '干合（火）：無情の結びつき。現実と理想が交わり、新しい活力を生み出す絆。',
+};
+
 function analyzeNatalInteractions(natalPillars) {
   const impacts = [];
   const keys = PILLAR_KEYS; // hour, day, month, year
@@ -1064,7 +1166,7 @@ function analyzeNatalInteractions(natalPillars) {
       const p1 = natalPillars[keys[i]];
       const p2 = natalPillars[keys[j]];
       
-      // 1. Clash
+      // 1. Branch Clash
       if (BRANCH_CHONG[p1.branch] === p2.branch) {
         impacts.push({ 
           label: `${PILLAR_LABELS[keys[i]]}と${PILLAR_LABELS[keys[j]]}の冲`, 
@@ -1072,12 +1174,21 @@ function analyzeNatalInteractions(natalPillars) {
         });
       }
       
-      // 2. 6-Combo
-      const pair = [p1.branch, p2.branch].sort().join('');
-      if (BRANCH_HE_6_DESC[pair]) {
+      // 2. Branch 6-Combo
+      const bPair = [p1.branch, p2.branch].sort().join('');
+      if (BRANCH_HE_6_DESC[bPair]) {
         impacts.push({ 
           label: `${PILLAR_LABELS[keys[i]]}と${PILLAR_LABELS[keys[j]]}の支合`, 
-          text: BRANCH_HE_6_DESC[pair] 
+          text: BRANCH_HE_6_DESC[bPair] 
+        });
+      }
+
+      // 3. Stem 6-Combo
+      const sPair = [p1.stem, p2.stem].sort().join('');
+      if (STEM_HE_6[sPair]) {
+        impacts.push({
+          label: `${PILLAR_LABELS[keys[i]]}と${PILLAR_LABELS[keys[j]]}の干合`,
+          text: STEM_HE_6[sPair]
         });
       }
     }

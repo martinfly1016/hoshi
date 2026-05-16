@@ -472,6 +472,28 @@ function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
   if (hongLuanMap[yearBranch] === targetBranch) result.push('紅鸞');
   if (tianXiMap[yearBranch] === targetBranch) result.push('天喜');
 
+  // 孤辰 (Gu Chen) & 寡宿 (Gua Su) - based on Year Branch
+  const seasonalGroups = {
+    '寅': 'spring', '卯': 'spring', '辰': 'spring',
+    '巳': 'summer', '午': 'summer', '未': 'summer',
+    '申': 'autumn', '酉': 'autumn', '戌': 'autumn',
+    '亥': 'winter', '子': 'winter', '丑': 'winter'
+  };
+  const season = seasonalGroups[yearBranch];
+  if (season === 'spring') {
+    if (targetBranch === '巳') result.push('孤辰');
+    if (targetBranch === '丑') result.push('寡宿');
+  } else if (season === 'summer') {
+    if (targetBranch === '申') result.push('孤辰');
+    if (targetBranch === '辰') result.push('寡宿');
+  } else if (season === 'autumn') {
+    if (targetBranch === '亥') result.push('孤辰');
+    if (targetBranch === '未') result.push('寡宿');
+  } else if (season === 'winter') {
+    if (targetBranch === '寅') result.push('孤辰');
+    if (targetBranch === '戌') result.push('寡宿');
+  }
+
   // Groups based on Year or Day Branch
   const zhiGroup = (branch) => {
     if (['申', '子', '辰'].includes(branch)) return 'shui';
@@ -1153,31 +1175,50 @@ function analyzeSynthesis(calculation, profile) {
   const dayBranch = calculation.pillars.day.branch;
   const dayStem = calculation.dayMaster;
   const gender = profile.gender;
-  const tenGods = collectTenGods(calculation);
+  const tenGodsSet = new Set(collectTenGods(calculation).map(([god]) => god));
   const pattern = calculation.pattern?.name || '';
 
   const allShenSha = PILLAR_KEYS.flatMap(key => {
     const p = calculation.pillars[key];
     return getShenSha(p.branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch);
   });
+  
   const hasHongLuan = allShenSha.includes('紅鸞');
+  const hasGuChen = allShenSha.includes('孤辰');
+  const hasGuaSu = allShenSha.includes('寡宿');
 
   // 1. Marriage Synthesis
   let marriage = '';
-  const hongLuanText = hasHongLuan ? 'また、命式内に「紅鸞」を宿しており、華やかな魅力と良縁に恵まれやすい徳を持っています。' : '';
-
+  let marriagePoints = [];
+  
+  // A. Spouse Star Dimension
   if (gender === 'female') {
-    const hasOfficer = tenGods.some(([god]) => god === '正官');
-    marriage = `日支の「${dayBranch}」が配偶者の場所となります。${hasOfficer ? '命式内に正官（夫の星）が見られるため、パートナーシップが人生の安定に繋がりやすいでしょう。' : '自立心が強く、対等な関係を築くことで幸福を感じる傾向にあります。'}${hongLuanText}`;
+    if (tenGodsSet.has('正官')) marriagePoints.push('命式内に「正官（夫の星）」があり、誠実な縁に恵まれやすい徳を持っています。');
+    else if (tenGodsSet.has('七殺')) marriagePoints.push('「七殺（情熱の星）」が強い影響を与えており、ドラマチックで刺激的なパートナーシップを求める傾向にあります。');
+    else marriagePoints.push('特定の配偶者星が目立たないため、自立した個としての生き方を尊重し合える関係が幸福の鍵です。');
   } else if (gender === 'male') {
-    const hasWealth = tenGods.some(([god]) => god === '正財');
-    marriage = `日支の「${dayBranch}」は妻の場所を指します。${hasWealth ? '命式内に正財（妻の星）が巡っており、家庭を大切にすることで運気が整います。' : '自由な感性を持ち、お互いの個性を尊重し合うパートナーシップを好むようです。'}${hongLuanText}`;
-  } else {
-    marriage = `日支の「${dayBranch}」は親密なパートナーシップのあり方を象徴します。自分と相手の境界線をどう保つかが鍵となります。${hongLuanText}`;
+    if (tenGodsSet.has('正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力を持っています。');
+    else if (tenGodsSet.has('偏財')) marriagePoints.push('「偏財（社交の星）」が巡っており、華やかな対人関係の中から縁が広がりやすいタイプです。');
+    else marriagePoints.push('特定の配偶者星が目立たないため、共通の趣味や目的を持つことで絆が深まるパートナーシップが理想的です。');
   }
 
+  // B. Spouse Palace Dimension
+  marriagePoints.push(`配偶者の場所である日支に「${dayBranch}」を宿しています。これは親密な関係における、あなたの無意識の振る舞いや相手に求める気質を表します。`);
+
+  // C. Interactions (Clash/He)
+  const dayInteractions = (calculation.luckCycles?.natalInteractions || []).filter(i => i.label.includes('日柱'));
+  if (dayInteractions.length > 0) {
+    dayInteractions.forEach(i => marriagePoints.push(`【${i.label}】${i.text}`));
+  }
+
+  // D. Shen Sha Dimension
+  if (hasHongLuan) marriagePoints.push('また、良縁を呼び込む「紅鸞」を宿しており、対人面での華やかな魅力が助けとなります。');
+  if (hasGuChen || hasGuaSu) marriagePoints.push('一方で「孤辰・寡宿」といった星も重なっており、一人の時間を大切にする気質が強く出ることがあります。');
+
+  marriage = marriagePoints.join(' ');
+
   // 2. Career Synthesis
-  const career = `月支の「${calculation.pillars.month.branch}」と格局「${pattern}」があなたの社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝き、${tenGods[0]?.[0]}の星を活かすことが成功の鍵です。`;
+  const career = `月支の「${calculation.pillars.month.branch}」と格局「${pattern}」があなたの社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝き、${collectTenGods(calculation)[0]?.[0]}の星を活かすことが成功の鍵です。`;
 
   return { marriage, career };
 }

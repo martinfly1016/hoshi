@@ -247,8 +247,8 @@ input, select { font-family: inherit; color: inherit; }
   color: var(--ink-2);
   letter-spacing: 0.5em;
   line-height: 2.4;
-  height: auto;
-  max-height: 480px;
+  height: 100vh;
+  max-height: 520px;
   display: flex; gap: 18px;
 }
 .hero-poem .line {

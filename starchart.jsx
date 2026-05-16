@@ -222,24 +222,7 @@ function StarChart() {
               textAnchor="middle">四柱推命</text>
           </g>
 
-          {/* corner sigils */}
-          {['木','火','金','水'].map((d, i) => {
-            const positions = [
-              { x: 760, y: 400 }, // right
-              { x: 400, y: 760 }, // bottom
-              { x: 40,  y: 400 }, // left
-              { x: 400, y: 40  }, // top
-            ];
-            const p = positions[i];
-            return (
-              <text key={d} x={p.x} y={p.y}
-                fill="var(--ink-3)"
-                fontSize="13"
-                fontFamily="var(--f-display)"
-                textAnchor="middle"
-                dominantBaseline="middle">{d}</text>
-            );
-          })}
+          {/* corner sigils removed as wuxing is now on stems/branches */}
         </svg>
       </div>
     </div>

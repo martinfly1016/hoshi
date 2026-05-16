@@ -219,16 +219,37 @@ function Rite({ onBack, onSubmitDone }) {
           </div>
           <div className="input-row">
             <div className="input-line with-mark" data-mark="年 / Y">
-              <input value={year} onChange={e => setYear(e.target.value)}
-                placeholder={calendar === 'seireki' ? '1996' : '8'} />
+              <select value={year} onChange={e => setYear(e.target.value)}>
+                <option value="" disabled>--</option>
+                {calendar === 'seireki' && Array.from({length: 107}, (_, i) => 2026 - i).map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+                {calendar === 'showa' && Array.from({length: 64}, (_, i) => 64 - i).map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+                {calendar === 'heisei' && Array.from({length: 31}, (_, i) => 31 - i).map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+                {calendar === 'reiwa' && Array.from({length: 8}, (_, i) => 8 - i).map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
             </div>
             <div className="input-line with-mark" data-mark="月 / M">
-              <input value={month} onChange={e => setMonth(e.target.value)}
-                placeholder="08" />
+              <select value={month} onChange={e => setMonth(e.target.value)}>
+                <option value="" disabled>--</option>
+                {Array.from({length: 12}, (_, i) => i + 1).map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
             </div>
             <div className="input-line with-mark" data-mark="日 / D">
-              <input value={day} onChange={e => setDay(e.target.value)}
-                placeholder="14" />
+              <select value={day} onChange={e => setDay(e.target.value)}>
+                <option value="" disabled>--</option>
+                {Array.from({length: 31}, (_, i) => i + 1).map(d => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
             </div>
           </div>
         </FormField>

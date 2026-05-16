@@ -865,8 +865,20 @@ function ResultView({ id, name, calculation, profile, onBack }) {
         <div className="result-card" id={id} style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" id="section-daymaster" style={{ paddingTop: 20 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
-            <h2>{name || 'あなた'}の命式は、{dayMasterType(calculation)}の日主を中心に読みます</h2>
-            <p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, marginTop: 12 }}>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 32, filter: 'grayscale(0.2)' }}>
+                {STEM_ICONS[calculation.dayMaster]}
+              </div>
+              <div>
+                <div style={{ fontSize: 13, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 4 }}>
+                  あなたを表す星（日主）： <strong className={elementClass(calculation.pillars.day.element.stem)} style={{ fontSize: 16 }}>{calculation.dayMaster} ({calculation.pillars.day.element.stem})</strong>
+                </div>
+                <h2 style={{ margin: 0, fontSize: 24, letterSpacing: '0.05em' }}>
+                  {stemReading.title}
+                </h2>
+              </div>
+            </div>
+            <p style={{ fontSize: 14, lineHeight: 1.8, color: 'var(--ink-2)' }}>
               {stemReading.text}
             </p>
             <div className="result-tags">

@@ -242,19 +242,17 @@ input, select { font-family: inherit; color: inherit; }
   top: 50%;
   transform: translateY(-50%);
   font-family: var(--f-body);
-  writing-mode: vertical-rl;
   font-size: 13px;
   color: var(--ink-2);
   letter-spacing: 0.5em;
   line-height: 2.4;
-  height: 100vh;
-  max-height: 520px;
   display: flex; gap: 18px;
 }
 .hero-poem .line {
+  writing-mode: vertical-rl;
   border-right: 1px solid var(--rule);
   padding-right: 18px;
-  display: inline-block;
+  display: block;
 }
 .hero-poem .line:last-child { border-right: none; }
 .hero-poem .line.dim { color: var(--ink-3); font-size: 11px; }

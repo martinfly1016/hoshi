@@ -4,9 +4,8 @@ function Hero({ onEnter }) {
   return (
     <section className="hero" data-screen-label="01 序章">
       <div className="hero-poem">
-        <div className="line">天に十干、地に十二支あり</div>
         <div className="line">陰陽五行の運び、命式に映る</div>
-        <div className="line dim">— 四柱推命古記 卷之壹</div>
+        <div className="line">天に十干、地に十二支あり</div>
       </div>
 
       <div className="hero-title-block">

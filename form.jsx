@@ -806,24 +806,42 @@ function ResultView({ id, name, calculation, profile, onBack }) {
         <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
       </div>
 
-      <div className="result-wide visual-block">
-        <div className="section-caption">四柱を図で読む</div>
-        <div className="pillar-guide-grid">
-          {PILLAR_KEYS.map((key) => {
-            const pillar = calculation.pillars[key];
-            const guide = PILLAR_READING[key];
-            return (
-              <article className={`pillar-guide ${key === 'day' ? 'is-focus' : ''}`} key={key}>
-                <div className="pillar-guide-icon">{guide.icon}</div>
-                <div>
-                  <span>{PILLAR_LABELS[key]} · {pillar.text}</span>
-                  <h3>{guide.title}</h3>
-                  <p>{guide.text}</p>
-                  <small>{calculation.tenGods[key]} / {pillar.hiddenStems.join('・') || '—'}</small>
+      <div className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+        <div style={{
+          fontFamily: 'var(--f-display)',
+          fontSize: 16,
+          letterSpacing: '0.2em',
+          color: 'var(--ink)',
+          marginBottom: 12,
+          textAlign: 'center'
+        }}>
+          命式から見えた あなたの「強み」と「武器」
+        </div>
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
+          命式に現れた「十神（通変星）」の力関係から、<br/>あなたが無意識に使っている才能や、社会で活かしやすい武器を読み解きます。
+        </p>
+
+        <div className="ten-god-map" style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+          {tenGodRoles.map((god, idx) => (
+            <article key={god.name} style={{ display: 'flex', gap: '16px', padding: '20px', border: '1px solid var(--rule-strong)', background: 'var(--bg-paper)', borderRadius: '8px' }}>
+              <div className="god-symbol" style={{ width: '48px', height: '48px', flexShrink: 0, borderRadius: '50%', background: 'var(--bg)', border: '1px solid var(--rule)', display: 'grid', placeItems: 'center', fontSize: '20px', fontFamily: 'var(--f-display)', color: 'var(--ink)' }}>
+                {god.icon}
+              </div>
+              <div>
+                <strong style={{ display: 'block', fontSize: '15px', color: 'var(--ink)', marginBottom: '4px', letterSpacing: '0.1em' }}>
+                  {god.role} <span style={{ fontSize: '11px', color: 'var(--ink-3)', marginLeft: '8px', letterSpacing: '0' }}>{god.name} ({god.total}個)</span>
+                </strong>
+                <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.7', color: 'var(--ink-2)' }}>
+                  {god.text}
+                </p>
+                <div style={{ marginTop: '10px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  {(TEN_GOD_READING[god.name]?.tags || []).map(tag => (
+                    <span key={tag} style={{ fontSize: '10px', color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 15%, transparent)', padding: '2px 8px', borderRadius: '4px' }}>#{tag}</span>
+                  ))}
                 </div>
-              </article>
-            );
-          })}
+              </div>
+            </article>
+          ))}
         </div>
       </div>
 

@@ -23,6 +23,7 @@
 | v0.2.3 | 2026-05-15 00:15 JST | 用户首页 | 首页结果区 `/index.html` | 在用户页加入大运、流年初版计算展示与解说；未选性别时提示大运需性别，流年直接展示今年起的年度干支主题 | `/index.html?v=20260515-luck-reading-1` | `/archive/pre-user-luck-reading-20260515/index.html?v=20260515-pre-luck-reading-1` | main `b80da28` / gh-pages `ea3d0fd` |
 | v0.2.4 | 2026-05-15 00:20 JST | 用户首页 | 首页结果区 `/index.html` | 增强当前十年大运解说：自动识别当前年份所在大运并高亮，补充工作、财运、恋爱/对人、读法四维说明 | `/index.html?v=20260515-current-decade-1` | `/archive/pre-current-decade-reading-20260515/index.html?v=20260515-pre-current-decade-1` | main `49b08e8` / gh-pages `b1d1bfe` |
 | v0.2.5 | 2026-05-15 00:26 JST | 用户首页 | 首页移动端首屏 `/index.html` | 根据手机截图修正首屏 UI：CTA 文案改为清晰日文、按钮不再挤字，说明文案避免异常断行，手机端顶部仅保留可用导航项 | `/index.html?v=20260515-mobile-hero-1` | `/archive/pre-mobile-hero-ui-20260515/index.html?v=20260515-pre-mobile-hero-1` | main `82eca01` / gh-pages `533cfbb` |
+| v0.2.6 | 2026-05-16 18:44 JST | 后台验证页 | `/shichusuimei/free/index.html` 五行结果区 | 按反馈将五行关系图移到构成比前面，新增“偏多/补五行”说明与按月令计算的旺相休囚死状态卡，并修正中窄屏下解说卡两列过窄的问题 | `/shichusuimei/free/index.html?v=free-20260516-elements-1` | `/archive/pre-five-elements-reading-20260516/shichusuimei/free/index.html?v=free-20260514-luck-1` | main 本次提交 / gh-pages 待发布 |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -57,3 +58,5 @@
 - v0.2.4 验证记录：本地样例 `1990-06-15` 男性，2026 年匹配当前大运 `乙酉`（2017-2026），十神主题为 `偏财`；手机端截图确认“現在の大運”卡片可见。
 - 用户首页 v0.2.5：根据产品侧手机截图，修正移动端首屏按钮和说明文案的可读性问题。CTA 从偏古雅且易挤压的「無料にて卜を乞う」调整为「無料で命式を見る」，印章字改为「命」；首屏说明文案改成更清晰的现代日文，并在窄屏降低字距，避免单字被挤到下一行。手机导航隐藏暂未可用的后两项，减少顶部拥挤。
 - v0.2.5 验证记录：本地用 `capture-website` 生成 390×844 手机端和 1365×900 桌面首屏截图，确认手机端 CTA 文案完整、说明文案正常换行，顶部导航不再挤满屏幕。
+- 后台验证页 v0.2.6：根据 Wreal 对五行构成区的反馈，五行关系图现在先于构成比展示；新增自动生成的五行偏多/补足说明，并加入传统“旺相休囚死”月令状态。规则按月支判断：寅卯木旺、巳午火旺、申酉金旺、亥子水旺，辰未戌丑按土用土旺处理。
+- v0.2.6 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 `capture-website` 生成桌面与手机截图，五行关系图、构成比、说明文与旺相休囚死卡片均无重叠或裁切。追加按 Wreal 截图检查 760px 与 390px 解说区，`婚姻の視点` / `事業の視点` 卡片已改为中窄屏单列，避免标题和正文被压窄。

@@ -33,7 +33,7 @@
 | v0.3.3 | 2026-05-16 19:40 JST | 后台验证页 | 标签体系 / 三页可视化 | 优化标签应用：新增「命式タグ」总览，把日主、读取根拠、性质、强五行、补/缺五行、十神、婚姻宮定位做成结构化彩色标签；详解里的日主/十神标签也改用统一组件 | `/shichusuimei/free/index.html?v=free-20260516-tags-1` | `/archive/pre-tag-optimization-20260516/shichusuimei/free/index.html?v=free-20260516-accuracy-visual-1` | main `52019fd` / gh-pages `b57da43` |
 | v0.3.4 | 2026-05-16 19:48 JST | 后台验证页 | 标签索引 / 详解跳转 | 将命式标签从关键词升级为可点击索引：新增格局、身强身弱、性格、强五行、补/缺五行、好运来源、主要课题、婚姻宮、运势走势等标签；每个标签显示依据和简短说明，点击可跳转到对应详解模块 | `/shichusuimei/free/index.html?v=free-20260516-linked-tags-1` | `/archive/pre-linked-tags-20260516/shichusuimei/free/index.html?v=free-20260516-tags-1` | main `282fd58` / gh-pages `85b164c` |
 | v0.3.5 | 2026-05-16 19:57 JST | 用户首页 | `/index.html` 结果页 | 将后台已整理的信息同步到面向用户页面：新增命式标签索引与解释卡，承接格局、身强身弱、性格、五行强弱、补/缺五行、好运来源、主要课题、婚姻宫与走势；五行条改用后台百分比，用户页 calculation bridge 更新到最新算法缓存 | `/index.html?v=20260516-user-sync-1` | `/archive/pre-user-backend-sync-20260516/index.html?v=free-20260516-linked-tags-1` | main `45bb66d` / gh-pages `f92ab29` |
-| v0.3.6 | 2026-05-16 20:02 JST | 用户首页 | `/index.html` 四柱说明 | 在用户页四柱排盘下新增四柱含义说明卡，解释年柱、月柱、日柱、时柱分别代表的家系/环境、社会/仕事、本人/婚姻宫、未来/内面等领域；点击说明卡可高亮对应四柱 | `/index.html?v=20260516-user-pillars-1` | `/archive/pre-user-backend-sync-20260516/index.html?v=20260516-user-sync-1` | main `pending` / gh-pages `pending` |
+| v0.3.6 | 2026-05-16 20:02 JST | 用户首页 | `/index.html` 四柱说明 | 在用户页四柱排盘下新增四柱含义说明卡，解释年柱、月柱、日柱、时柱分别代表的家系/环境、社会/仕事、本人/婚姻宫、未来/内面等领域；点击说明卡可高亮对应四柱 | `/index.html?v=20260516-user-pillars-1` | `/archive/pre-user-backend-sync-20260516/index.html?v=20260516-user-sync-1` | main `aa46bf4` / gh-pages `47fab33` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

@@ -314,9 +314,9 @@ function Rite({ onBack, onSubmitDone }) {
           <button className={`submit-btn ${busy ? 'busy' : ''}`}
             disabled={!valid || busy}
             onClick={submit}>
-            <span>卜　を　乞　う</span>
-            <span style={{ width: 28, height: 1, background: 'currentColor' }}></span>
-            <span className="seal-stamp">命</span>
+            <span>無料で命式を見る</span>
+            <span className="arrow"></span>
+            <span className="seal-mini">占</span>
           </button>
         </div>
 

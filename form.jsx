@@ -1101,10 +1101,19 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
               {tags.map((tag) => <span key={tag}># {tag}</span>)}
             </div>
             {calculation.strength && (
-              <div style={{ marginTop: 24, padding: '16px 20px', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
-                 <div style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 6 }}>エネルギーの強弱（身強・身弱）</div>
-                 <strong style={{ fontSize: 15, color: 'var(--gold)', display: 'block', marginBottom: 4 }}>◆ {calculation.strength.status}</strong>
-                 <p style={{ margin: 0, fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.6 }}>{calculation.strength.text}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
+                <div style={{ padding: '16px 20px', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                  <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 6 }}>エネルギーの強弱</div>
+                  <strong style={{ fontSize: 15, color: 'var(--gold)', display: 'block', marginBottom: 4 }}>◆ {calculation.strength.status}</strong>
+                  <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.5 }}>{calculation.strength.text}</p>
+                </div>
+                {calculation.pattern && (
+                  <div style={{ padding: '16px 20px', background: 'color-mix(in srgb, var(--accent) 10%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                    <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 6 }}>命式の格局（社会的役割）</div>
+                    <strong style={{ fontSize: 15, color: 'var(--accent)', display: 'block', marginBottom: 4 }}>◆ {calculation.pattern.name}</strong>
+                    <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.5 }}>{calculation.pattern.text}</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

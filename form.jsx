@@ -37,6 +37,9 @@ function locationOptions() {
 }
 
 function findLocation(id) {
+  if (id === 'overseas') {
+    return { id: 'overseas', label: '海外（日本標準時以外）', timezone: 'UTC', utcOffset: 0, latitude: 0, longitude: 0 };
+  }
   return locationOptions().find((location) => location.id === id) || locationOptions()[0];
 }
 
@@ -285,18 +288,18 @@ function Rite({ onBack, onSubmitDone }) {
 
         <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEI · CHI"
           hint="正確な自然時（太陽の南中時刻）を計算するための時差補正に使用します。一番近い場所を選んでください">
-          <div className="input-row two">
-            <div className="input-line with-mark" data-mark="都道府県">
-              <select value={locationId} onChange={e => setLocationId(e.target.value)}>
-                {locations.map(location => (
-                  <option key={location.id} value={location.id}>{stripJapan(location.label)}</option>
-                ))}
-              </select>
-            </div>
-            <div className="input-line with-mark" data-mark="市町村">
-              <input value={city} onChange={e => setCity(e.target.value)}
-                placeholder="※ 省略可 （例：京都市 上京区）" />
-            </div>
+          <div className="input-line">
+            <select value={locationId} onChange={e => setLocationId(e.target.value)}>
+              {locations.map(location => {
+                // Strip "日本 / " and the city name (keep only prefecture)
+                let label = stripJapan(location.label);
+                label = label.split(' ')[0];
+                return (
+                  <option key={location.id} value={location.id}>{label}</option>
+                );
+              })}
+              <option value="overseas">海外（日本標準時以外）</option>
+            </select>
           </div>
         </FormField>
 

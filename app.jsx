@@ -16,7 +16,7 @@ const THEMES = [
 
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [page, setPage] = React.useState('hero');   // hero | rite | result | fortune
+  const [page, setPage] = React.useState('hero');   // hero | rite | result | fortune | insight
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
 
@@ -136,6 +136,9 @@ function App() {
           <button className={page === 'result' ? 'is-active' : ''}
             onClick={() => { if (calcResult) goto('result'); }}
             style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命　式</button>
+          <button className={page === 'insight' ? 'is-active' : ''}
+            onClick={() => { if (calcResult) goto('insight'); }}
+            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>詳　解</button>
           <button className={page === 'fortune' ? 'is-active' : ''}
             onClick={() => { if (calcResult) goto('fortune'); }}
             style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>星辰譜</button>
@@ -168,6 +171,13 @@ function App() {
             profile={calcResult.profile}
             onBack={() => goto('rite')}
             onShowFortune={() => goto('fortune')}
+            onShowInsight={() => goto('insight')}
+          />
+        )}
+        {page === 'insight' && calcResult && (
+          <InsightView 
+            calculation={calcResult.chart}
+            onBack={() => goto('result')}
           />
         )}
         {page === 'fortune' && calcResult && (

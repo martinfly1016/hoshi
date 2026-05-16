@@ -805,7 +805,129 @@ function WuxingDiagram({ dayElement, elementCounts }) {
   );
 }
 
-function ResultView({ id, name, calculation, profile, onBack }) {
+function FortuneView({ calculation, onBack }) {
+  const luck = calculation.luckCycles || {};
+  const decade = luck.decadeFortunes || [];
+  const currentAnnual = currentAnnualFortune(calculation);
+  const currentDecade = currentDecadeFortune(decade, luck.target?.year || currentAnnual?.year);
+  const currentDecadeTheme = decadeTheme(currentDecade);
+
+  const scrollTo = (sectionId) => {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <section className="rite" data-screen-label="04 星辰譜">
+      <aside className="rite-side">
+        <div className="kanji">星辰譜</div>
+        <div className="label">FORTUNE · CYCLES</div>
+        <div className="seal-stack">
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-summary')}><span className="num">壹</span>　現在の大運テーマ</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-list')}><span className="num">貳</span>　生涯の大運表</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-annual-list')}><span className="num">參</span>　直近の流年表</div>
+          <div style={{ marginTop: 24 }}>
+             <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
+               ← 命式へ戻る
+             </button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="rite-main" style={{ paddingBottom: 120 }}>
+        <div className="result-card" style={{ marginTop: 0 }}>
+          
+          <div className="result-summary result-wide" id="section-decade-summary" style={{ paddingTop: 20 }}>
+            <div className="summary-kicker">大運（10年運）の解読</div>
+            <h2 style={{ fontSize: 24, margin: '0 0 16px', letterSpacing: '0.05em' }}>{currentDecadeTheme?.title || '現在の大運テーマ'}</h2>
+            <p style={{ fontSize: 14, lineHeight: 1.8, color: 'var(--ink-2)' }}>
+              {currentDecadeTheme?.intro}
+            </p>
+          </div>
+
+          {currentDecadeTheme && (
+            <div className="result-wide visual-block" style={{ marginTop: 32, display: 'grid', gap: 16 }}>
+              <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
+                <strong style={{ display: 'block', color: 'var(--seal)', marginBottom: 8, fontSize: 13 }}>◆ 仕事・役割</strong>
+                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.work}</p>
+              </article>
+              <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
+                <strong style={{ display: 'block', color: 'var(--gold)', marginBottom: 8, fontSize: 13 }}>◆ 財と価値</strong>
+                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.money}</p>
+              </article>
+              <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
+                <strong style={{ display: 'block', color: 'var(--accent)', marginBottom: 8, fontSize: 13 }}>◆ 対人・恋愛</strong>
+                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.love}</p>
+              </article>
+            </div>
+          )}
+
+          <div id="section-decade-list" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>
+              生涯の大運表（10年ごとの運勢）
+            </div>
+            <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
+              大運はあなたの人生の背景を流れる大きな季節のようなものです。
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {decade.map(d => {
+                const isCurrent = d.name === currentDecade?.name;
+                return (
+                  <div key={d.name} style={{ display: 'flex', alignItems: 'center', padding: '16px', background: isCurrent ? 'color-mix(in srgb, var(--gold) 10%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--gold)' : '1px solid var(--rule)', borderRadius: 6 }}>
+                    <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--gold)' : 'var(--ink-3)' }}>
+                      {d.startAge}〜{d.endAge}歳
+                    </div>
+                    <div style={{ fontSize: 20, fontFamily: 'var(--f-display)', width: 60, color: 'var(--ink)' }}>
+                      {d.pillar.text}
+                    </div>
+                    <div style={{ flex: 1, fontSize: 13, color: 'var(--ink-2)' }}>
+                      {d.pillar.heavenlyTenGod}
+                    </div>
+                    {isCurrent && <div style={{ fontSize: 11, background: 'var(--gold)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em' }}>現在</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div id="section-annual-list" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>
+              直近の流年表（1年ごとの運勢）
+            </div>
+            <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
+              流年はその年ごとに訪れる具体的なテーマや出来事の傾向を示します。
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {(luck.annualFortunes || []).slice(0, 10).map(a => {
+                const isCurrent = a.year === currentAnnual?.year;
+                return (
+                  <div key={a.year} style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', background: isCurrent ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--accent)' : '1px solid var(--rule)', borderRadius: 6 }}>
+                    <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--accent)' : 'var(--ink-3)' }}>
+                      {a.year}年
+                    </div>
+                    <div style={{ fontSize: 18, fontFamily: 'var(--f-display)', width: 60, color: 'var(--ink)' }}>
+                      {a.pillar.text}
+                    </div>
+                    <div style={{ flex: 1, fontSize: 13, color: 'var(--ink-2)' }}>
+                      {a.pillar.heavenlyTenGod}
+                    </div>
+                    {isCurrent && <div style={{ fontSize: 11, background: 'var(--accent)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em' }}>今年</div>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
   const hiddenStems = collectHiddenStems(calculation);
@@ -1188,9 +1310,8 @@ function ResultView({ id, name, calculation, profile, onBack }) {
       )}
 
       <div className="result-wide next-actions">
+        <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
         <button disabled>相性を見る <span>準備中</span></button>
-        <button disabled>大運を見る <span>表示中</span></button>
-        <button disabled>流年を見る <span>表示中</span></button>
         <button disabled>結果を保存する <span>準備中</span></button>
       </div>
     </div>
@@ -1201,3 +1322,4 @@ function ResultView({ id, name, calculation, profile, onBack }) {
 
 window.Rite = Rite;
 window.ResultView = ResultView;
+window.FortuneView = FortuneView;

@@ -1100,6 +1100,13 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
             <div className="result-tags">
               {tags.map((tag) => <span key={tag}># {tag}</span>)}
             </div>
+            {calculation.strength && (
+              <div style={{ marginTop: 24, padding: '16px 20px', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                 <div style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 6 }}>エネルギーの強弱（身強・身弱）</div>
+                 <strong style={{ fontSize: 15, color: 'var(--gold)', display: 'block', marginBottom: 4 }}>◆ {calculation.strength.status}</strong>
+                 <p style={{ margin: 0, fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.6 }}>{calculation.strength.text}</p>
+              </div>
+            )}
           </div>
 
       <div id="section-pillars" style={{ paddingTop: 40, marginTop: 40, borderTop: '1px solid var(--rule)' }}>

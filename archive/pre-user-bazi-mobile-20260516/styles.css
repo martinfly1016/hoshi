@@ -1050,27 +1050,6 @@ input, select { font-family: inherit; color: inherit; }
 .bazi-pro-cell {
   cursor: pointer;
 }
-.bazi-pro-head .bazi-pro-cell {
-  gap: 4px;
-  min-height: 62px;
-}
-.bazi-pillar-title {
-  display: block;
-  color: var(--ink-2);
-  font-family: var(--f-body);
-  font-size: 11px;
-  letter-spacing: 0;
-  line-height: 1.2;
-}
-.bazi-pillar-value {
-  display: block;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 1.15;
-}
 .bazi-god .bazi-pro-cell,
 .bazi-flat .bazi-pro-cell {
   min-height: 48px;
@@ -2308,73 +2287,6 @@ input, select { font-family: inherit; color: inherit; }
   .result-wide { overflow-x: visible; }
   .backend-panel-head { align-items: flex-start; flex-direction: column; }
   .bazi-scroll-hint { display: block; }
-  .bazi-structure-section {
-    padding: 14px;
-  }
-  .bazi-board-pro {
-    overflow-x: visible;
-  }
-  .bazi-pro-row {
-    grid-template-columns: 74px repeat(4, minmax(0, 1fr));
-    min-width: 0;
-  }
-  .bazi-pro-label,
-  .bazi-pro-cell {
-    min-height: 44px;
-    padding: 8px 4px;
-  }
-  .bazi-pro-label {
-    padding-left: 6px;
-  }
-  .bazi-label-content {
-    gap: 4px;
-  }
-  .bazi-icon {
-    display: none;
-  }
-  .bazi-label-content strong,
-  .bazi-head-label {
-    font-size: 12px;
-    letter-spacing: 0;
-  }
-  .bazi-label-content small {
-    max-width: 64px;
-    font-size: 8px;
-    line-height: 1.25;
-    letter-spacing: 0;
-  }
-  .bazi-pro-head .bazi-pro-cell {
-    min-height: 58px;
-  }
-  .bazi-pillar-title {
-    font-size: 10px;
-  }
-  .bazi-pillar-value {
-    font-size: 18px;
-  }
-  .bazi-god .bazi-pro-cell,
-  .bazi-flat .bazi-pro-cell {
-    min-height: 42px;
-    font-size: 11px;
-    line-height: 1.35;
-  }
-  .bazi-stem .bazi-pro-cell,
-  .bazi-branch .bazi-pro-cell {
-    min-height: 54px;
-  }
-  .bazi-stem .bazi-pro-cell strong,
-  .bazi-branch .bazi-pro-cell strong {
-    font-size: 30px;
-  }
-  .bazi-detail .bazi-pro-cell {
-    min-height: 68px;
-    gap: 2px;
-  }
-  .mini-line {
-    font-size: 10px;
-    letter-spacing: 0;
-    line-height: 1.3;
-  }
   .bazi-board-lite { min-width: 0; }
   .bazi-lite-row strong { font-size: 13px; }
 

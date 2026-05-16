@@ -786,8 +786,7 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
           <div className="bazi-pro-label"><span className="bazi-head-label">項目</span></div>
           {order.map(key => (
             <button key={key} type="button" className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-column' : ''}`} onClick={() => onFocus?.(activePillar === key ? null : key)}>
-              <span className="bazi-pillar-title">{PILLAR_LABELS[key]}</span>
-              <strong className="bazi-pillar-value">{calculation.pillars[key].text}</strong>
+              {PILLAR_LABELS[key]}
             </button>
           ))}
         </div>
@@ -810,7 +809,7 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
           );
         })}
       </div>
-      <div className="bazi-scroll-hint">年柱・月柱・日柱・時柱を横に並べて確認できます</div>
+      <div className="bazi-scroll-hint">横にスクロールして、月柱・日柱・時柱を確認できます</div>
     </section>
   );
 }

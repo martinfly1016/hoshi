@@ -35,37 +35,6 @@ const ELEMENT_DESCRIPTIONS = {
   水: "知性、流れ、適応",
 };
 
-const ELEMENT_BALANCE_ADVICE = {
-  木: "計画を一度紙に落とし、伸ばす方向を絞ると安定します。",
-  火: "急ぎすぎず、休息と確認の時間を先に確保すると熱量が活きます。",
-  土: "抱え込みを減らし、役割と期限を分けると停滞を防げます。",
-  金: "判断を急がず、対話と余白を入れると切れ味が整います。",
-  水: "情報収集、睡眠、静かな移動時間を増やすと流れが戻りやすくなります。",
-};
-
-const SEASONAL_STATE_BY_BRANCH = {
-  寅: { season: "春", states: { 木: "旺", 火: "相", 水: "休", 金: "囚", 土: "死" } },
-  卯: { season: "春", states: { 木: "旺", 火: "相", 水: "休", 金: "囚", 土: "死" } },
-  辰: { season: "土用", states: { 土: "旺", 金: "相", 火: "休", 木: "囚", 水: "死" } },
-  巳: { season: "夏", states: { 火: "旺", 土: "相", 木: "休", 水: "囚", 金: "死" } },
-  午: { season: "夏", states: { 火: "旺", 土: "相", 木: "休", 水: "囚", 金: "死" } },
-  未: { season: "土用", states: { 土: "旺", 金: "相", 火: "休", 木: "囚", 水: "死" } },
-  申: { season: "秋", states: { 金: "旺", 水: "相", 土: "休", 火: "囚", 木: "死" } },
-  酉: { season: "秋", states: { 金: "旺", 水: "相", 土: "休", 火: "囚", 木: "死" } },
-  戌: { season: "土用", states: { 土: "旺", 金: "相", 火: "休", 木: "囚", 水: "死" } },
-  亥: { season: "冬", states: { 水: "旺", 木: "相", 金: "休", 土: "囚", 火: "死" } },
-  子: { season: "冬", states: { 水: "旺", 木: "相", 金: "休", 土: "囚", 火: "死" } },
-  丑: { season: "土用", states: { 土: "旺", 金: "相", 火: "休", 木: "囚", 水: "死" } },
-};
-
-const SEASONAL_STATE_TEXT = {
-  旺: "月令の力を直接受け、最も勢いが出やすい",
-  相: "旺じる五行から生じられ、次に伸びやすい",
-  休: "季節から見ると力を使った後で、控えめに働く",
-  囚: "季節の気に抑えられ、出方に制限がかかる",
-  死: "季節から最も遠く、意識して補いたい",
-};
-
 const ROW_GUIDES = {
   干神: {
     icon: "神",
@@ -465,37 +434,6 @@ function elementSummary(result) {
     return `五行全体では ${strong} が強く、${missing.join("・")} は見えにくい配置です。これは命主を取り巻く環境で、自然に流れやすい力と意識して補いたい力の差として見ます。`;
   }
   return `五行全体では ${strong} が目立ち、${weak} は控えめです。これは命主を取り巻く環境や、自然に使いやすい力と補うと安定しやすい力の差として見ます。`;
-}
-
-function elementCompositionReading(result) {
-  const counts = result.fiveElements.counts;
-  const strong = strongestElements(counts);
-  const missing = ELEMENT_LABELS.filter((name) => (counts[name] || 0) === 0);
-  const support = missing.length ? missing : weakestElements(counts);
-  const strongText = strong.map((name) => `${name}（${ELEMENT_DESCRIPTIONS[name]}）`).join("・");
-  const supportText = support.map((name) => `${name}（${ELEMENT_DESCRIPTIONS[name]}）`).join("・");
-  const actionText = support.map((name) => ELEMENT_BALANCE_ADVICE[name]).join(" ");
-  return {
-    title: `${strong.join("・")}が多く、${support.join("・")}を補う命式`,
-    body: `この命式は ${strongText} が前に出やすい構成です。反対に ${supportText} は薄くなりやすいため、日常ではこの五行を意識して補うと全体の流れが整います。`,
-    advice: actionText,
-  };
-}
-
-function seasonalElementState(result) {
-  const monthBranch = result.pillars.month.branch;
-  const seasonal = SEASONAL_STATE_BY_BRANCH[monthBranch] || SEASONAL_STATE_BY_BRANCH.寅;
-  return {
-    monthBranch,
-    season: seasonal.season,
-    states: seasonal.states,
-  };
-}
-
-function seasonalStateSummary(result) {
-  const seasonal = seasonalElementState(result);
-  const ordered = ELEMENT_LABELS.map((name) => `${name}${seasonal.states[name]}`).join("・");
-  return `${seasonal.monthBranch}月（${seasonal.season}）の月令で見ると、${ordered} の配置です。旺相休囚死は、単純な量ではなく「季節から見た働きやすさ」を読む補助線として使います。`;
 }
 
 function elementClass(elementName) {
@@ -929,46 +867,6 @@ function renderElementStateCards(result) {
   `;
 }
 
-function renderElementReading(result) {
-  const reading = elementCompositionReading(result);
-  return `
-    <div class="element-reading">
-      <p class="reading-kicker">五行の読み方</p>
-      <h3>${escapeHtml(reading.title)}</h3>
-      <p>${escapeHtml(reading.body)}</p>
-      <p>${escapeHtml(reading.advice)}</p>
-    </div>
-  `;
-}
-
-function renderSeasonalElementStates(result) {
-  const seasonal = seasonalElementState(result);
-  return `
-    <div class="seasonal-panel">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">旺相休囚死</p>
-          <h3>月令から五行の勢いを見る</h3>
-        </div>
-        <span class="balance-badge">${escapeHtml(seasonal.monthBranch)}月 / ${escapeHtml(seasonal.season)}</span>
-      </div>
-      <p class="summary-text">${escapeHtml(seasonalStateSummary(result))}</p>
-      <div class="seasonal-state-grid">
-        ${ELEMENT_LABELS.map((name) => {
-          const state = seasonal.states[name] || "休";
-          return `
-            <article class="seasonal-state-card">
-              <span class="table-mark ${elementClass(name)}">${name}</span>
-              <strong>${escapeHtml(state)}</strong>
-              <p>${escapeHtml(SEASONAL_STATE_TEXT[state])}</p>
-            </article>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
-
 function renderFiveElementsSection(result) {
   return `
     <div class="card-head">
@@ -980,16 +878,9 @@ function renderFiveElementsSection(result) {
     <p class="section-copy">ここでは命主を取り巻く全体環境として、木火土金水の偏りをひとまとまりで見ます。</p>
     ${renderElementLegend()}
     <div class="soft-panel">
-      <div class="element-analysis-layout">
-        ${renderFiveElementWheel(result)}
-        <div>
-          ${renderElementReading(result)}
-          ${renderElementBars(result)}
-        </div>
-      </div>
+      ${renderElementBars(result)}
       <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
     </div>
-    ${renderSeasonalElementStates(result)}
     ${renderElementStateCards(result)}
   `;
 }

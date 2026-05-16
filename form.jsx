@@ -460,8 +460,17 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <p>{stemReading.text}</p>
             <div className="result-tags">{tags.map(t => <span key={t}># {t}</span>)}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
-              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}><strong>◆ {calculation.strength?.status}</strong><p style={{ fontSize: 12 }}>{calculation.strength?.text}</p></div>
-              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}><strong>◆ {calculation.pattern?.name}</strong><p style={{ fontSize: 12 }}>{calculation.pattern?.text}</p></div>
+              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <strong>◆ {calculation.strength?.status}</strong>
+                  <span style={{ fontSize: 10, fontFamily: 'var(--f-mono)', opacity: 0.6 }}>{Math.round(calculation.strength?.ratio * 100)}%</span>
+                </div>
+                <div style={{ height: 3, background: 'var(--rule)', borderRadius: 4, overflow: 'hidden', marginBottom: 12 }}>
+                  <div style={{ width: `${calculation.strength?.ratio * 100}%`, height: '100%', background: 'var(--gold)', transition: 'width 1s' }}></div>
+                </div>
+                <p style={{ fontSize: 12, margin: 0 }}>{calculation.strength?.text}</p>
+              </div>
+              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}><strong>◆ {calculation.pattern?.name}</strong><p style={{ fontSize: 12, margin: 0 }}>{calculation.pattern?.text}</p></div>
             </div>
             {calculation.yongShen && (
               <div style={{ marginTop: 16, padding: '20px', background: 'color-mix(in srgb, var(--seal) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>

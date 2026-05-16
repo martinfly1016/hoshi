@@ -27,6 +27,7 @@
 | v0.2.7 | 2026-05-16 18:58 JST | 后台验证页 | `/shichusuimei/free/index.html` 詳解区 | 新增日柱/婚姻宮详解：按日支、藏干/支神、日主与日支五行关系展开亲密关系读法；手机端结果 tab 改为换行显示避免裁切 | `/shichusuimei/free/index.html?v=free-20260516-marriage-1` | `/archive/pre-marriage-palace-reading-20260516/shichusuimei/free/index.html?v=free-20260516-elements-1` | main `b11d1e5` / gh-pages `2ca1eaf` |
 | v0.2.8 | 2026-05-16 19:04 JST | 后台验证页 | `/shichusuimei/free/index.html` 詳解区 | 将四柱坐从单独日柱扩展为年柱/月柱/日柱/时柱四张详解卡，解释各柱坐支、藏干/支神、自坐十二运和人生领域含义 | `/shichusuimei/free/index.html?v=free-20260516-seats-1` | `/archive/pre-four-pillar-seat-reading-20260516/shichusuimei/free/index.html?v=free-20260516-marriage-1` | main `ee240ab` / gh-pages `cea4a52` |
 | v0.2.9 | 2026-05-16 19:10 JST | 后台验证页 | `/shichusuimei/free/index.html` 詳解区 | 新增四柱读取位置可视化：将每柱拆成天干/地支并标注来源含义，突出「日柱・地支＝婚姻宮」以说明解读依据 | `/shichusuimei/free/index.html?v=free-20260516-source-map-1` | `/archive/pre-reading-source-map-20260516/shichusuimei/free/index.html?v=free-20260516-seats-1` | main `0d389b1` / gh-pages `8c69d70` |
+| v0.3.0 | 2026-05-16 19:16 JST | 后台验证页 | `/shichusuimei/free/index.html` 结果信息架构 | 将结果区从多个细分 tab 重组为三页：「命式」「命式詳細」「大運流年」；保留旧 section 参数兼容映射 | `/shichusuimei/free/index.html?v=free-20260516-three-pages-1` | `/archive/pre-three-result-pages-20260516/shichusuimei/free/index.html?v=free-20260516-source-map-1` | 待提交 |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -69,3 +70,5 @@
 - v0.2.8 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机全页截图确认四柱坐详解卡无重叠、无裁切，结果 tab 可见。
 - 后台验证页 v0.2.9：按 Wreal 反馈，详解区新增「読み取り位置」可视化定位图，四柱拆成天干/地支两层，并对每个位置标注来源含义。日柱地支额外高亮并加「婚姻宮」标签，说明婚姻/亲密关系读法来自四柱中的具体位置。
 - v0.2.9 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机全页截图确认定位图、婚姻宮标签无重叠、无裁切。
+- 后台验证页 v0.3.0：按 Wreal 要求，先将结果信息拆成三个主页面：「命式」承载基础命盘和日主概览；「命式詳細」承载五行、十神、读取位置、四柱坐、婚姻宫等详细解释；「大運流年」承载大运、流年、流月、流日。旧的 `section=reading/elements/structure/meta` 会映射到命式詳細，`section=day-master/chart` 映射到命式，`section=luck` 映射到大運流年。
+- v0.3.0 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机截图分别检查 `section=meishiki/detail/luck`，三页 tab 高亮正确、内容不混页、无明显重叠或裁切。

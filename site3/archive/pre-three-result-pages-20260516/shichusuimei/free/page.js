@@ -419,9 +419,13 @@ const STRUCTURE_GUIDES = {
   },
 };
 const RESULT_SECTION_TABS = [
-  { id: "page-meishiki", label: "命式", query: "meishiki", aliases: ["day-master", "chart"] },
-  { id: "page-detail", label: "命式詳細", query: "detail", aliases: ["elements", "structure", "reading", "interpretation", "meta"] },
-  { id: "page-luck", label: "大運流年", query: "luck", aliases: ["fortune"] },
+  { id: "card-day-master", label: "日主", query: "day-master" },
+  { id: "card-elements", label: "五行", query: "elements" },
+  { id: "card-structure", label: "十神", query: "structure" },
+  { id: "card-interpretation", label: "解説", query: "reading" },
+  { id: "card-luck", label: "運勢", query: "luck" },
+  { id: "card-chart", label: "命盤", query: "chart" },
+  { id: "card-meta", label: "補足", query: "meta" },
 ];
 const DEFAULT_RESULT_SECTION_ID = RESULT_SECTION_TABS[0].id;
 const MOBILE_RESULTS_MEDIA = window.matchMedia("(max-width: 760px)");
@@ -455,9 +459,7 @@ function currentClockTime() {
 
 function resolveResultSectionId(value) {
   const normalized = String(value || "").trim().toLowerCase();
-  const match = RESULT_SECTION_TABS.find((item) => (
-    item.id === normalized || item.query === normalized || (item.aliases || []).includes(normalized)
-  ));
+  const match = RESULT_SECTION_TABS.find((item) => item.id === normalized || item.query === normalized);
   return match ? match.id : DEFAULT_RESULT_SECTION_ID;
 }
 
@@ -1534,80 +1536,6 @@ function renderInterpretationSection(result) {
   `;
 }
 
-function renderChartSection(result) {
-  return `
-    <div class="card-head">
-      <div>
-        <p class="card-kicker">BASE / CHART</p>
-        <h2>命式盤をそのまま確認する</h2>
-      </div>
-    </div>
-    <p class="section-copy">まずは四柱そのものを確認し、そのあとに納音・空亡・地勢・自坐の補足を見られるようにしています。</p>
-    ${renderPillarCards(result)}
-    <div class="chart-shell">
-      ${renderTraditionalChart(result)}
-    </div>
-    ${renderAuxiliaryCard(result)}
-  `;
-}
-
-function renderMetaSection(result) {
-  return `
-    <div class="card-head">
-      <div>
-        <p class="card-kicker">META / NOTES</p>
-        <h2>計算条件と注意事項</h2>
-      </div>
-    </div>
-    <div class="meta-stack">
-      ${renderMeta(result)}
-      ${renderWarnings(result)}
-    </div>
-  `;
-}
-
-function renderMeishikiPage(result) {
-  return `
-    <div class="page-stack">
-      <section class="page-block">
-        ${renderChartSection(result)}
-      </section>
-      <section class="page-block">
-        ${renderDayMasterSection(result)}
-      </section>
-    </div>
-  `;
-}
-
-function renderDetailPage(result) {
-  return `
-    <div class="page-stack">
-      <section class="page-block">
-        ${renderFiveElementsSection(result)}
-      </section>
-      <section class="page-block">
-        ${renderStructureSection(result)}
-      </section>
-      <section class="page-block">
-        ${renderInterpretationSection(result)}
-      </section>
-      <section class="page-block">
-        ${renderMetaSection(result)}
-      </section>
-    </div>
-  `;
-}
-
-function renderLuckPage(result) {
-  return `
-    <div class="page-stack">
-      <section class="page-block">
-        ${renderLuckCyclesSection(result)}
-      </section>
-    </div>
-  `;
-}
-
 function directionLabel(value) {
   if (value === "forward") return "順行";
   if (value === "backward") return "逆行";
@@ -1770,16 +1698,52 @@ function renderResult(result) {
   element("result").innerHTML = `
     ${renderSectionRail()}
 
-    <section id="page-meishiki" class="section insight-card">
-      ${renderMeishikiPage(result)}
+    <section id="card-day-master" class="section insight-card">
+      ${renderDayMasterSection(result)}
     </section>
 
-    <section id="page-detail" class="section insight-card">
-      ${renderDetailPage(result)}
+    <section id="card-elements" class="section insight-card">
+      ${renderFiveElementsSection(result)}
     </section>
 
-    <section id="page-luck" class="section insight-card">
-      ${renderLuckPage(result)}
+    <section id="card-structure" class="section insight-card">
+      ${renderStructureSection(result)}
+    </section>
+
+    <section id="card-interpretation" class="section insight-card">
+      ${renderInterpretationSection(result)}
+    </section>
+
+    <section id="card-luck" class="section insight-card">
+      ${renderLuckCyclesSection(result)}
+    </section>
+
+    <section id="card-chart" class="section insight-card">
+      <div class="card-head">
+        <div>
+          <p class="card-kicker">BASE / CHART</p>
+          <h2>命式盤をそのまま確認する</h2>
+        </div>
+      </div>
+      <p class="section-copy">まずは四柱そのものを確認し、そのあとに納音・空亡・地勢・自坐の補足を見られるようにしています。</p>
+      ${renderPillarCards(result)}
+      <div class="chart-shell">
+        ${renderTraditionalChart(result)}
+      </div>
+      ${renderAuxiliaryCard(result)}
+    </section>
+
+    <section id="card-meta" class="section insight-card">
+      <div class="card-head">
+        <div>
+          <p class="card-kicker">META / NOTES</p>
+          <h2>計算条件と注意事項</h2>
+        </div>
+      </div>
+      <div class="meta-stack">
+        ${renderMeta(result)}
+        ${renderWarnings(result)}
+      </div>
     </section>
   `;
   bindResultRail();
@@ -1828,7 +1792,6 @@ function syncResultPresentation(shouldScroll = false) {
 
   const mobileTabbed = MOBILE_RESULTS_MEDIA.matches;
   result.classList.toggle("mobile-tabbed", mobileTabbed);
-  result.classList.add("paged-results");
 
   RESULT_SECTION_TABS.forEach((item) => {
     const section = element(item.id);
@@ -1836,7 +1799,7 @@ function syncResultPresentation(shouldScroll = false) {
     const isActive = item.id === activeResultSectionId;
     if (section) {
       section.classList.toggle("is-active", isActive);
-      section.toggleAttribute("hidden", !isActive);
+      section.toggleAttribute("hidden", mobileTabbed && !isActive);
     }
     if (button) {
       button.classList.toggle("is-active", isActive);

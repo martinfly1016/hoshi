@@ -66,45 +66,6 @@ const SEASONAL_STATE_TEXT = {
   死: "季節から最も遠く、意識して補いたい",
 };
 
-const ELEMENT_GENERATES = {
-  木: "火",
-  火: "土",
-  土: "金",
-  金: "水",
-  水: "木",
-};
-
-const ELEMENT_CONTROLS = {
-  木: "土",
-  土: "水",
-  水: "火",
-  火: "金",
-  金: "木",
-};
-
-const BRANCH_RELATIONSHIP_PROFILES = {
-  子: "感情や情報の流れが細やかで、言葉にしない気配を読みやすい関係性です。",
-  丑: "安心できる土台を重視し、時間をかけて信頼を積むほど安定しやすい関係性です。",
-  寅: "成長意欲が強く、互いに前へ進む刺激を求めやすい関係性です。",
-  卯: "柔らかな距離感や美意識が大切で、丁寧な配慮が関係を育てます。",
-  辰: "現実的な調整力があり、理想と生活基盤のすり合わせがテーマになりやすい関係性です。",
-  巳: "熱量と感受性が強く、惹きつけ合う一方で言葉の温度管理が大切です。",
-  午: "明るさや率直さが出やすく、関係の中で情熱と自己表現が強まります。",
-  未: "包容力と育てる力があり、互いの不安を受け止める姿勢が関係を整えます。",
-  申: "判断力と変化対応が鍵になり、知的な会話や現実的な連携が重要です。",
-  酉: "美意識や基準の高さが出やすく、尊重と適度な余白が関係を長持ちさせます。",
-  戌: "責任感と守る意識が強く、約束や信頼の扱いが関係の軸になります。",
-  亥: "共感や想像力が広がりやすく、自由さと安心感の両方を求める関係性です。",
-};
-
-const ELEMENT_RELATION_READING = {
-  same: "日主と同じ五行なので、対等さや自分らしさを保てる関係を求めやすい配置です。",
-  supported: "日支が日主を生じる関係なので、支えられる安心感や学び合いが関係の軸になりやすい配置です。",
-  output: "日主が日支へ生じる関係なので、表現すること、尽くすこと、相手に向けて力を出すことがテーマになりやすい配置です。",
-  wealth: "日主が日支を制する関係なので、現実的な責任、生活管理、相手との具体的な関わり方がテーマになりやすい配置です。",
-  pressure: "日支が日主を制する関係なので、関係の中で責任感や緊張感が生まれやすく、約束や境界線を整えることが大切です。",
-};
-
 const ROW_GUIDES = {
   干神: {
     icon: "神",
@@ -1286,70 +1247,6 @@ function renderLifeThemeCards(result) {
   `;
 }
 
-function elementRelationKey(dayElement, palaceElement) {
-  if (dayElement === palaceElement) return "same";
-  if (ELEMENT_GENERATES[palaceElement] === dayElement) return "supported";
-  if (ELEMENT_GENERATES[dayElement] === palaceElement) return "output";
-  if (ELEMENT_CONTROLS[dayElement] === palaceElement) return "wealth";
-  if (ELEMENT_CONTROLS[palaceElement] === dayElement) return "pressure";
-  return "same";
-}
-
-function dayMarriagePalaceReading(result) {
-  const dayPillar = result.pillars.day;
-  const dayElement = dayPillar.element.stem;
-  const palaceElement = dayPillar.element.branch;
-  const hiddenDetails = dayPillar.hiddenStemDetails || [];
-  const mainHidden = hiddenDetails[0];
-  const relationKey = elementRelationKey(dayElement, palaceElement);
-  const hiddenText = hiddenDetails
-    .map((detail) => `${detail.stem}${detail.element}${detail.tenGod ? `（${detail.tenGod}）` : ""}`)
-    .join("、") || "—";
-  return {
-    branch: dayPillar.branch,
-    branchElement: palaceElement,
-    hiddenText,
-    mainHiddenTenGod: mainHidden?.tenGod || "—",
-    profile: BRANCH_RELATIONSHIP_PROFILES[dayPillar.branch] || "日支は親密な関係で出やすい距離感や生活感を読む入口です。",
-    relation: ELEMENT_RELATION_READING[relationKey],
-    terrain: dayPillar.terrainByDay || dayPillar.terrainSelf || "—",
-  };
-}
-
-function renderMarriagePalaceDetail(result) {
-  const reading = dayMarriagePalaceReading(result);
-  return `
-    <div class="soft-panel marriage-palace-panel">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">日柱 / 婚姻宮</p>
-          <h3>日支から親密な関係の傾向を見る</h3>
-        </div>
-        <span class="balance-badge">${escapeHtml(reading.branch)} / ${escapeHtml(reading.branchElement)}</span>
-      </div>
-      <p class="summary-text">四柱推命では、日柱の地支を配偶者宮・婚姻宮として見ます。ここでは結婚の有無を断定せず、親密な関係で出やすい距離感、安心材料、摩擦の出方を読む入口として扱います。</p>
-      <div class="marriage-palace-grid">
-        <article class="mini-reading-card">
-          <span class="metric-label">日支</span>
-          <strong class="metric-value ${elementClass(reading.branchElement)}">${escapeHtml(reading.branch)}</strong>
-          <p>${escapeHtml(reading.profile)}</p>
-        </article>
-        <article class="mini-reading-card">
-          <span class="metric-label">藏干・支神</span>
-          <strong class="metric-value">${escapeHtml(reading.mainHiddenTenGod)}</strong>
-          <p>${escapeHtml(`内側には ${reading.hiddenText} があり、表の態度だけでなく本音や生活感として現れやすい要素を見ます。`)}</p>
-        </article>
-        <article class="mini-reading-card">
-          <span class="metric-label">日主との関係</span>
-          <strong class="metric-value">${escapeHtml(reading.branchElement)}</strong>
-          <p>${escapeHtml(reading.relation)}</p>
-        </article>
-      </div>
-      <p class="summary-text">${escapeHtml(`十二運では ${reading.terrain} と見ます。関係性の詳解では、この日支に大運・流年が冲・合・刑・害を起こす年を重ねると、出会い方、関係の変化、距離感の調整ポイントをさらに具体化できます。`)}</p>
-    </div>
-  `;
-}
-
 function renderInterpretationSection(result) {
   return `
     <div class="card-head">
@@ -1362,7 +1259,6 @@ function renderInterpretationSection(result) {
     <p class="section-copy">この解説は、排盤結果からルールベースで作る初版文案です。吉凶を断定せず、日本ユーザーに命式の見方を説明する目的で配置しています。</p>
     ${renderInterpretationSummary(result)}
     ${renderBalancingSection(result)}
-    ${renderMarriagePalaceDetail(result)}
     ${renderLifeThemeCards(result)}
     <p class="notice">注意: 現段階の解説は検証用です。出生時間不明、真太陽時、23:00 子時の流派差により、時柱や一部解釈は変わる可能性があります。</p>
   `;

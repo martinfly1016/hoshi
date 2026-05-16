@@ -293,9 +293,6 @@ const BAZI_ROW_GUIDES = {
   藏干: { icon: '蔵', hint: '内側の気配' },
   支神: { icon: '支', hint: '内側の役割' },
   纳音: { icon: '音', hint: '補助的な象意' },
-  空亡: { icon: '空', hint: '抜けやすい気' },
-  地勢: { icon: '勢', hint: '日主から見た勢い' },
-  自坐: { icon: '坐', hint: '柱そのものの足場' },
 };
 const ELEMENT_LABELS = ['木', '火', '土', '金', '水'];
 const ELEMENT_CLASS = { 木: 'wood', 火: 'fire', 土: 'earth', 金: 'metal', 水: 'water' };
@@ -656,7 +653,7 @@ function PillarMeaningCards({ calculation, onFocus }) {
   );
 }
 
-function BaziStructureBoard({ calculation, activePillar, onFocus }) {
+function BaziStructureBoard({ calculation }) {
   const order = ['year', 'month', 'day', 'hour'];
   const rows = [
     {
@@ -696,21 +693,6 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
       className: 'bazi-flat',
       render: (pillar) => <span className={elementClass((pillar.naYin || '').slice(-1))}>{pillar.naYin || '—'}</span>,
     },
-    {
-      label: '空亡',
-      className: 'bazi-flat',
-      render: (pillar) => <span>{(pillar.voidBranches || []).join('') || '—'}</span>,
-    },
-    {
-      label: '地勢',
-      className: 'bazi-flat',
-      render: (pillar) => <span>{pillar.terrainByDay || pillar.lifeStage || '—'}</span>,
-    },
-    {
-      label: '自坐',
-      className: 'bazi-flat',
-      render: (pillar) => <span>{pillar.terrainSelf || pillar.lifeStage || '—'}</span>,
-    },
   ];
   return (
     <section className="bazi-structure-section" aria-label="命式構造表">
@@ -724,11 +706,7 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
       <div className="bazi-board-pro">
         <div className="bazi-pro-row bazi-pro-head">
           <div className="bazi-pro-label"><span className="bazi-head-label">項目</span></div>
-          {order.map(key => (
-            <button key={key} type="button" className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-column' : ''}`} onClick={() => onFocus?.(activePillar === key ? null : key)}>
-              {PILLAR_LABELS[key]}
-            </button>
-          ))}
+          {order.map(key => <div key={key} className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''}`}>{PILLAR_LABELS[key]}</div>)}
         </div>
         {rows.map(row => {
           const guide = BAZI_ROW_GUIDES[row.label] || { icon: row.label.slice(0, 1), hint: '' };
@@ -741,9 +719,9 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
                 </div>
               </div>
               {order.map(key => (
-                <button key={`${row.label}-${key}`} type="button" className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-column' : ''}`} onClick={() => onFocus?.(activePillar === key ? null : key)}>
+                <div key={`${row.label}-${key}`} className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''}`}>
                   {row.render(calculation.pillars[key], key)}
-                </button>
+                </div>
               ))}
             </div>
           );
@@ -821,10 +799,24 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <div id="s0" className="result-wide result-chart-section" style={{ paddingTop: 10 }}>
             <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
               <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式（排盤）</h2>
-              <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>あなたの生年月日から導き出された四柱を、検証ページと同じ表形式で確認します。</p>
+              <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>あなたの生年月日から導き出された、人生の縮図となる四つの柱です。</p>
             </div>
-            <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
+            <div className="pillars">
+              {['hour', 'day', 'month', 'year'].map((key) => {
+                const p = calculation.pillars[key];
+                const iv = p.voidBranches?.includes(p.branch);
+                const role = { year: '先祖・環境', month: '社会・仕事', day: '自分・家庭', hour: '未来・子供' }[key];
+                return (
+                  <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`} onClick={() => setActivePillar(activePillar === key ? null : key)}>
+                    <div className="lbl">{PILLAR_LABELS[key]}{iv && <span style={{color:'var(--seal)'}}>[空]</span>}<br/><span style={{fontSize:9,opacity:0.6}}>{role}</span></div>
+                    <div className="gz"><span className={`top ${elementClass(p.element.stem)}`}>{p.stem}</span><span className={`btm ${elementClass(p.element.branch)}`}>{p.branch}</span></div>
+                    <div className="nayin"><strong>{calculation.tenGods[key]}</strong><br/>{p.lifeStage}</div>
+                  </div>
+                );
+              })}
+            </div>
             <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
+            <BaziStructureBoard calculation={calculation} />
             <ChartStateOverview calculation={calculation} />
           </div>
 

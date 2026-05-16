@@ -105,44 +105,6 @@ const ELEMENT_RELATION_READING = {
   pressure: "日支が日主を制する関係なので、関係の中で責任感や緊張感が生まれやすく、約束や境界線を整えることが大切です。",
 };
 
-const PILLAR_SEAT_GUIDES = {
-  year: {
-    title: "年柱の坐",
-    scope: "家系・幼少期・社会に出る前の土台",
-    text: "年柱の天干がどんな地支に坐るかで、命主が受け継ぎやすい空気、初期環境、外側から見られやすい印象を読みます。",
-  },
-  month: {
-    title: "月柱の坐",
-    scope: "仕事環境・社会性・現実で使う力",
-    text: "月柱は月令に近く、命式全体の季節感を握ります。仕事や役割の中で、どの力が地に足をつけやすいかを見ます。",
-  },
-  day: {
-    title: "日柱の坐",
-    scope: "本人の居場所・親密な関係・婚姻宮",
-    text: "日柱は命主本人に最も近く、日支は配偶者宮・婚姻宮としても見ます。自分が安心する距離感や関係性の質を読みます。",
-  },
-  hour: {
-    title: "時柱の坐",
-    scope: "未来志向・晩年・子女や表現の芽",
-    text: "時柱はこれから伸びる力や内側の願いを見ます。長期的に育てたい才能、晩年のテーマ、表現の出口を読む場所です。",
-  },
-};
-
-const TERRAIN_SELF_READING = {
-  長生: "始まりと成長の気があり、素直に伸ばすほど力が出ます。",
-  沐浴: "感受性と揺らぎが強く、魅力と迷いが同時に出やすい状態です。",
-  冠帯: "見せ方や社会的な整え方に力が入り、役割意識が育ちます。",
-  建禄: "自立心と実務力が強く、自分の足で立つほど安定します。",
-  帝旺: "勢いが最も強く、主導権や存在感が前に出やすい状態です。",
-  衰: "勢いを整理し、経験をもとに落ち着いて判断する状態です。",
-  病: "繊細さが出やすく、無理をせず整えることで感覚が活きます。",
-  死: "一度区切りをつけ、不要なものを手放すことで次へ進む状態です。",
-  墓: "内側に蓄える力があり、深くしまい込んだ資質を掘り起こします。",
-  絶: "既存の型から離れやすく、変化や転機を通じて再構成する状態です。",
-  胎: "まだ形になる前の可能性があり、準備と育成が大切です。",
-  養: "守られながら育つ気があり、環境を整えるほど安定します。",
-};
-
 const ROW_GUIDES = {
   干神: {
     icon: "神",
@@ -1388,71 +1350,6 @@ function renderMarriagePalaceDetail(result) {
   `;
 }
 
-function pillarSeatReading(result, key) {
-  const pillar = result.pillars[key];
-  const guide = PILLAR_SEAT_GUIDES[key];
-  const stemElement = pillar.element.stem;
-  const branchElement = pillar.element.branch;
-  const hiddenDetails = pillar.hiddenStemDetails || [];
-  const mainHidden = hiddenDetails[0];
-  const relationKey = elementRelationKey(stemElement, branchElement);
-  const hiddenText = hiddenDetails
-    .map((detail) => `${detail.stem}${detail.element}${detail.tenGod ? `（${detail.tenGod}）` : ""}`)
-    .join("、") || "—";
-  const selfTerrain = pillar.terrainSelf || "—";
-  return {
-    key,
-    guide,
-    text: pillar.text,
-    stem: pillar.stem,
-    branch: pillar.branch,
-    stemElement,
-    branchElement,
-    hiddenText,
-    mainHiddenTenGod: mainHidden?.tenGod || "—",
-    relation: ELEMENT_RELATION_READING[relationKey],
-    selfTerrain,
-    selfTerrainText: TERRAIN_SELF_READING[selfTerrain] || "この柱の天干が地支に坐る時の勢いを見ます。",
-  };
-}
-
-function renderPillarSeatDetails(result) {
-  const readings = PILLAR_KEYS.map((key) => pillarSeatReading(result, key));
-  return `
-    <div class="soft-panel pillar-seat-panel">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">四柱 / 坐</p>
-          <h3>四柱それぞれの坐を詳しく見る</h3>
-        </div>
-        <span class="balance-badge">年・月・日・時</span>
-      </div>
-      <p class="summary-text">「坐」は、それぞれの柱の天干がどの地支の上に乗っているかを見る読み方です。表に出る天干と、足元にある地支・藏干・十二運を合わせることで、その柱の力が安定しやすいか、揺れやすいか、どこで発揮されやすいかを読みます。</p>
-      <div class="pillar-seat-grid">
-        ${readings.map((reading) => `
-          <article class="pillar-seat-card">
-            <div class="pillar-seat-head">
-              <span class="metric-label">${escapeHtml(reading.guide.title)}</span>
-              <strong class="pillar-seat-value">
-                <span class="${elementClass(reading.stemElement)}">${escapeHtml(reading.stem)}</span><span class="${elementClass(reading.branchElement)}">${escapeHtml(reading.branch)}</span>
-              </strong>
-              <p>${escapeHtml(reading.guide.scope)}</p>
-            </div>
-            <div class="mini-meta-list">
-              <span><strong>坐</strong>${escapeHtml(`${reading.stem}${reading.stemElement} → ${reading.branch}${reading.branchElement}`)}</span>
-              <span><strong>自坐</strong>${escapeHtml(reading.selfTerrain)}</span>
-              <span><strong>主な支神</strong>${escapeHtml(reading.mainHiddenTenGod)}</span>
-            </div>
-            <p>${escapeHtml(reading.guide.text)}</p>
-            <p>${escapeHtml(`藏干は ${reading.hiddenText}。${reading.relation}`)}</p>
-            <p>${escapeHtml(`十二運の自坐は ${reading.selfTerrain}。${reading.selfTerrainText}`)}</p>
-          </article>
-        `).join("")}
-      </div>
-    </div>
-  `;
-}
-
 function renderInterpretationSection(result) {
   return `
     <div class="card-head">
@@ -1465,7 +1362,6 @@ function renderInterpretationSection(result) {
     <p class="section-copy">この解説は、排盤結果からルールベースで作る初版文案です。吉凶を断定せず、日本ユーザーに命式の見方を説明する目的で配置しています。</p>
     ${renderInterpretationSummary(result)}
     ${renderBalancingSection(result)}
-    ${renderPillarSeatDetails(result)}
     ${renderMarriagePalaceDetail(result)}
     ${renderLifeThemeCards(result)}
     <p class="notice">注意: 現段階の解説は検証用です。出生時間不明、真太陽時、23:00 子時の流派差により、時柱や一部解釈は変わる可能性があります。</p>

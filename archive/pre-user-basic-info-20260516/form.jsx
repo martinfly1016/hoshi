@@ -937,54 +937,6 @@ function BackendDetailSync({ calculation }) {
   );
 }
 
-function genderDisplay(profile) {
-  if (profile?.gender === 'yang') return '男性（陽）';
-  if (profile?.gender === 'yin') return '女性（陰）';
-  return '選択しない';
-}
-
-function timeDisplay(calculation, profile) {
-  const input = calculation.inputEcho || {};
-  if (profile?.unsure || !input.timeKnown) return '時間不明（12:00で仮計算）';
-  const shi = profile?.shi ? `${profile.shi}の刻` : '時辰';
-  return `${shi} / ${input.time || '—'}`;
-}
-
-function BasicInfoPanel({ name, calculation, profile }) {
-  const input = calculation.inputEcho || {};
-  const meta = calculation.calculationMeta || {};
-  const location = profile?.location || meta.location || {};
-  const rows = [
-    { label: 'お名前', value: name || '未入力' },
-    { label: '性別', value: genderDisplay(profile) },
-    { label: '生年月日', value: input.date || meta.inputDateTime?.slice(0, 10) || '—' },
-    { label: '出生時間', value: timeDisplay(calculation, profile) },
-    { label: '出生地', value: stripJapan(location.label || meta.location?.label || '—') },
-    { label: '時区', value: meta.timezone || location.timezone || '—' },
-    { label: '真太阳时', value: meta.trueSolarTime === 'applied' ? meta.effectiveBirthDateTime : '未補正' },
-    { label: '四柱', value: calculation.pillarLine || PILLAR_KEYS.map(key => calculation.pillars[key].text).join(' / ') },
-  ];
-  return (
-    <section id="s0" className="basic-info-panel result-wide" aria-label="命式の基本情報">
-      <div className="basic-info-head">
-        <div>
-          <div className="summary-kicker">基本情報</div>
-          <h2>命式を読むための前提</h2>
-        </div>
-        <strong>日主 {calculation.dayMaster}</strong>
-      </div>
-      <div className="basic-info-grid">
-        {rows.map(row => (
-          <div className="basic-info-item" key={row.label}>
-            <span>{row.label}</span>
-            <strong>{row.value || '—'}</strong>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
   const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '' };
@@ -1002,8 +954,8 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['基本情報','四柱の構成','日主','五行バランス','次の鑑定'].map((n, i) => (
-            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆','伍'][i]}</span>　{n}</div>
+          {['四柱の構成','日主','五行バランス','次の鑑定'].map((n, i) => (
+            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
         </div>
@@ -1015,9 +967,8 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>まずは命盤そのものを素早く確認できます。詳しい読み解きは「命式詳細」と「大運・流年」に分けています。</p>
           </div>
-          <BasicInfoPanel name={name} calculation={calculation} profile={profile} />
           
-          <div id="s1" className="result-wide result-chart-section" style={{ paddingTop: 10 }}>
+          <div id="s0" className="result-wide result-chart-section" style={{ paddingTop: 10 }}>
             <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
               <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式（排盤）</h2>
               <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>年柱・月柱・日柱・時柱を横に並べ、命盤の基本構造だけを確認します。</p>
@@ -1026,7 +977,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
           </div>
 
-          <div className="result-summary result-wide" id="s2" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+          <div className="result-summary result-wide" id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
               <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 32 }}>{STEM_ICONS[calculation.dayMaster]}</div>
               <div><div style={{ fontSize: 13, color: 'var(--ink-3)' }}>あなたを表す星（日主）： <strong>{calculation.dayMaster}</strong></div><h2 style={{ margin: 0, fontSize: 24 }}>{stemReading.title}</h2></div>
@@ -1034,7 +985,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <p>{stemReading.text}</p>
             <div className="result-tags">{(STEM_READING[calculation.dayMaster]?.tags || []).map(t => <span key={t}># {t}</span>)}</div>
           </div>
-          <div id="s3" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+          <div id="s2" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
              <div className="result-summary result-wide" style={{ paddingTop: 0, textAlign: 'center' }}>
                <div className="summary-kicker">五行バランス</div>
                <h2 style={{ fontSize: 22, margin: '6px 0 8px' }}>強く出る五行は {dominantElements || '—'}</h2>
@@ -1053,7 +1004,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
              </div>
              <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
           </div>
-          <div id="s4" className="result-wide next-actions" style={{ marginTop: 64 }}>
+          <div id="s3" className="result-wide next-actions" style={{ marginTop: 64 }}>
             <button onClick={onShowInsight}>命式詳細を読む <span>詳解</span></button>
             <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
           </div>

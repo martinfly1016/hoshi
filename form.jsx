@@ -169,7 +169,7 @@ function Rite({ onBack, onSubmitDone }) {
 
         <FormField num="壹 / 一" ja="お名前" romaji="O · NA · MAE"
           hint="※ 省略可。結果画面での呼び名として使用します">
-          <div className="input-line with-mark" data-mark="NAME">
+          <div className="input-line">
             <input
               type="text"
               value={name}

@@ -286,14 +286,6 @@ const PILLAR_READING = {
   day: { icon: '我', title: '日柱は本人と大切な関係', text: '日主を含む中心の柱です。本人の核と、近い関係性の傾向を見ます。' },
   hour: { icon: '芽', title: '時柱は未来と内側の可能性', text: '内面、晩年、これから育つテーマを見ます。' },
 };
-const BAZI_ROW_GUIDES = {
-  干神: { icon: '神', hint: '表に出る役割' },
-  天干: { icon: '天', hint: '外に見える性質' },
-  地支: { icon: '地', hint: '足元の環境' },
-  藏干: { icon: '蔵', hint: '内側の気配' },
-  支神: { icon: '支', hint: '内側の役割' },
-  纳音: { icon: '音', hint: '補助的な象意' },
-};
 const ELEMENT_LABELS = ['木', '火', '土', '金', '水'];
 const ELEMENT_CLASS = { 木: 'wood', 火: 'fire', 土: 'earth', 金: 'metal', 水: 'water' };
 const STEM_YINYANG = { 甲: '陽', 乙: '陰', 丙: '陽', 丁: '陰', 戊: '陽', 己: '陰', 庚: '陽', 辛: '陰', 壬: '陽', 癸: '陰' };
@@ -653,85 +645,6 @@ function PillarMeaningCards({ calculation, onFocus }) {
   );
 }
 
-function BaziStructureBoard({ calculation }) {
-  const order = ['year', 'month', 'day', 'hour'];
-  const rows = [
-    {
-      label: '干神',
-      className: 'bazi-god',
-      render: (_pillar, key) => <strong>{calculation.tenGods[key] || '—'}</strong>,
-    },
-    {
-      label: '天干',
-      className: 'bazi-stem',
-      render: (pillar) => <strong className={elementClass(pillar.element.stem)}>{pillar.stem}</strong>,
-    },
-    {
-      label: '地支',
-      className: 'bazi-branch',
-      render: (pillar) => <strong className={elementClass(pillar.element.branch)}>{pillar.branch}</strong>,
-    },
-    {
-      label: '藏干',
-      className: 'bazi-detail',
-      render: (pillar) => (pillar.hiddenStemDetails?.length
-        ? pillar.hiddenStemDetails
-        : pillar.hiddenStems.map(stem => ({ stem }))
-      ).map((detail, index) => (
-        <span key={`${detail.stem}-${index}`} className={`mini-line ${elementClass(detail.element)}`}>{detail.stem}{detail.element ? `・${detail.element}` : ''}</span>
-      )),
-    },
-    {
-      label: '支神',
-      className: 'bazi-detail',
-      render: (pillar) => pillar.hiddenStemDetails?.length ? pillar.hiddenStemDetails.map((detail, index) => (
-        <span key={`${detail.tenGod}-${index}`} className={`mini-line ${elementClass(detail.element)}`}>{detail.tenGod || '—'}</span>
-      )) : <span className="muted">—</span>,
-    },
-    {
-      label: '纳音',
-      className: 'bazi-flat',
-      render: (pillar) => <span className={elementClass((pillar.naYin || '').slice(-1))}>{pillar.naYin || '—'}</span>,
-    },
-  ];
-  return (
-    <section className="bazi-structure-section" aria-label="命式構造表">
-      <div className="bazi-structure-head">
-        <div>
-          <div className="summary-kicker">命式構造表</div>
-          <h3>四柱を横に並べて、要素ごとに確認する</h3>
-        </div>
-        <p>検証ページの詳細表と同じ読み方で、どの柱のどの要素から判断しているかを確認できます。</p>
-      </div>
-      <div className="bazi-board-pro">
-        <div className="bazi-pro-row bazi-pro-head">
-          <div className="bazi-pro-label"><span className="bazi-head-label">項目</span></div>
-          {order.map(key => <div key={key} className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''}`}>{PILLAR_LABELS[key]}</div>)}
-        </div>
-        {rows.map(row => {
-          const guide = BAZI_ROW_GUIDES[row.label] || { icon: row.label.slice(0, 1), hint: '' };
-          return (
-            <div key={row.label} className={`bazi-pro-row ${row.className}`}>
-              <div className="bazi-pro-label">
-                <div className="bazi-label-content">
-                  <span className="bazi-icon">{guide.icon}</span>
-                  <span><strong>{row.label}</strong><small>{guide.hint}</small></span>
-                </div>
-              </div>
-              {order.map(key => (
-                <div key={`${row.label}-${key}`} className={`bazi-pro-cell ${key === 'day' ? 'is-day' : ''}`}>
-                  {row.render(calculation.pillars[key], key)}
-                </div>
-              ))}
-            </div>
-          );
-        })}
-      </div>
-      <div className="bazi-scroll-hint">横にスクロールして、月柱・日柱・時柱を確認できます</div>
-    </section>
-  );
-}
-
 function ChartStateOverview({ calculation }) {
   const state = chartStateSummary(calculation);
   return (
@@ -796,7 +709,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           </div>
           <UserTagIndex tags={tags} onNavigate={navigateFromTag} />
           
-          <div id="s0" className="result-wide result-chart-section" style={{ paddingTop: 10 }}>
+          <div id="s0" style={{ paddingTop: 10 }}>
             <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
               <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式（排盤）</h2>
               <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>あなたの生年月日から導き出された、人生の縮図となる四つの柱です。</p>
@@ -816,7 +729,6 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
               })}
             </div>
             <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
-            <BaziStructureBoard calculation={calculation} />
             <ChartStateOverview calculation={calculation} />
           </div>
 

@@ -569,6 +569,33 @@ function UserTagIndex({ tags, onNavigate }) {
   );
 }
 
+function PillarMeaningCards({ calculation, onFocus }) {
+  return (
+    <div className="pillar-meaning-grid" aria-label="四柱が表す人生領域">
+      {['year', 'month', 'day', 'hour'].map((key) => {
+        const guide = PILLAR_READING[key];
+        const pillar = calculation.pillars[key];
+        return (
+          <article key={key} className={`pillar-meaning ${key === 'day' ? 'is-focus' : ''}`} onClick={() => onFocus(key)}>
+            <div className="pillar-meaning-icon">{guide.icon}</div>
+            <div>
+              <span>{PILLAR_LABELS[key]} / {pillar.text}</span>
+              <h3>{guide.title}</h3>
+              <p>{guide.text}</p>
+              <small>
+                {key === 'year' && '家系・幼少期・外から見える印象'}
+                {key === 'month' && '社会性・仕事環境・才能の使い方'}
+                {key === 'day' && '本人の核・日主・婚姻宮'}
+                {key === 'hour' && '内面・未来・晩年・子ども縁'}
+              </small>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
@@ -628,6 +655,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
                 );
               })}
             </div>
+            <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
           </div>
 
           <div className="result-summary result-wide" id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>

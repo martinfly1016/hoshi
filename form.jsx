@@ -1163,9 +1163,13 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
           {['hour', 'day', 'month', 'year'].map((key) => {
             const pillar = calculation.pillars[key];
             const shenShaList = getShenSha(pillar.branch, calculation.pillars.day.stem, calculation.pillars.year.branch, calculation.pillars.day.branch);
+            const isVoid = pillar.voidBranches?.includes(pillar.branch);
             return (
             <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''}`}>
-              <div className="lbl">{PILLAR_LABELS[key]}</div>
+              <div className="lbl">
+                {PILLAR_LABELS[key]}
+                {isVoid && <span style={{ marginLeft: 6, color: 'var(--seal)', fontSize: 9 }}>[空亡]</span>}
+              </div>
               <div className="gz">
                 <span className={`top ${elementClass(pillar.element.stem)}`}>
                   <div style={{ fontSize: '0.45em', opacity: 0.85, marginBottom: 4, filter: 'grayscale(0.2)' }}>{STEM_ICONS[pillar.stem] || ''}</div>
@@ -1173,7 +1177,11 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
                 </span>
                 <span className={`btm ${elementClass(pillar.element.branch)}`}>{pillar.branch}</span>
               </div>
-              <div className="nayin">{calculation.tenGods[key]}<br/>{pillar.naYin || '—'}</div>
+              <div className="nayin">
+                <span style={{ fontWeight: 'bold', color: 'var(--ink)' }}>{calculation.tenGods[key]}</span>
+                <div style={{ fontSize: '0.9em', marginTop: 2 }}>{pillar.lifeStage || '—'}</div>
+                <div style={{ fontSize: '0.8em', opacity: 0.6, marginTop: 4 }}>{pillar.naYin || '—'}</div>
+              </div>
               <div className="shensha">
                 {shenShaList.map(ss => <div key={ss} className="shensha-badge">{ss}</div>)}
               </div>

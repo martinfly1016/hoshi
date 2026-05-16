@@ -1048,17 +1048,9 @@ function FoundationDetailSections({ calculation }) {
 
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
-  const readingTags = React.useMemo(() => buildUserReadingTags(calculation, collectTenGods(calculation)), [calculation]);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-  };
-  const handleTagNavigate = (action) => {
-    if (action === 'fortune') {
-      onShowFortune();
-      return;
-    }
-    onShowInsight();
   };
 
   return (
@@ -1066,8 +1058,8 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['基本情報','四柱排盤','タグ索引','詳しい鑑定'].map((n, i) => (
-            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
+          {['基本情報','四柱排盤','詳しい鑑定'].map((n, i) => (
+            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
         </div>
@@ -1089,11 +1081,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
           </div>
 
-          <div id="s2" className="result-wide" style={{ marginTop: 44 }}>
-            <UserTagIndex tags={readingTags} onNavigate={handleTagNavigate} />
-          </div>
-
-          <div id="s3" className="result-wide next-actions" style={{ marginTop: 64 }}>
+          <div id="s2" className="result-wide next-actions" style={{ marginTop: 64 }}>
             <button onClick={onShowInsight}>命式詳細を読む <span>詳解</span></button>
             <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
           </div>

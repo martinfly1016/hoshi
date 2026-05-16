@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260516-accuracy-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260514-luck-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -692,9 +692,6 @@ function elementStatusLabel(value, min, max) {
 }
 
 function elementPercentages(result) {
-  if (result.fiveElements?.percentages) {
-    return result.fiveElements.percentages;
-  }
   const counts = result.fiveElements.counts;
   const total = Math.max(1, Object.values(counts).reduce((sum, value) => sum + value, 0));
   return Object.fromEntries(ELEMENT_LABELS.map((name) => [name, Math.round(((counts[name] || 0) / total) * 100)]));
@@ -1026,39 +1023,6 @@ function renderElementStateCards(result) {
   `;
 }
 
-function renderFiveElementAlgorithmPanel(result) {
-  const analysis = result.fiveElements || {};
-  const basis = analysis.basis || {};
-  const percentages = elementPercentages(result);
-  return `
-    <div class="algorithm-panel">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">ALGORITHM BASIS</p>
-          <h3>五行計算の根拠</h3>
-        </div>
-        <span class="balance-badge">平衡 ${escapeHtml(analysis.balanceScore ?? "—")}</span>
-      </div>
-      <p class="summary-text">五行は天干、地支の藏干、月柱の季節補正を合わせて点数化しています。表示用の構成比は raw points から算出し、丸めた件数だけに依存しないようにしています。</p>
-      <div class="algorithm-grid">
-        ${ELEMENT_LABELS.map((name) => `
-          <article class="algorithm-card">
-            <span class="table-mark ${elementClass(name)}">${name}</span>
-            <strong>${escapeHtml(`${percentages[name] || 0}%`)}</strong>
-            <p>${escapeHtml(`raw ${analysis.rawPoints?.[name] ?? "—"} / count ${analysis.counts?.[name] ?? 0}`)}</p>
-          </article>
-        `).join("")}
-      </div>
-      <div class="mini-meta-list algorithm-meta">
-        <span><strong>月支</strong>${escapeHtml(basis.monthBranch || "—")}</span>
-        <span><strong>月柱倍率</strong>${escapeHtml(basis.monthPillarMultiplier || "—")}</span>
-        <span><strong>天干基礎点</strong>${escapeHtml(basis.stemBasePoint || "—")}</span>
-        <span><strong>藏干基礎点</strong>${escapeHtml(basis.branchHiddenQiBasePoint || "—")}</span>
-      </div>
-    </div>
-  `;
-}
-
 function renderElementReading(result) {
   const reading = elementCompositionReading(result);
   return `
@@ -1120,7 +1084,6 @@ function renderFiveElementsSection(result) {
       <p class="summary-text">${escapeHtml(elementSummary(result))}</p>
     </div>
     ${renderSeasonalElementStates(result)}
-    ${renderFiveElementAlgorithmPanel(result)}
     ${renderElementStateCards(result)}
   `;
 }
@@ -1635,8 +1598,8 @@ function renderMeishikiSummaryCards(result) {
       </article>
       <article class="mini-reading-card">
         <span class="metric-label">主導五行</span>
-        <strong class="metric-value">${escapeHtml((result.fiveElements.dominant || strongestElements(result.fiveElements.counts)).join("・"))}</strong>
-        <p>${escapeHtml(`平衡スコア ${result.fiveElements.balanceScore ?? "—"}。詳細ページで偏りと補い方を確認します。`)}</p>
+        <strong class="metric-value">${escapeHtml(strongestElements(result.fiveElements.counts).join("・"))}</strong>
+        <p>命式全体で前に出やすい力です。詳細ページで偏りと補い方を確認します。</p>
       </article>
       <article class="mini-reading-card">
         <span class="metric-label">出生地・時刻</span>
@@ -1713,7 +1676,6 @@ function renderLuckPage(result) {
           { label: "流月・流日", text: "近い周期の確認" },
         ],
       })}
-      ${renderLuckOverviewCards(result)}
       <section class="page-block">
         ${renderLuckCyclesSection(result)}
       </section>
@@ -1749,60 +1711,6 @@ function renderLuckTable(items, columns) {
           `).join("")}
         </tbody>
       </table>
-    </div>
-  `;
-}
-
-function findCurrentDecadeFortune(result) {
-  const decade = result.luckCycles?.decadeFortunes;
-  const targetYear = result.luckCycles?.target?.year;
-  if (!decade || decade.status !== "ok" || !targetYear) return null;
-  return (decade.items || []).find((item) => item.startYear <= targetYear && targetYear <= item.endYear) || null;
-}
-
-function renderLuckOverviewCards(result) {
-  const luck = result.luckCycles || {};
-  const currentDecade = findCurrentDecadeFortune(result);
-  const annual = luck.annualFortunes?.[0];
-  const monthly = luck.monthlyFortunes?.[0];
-  const daily = luck.dailyFortunes?.[0];
-  const cards = [
-    {
-      label: "現在の大運",
-      value: currentDecade?.name || "未判定",
-      body: currentDecade
-        ? `${currentDecade.startYear}-${currentDecade.endYear} / ${currentDecade.pillar?.heavenlyTenGod || "十神未判定"}`
-        : "性別を選ぶと十年運を定位します。",
-      element: currentDecade?.pillar?.element?.stem,
-    },
-    {
-      label: "流年",
-      value: annual?.name || "—",
-      body: annual ? `${annual.year}年 / ${annual.pillar.element.stem}${annual.pillar.element.branch}` : "対象年を確認します。",
-      element: annual?.pillar?.element?.stem,
-    },
-    {
-      label: "流月",
-      value: monthly?.name || "—",
-      body: monthly ? `${monthly.index}月 / 節入 ${monthly.solarStartDate}` : "対象月を確認します。",
-      element: monthly?.pillar?.element?.stem,
-    },
-    {
-      label: "流日",
-      value: daily?.name || "—",
-      body: daily ? `${daily.date} / ${daily.pillar.element.stem}${daily.pillar.element.branch}` : "対象日を確認します。",
-      element: daily?.pillar?.element?.stem,
-    },
-  ];
-  return `
-    <div class="summary-mini-grid luck-overview-grid">
-      ${cards.map((card) => `
-        <article class="mini-reading-card">
-          <span class="metric-label">${escapeHtml(card.label)}</span>
-          <strong class="metric-value ${card.element ? elementClass(card.element) : ""}">${escapeHtml(card.value)}</strong>
-          <p>${escapeHtml(card.body)}</p>
-        </article>
-      `).join("")}
     </div>
   `;
 }

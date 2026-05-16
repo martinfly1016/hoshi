@@ -29,6 +29,7 @@
 | v0.2.9 | 2026-05-16 19:10 JST | 后台验证页 | `/shichusuimei/free/index.html` 詳解区 | 新增四柱读取位置可视化：将每柱拆成天干/地支并标注来源含义，突出「日柱・地支＝婚姻宮」以说明解读依据 | `/shichusuimei/free/index.html?v=free-20260516-source-map-1` | `/archive/pre-reading-source-map-20260516/shichusuimei/free/index.html?v=free-20260516-seats-1` | main `0d389b1` / gh-pages `8c69d70` |
 | v0.3.0 | 2026-05-16 19:16 JST | 后台验证页 | `/shichusuimei/free/index.html` 结果信息架构 | 将结果区从多个细分 tab 重组为三页：「命式」「命式詳細」「大運流年」；保留旧 section 参数兼容映射 | `/shichusuimei/free/index.html?v=free-20260516-three-pages-1` | `/archive/pre-three-result-pages-20260516/shichusuimei/free/index.html?v=free-20260516-source-map-1` | main `226eede` / gh-pages `f8469db` |
 | v0.3.1 | 2026-05-16 19:21 JST | 后台验证页 | 三页初版页面 | 在三页拆分基础上补齐页面头与页面级说明：完善「命式」总览卡，同时给「命式詳細」「大運流年」制作可独立阅读的初版页面开头 | `/shichusuimei/free/index.html?v=free-20260516-three-page-drafts-1` | `/archive/pre-three-page-first-drafts-20260516/shichusuimei/free/index.html?v=free-20260516-three-pages-1` | main `2f8651a` / gh-pages `1938d5d` |
+| v0.3.2 | 2026-05-16 19:34 JST | 后台算法 / 三页可视化 | `/shichusuimei/free/index.html` 五行算法与三页结果 | 五行统计从展示用整数升级为 raw points、构成比、主导/弱项/缺项、平衡分和计算根拠；「命式」显示平衡摘要，「命式詳細」新增五行計算の根拠卡，「大運流年」新增当前大运/流年/流月/流日概览卡 | `/shichusuimei/free/index.html?v=free-20260516-accuracy-visual-1` | `/archive/pre-algorithm-visual-20260516/shichusuimei/free/index.html?v=free-20260516-three-page-drafts-1` | main `pending` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -75,3 +76,6 @@
 - v0.3.0 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机截图分别检查 `section=meishiki/detail/luck`，三页 tab 高亮正确、内容不混页、无明显重叠或裁切。
 - 后台验证页 v0.3.1：继续完善三页初版。新增通用页面头 `PAGE 1 / MEISHIKI`、`PAGE 2 / DETAIL`、`PAGE 3 / LUCK`；命式页新增日主、主导五行、出生地/时刻总览卡；命式詳細与大運流年页补充页面级说明和本页内容摘要。
 - v0.3.1 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机截图分别检查三页，页面头和摘要卡可见，无明显重叠或裁切。
+- 后台验证页 v0.3.2：按 Wreal 对“完善后台算法，提高准确性，同时做好三个页面可视化”的反馈，先强化五行算法输出。后台现在保留 raw points，用天干、地支藏干、月柱季节权重和月柱倍率生成构成比，并输出主导五行、弱项、缺项、总点数和平衡分，避免前端只依赖四舍五入后的显示整数。
+- v0.3.2 三页可视化：命式页的主导五行卡补充平衡分；命式詳細页在五行区加入“五行計算の根拠”，展示五行百分比、raw point、count 和月支/月柱倍率/天干基礎点/藏干基礎点；大運流年页新增当前大运、流年、流月、流日四张概览卡，再进入表格细节。
+- v0.3.2 验证记录：`node --check site3/calculation-lab.js` 和 `node --check site3/shichusuimei/free/page.js` 通过；Node 样例 `1990-06-15 10:30 male` 返回 `庚午 / 壬午 / 辛亥 / 癸巳`，五行 raw points、百分比、平衡分和大运均正常；本地 390px 手机截图检查 `section=meishiki/detail/luck`，三页结果可见，无明显重叠或裁切。

@@ -1802,7 +1802,6 @@ function renderChartSection(result) {
     <div class="chart-shell">
       ${renderTraditionalChart(result)}
     </div>
-    ${renderAuxiliaryCard(result)}
   `;
 }
 

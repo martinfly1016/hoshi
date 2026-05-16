@@ -939,22 +939,32 @@ function BackendDetailSync({ calculation }) {
 
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
+  const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
+  const tenGods = collectTenGods(calculation);
   const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '' };
+  const tags = buildUserReadingTags(calculation, tenGods);
   const percentages = elementPercentages(calculation);
+  const shenShaSet = new Set();
+  PILLAR_KEYS.forEach(k => getShenSha(calculation.pillars[k].branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch).forEach(ss => shenShaSet.add(ss)));
+  const uniqueShenSha = Array.from(shenShaSet);
 
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
   };
-  const dominantElements = Object.entries(percentages).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([name]) => name).join('・');
-  const support = supportElements(calculation).join('・');
+  const navigateFromTag = (action) => {
+    if (action === 'fortune') onShowFortune();
+    else if (action === 'insight' || action === 'marriage') onShowInsight();
+    else if (action === 'elements') scrollTo('s2');
+    else scrollTo('s1');
+  };
 
   return (
     <section className="rite" data-screen-label="03 命式">
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['四柱の構成','日主','五行バランス','次の鑑定'].map((n, i) => (
+          {['四柱の構成','日主と性格','五行バランス','神煞'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
@@ -964,17 +974,17 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
         <div className="result-card" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
-            <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
-            <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>まずは命盤そのものを素早く確認できます。詳しい読み解きは「命式詳細」と「大運・流年」に分けています。</p>
           </div>
+          <UserTagIndex tags={tags} onNavigate={navigateFromTag} />
           
           <div id="s0" className="result-wide result-chart-section" style={{ paddingTop: 10 }}>
             <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
               <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式（排盤）</h2>
-              <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>年柱・月柱・日柱・時柱を横に並べ、命盤の基本構造だけを確認します。</p>
+              <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>あなたの生年月日から導き出された四柱を、検証ページと同じ表形式で確認します。</p>
             </div>
             <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
             <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
+            <ChartStateOverview calculation={calculation} />
           </div>
 
           <div className="result-summary result-wide" id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
@@ -984,13 +994,34 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             </div>
             <p>{stemReading.text}</p>
             <div className="result-tags">{(STEM_READING[calculation.dayMaster]?.tags || []).map(t => <span key={t}># {t}</span>)}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
+              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <strong>◆ {calculation.strength?.status}</strong>
+                  <span style={{ fontSize: 10, fontFamily: 'var(--f-mono)', opacity: 0.6 }}>{Math.round(calculation.strength?.ratio * 100)}%</span>
+                </div>
+                <div style={{ height: 3, background: 'var(--rule)', borderRadius: 4, overflow: 'hidden', marginBottom: 12 }}>
+                  <div style={{ width: `${calculation.strength?.ratio * 100}%`, height: '100%', background: 'var(--gold)', transition: 'width 1s' }}></div>
+                </div>
+                <p style={{ fontSize: 12, margin: 0 }}>{calculation.strength?.text}</p>
+              </div>
+              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}><strong>◆ {calculation.pattern?.name}</strong><p style={{ fontSize: 12, margin: 0 }}>{calculation.pattern?.text}</p></div>
+            </div>
+            {calculation.yongShen && (
+              <div style={{ marginTop: 16, padding: '20px', background: 'color-mix(in srgb, var(--seal) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                <div style={{ fontSize: 10, color: 'var(--ink-3)', marginBottom: 12 }}>守護の五行（調候用神）</div>
+                <div style={{ display: 'flex', gap: 20 }}>
+                   <div style={{ fontSize: 24 }}>{STEM_ICONS[calculation.yongShen.primary]}</div>
+                   <p style={{ fontSize: 13, margin: 0 }}>{calculation.yongShen.text}</p>
+                </div>
+              </div>
+            )}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 40 }}>
+            <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}><strong>❤️ 婚姻の視点</strong><p style={{ fontSize: 12 }}>{synthesis.marriage}</p></div>
+            <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}><strong>💰 事業の視点</strong><p style={{ fontSize: 12 }}>{synthesis.career}</p></div>
           </div>
           <div id="s2" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-             <div className="result-summary result-wide" style={{ paddingTop: 0, textAlign: 'center' }}>
-               <div className="summary-kicker">五行バランス</div>
-               <h2 style={{ fontSize: 22, margin: '6px 0 8px' }}>強く出る五行は {dominantElements || '—'}</h2>
-               <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>補いたい五行は {support || '—'}。細かな計算根拠と季節による強弱は「命式詳細」で確認できます。</p>
-             </div>
              <div style={{ maxWidth: 500, margin: '0 auto 48px', display: 'flex', flexDirection: 'column', gap: 12 }}>
                {ELEMENT_LABELS.map(el => (
                  <div key={el} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -1004,8 +1035,13 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
              </div>
              <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
           </div>
-          <div id="s3" className="result-wide next-actions" style={{ marginTop: 64 }}>
-            <button onClick={onShowInsight}>命式詳細を読む <span>詳解</span></button>
+          <div id="s3" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+              {uniqueShenSha.map(s => <div key={s} style={{ border: '1px solid var(--gold)', padding: '10px 20px', borderRadius: 4, fontSize: 13 }}>{s}</div>)}
+            </div>
+          </div>
+          <div className="result-wide next-actions" style={{ marginTop: 64 }}>
+            <button onClick={onShowInsight}>性格・才能の詳解 <span>診断</span></button>
             <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
           </div>
         </div>

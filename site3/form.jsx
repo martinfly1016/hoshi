@@ -79,7 +79,8 @@ function FormField({ num, ja, romaji, hint, children }) {
 function Rite({ onBack, onSubmitDone }) {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState('gen');
-  const [calendar, setCalendar] = React.useState('seireki'); // seireki | kyureki
+  // calendar state maps to the era toggle (seireki/showa/heisei/reiwa)
+  const [calendar, setCalendar] = React.useState('seireki'); // seireki | showa | heisei | reiwa
   const [year, setYear]   = React.useState('');
   const [month, setMonth] = React.useState('');
   const [day, setDay]     = React.useState('');
@@ -111,7 +112,15 @@ function Rite({ onBack, onSubmitDone }) {
     window.setTimeout(() => {
       try {
         const input = {
-          date: `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+          date: (() => {
+            let y = parseInt(year, 10);
+            if (!isNaN(y)) {
+              if (calendar === 'showa') y += 1925; // Showa 1 = 1926
+              else if (calendar === 'heisei') y += 1988; // Heisei 1 = 1989
+              else if (calendar === 'reiwa') y += 2018; // Reiwa 1 = 2019
+            }
+            return `${String(y).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          })(),
           timeKnown: !unsure,
           time: unsure ? '12:00' : (birthTime || representativeTime(shi)),
           locationId: selectedLocation.id,
@@ -197,17 +206,21 @@ function Rite({ onBack, onSubmitDone }) {
         </FormField>
 
         <FormField num="貳 / 一" ja="生年月日" romaji="SEI · NEN · GAPPI"
-          hint="誕生日の暦（西暦または旧暦）を選択し、入力してください">
+          hint="西暦または和暦（昭和・平成・令和）を選択し、入力してください">
           <div className="toggle-row">
             <button className={calendar === 'seireki' ? 'on' : ''}
               onClick={() => setCalendar('seireki')}>西　暦</button>
-            <button className={calendar === 'kyureki' ? 'on' : ''}
-              onClick={() => setCalendar('kyureki')}>旧　暦</button>
+            <button className={calendar === 'showa' ? 'on' : ''}
+              onClick={() => setCalendar('showa')}>昭　和</button>
+            <button className={calendar === 'heisei' ? 'on' : ''}
+              onClick={() => setCalendar('heisei')}>平　成</button>
+            <button className={calendar === 'reiwa' ? 'on' : ''}
+              onClick={() => setCalendar('reiwa')}>令　和</button>
           </div>
           <div className="input-row">
             <div className="input-line with-mark" data-mark="年 / Y">
               <input value={year} onChange={e => setYear(e.target.value)}
-                placeholder={calendar === 'seireki' ? '1996' : '1996 (丙子)'} />
+                placeholder={calendar === 'seireki' ? '1996' : '8'} />
             </div>
             <div className="input-line with-mark" data-mark="月 / M">
               <input value={month} onChange={e => setMonth(e.target.value)}
@@ -218,11 +231,6 @@ function Rite({ onBack, onSubmitDone }) {
                 placeholder="14" />
             </div>
           </div>
-          {calendar === 'kyureki' && (
-            <div style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.2em' }}>
-              ※ 旧暦・閏月の場合は「閏月」を指定してください
-            </div>
-          )}
         </FormField>
 
         <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEI · JI · KAN"

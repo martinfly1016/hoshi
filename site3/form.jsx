@@ -894,6 +894,16 @@ function FortuneView({ calculation, onBack }) {
                   <div style={{ fontSize: 12, color: luckItem.color, fontWeight: 'bold' }}>
                     {luckItem.item?.pillar?.heavenlyTenGod}
                   </div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8, minHeight: '3em' }}>
+                    {luckItem.item?.pillar?.fortuneTheme}
+                  </div>
+                  {luckItem.item?.impacts?.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 4, marginTop: 10 }}>
+                      {luckItem.item.impacts.map(imp => (
+                        <span key={imp.label} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                      ))}
+                    </div>
+                  )}
                   <div style={{ fontSize: 10, color: 'var(--ink-3)', marginTop: 8 }}>
                     {luckItem.item?.year || luckItem.item?.date || ''}
                   </div>
@@ -922,6 +932,14 @@ function FortuneView({ calculation, onBack }) {
                     </div>
                     <div style={{ flex: 1, fontSize: 13, color: 'var(--ink-2)' }}>
                       {d.pillar.heavenlyTenGod}
+                      <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 4 }}>{d.pillar.fortuneTheme}</div>
+                      {d.impacts?.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                          {d.impacts.map(imp => (
+                            <span key={imp.label} style={{ fontSize: 9, padding: '1px 6px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     {isCurrent && <div style={{ fontSize: 11, background: 'var(--gold)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em' }}>現在</div>}
                   </div>
@@ -950,6 +968,14 @@ function FortuneView({ calculation, onBack }) {
                     </div>
                     <div style={{ flex: 1, fontSize: 13, color: 'var(--ink-2)' }}>
                       {a.pillar.heavenlyTenGod}
+                      <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>{a.pillar.fortuneTheme}</div>
+                      {a.impacts?.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+                          {a.impacts.map(imp => (
+                            <span key={imp.label} style={{ fontSize: 9, padding: '1px 4px', borderRadius: 2, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     {isCurrent && <div style={{ fontSize: 11, background: 'var(--accent)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em' }}>今年</div>}
                   </div>

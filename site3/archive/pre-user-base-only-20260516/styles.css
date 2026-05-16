@@ -1327,67 +1327,6 @@ input, select { font-family: inherit; color: inherit; }
   line-height: 1.55;
   overflow-wrap: anywhere;
 }
-.foundation-detail-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin-top: 28px;
-}
-.day-master-detail {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
-}
-.day-master-symbol {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 1px solid var(--gold);
-  background: color-mix(in srgb, var(--gold) 10%, transparent);
-  display: grid;
-  place-items: center;
-  font-size: 32px;
-}
-.day-master-detail p {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 14px;
-  line-height: 1.9;
-}
-.foundation-element-bars {
-  max-width: 560px;
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-  margin: 20px auto 34px;
-}
-.foundation-element-row {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 46px;
-  align-items: center;
-  gap: 12px;
-}
-.foundation-element-row span {
-  font-weight: 700;
-}
-.foundation-element-row div {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--rule);
-  overflow: hidden;
-}
-.foundation-element-row i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-}
-.foundation-element-row strong {
-  color: var(--ink);
-  font-family: var(--f-mono);
-  font-size: 11px;
-  text-align: right;
-}
 .result-tags {
   display: flex;
   flex-wrap: wrap;
@@ -2271,9 +2210,6 @@ input, select { font-family: inherit; color: inherit; }
   }
   .basic-info-head {
     flex-direction: column;
-  }
-  .day-master-detail {
-    grid-template-columns: 1fr;
   }
   .result-wide { overflow-x: visible; }
   .backend-panel-head { align-items: flex-start; flex-direction: column; }

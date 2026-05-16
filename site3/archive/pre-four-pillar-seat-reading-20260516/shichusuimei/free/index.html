@@ -1991,48 +1991,6 @@
     line-height: 1.7;
   }
 
-  .pillar-seat-panel {
-    display: grid;
-    gap: 12px;
-  }
-
-  .pillar-seat-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .pillar-seat-card {
-    display: grid;
-    gap: 12px;
-    align-content: start;
-    min-height: 360px;
-    padding: 16px;
-    border: 1px solid rgba(235, 216, 196, 0.92);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.62);
-  }
-
-  .pillar-seat-head {
-    display: grid;
-    gap: 6px;
-  }
-
-  .pillar-seat-value {
-    color: #604735;
-    font-family: var(--font-display);
-    font-size: 34px;
-    line-height: 1;
-    letter-spacing: 0.04em;
-  }
-
-  .pillar-seat-card p {
-    color: var(--ink-2);
-    font-size: 13px;
-    line-height: 1.68;
-  }
-
   .luck-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2218,7 +2176,6 @@
     .detail-grid,
     .theme-grid,
     .marriage-palace-grid,
-    .pillar-seat-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2312,11 +2269,6 @@
       padding: 14px;
     }
 
-    .pillar-seat-card {
-      min-height: 0;
-      padding: 14px;
-    }
-
     .metric-grid,
     .element-stat-grid,
     .seasonal-state-grid,
@@ -2325,7 +2277,6 @@
     .detail-grid,
     .theme-grid,
     .marriage-palace-grid,
-    .pillar-seat-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: 1fr;
@@ -2476,6 +2427,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260516-seats-1"></script>
+<script type="module" src="./page.js?v=free-20260516-marriage-1"></script>
 </body>
 </html>

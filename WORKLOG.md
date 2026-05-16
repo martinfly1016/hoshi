@@ -25,6 +25,7 @@
 | v0.2.5 | 2026-05-15 00:26 JST | 用户首页 | 首页移动端首屏 `/index.html` | 根据手机截图修正首屏 UI：CTA 文案改为清晰日文、按钮不再挤字，说明文案避免异常断行，手机端顶部仅保留可用导航项 | `/index.html?v=20260515-mobile-hero-1` | `/archive/pre-mobile-hero-ui-20260515/index.html?v=20260515-pre-mobile-hero-1` | main `82eca01` / gh-pages `533cfbb` |
 | v0.2.6 | 2026-05-16 18:44 JST | 后台验证页 | `/shichusuimei/free/index.html` 五行结果区 | 按反馈将五行关系图移到构成比前面，新增“偏多/补五行”说明与按月令计算的旺相休囚死状态卡，并修正中窄屏下解说卡两列过窄的问题 | `/shichusuimei/free/index.html?v=free-20260516-elements-1` | `/archive/pre-five-elements-reading-20260516/shichusuimei/free/index.html?v=free-20260514-luck-1` | main `f36116f` / gh-pages `2076dce` |
 | v0.2.7 | 2026-05-16 18:58 JST | 后台验证页 | `/shichusuimei/free/index.html` 詳解区 | 新增日柱/婚姻宮详解：按日支、藏干/支神、日主与日支五行关系展开亲密关系读法；手机端结果 tab 改为换行显示避免裁切 | `/shichusuimei/free/index.html?v=free-20260516-marriage-1` | `/archive/pre-marriage-palace-reading-20260516/shichusuimei/free/index.html?v=free-20260516-elements-1` | main `b11d1e5` / gh-pages `2ca1eaf` |
+| v0.2.8 | 2026-05-16 19:04 JST | 后台验证页 | `/shichusuimei/free/index.html` 詳解区 | 将四柱坐从单独日柱扩展为年柱/月柱/日柱/时柱四张详解卡，解释各柱坐支、藏干/支神、自坐十二运和人生领域含义 | `/shichusuimei/free/index.html?v=free-20260516-seats-1` | `/archive/pre-four-pillar-seat-reading-20260516/shichusuimei/free/index.html?v=free-20260516-marriage-1` | 待提交 |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -63,3 +64,5 @@
 - v0.2.6 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 `capture-website` 生成桌面与手机截图，五行关系图、构成比、说明文与旺相休囚死卡片均无重叠或裁切。追加按 Wreal 截图检查 760px 与 390px 解说区，`婚姻の視点` / `事業の視点` 卡片已改为中窄屏单列，避免标题和正文被压窄。
 - 后台验证页 v0.2.7：按 Wreal 反馈，把「日柱婚姻宫」放进詳解区单独展开。新增读取日支、日柱藏干/支神、日支五行与日主五行关系的规则化文案，说明亲密关系里的距离感、安心材料和摩擦点，不直接断定婚姻有无。
 - v0.2.7 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地手机全页截图确认日柱/婚姻宮区无重叠和裁切，结果 tab 在手机端改为两行完整显示。
+- 后台验证页 v0.2.8：按 Wreal 反馈，详解区新增「四柱それぞれの坐」模块，不再只解释日柱。年柱对应家系/幼少期，月柱对应仕事环境/社会性，日柱对应本人居所/婚姻宫，时柱对应未来/晩年/表达芽；每柱展示坐支、主支神、藏干、自坐十二运和解释文。
+- v0.2.8 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机全页截图确认四柱坐详解卡无重叠、无裁切，结果 tab 可见。

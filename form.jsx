@@ -748,6 +748,9 @@ function ResultView({ id, name, calculation, profile, onBack }) {
             <p>
               {stemReading.text}
             </p>
+            <div className="result-tags">
+              {tags.map((tag) => <span key={tag}># {tag}</span>)}
+            </div>
           </div>
 
       <div>

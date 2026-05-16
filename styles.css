@@ -851,8 +851,10 @@ input, select { font-family: inherit; color: inherit; }
   padding-top: 28px;
 }
 .visual-block {
-  display: grid;
-  gap: 16px;
+  display: block;
+}
+.wuxing-diagram svg {
+  overflow: visible;
 }
 .result-summary {
   border-top: 0;

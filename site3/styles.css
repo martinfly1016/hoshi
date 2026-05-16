@@ -568,6 +568,9 @@ input, select { font-family: inherit; color: inherit; }
   outline: none;
   color: var(--ink);
   transition: border-color 0.4s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 .input-line input::placeholder { color: var(--ink-3); }
 .input-line input:focus,

@@ -342,7 +342,6 @@ function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
 
 function elementClass(el) { return ELEMENT_CLASS[el] || 'neutral'; }
 function elementPercentages(res) {
-  if (res.fiveElements?.percentages) return res.fiveElements.percentages;
   const counts = res.fiveElements.counts;
   const total = Math.max(1, Object.values(counts).reduce((s,v) => s+v, 0));
   return Object.fromEntries(ELEMENT_LABELS.map(n => [n, Math.round((counts[n]||0)/total*100)]));
@@ -355,118 +354,6 @@ function collectTenGods(res) {
     if (god && god !== '日主') counts.set(god, (counts.get(god)||0)+1);
   });
   return Array.from(counts.entries()).sort((a,b) => b[1]-a[1]);
-}
-
-function strongestElements(calc) {
-  if (calc.fiveElements?.dominant?.length) return calc.fiveElements.dominant;
-  const entries = Object.entries(calc.fiveElements.counts || {});
-  const max = Math.max(...entries.map(([, value]) => value));
-  return entries.filter(([, value]) => value === max).map(([name]) => name);
-}
-
-function supportElements(calc) {
-  if (calc.fiveElements?.missing?.length) return calc.fiveElements.missing;
-  if (calc.fiveElements?.weak?.length) return calc.fiveElements.weak;
-  const entries = Object.entries(calc.fiveElements.counts || {});
-  const min = Math.min(...entries.map(([, value]) => value));
-  return entries.filter(([, value]) => value === min).map(([name]) => name);
-}
-
-function currentDecadeFortune(decade, targetYear) {
-  if (!decade || decade.status !== 'ok') return null;
-  const items = decade.items || [];
-  return items.find((item) => item.startYear <= targetYear && targetYear <= item.endYear) || items[0];
-}
-
-function fortuneTrendTag(calc) {
-  const luck = calc.luckCycles || {};
-  const current = currentDecadeFortune(luck.decadeFortunes, luck.target?.year || new Date().getFullYear());
-  if (!current) return '大運確認';
-  if (current.index >= 4) return '大器晩成';
-  if (current.index >= 3) return '中盤伸長';
-  return '早期展開';
-}
-
-function buildUserReadingTags(calc, tenGods) {
-  const stem = STEM_READING[calc.dayMaster] || { text: '', tags: [] };
-  const dominant = strongestElements(calc);
-  const support = supportElements(calc);
-  const current = currentDecadeFortune(calc.luckCycles?.decadeFortunes, calc.luckCycles?.target?.year || new Date().getFullYear());
-  const god = tenGods[0]?.[0];
-  return [
-    {
-      kind: 'pattern',
-      label: '格局',
-      value: calc.pattern?.name || '格局',
-      detail: calc.pattern?.text || '月令と天干から命式の大枠を見ます。',
-      evidence: '月令・天干',
-      action: 'insight',
-    },
-    {
-      kind: 'strength',
-      label: '身強弱',
-      value: calc.strength?.status || '未判定',
-      detail: calc.strength?.text || '日主の勢いを月令と五行構成から見ます。',
-      evidence: `日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
-      action: 'daymaster',
-    },
-    {
-      kind: 'core',
-      label: '性格',
-      value: `${calc.dayMaster}${calc.pillars.day.element.stem}`,
-      detail: stem.text,
-      evidence: '日柱天干',
-      action: 'daymaster',
-    },
-    {
-      kind: 'element',
-      label: '强五行',
-      value: dominant.join('・'),
-      detail: `${dominant.join('・')} が命式全体で前に出やすい五行です。`,
-      evidence: '天干・藏干・月令補正',
-      action: 'elements',
-    },
-    {
-      kind: calc.fiveElements?.missing?.length ? 'warning' : 'support',
-      label: calc.fiveElements?.missing?.length ? '缺五行' : '補五行',
-      value: support.join('・'),
-      detail: `${support.join('・')} は意識して補うと全体が整いやすい候補です。`,
-      evidence: '五行構成比',
-      action: 'elements',
-    },
-    {
-      kind: 'support',
-      label: '好运来源',
-      value: [calc.yongShen?.primary, calc.yongShen?.secondary].filter(Boolean).join('・') || '用神',
-      detail: calc.yongShen?.text || '命式の偏りを整える要素を見ます。',
-      evidence: '調候・用神',
-      action: 'insight',
-    },
-    {
-      kind: 'god',
-      label: '主要课题',
-      value: god || '十神',
-      detail: god ? TEN_GOD_READING[god]?.text : '命式で重なる十神テーマです。',
-      evidence: god ? `十神出現 ${tenGods[0]?.[1] || 0}` : '十神',
-      action: 'insight',
-    },
-    {
-      kind: 'source',
-      label: '婚姻宮',
-      value: `日支 ${calc.pillars.day.branch}`,
-      detail: '親密な関係や婚姻の読みは、日柱の地支を中心に見ます。',
-      evidence: `日柱 ${calc.pillars.day.text}`,
-      action: 'marriage',
-    },
-    {
-      kind: 'trend',
-      label: '走势',
-      value: fortuneTrendTag(calc),
-      detail: current ? `現在は ${current.name}（${current.startYear}-${current.endYear}）の大運です。` : '性別を選ぶと大運の流れを定位できます。',
-      evidence: current ? `大運 ${current.name}` : '大運未判定',
-      action: 'fortune',
-    },
-  ];
 }
 
 function analyzeSynthesis(calculation, profile) {
@@ -536,46 +423,12 @@ function WuxingDiagram({ dayElement, elementCounts }) {
   );
 }
 
-function UserTagIndex({ tags, onNavigate }) {
-  return (
-    <section className="user-tag-index">
-      <div className="summary-kicker">命式タグ索引</div>
-      <h2>重要な読みをタグで確認する</h2>
-      <p>タグは単なるキーワードではなく、命式のどの部分から読んでいるかを示す入口です。クリックすると該当する説明へ移動します。</p>
-      <div className="user-tag-row">
-        {tags.map(tag => (
-          <button key={`${tag.label}-${tag.value}`} className={`user-tag tag-${tag.kind}`} onClick={() => onNavigate(tag.action)}>
-            <small>{tag.label}</small>
-            <strong>{tag.value}</strong>
-          </button>
-        ))}
-      </div>
-      <div className="user-tag-detail-grid">
-        {tags.map(tag => (
-          <article key={`${tag.label}-${tag.value}-detail`} className="user-tag-detail">
-            <div className="user-tag-detail-head">
-              <span className={`user-tag tag-${tag.kind}`}>
-                <small>{tag.label}</small>
-                <strong>{tag.value}</strong>
-              </span>
-              <button onClick={() => onNavigate(tag.action)}>詳解へ</button>
-            </div>
-            <p>{tag.detail}</p>
-            <em>{tag.evidence}</em>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
   const tenGods = collectTenGods(calculation);
   const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '' };
-  const tags = buildUserReadingTags(calculation, tenGods);
-  const percentages = elementPercentages(calculation);
+  const tags = readingTags(calculation, tenGods);
   const shenShaSet = new Set();
   PILLAR_KEYS.forEach(k => getShenSha(calculation.pillars[k].branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch).forEach(ss => shenShaSet.add(ss)));
   const uniqueShenSha = Array.from(shenShaSet);
@@ -583,12 +436,6 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
-  };
-  const navigateFromTag = (action) => {
-    if (action === 'fortune') onShowFortune();
-    else if (action === 'insight' || action === 'marriage') onShowInsight();
-    else if (action === 'elements') scrollTo('s2');
-    else scrollTo('s1');
   };
 
   return (
@@ -607,7 +454,6 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
           </div>
-          <UserTagIndex tags={tags} onNavigate={navigateFromTag} />
           
           <div id="s0" style={{ paddingTop: 10 }}>
             <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
@@ -636,7 +482,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
               <div><div style={{ fontSize: 13, color: 'var(--ink-3)' }}>あなたを表す星（日主）： <strong>{calculation.dayMaster}</strong></div><h2 style={{ margin: 0, fontSize: 24 }}>{stemReading.title}</h2></div>
             </div>
             <p>{stemReading.text}</p>
-            <div className="result-tags">{(STEM_READING[calculation.dayMaster]?.tags || []).map(t => <span key={t}># {t}</span>)}</div>
+            <div className="result-tags">{tags.map(t => <span key={t}># {t}</span>)}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
               <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -670,9 +516,8 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
                  <div key={el} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                    <div style={{ width: 24, fontWeight: 'bold', color: `var(--${elementClass(el)})` }}>{el}</div>
                    <div style={{ flex: 1, height: 6, background: 'var(--rule)', borderRadius: 10, overflow: 'hidden' }}>
-                     <div style={{ width: `${percentages[el] || 0}%`, height: '100%', background: `var(--${elementClass(el)})` }}></div>
+                     <div style={{ width: `${Math.min(100, (calculation.fiveElements.counts[el]||0)*4)}%`, height: '100%', background: `var(--${elementClass(el)})` }}></div>
                    </div>
-                   <strong style={{ width: 42, textAlign: 'right', fontFamily: 'var(--f-mono)', fontSize: 11 }}>{percentages[el] || 0}%</strong>
                  </div>
                ))}
              </div>
@@ -796,6 +641,11 @@ function readingTags(calc, gods) {
 }
 
 function currentAnnualFortune(calculation) { return calculation.luckCycles?.annualFortunes?.[0] || null; }
+function currentDecadeFortune(decade, targetYear) {
+  if (!decade || decade.status !== 'ok') return null;
+  const items = decade.items || [];
+  return items.find((item) => item.startYear <= targetYear && targetYear <= item.endYear) || items[0];
+}
 
 window.Rite = Rite;
 window.ResultView = ResultView;

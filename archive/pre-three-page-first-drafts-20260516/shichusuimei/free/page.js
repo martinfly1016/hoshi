@@ -1566,64 +1566,9 @@ function renderMetaSection(result) {
   `;
 }
 
-function renderPageHero({ kicker, title, text, items = [] }) {
-  return `
-    <div class="page-hero">
-      <div>
-        <p class="card-kicker">${escapeHtml(kicker)}</p>
-        <h2>${escapeHtml(title)}</h2>
-        <p>${escapeHtml(text)}</p>
-      </div>
-      <div class="page-hero-list">
-        ${items.map((item) => `
-          <span>
-            <strong>${escapeHtml(item.label)}</strong>
-            ${escapeHtml(item.text)}
-          </span>
-        `).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderMeishikiSummaryCards(result) {
-  const meta = result.calculationMeta;
-  const location = displayLocationLabel(meta.location);
-  return `
-    <div class="summary-mini-grid">
-      <article class="mini-reading-card">
-        <span class="metric-label">日主</span>
-        <strong class="metric-value ${elementClass(result.pillars.day.element.stem)}">${escapeHtml(dayMasterLabel(result))}</strong>
-        <p>本人の核として、詳解と運勢読みの中心に置く要素です。</p>
-      </article>
-      <article class="mini-reading-card">
-        <span class="metric-label">主導五行</span>
-        <strong class="metric-value">${escapeHtml(strongestElements(result.fiveElements.counts).join("・"))}</strong>
-        <p>命式全体で前に出やすい力です。詳細ページで偏りと補い方を確認します。</p>
-      </article>
-      <article class="mini-reading-card">
-        <span class="metric-label">出生地・時刻</span>
-        <strong class="metric-value compact-value">${escapeHtml(location || "—")}</strong>
-        <p>${escapeHtml(formatDateTimeLabel(meta.effectiveBirthDateTime))}</p>
-      </article>
-    </div>
-  `;
-}
-
 function renderMeishikiPage(result) {
   return `
     <div class="page-stack">
-      ${renderPageHero({
-        kicker: "PAGE 1 / MEISHIKI",
-        title: "命式",
-        text: "まず四柱そのものを確認するページです。年柱・月柱・日柱・時柱、日主、基本条件をここに集約します。",
-        items: [
-          { label: "四柱", text: "年・月・日・時の干支" },
-          { label: "日主", text: "本人の核" },
-          { label: "基準", text: "時刻・出生地・補正" },
-        ],
-      })}
-      ${renderMeishikiSummaryCards(result)}
       <section class="page-block">
         ${renderChartSection(result)}
       </section>
@@ -1637,16 +1582,6 @@ function renderMeishikiPage(result) {
 function renderDetailPage(result) {
   return `
     <div class="page-stack">
-      ${renderPageHero({
-        kicker: "PAGE 2 / DETAIL",
-        title: "命式詳細",
-        text: "命式を読み解くための詳解ページです。五行、十神、読み取り位置、四柱の坐、婚姻宮などをここで展開します。",
-        items: [
-          { label: "五行", text: "偏りと補い方" },
-          { label: "十神", text: "役割とテーマ" },
-          { label: "定位", text: "どこを根拠に読むか" },
-        ],
-      })}
       <section class="page-block">
         ${renderFiveElementsSection(result)}
       </section>
@@ -1666,16 +1601,6 @@ function renderDetailPage(result) {
 function renderLuckPage(result) {
   return `
     <div class="page-stack">
-      ${renderPageHero({
-        kicker: "PAGE 3 / LUCK",
-        title: "大運流年",
-        text: "命式に時間の流れを重ねるページです。十年単位の大運と、年・月・日の運勢周期を初版として並べます。",
-        items: [
-          { label: "大運", text: "十年単位の流れ" },
-          { label: "流年", text: "年ごとの干支" },
-          { label: "流月・流日", text: "近い周期の確認" },
-        ],
-      })}
       <section class="page-block">
         ${renderLuckCyclesSection(result)}
       </section>

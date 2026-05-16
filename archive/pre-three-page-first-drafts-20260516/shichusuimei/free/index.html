@@ -1349,69 +1349,6 @@
     border-top: 1px solid rgba(235, 216, 196, 0.82);
   }
 
-  .page-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
-    gap: 18px;
-    align-items: stretch;
-    padding: 18px;
-    border: 1px solid rgba(235, 216, 196, 0.92);
-    border-radius: 24px;
-    background:
-      linear-gradient(135deg, rgba(255, 251, 246, 0.92), rgba(255, 239, 224, 0.78));
-  }
-
-  .page-hero h2 {
-    margin-top: 6px;
-    color: #604735;
-    font-family: var(--font-display);
-    font-size: clamp(30px, 5vw, 46px);
-    line-height: 1.1;
-    letter-spacing: 0.04em;
-  }
-
-  .page-hero p {
-    margin-top: 10px;
-    color: var(--ink-2);
-    max-width: 760px;
-  }
-
-  .page-hero-list {
-    display: grid;
-    gap: 10px;
-  }
-
-  .page-hero-list span {
-    display: grid;
-    gap: 4px;
-    align-content: center;
-    min-height: 58px;
-    padding: 10px 12px;
-    border: 1px solid rgba(235, 216, 196, 0.82);
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.58);
-    color: var(--ink-2);
-    font-size: 12px;
-    line-height: 1.45;
-  }
-
-  .page-hero-list strong {
-    color: #604735;
-    font-size: 14px;
-  }
-
-  .summary-mini-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .compact-value {
-    font-size: clamp(20px, 3vw, 26px);
-    letter-spacing: 0;
-  }
-
   .results.is-entering .section {
     animation-duration: 520ms;
   }
@@ -2407,7 +2344,6 @@
     .marriage-palace-grid,
     .source-map-grid,
     .pillar-seat-grid,
-    .summary-mini-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2418,10 +2354,6 @@
     }
 
     .reading-theme-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .page-hero {
       grid-template-columns: 1fr;
     }
   }
@@ -2520,7 +2452,6 @@
     .marriage-palace-grid,
     .source-map-grid,
     .pillar-seat-grid,
-    .summary-mini-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: 1fr;
@@ -2671,6 +2602,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260516-three-page-drafts-1"></script>
+<script type="module" src="./page.js?v=free-20260516-three-pages-1"></script>
 </body>
 </html>

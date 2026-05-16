@@ -810,6 +810,17 @@ input, select { font-family: inherit; color: inherit; }
 }
 .pillar.is-day::before { border-color: color-mix(in srgb, var(--gold) 30%, transparent); }
 
+.pillar.is-active-card {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink-3), 0 12px 30px rgba(0,0,0,0.3);
+  transform: translateY(-4px);
+}
+.pillar.is-day.is-active-card {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold), 0 12px 30px rgba(0,0,0,0.3);
+  transform: translateY(-12px);
+}
+
 .shensha {
   display: flex;
   flex-direction: column;

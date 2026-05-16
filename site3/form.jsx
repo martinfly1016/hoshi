@@ -360,6 +360,21 @@ const STEM_ICONS = {
   '壬': '🌊', // 海
   '癸': '💧', // 雨
 };
+const BRANCH_READING = {
+  '子': '万物が芽生え始める時期。知恵と順応性を表します。',
+  '丑': '土の中で種が成長を待つ時期。粘り強さと着実さを表します。',
+  '寅': '芽が地上に伸び出す時期。勢いと開拓精神を表します。',
+  '卯': '草木が茂る時期。柔軟性と協調性を表します。',
+  '辰': '万物が振動し整う時期。変化と理想を表します。',
+  '巳': '陽の気が極まる時期。情熱と華やかさを表します。',
+  '午': '最も輝き、方向を転じる時期。求心力と率直さを表します。',
+  '未': '実を結び、味が出る時期。包容力と安定を表します。',
+  '申': '実が固まり始める時期。決断力と合理性を表します。',
+  '酉': '収穫の時期。洗練された感性と美意識を表します。',
+  '戌': '土に戻る時期。誠実さと守りの力を表します。',
+  '亥': '次の生命を育む時期。自由と構想力を表します。'
+};
+
 const PILLAR_READING = {
   year: {
     icon: '根',
@@ -1022,6 +1037,7 @@ function FortuneView({ calculation, onBack }) {
 }
 
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
+  const [activePillar, setActivePillar] = React.useState(null);
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
   const hiddenStems = collectHiddenStems(calculation);
@@ -1165,7 +1181,10 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
             const shenShaList = getShenSha(pillar.branch, calculation.pillars.day.stem, calculation.pillars.year.branch, calculation.pillars.day.branch);
             const isVoid = pillar.voidBranches?.includes(pillar.branch);
             return (
-            <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''}`}>
+            <div key={key} 
+              className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`}
+              onClick={() => setActivePillar(activePillar === key ? null : key)}
+              style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}>
               <div className="lbl">
                 {PILLAR_LABELS[key]}
                 {isVoid && <span style={{ marginLeft: 6, color: 'var(--seal)', fontSize: 9 }}>[空亡]</span>}
@@ -1189,6 +1208,30 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
             );
           })}
         </div>
+
+        {activePillar && (
+          <div style={{ marginTop: 12, padding: '20px', background: 'var(--bg-paper)', border: `1px solid ${activePillar === 'day' ? 'var(--gold)' : 'var(--rule-strong)'}`, borderRadius: 8, animation: 'fadeIn 0.4s ease' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 18, color: 'var(--ink)' }}>{PILLAR_LABELS[activePillar]}の解説</span>
+                <span style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.1em' }}>— {PILLAR_READING[activePillar].title}</span>
+              </div>
+              <button onClick={(e) => { e.stopPropagation(); setActivePillar(null); }} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', fontSize: 18, cursor: 'pointer' }}>✕</button>
+            </div>
+            <p style={{ margin: '0 0 16px', fontSize: 14, lineHeight: 1.8, color: 'var(--ink-2)' }}>{PILLAR_READING[activePillar].text}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div style={{ padding: '12px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', borderRadius: 4 }}>
+                <strong style={{ fontSize: 12, color: 'var(--ink)', display: 'block', marginBottom: 6 }}>天干：{calculation.pillars[activePillar].stem}</strong>
+                <div style={{ fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>{STEM_READING[calculation.pillars[activePillar].stem]?.text || 'この天干はあなたの命式の精神的な側面を表します。'}</div>
+              </div>
+              <div style={{ padding: '12px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', borderRadius: 4 }}>
+                <strong style={{ fontSize: 12, color: 'var(--ink)', display: 'block', marginBottom: 6 }}>地支：{calculation.pillars[activePillar].branch}</strong>
+                <div style={{ fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>{BRANCH_READING[calculation.pillars[activePillar].branch] || 'この地支はあなたの命式の現実的な基盤を表します。'}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
 
         {calculation.luckCycles?.natalInteractions?.length > 0 && (
           <div style={{ marginTop: 24, padding: '16px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>

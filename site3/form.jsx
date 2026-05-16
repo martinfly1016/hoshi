@@ -443,16 +443,40 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['日主と性格','四柱の構成','五行バランス','神煞'].map((n, i) => (
+          {['四柱の構成','日主と性格','五行バランス','神煞'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="result-card" id="s0" style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide" style={{ paddingTop: 20 }}>
+        <div className="result-card" style={{ marginTop: 0 }}>
+          <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
+          </div>
+          
+          <div id="s0" style={{ paddingTop: 10 }}>
+            <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
+              <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式（排盤）</h2>
+              <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>あなたの生年月日から導き出された、人生の縮図となる四つの柱です。</p>
+            </div>
+            <div className="pillars">
+              {['hour', 'day', 'month', 'year'].map((key) => {
+                const p = calculation.pillars[key];
+                const iv = p.voidBranches?.includes(p.branch);
+                const role = { year: '先祖・環境', month: '社会・仕事', day: '自分・家庭', hour: '未来・子供' }[key];
+                return (
+                  <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`} onClick={() => setActivePillar(activePillar === key ? null : key)}>
+                    <div className="lbl">{PILLAR_LABELS[key]}{iv && <span style={{color:'var(--seal)'}}>[空]</span>}<br/><span style={{fontSize:9,opacity:0.6}}>{role}</span></div>
+                    <div className="gz"><span className={`top ${elementClass(p.element.stem)}`}>{p.stem}</span><span className={`btm ${elementClass(p.element.branch)}`}>{p.branch}</span></div>
+                    <div className="nayin"><strong>{calculation.tenGods[key]}</strong><br/>{p.lifeStage}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="result-summary result-wide" id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
               <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 32 }}>{STEM_ICONS[calculation.dayMaster]}</div>
               <div><div style={{ fontSize: 13, color: 'var(--ink-3)' }}>あなたを表す星（日主）： <strong>{calculation.dayMaster}</strong></div><h2 style={{ margin: 0, fontSize: 24 }}>{stemReading.title}</h2></div>
@@ -481,22 +505,6 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
                 </div>
               </div>
             )}
-          </div>
-          <div id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-            <div className="pillars">
-              {['hour', 'day', 'month', 'year'].map((key) => {
-                const p = calculation.pillars[key];
-                const iv = p.voidBranches?.includes(p.branch);
-                const role = { year: '先祖・環境', month: '社会・仕事', day: '自分・家庭', hour: '未来・子供' }[key];
-                return (
-                  <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`} onClick={() => setActivePillar(activePillar === key ? null : key)}>
-                    <div className="lbl">{PILLAR_LABELS[key]}{iv && <span style={{color:'var(--seal)'}}>[空]</span>}<br/><span style={{fontSize:9,opacity:0.6}}>{role}</span></div>
-                    <div className="gz"><span className={`top ${elementClass(p.element.stem)}`}>{p.stem}</span><span className={`btm ${elementClass(p.element.branch)}`}>{p.branch}</span></div>
-                    <div className="nayin"><strong>{calculation.tenGods[key]}</strong><br/>{p.lifeStage}</div>
-                  </div>
-                );
-              })}
-            </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 40 }}>
             <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}><strong>❤️ 婚姻の視点</strong><p style={{ fontSize: 12 }}>{synthesis.marriage}</p></div>

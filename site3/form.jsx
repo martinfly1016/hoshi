@@ -161,12 +161,12 @@ function Rite({ onBack, onSubmitDone }) {
         <div className="kanji">命式作成</div>
         <div className="label">MEISHIKI · CREATION</div>
         <div className="seal-stack">
-          <div><span className="num">壹</span>　名と性</div>
+          <div><span className="num">壹</span>　お名前と性別</div>
           <div><span className="num">貳</span>　生年月日</div>
-          <div><span className="num">參</span>　時辰</div>
-          <div><span className="num">肆</span>　出生の地</div>
+          <div><span className="num">參</span>　出生時間</div>
+          <div><span className="num">肆</span>　出生地</div>
           <div style={{ marginTop: 18, color: 'var(--seal)' }}>
-            <span className="num" style={{ color: 'var(--seal)' }}>伍</span>　卜を乞う
+            <span className="num" style={{ color: 'var(--seal)' }}>伍</span>　無料で命式を見る
           </div>
         </div>
       </aside>

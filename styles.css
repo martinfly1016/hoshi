@@ -266,7 +266,7 @@ input, select { font-family: inherit; color: inherit; }
   padding-left: 200px;
 }
 .hero-title {
-  font-family: var(--f-display);
+  font-family: 'Yuji Syuku', var(--f-seal);
   font-weight: 500;
   font-size: clamp(72px, 10vw, 144px);
   line-height: 0.95;

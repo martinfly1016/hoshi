@@ -811,12 +811,58 @@ function formatSolarDateTime(solarTime) {
   });
 }
 
+const BRANCH_CHONG = {
+  '子': '午', '午': '子', '丑': '未', '未': '丑', '寅': '申', '申': '寅',
+  '卯': '酉', '酉': '卯', '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳'
+};
+
+const BRANCH_HE_6 = {
+  '子': '丑', '丑': '子', '寅': '亥', '亥': '寅', '卯': '戌', '戌': '卯',
+  '辰': '酉', '酉': '辰', '巳': '申', '申': '巳', '午': '未', '未': '午'
+};
+
+function getFortuneTheme(tenGod) {
+  const themes = {
+    '比肩': '自立と競争、自分らしさを再確立する時期。',
+    '劫财': '人間関係が広がり、勢いと出費が増える時期。',
+    '食神': '表現、楽しみ、ゆとりある生活を楽しむ時期。',
+    '伤官': '感性が鋭くなり、既存の枠を壊し新しい才を発揮する時期。',
+    '偏财': '流動的な財や人脈、チャンスが大きく动く时期。',
+    '正财': '安定した基盤、誠実な積み上げ、着実な成果の时期。',
+    '七杀': '強い責任、大きな試練、大胆な挑戦と開拓の時期。',
+    '正官': '社会的地位、信頼、規律ある秩序を整える時期。',
+    '偏印': '直感、神秘、型破りな知識や技術を習得する時期。',
+    '正印': '学び、名誉、周囲からの守りや支援を受ける時期。',
+  };
+  return themes[tenGod] || '変化と運勢の交差点。';
+}
+
+function analyzeLuckImpact(luckPillar, natalPillars) {
+  const impacts = [];
+  const luckBranch = luckPillar.branch;
+
+  PILLAR_KEYS.forEach(key => {
+    const natal = natalPillars[key];
+    if (BRANCH_CHONG[luckBranch] === natal.branch) {
+      impacts.push({ type: 'chong', pillar: key, label: `${PILLAR_LABELS[key]}に冲あり`, severity: 'high' });
+    }
+    if (BRANCH_HE_6[luckBranch] === natal.branch) {
+      impacts.push({ type: 'he', pillar: key, label: `${PILLAR_LABELS[key]}と支合`, severity: 'mid' });
+    }
+  });
+  return impacts;
+}
+
 function normalizeCycle(cycle, dayStem, source = "luck_cycle", confidence = "reference") {
+  const pillar = normalizePillar(cycle, dayStem, source, confidence);
+  const tenGod = dayStem.getTenStar(cycle.getHeavenStem()).toString();
   return {
-    ...normalizePillar(cycle, dayStem, source, confidence),
-    heavenlyTenGod: dayStem.getTenStar(cycle.getHeavenStem()).toString(),
+    ...pillar,
+    heavenlyTenGod: tenGod,
+    fortuneTheme: getFortuneTheme(tenGod)
   };
 }
+
 
 function buildDecadeFortunes(solarTime, genderValue, dayStem) {
   const gender = tymeGender(genderValue);
@@ -912,14 +958,29 @@ function normalizeFortuneDate(input, fallbackParts) {
   };
 }
 
-function buildLuckCycles(input, solarTime, dayStem, effectiveParts) {
+function buildLuckCycles(input, solarTime, dayStem, effectiveParts, natalPillars) {
   const target = normalizeFortuneDate(input, effectiveParts);
+  
+  const enrich = (item) => {
+    if (!item?.pillar) return item;
+    return {
+      ...item,
+      impacts: analyzeLuckImpact(item.pillar, natalPillars)
+    };
+  };
+
+  const decades = buildDecadeFortunes(solarTime, input.gender, dayStem);
+  if (decades.status === 'ok') {
+    decades.items = decades.items.map(enrich);
+  }
+
   return {
     target,
-    decadeFortunes: buildDecadeFortunes(solarTime, input.gender, dayStem),
-    annualFortunes: buildAnnualFortunes(target.year, dayStem),
-    monthlyFortunes: buildMonthlyFortunes(target.year, dayStem),
-    dailyFortunes: buildDailyFortunes(target.year, target.month, target.day, dayStem),
+    decadeFortunes: decades,
+    annualFortunes: buildAnnualFortunes(target.year, dayStem).map(enrich),
+    monthlyFortunes: buildMonthlyFortunes(target.year, dayStem).map(enrich),
+    dailyFortunes: buildDailyFortunes(target.year, target.month, target.day, dayStem).map(enrich),
+
     notes: [
       "大運は tyme4ts の DefaultChildLimitProvider による初版検証値です。",
       "流年・流月・流日は干支暦の周期表示で、吉凶断定ではありません。",
@@ -1034,7 +1095,7 @@ function calculateShichusuimei(input) {
     fiveElements: {
       counts: countElements(pillars),
     },
-    luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts),
+    luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts, pillars),
   };
 }
 

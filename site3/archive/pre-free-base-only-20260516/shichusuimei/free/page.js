@@ -1837,34 +1837,26 @@ function renderPageHero({ kicker, title, text, items = [] }) {
   `;
 }
 
-function renderMeishikiBasicInfo(result) {
+function renderMeishikiSummaryCards(result) {
   const meta = result.calculationMeta;
   const location = displayLocationLabel(meta.location);
-  const input = result.inputEcho || {};
-  const trueSolar = meta.trueSolarTime === "applied"
-    ? meta.effectiveBirthDateTime
-    : "未補正";
-  const birthTime = input.timeKnown
-    ? `${input.time || "—"}`
-    : "時間不明（12:00で仮計算）";
-  const rows = [
-    { label: "生年月日", value: input.date || meta.inputDateTime?.slice(0, 10) || "—" },
-    { label: "出生時間", value: birthTime },
-    { label: "性別", value: genderLabel(input.gender) },
-    { label: "出生地", value: location || "—" },
-    { label: "時区", value: meta.timezone || "—" },
-    { label: "真太陽時", value: trueSolar },
-    { label: "四柱", value: result.pillarLine || PILLAR_KEYS.map((key) => result.pillars[key].text).join(" / ") },
-    { label: "日主", value: result.dayMaster || "—" },
-  ];
   return `
-    <div class="summary-mini-grid basic-info-grid">
-      ${rows.map((row) => `
-        <article class="mini-reading-card">
-          <span class="metric-label">${escapeHtml(row.label)}</span>
-          <strong class="metric-value compact-value">${escapeHtml(row.value)}</strong>
-        </article>
-      `).join("")}
+    <div class="summary-mini-grid">
+      <article class="mini-reading-card">
+        <span class="metric-label">日主</span>
+        <strong class="metric-value ${elementClass(result.pillars.day.element.stem)}">${escapeHtml(dayMasterLabel(result))}</strong>
+        <p>本人の核として、詳解と運勢読みの中心に置く要素です。</p>
+      </article>
+      <article class="mini-reading-card">
+        <span class="metric-label">主導五行</span>
+        <strong class="metric-value">${escapeHtml((result.fiveElements.dominant || strongestElements(result.fiveElements.counts)).join("・"))}</strong>
+        <p>${escapeHtml(`平衡スコア ${result.fiveElements.balanceScore ?? "—"}。詳細ページで偏りと補い方を確認します。`)}</p>
+      </article>
+      <article class="mini-reading-card">
+        <span class="metric-label">出生地・時刻</span>
+        <strong class="metric-value compact-value">${escapeHtml(location || "—")}</strong>
+        <p>${escapeHtml(formatDateTimeLabel(meta.effectiveBirthDateTime))}</p>
+      </article>
     </div>
   `;
 }
@@ -1875,16 +1867,20 @@ function renderMeishikiPage(result) {
       ${renderPageHero({
         kicker: "PAGE 1 / MEISHIKI",
         title: "命式",
-        text: "まず基本情報と四柱排盤だけを確認するページです。詳しい読み解きは命式詳細と大運流年に分けています。",
+        text: "まず四柱そのものを確認するページです。年柱・月柱・日柱・時柱、日主、基本条件をここに集約します。",
         items: [
-          { label: "基準", text: "時刻・出生地・補正" },
           { label: "四柱", text: "年・月・日・時の干支" },
-          { label: "次へ", text: "詳解と運勢は後続ページ" },
+          { label: "日主", text: "本人の核" },
+          { label: "基準", text: "時刻・出生地・補正" },
         ],
       })}
-      ${renderMeishikiBasicInfo(result)}
+      ${renderTagOverview(result)}
+      ${renderMeishikiSummaryCards(result)}
       <section class="page-block" id="anchor-chart">
         ${renderChartSection(result)}
+      </section>
+      <section class="page-block">
+        ${renderDayMasterSection(result)}
       </section>
     </div>
   `;
@@ -1896,17 +1892,13 @@ function renderDetailPage(result) {
       ${renderPageHero({
         kicker: "PAGE 2 / DETAIL",
         title: "命式詳細",
-        text: "命式を読み解くための詳解ページです。タグ、日主、五行、十神、読み取り位置、四柱の坐、婚姻宮などをここで展開します。",
+        text: "命式を読み解くための詳解ページです。五行、十神、読み取り位置、四柱の坐、婚姻宮などをここで展開します。",
         items: [
-          { label: "タグ", text: "重要論点への索引" },
-          { label: "日主", text: "本人の核" },
           { label: "五行", text: "偏りと補い方" },
+          { label: "十神", text: "役割とテーマ" },
+          { label: "定位", text: "どこを根拠に読むか" },
         ],
       })}
-      ${renderTagOverview(result)}
-      <section class="page-block">
-        ${renderDayMasterSection(result)}
-      </section>
       <section class="page-block">
         ${renderPatternStrengthSection(result)}
       </section>

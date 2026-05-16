@@ -144,10 +144,10 @@ function Rite({ onBack, onSubmitDone }) {
   };
 
   return (
-    <section className="rite" data-screen-label="02 鑑定の儀">
+    <section className="rite" data-screen-label="02 命式作成">
       <aside className="rite-side">
-        <div className="kanji">鑑　定<br/>の　儀</div>
-        <div className="label">RITE · OF · DIVINATION</div>
+        <div className="kanji">命式作成</div>
+        <div className="label">MEISHIKI · CREATION</div>
         <div className="seal-stack">
           <div><span className="num">壹</span>　名と性</div>
           <div><span className="num">貳</span>　生年月日</div>

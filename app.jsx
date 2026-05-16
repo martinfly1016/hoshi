@@ -131,7 +131,7 @@ function App() {
           <button className={page === 'hero' ? 'is-active' : ''}
             onClick={() => goto('hero')}>序　章</button>
           <button className={page === 'rite' ? 'is-active' : ''}
-            onClick={() => goto('rite')}>鑑定の儀</button>
+            onClick={() => goto('rite')}>命式作成</button>
           <button>命　式</button>
           <button>星辰譜</button>
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">

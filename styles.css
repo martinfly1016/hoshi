@@ -443,13 +443,14 @@ input, select { font-family: inherit; color: inherit; }
   padding-right: 32px;
 }
 .rite-side .kanji {
-  font-family: var(--f-display);
+  font-family: 'Yuji Syuku', var(--f-seal);
   writing-mode: vertical-rl;
   font-size: 56px;
   letter-spacing: 0.3em;
   line-height: 1.2;
   color: var(--ink);
-  height: 380px;
+  height: auto;
+  min-height: 280px;
 }
 .rite-side .label {
   margin-top: 28px;

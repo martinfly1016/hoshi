@@ -1036,7 +1036,108 @@ function FortuneView({ calculation, onBack }) {
   );
 }
 
-function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
+function InsightView({ calculation, onBack }) {
+  const [topic, setTopic] = React.useState('personality');
+  
+  const TOPICS = [
+    { key: 'personality', ja: '性格特質', icon: '👤', title: 'あなたの「強み」と「本質」' },
+    { key: 'talent',      ja: '才能・天分', icon: '✨', title: '天から授かった「才能」' },
+    { key: 'career',      ja: '事業・金運', icon: '💰', title: '「仕事」と「財の流れ」' },
+    { key: 'marriage',    ja: '情感・婚姻', icon: '❤️', title: '「愛」と「パートナーシップ」' },
+  ];
+
+  const currentTopic = TOPICS.find(t => t.key === topic);
+
+  const getInsightContent = (key) => {
+    // These are simplified interpretations based on Day Master / Ten Gods
+    const stem = calculation.dayMaster;
+    const god = collectTenGods(calculation)[0]?.[0] || '比肩';
+    
+    const contents = {
+      personality: {
+        intro: `日主「${stem}」と主星「${god}」から見る、あなたの魂の設計図です。`,
+        p1: STEM_READING[stem]?.text,
+        p2: TEN_GOD_READING[god]?.text,
+      },
+      talent: {
+        intro: `あなたの適性と、最も輝ける場所を読み解きます。`,
+        p1: `${god}の星が強く影響しており、専門性を磨くことで評価されるタイプです。`,
+        p2: `五行の「${calculation.pillars.day.element.stem}」が持つ性質を活かした表現や活動が、あなたの天分を開花させます。`,
+      },
+      career: {
+        intro: `社会での活躍と、豊かさを手にするためのヒントです。`,
+        p1: `身強・身弱のエネルギーから見ると、${calculation.strength?.status === '身強' ? '自ら事業を興したり、リーダーシップを執ることで財が安定します。' : '組織やチームの中で専門性を発揮し、周囲の信頼を得ることで着実な収入に繋がります。'}`,
+        p2: `「${calculation.pattern?.name}」の特性を活かし、規律ある環境や特定の役割を全うすることが成功への近道です。`,
+      },
+      marriage: {
+        intro: `心を通わせる相手との関係性や、幸福の形を探ります。`,
+        p1: `日支（配偶者宮）の「${calculation.pillars.day.branch}」が持つ気が、あなたのパートナーとの接し方を象徴しています。`,
+        p2: `感情の安定が運気全体の底上げに繋がります。お互いの「五行」を補い合える関係を大切にしてください。`,
+      }
+    };
+    return contents[key] || contents.personality;
+  };
+
+  const content = getInsightContent(topic);
+
+  return (
+    <section className="rite" data-screen-label="05 鑑定詳解">
+      <aside className="rite-side">
+        <div className="kanji">鑑定詳解</div>
+        <div className="label">PERSONAL · INSIGHTS</div>
+        <div className="seal-stack">
+          {TOPICS.map((t, i) => (
+            <div key={t.key} 
+              style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} 
+              onClick={() => setTopic(t.key)}>
+              <span className="num">{['壹','貳','參','肆'][i]}</span>　{t.ja}
+            </div>
+          ))}
+          <div style={{ marginTop: 24 }}>
+             <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
+               ← 命式へ戻る
+             </button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="rite-main" style={{ paddingBottom: 120 }}>
+        <div className="result-card" style={{ marginTop: 0 }}>
+          <div className="result-summary result-wide" style={{ paddingTop: 20 }}>
+            <div className="summary-kicker">{currentTopic.ja}の詳解</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, marginTop: 12 }}>
+              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>
+                {currentTopic.icon}
+              </div>
+              <h2 style={{ margin: 0, fontSize: 24, letterSpacing: '0.05em' }}>{currentTopic.title}</h2>
+            </div>
+            
+            <div className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}>
+               <p style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 24, letterSpacing: '0.1em' }}>{content.intro}</p>
+               <div style={{ fontSize: 15, lineHeight: 2, color: 'var(--ink)', marginBottom: 24 }}>
+                 {content.p1}
+               </div>
+               <div style={{ fontSize: 15, lineHeight: 2, color: 'var(--ink)' }}>
+                 {content.p2}
+               </div>
+            </div>
+
+            <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              {TOPICS.filter(t => t.key !== topic).map(t => (
+                <button key={t.key} onClick={() => setTopic(t.key)} style={{ padding: '16px', background: 'transparent', border: '1px solid var(--rule)', borderRadius: 6, color: 'var(--ink-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13 }}>
+                  次を読む：{t.ja} →
+                </button>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
   const percentages = elementPercentages(calculation);
   const tenGods = collectTenGods(calculation);
@@ -1523,6 +1624,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
       )}
 
       <div className="result-wide next-actions">
+        <button onClick={onShowInsight}>性格・才能の詳解 <span>診断</span></button>
         <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
         <button disabled>相性を見る <span>準備中</span></button>
         <button disabled>結果を保存する <span>準備中</span></button>
@@ -1536,3 +1638,4 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
 window.Rite = Rite;
 window.ResultView = ResultView;
 window.FortuneView = FortuneView;
+window.InsightView = InsightView;

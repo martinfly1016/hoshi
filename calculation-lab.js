@@ -837,21 +837,95 @@ function getFortuneTheme(tenGod) {
   return themes[tenGod] || '変化と運勢の交差点。';
 }
 
+const BRANCH_XING = [
+  { branches: ['子', '卯'], label: '無礼の刑', text: '礼節を欠きやすく、身近な人間関係での摩擦に注意が必要な時期。' },
+  { branches: ['寅', '巳', '申'], label: '恩なき刑', text: '信頼関係の揺らぎや、親切が裏目に出やすい傾向。冷静な距離感が吉。' },
+  { branches: ['丑', '未', '戌'], label: '持勢の刑', text: '自分の力を過信しやすく、強引な進め方で衝突を招きやすい時期。' },
+  { branches: ['辰', '辰'], label: '自刑', text: '自分のこだわりや迷いによって、袋小路に入り込みやすい傾向。' },
+  { branches: ['午', '午'], label: '自刑', text: '情熱が空回りしやすく、焦りから自分を追い詰めやすい時期。' },
+  { branches: ['酉', '酉'], label: '自刑', text: '完璧主義が過ぎて、重箱の隅をつつくような不満が募りやすい傾向。' },
+  { branches: ['亥', '亥'], label: '自刑', text: '考え込みすぎてしまい、精神的な疲弊や孤立を感じやすい時期。' },
+];
+
+const BRANCH_HE_3 = [
+  { branches: ['申', '子', '辰'], label: '三合水局', text: '知性と潤いが巡り、物事が広がりを持って発展しやすい大吉の組み合わせ。' },
+  { branches: ['亥', '卯', '未'], label: '三合木局', text: '成長と発展の気が強く、新しいプロジェクトや活動が形になりやすい好機。' },
+  { branches: ['寅', '午', '戌'], label: '三合火局', text: '情熱と活力が最高潮に。カリスマ性を発揮し、周囲を巻き込むエネルギー。' },
+  { branches: ['巳', '酉', '丑'], label: '三合金局', text: '決断と実実の気が高まり、成果の収穫や基盤固めに適した実りある時期。' },
+];
+
+const BRANCH_HE_6_DESC = {
+  '子丑': '支合（土）：着実な協力関係。足元を固め、安定した成果を出す組み合わせ。',
+  '寅亥': '支合（木）：理想的な連携。精神的な充足と、スムーズな発展を促す絆。',
+  '卯戌': '支合（火）：情熱の共有。互いの欠点を補い合い、活力を生み出す関係。',
+  '辰酉': '支合（金）：確かな信頼。高い目標に向かって、規律正しく進める協力。',
+  '巳申': '支合（水）：変化への対応。知恵を出し合い、複雑な状況を切り抜ける力。',
+  '午未': '支合（火）：太陽と月の調和。大きな包容力で、周囲を安心させるエネルギー。',
+};
+
 function analyzeLuckImpact(luckPillar, natalPillars) {
   const impacts = [];
   const luckBranch = luckPillar.branch;
+  const natalBranches = Object.values(natalPillars).map(p => p.branch);
+  const allBranches = [luckBranch, ...natalBranches];
 
+  // 1. Clashes (Chong)
   PILLAR_KEYS.forEach(key => {
     const natal = natalPillars[key];
     if (BRANCH_CHONG[luckBranch] === natal.branch) {
-      impacts.push({ type: 'chong', pillar: key, label: `${PILLAR_LABELS[key]}に冲あり`, severity: 'high' });
-    }
-    if (BRANCH_HE_6[luckBranch] === natal.branch) {
-      impacts.push({ type: 'he', pillar: key, label: `${PILLAR_LABELS[key]}と支合`, severity: 'mid' });
+      impacts.push({ 
+        type: 'chong', 
+        pillar: key, 
+        label: `${PILLAR_LABELS[key]}に冲`, 
+        text: `${luckBranch}と${natal.branch}が激突。${PILLAR_LABELS[key]}の領域に大きな変化や刷新、動揺が起こりやすい時期。`,
+        severity: 'high' 
+      });
     }
   });
+
+  // 2. Six-Combinations (He)
+  PILLAR_KEYS.forEach(key => {
+    const natal = natalPillars[key];
+    const pair = [luckBranch, natal.branch].sort().join('');
+    if (BRANCH_HE_6_DESC[pair]) {
+      impacts.push({ 
+        type: 'he', 
+        pillar: key, 
+        label: `${PILLAR_LABELS[key]}と支合`, 
+        text: BRANCH_HE_6_DESC[pair],
+        severity: 'mid' 
+      });
+    }
+  });
+
+  // 3. Three-Combinations (San He) - Check if luck completes a trio in natal
+  BRANCH_HE_3.forEach(trio => {
+    if (trio.branches.includes(luckBranch)) {
+      const countInNatal = trio.branches.filter(b => natalBranches.includes(b)).length;
+      const countTotal = trio.branches.filter(b => allBranches.includes(b)).length;
+      // If luck completes a trio or contributes to a partial one
+      if (countTotal === 3 && countInNatal >= 1) {
+        impacts.push({ type: 'sanhe', label: trio.label, text: trio.text, severity: 'high' });
+      }
+    }
+  });
+
+  // 4. Punishments (Xing)
+  BRANCH_XING.forEach(rule => {
+    const matched = rule.branches.every(b => allBranches.includes(b));
+    if (matched) {
+      // For self-punishment, need at least 2 occurrences in the combined set
+      if (rule.branches[0] === rule.branches[1]) {
+         const count = allBranches.filter(b => b === rule.branches[0]).length;
+         if (count < 2) return;
+      }
+      impacts.push({ type: 'xing', label: rule.label, text: rule.text, severity: 'mid' });
+    }
+  });
+
   return impacts;
 }
+
 
 function normalizeCycle(cycle, dayStem, source = "luck_cycle", confidence = "reference") {
   const pillar = normalizePillar(cycle, dayStem, source, confidence);
@@ -980,9 +1054,51 @@ function analyzeClimateBalance(luckPillar, birthMonthBranch) {
   return null;
 }
 
+function analyzeNatalInteractions(natalPillars) {
+  const impacts = [];
+  const keys = PILLAR_KEYS; // hour, day, month, year
+  
+  // Check pairs within natal pillars
+  for (let i = 0; i < keys.length; i++) {
+    for (let j = i + 1; j < keys.length; j++) {
+      const p1 = natalPillars[keys[i]];
+      const p2 = natalPillars[keys[j]];
+      
+      // 1. Clash
+      if (BRANCH_CHONG[p1.branch] === p2.branch) {
+        impacts.push({ 
+          label: `${PILLAR_LABELS[keys[i]]}と${PILLAR_LABELS[keys[j]]}の冲`, 
+          text: `${p1.branch}と${p2.branch}が反発し合う関係です。相反する性質が同居することで、葛藤や変化が生じやすい傾向です。` 
+        });
+      }
+      
+      // 2. 6-Combo
+      const pair = [p1.branch, p2.branch].sort().join('');
+      if (BRANCH_HE_6_DESC[pair]) {
+        impacts.push({ 
+          label: `${PILLAR_LABELS[keys[i]]}と${PILLAR_LABELS[keys[j]]}の支合`, 
+          text: BRANCH_HE_6_DESC[pair] 
+        });
+      }
+    }
+  }
+
+  // 3. 3-Combo in natal
+  const natalBranches = Object.values(natalPillars).map(p => p.branch);
+  BRANCH_HE_3.forEach(trio => {
+    const matched = trio.branches.filter(b => natalBranches.includes(b));
+    if (matched.length === 3) {
+      impacts.push({ label: trio.label, text: trio.text });
+    }
+  });
+  
+  return impacts;
+}
+
 function buildLuckCycles(input, solarTime, dayStem, effectiveParts, natalPillars) {
   const target = normalizeFortuneDate(input, effectiveParts);
   const birthMonthBranch = natalPillars.month.branch;
+  const natalInteractions = analyzeNatalInteractions(natalPillars);
   
   const enrich = (item) => {
     if (!item?.pillar) return item;
@@ -1000,6 +1116,7 @@ function buildLuckCycles(input, solarTime, dayStem, effectiveParts, natalPillars
 
   return {
     target,
+    natalInteractions,
     decadeFortunes: decades,
     annualFortunes: buildAnnualFortunes(target.year, dayStem).map(enrich),
     monthlyFortunes: buildMonthlyFortunes(target.year, dayStem).map(enrich),

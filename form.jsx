@@ -904,9 +904,12 @@ function FortuneView({ calculation, onBack }) {
                     </div>
                   )}
                   {luckItem.item?.impacts?.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 4, marginTop: 10 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12, textAlign: 'left' }}>
                       {luckItem.item.impacts.map(imp => (
-                        <span key={imp.label} style={{ fontSize: 9, padding: '2px 6px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                        <div key={imp.label} style={{ fontSize: 10, padding: '8px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'color-mix(in srgb, var(--gold) 15%, transparent)', color: imp.type === 'chong' ? '#fff' : 'var(--ink-2)', border: '1px solid currentColor' }}>
+                           <strong style={{ display: 'block', marginBottom: 2 }}>{imp.label}</strong>
+                           <div style={{ opacity: 0.9, lineHeight: 1.4 }}>{imp.text}</div>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -950,9 +953,12 @@ function FortuneView({ calculation, onBack }) {
                         {d.pillar.fortuneTheme}
                       </div>
                       {d.impacts?.length > 0 && (
-                        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
                           {d.impacts.map(imp => (
-                            <span key={imp.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                            <div key={imp.label} style={{ fontSize: 11, padding: '8px 12px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'color-mix(in srgb, var(--gold) 15%, transparent)', color: imp.type === 'chong' ? '#fff' : 'var(--ink-2)', border: '1px solid currentColor' }}>
+                               <strong style={{ display: 'block', marginBottom: 2 }}>{imp.label}</strong>
+                               <div style={{ opacity: 0.9, lineHeight: 1.4 }}>{imp.text}</div>
+                            </div>
                           ))}
                         </div>
                       )}
@@ -993,9 +999,12 @@ function FortuneView({ calculation, onBack }) {
                         {a.pillar.fortuneTheme}
                       </div>
                       {a.impacts?.length > 0 && (
-                        <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
                           {a.impacts.map(imp => (
-                            <span key={imp.label} style={{ fontSize: 9, padding: '1px 6px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                            <div key={imp.label} style={{ fontSize: 10, padding: '6px 10px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'color-mix(in srgb, var(--gold) 10%, transparent)', color: imp.type === 'chong' ? '#fff' : 'var(--ink-2)', border: '1px solid currentColor' }}>
+                               <strong style={{ display: 'block', marginBottom: 2 }}>{imp.label}</strong>
+                               <div style={{ opacity: 0.9, lineHeight: 1.4 }}>{imp.text}</div>
+                            </div>
                           ))}
                         </div>
                       )}
@@ -1129,6 +1138,21 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
             );
           })}
         </div>
+
+        {calculation.luckCycles?.natalInteractions?.length > 0 && (
+          <div style={{ marginTop: 24, padding: '16px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+            <div style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>命局内の干支関係（冲・合）</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {calculation.luckCycles.natalInteractions.map(inter => (
+                <div key={inter.label}>
+                  <strong style={{ fontSize: 13, color: 'var(--gold)', display: 'block', marginBottom: 2 }}>◆ {inter.label}</strong>
+                  <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>{inter.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="calculation-meta">
           <span>真太陽時：{formatDateTimeLabel(meta.effectiveBirthDateTime)}</span>
           <span>出生地：{stripJapan(meta.location?.label)}</span>

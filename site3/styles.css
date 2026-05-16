@@ -809,6 +809,25 @@ input, select { font-family: inherit; color: inherit; }
   transform: translateY(-8px);
 }
 .pillar.is-day::before { border-color: color-mix(in srgb, var(--gold) 30%, transparent); }
+
+.shensha {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  position: relative;
+  z-index: 2;
+}
+.shensha-badge {
+  font-size: 9px;
+  font-family: var(--f-mono);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink-2);
+  padding: 2px 0;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+}
+
 .wood { color: #58a66c; }
 .fire { color: #d36a4a; }
 .earth { color: #c2a56a; }

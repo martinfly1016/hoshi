@@ -460,6 +460,18 @@ function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
   };
   if (ciGuanMap[dayStem] === targetBranch) result.push('詞館');
 
+  // 紅鸞 (Hong Luan) & 天喜 (Tian Xi) - based on Year Branch
+  const hongLuanMap = {
+    '子': '卯', '丑': '寅', '寅': '丑', '卯': '子', '辰': '亥', '巳': '戌',
+    '午': '酉', '未': '申', '申': '未', '酉': '午', '戌': '巳', '亥': '辰'
+  };
+  const tianXiMap = {
+    '子': '酉', '丑': '申', '寅': '未', '卯': '午', '辰': '巳', '巳': '辰',
+    '午': '卯', '未': '寅', '申': '丑', '酉': '子', '戌': '亥', '亥': '戌'
+  };
+  if (hongLuanMap[yearBranch] === targetBranch) result.push('紅鸞');
+  if (tianXiMap[yearBranch] === targetBranch) result.push('天喜');
+
   // Groups based on Year or Day Branch
   const zhiGroup = (branch) => {
     if (['申', '子', '辰'].includes(branch)) return 'shui';
@@ -1144,16 +1156,24 @@ function analyzeSynthesis(calculation, profile) {
   const tenGods = collectTenGods(calculation);
   const pattern = calculation.pattern?.name || '';
 
+  const allShenSha = PILLAR_KEYS.flatMap(key => {
+    const p = calculation.pillars[key];
+    return getShenSha(p.branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch);
+  });
+  const hasHongLuan = allShenSha.includes('紅鸞');
+
   // 1. Marriage Synthesis
   let marriage = '';
+  const hongLuanText = hasHongLuan ? 'また、命式内に「紅鸞」を宿しており、華やかな魅力と良縁に恵まれやすい徳を持っています。' : '';
+
   if (gender === 'female') {
     const hasOfficer = tenGods.some(([god]) => god === '正官');
-    marriage = `日支の「${dayBranch}」が配偶者の場所となります。${hasOfficer ? '命式内に正官（夫の星）が見られるため、パートナーシップが人生の安定に繋がりやすいでしょう。' : '自立心が強く、対等な関係を築くことで幸福を感じる傾向にあります。'}`;
+    marriage = `日支の「${dayBranch}」が配偶者の場所となります。${hasOfficer ? '命式内に正官（夫の星）が見られるため、パートナーシップが人生の安定に繋がりやすいでしょう。' : '自立心が強く、対等な関係を築くことで幸福を感じる傾向にあります。'}${hongLuanText}`;
   } else if (gender === 'male') {
     const hasWealth = tenGods.some(([god]) => god === '正財');
-    marriage = `日支の「${dayBranch}」は妻の場所を指します。${hasWealth ? '命式内に正財（妻の星）が巡っており、家庭を大切にすることで運気が整います。' : '自由な感性を持ち、お互いの個性を尊重し合うパートナーシップを好むようです。'}`;
+    marriage = `日支の「${dayBranch}」は妻の場所を指します。${hasWealth ? '命式内に正財（妻の星）が巡っており、家庭を大切にすることで運気が整います。' : '自由な感性を持ち、お互いの個性を尊重し合うパートナーシップを好むようです。'}${hongLuanText}`;
   } else {
-    marriage = `日支の「${dayBranch}」は親密なパートナーシップのあり方を象徴します。自分と相手の境界線をどう保つかが鍵となります。`;
+    marriage = `日支の「${dayBranch}」は親密なパートナーシップのあり方を象徴します。自分と相手の境界線をどう保つかが鍵となります。${hongLuanText}`;
   }
 
   // 2. Career Synthesis

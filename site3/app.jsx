@@ -19,14 +19,60 @@ function App() {
   const [page, setPage] = React.useState('hero');   // hero | rite
   const [washing, setWashing] = React.useState(false);
 
+  // Active theme state (detects system preference / local storage)
+  const [activeTheme, setActiveTheme] = React.useState(() => {
+    try {
+      const saved = localStorage.getItem('hoshi-user-theme');
+      if (saved) return saved;
+      const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      return isLight ? 'kamishiro' : 'tsukiyo';
+    } catch (e) {
+      return tweaks.theme;
+    }
+  });
+
+  // Sync tweaks panel -> activeTheme
+  React.useEffect(() => {
+    if (tweaks.theme !== activeTheme && tweaks.theme !== TWEAK_DEFAULTS.theme) {
+      setActiveTheme(tweaks.theme);
+      try { localStorage.setItem('hoshi-user-theme', tweaks.theme); } catch(e){}
+    }
+  }, [tweaks.theme]);
+
+  // Listen for system theme changes if user hasn't explicitly set one
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    const onChange = (e) => {
+      try {
+        if (!localStorage.getItem('hoshi-user-theme')) {
+          const next = e.matches ? 'kamishiro' : 'tsukiyo';
+          setActiveTheme(next);
+          setTweak('theme', next);
+        }
+      } catch(e){}
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [setTweak]);
+
+  const toggleTheme = () => {
+    // If currently a light theme (kamishiro or shuboku), switch to dark (tsukiyo)
+    // If currently a dark theme (tsukiyo or aifukashi), switch to light (kamishiro)
+    const isLight = activeTheme === 'kamishiro' || activeTheme === 'shuboku';
+    const next = isLight ? 'tsukiyo' : 'kamishiro';
+    setActiveTheme(next);
+    setTweak('theme', next);
+    try { localStorage.setItem('hoshi-user-theme', next); } catch(e){}
+  };
+
   // apply theme attrs to <html> so global CSS picks them up
   React.useEffect(() => {
     const el = document.documentElement;
-    el.dataset.theme = tweaks.theme;
+    el.dataset.theme = activeTheme;
     el.dataset.type = tweaks.type;
     el.dataset.motion = tweaks.motion;
     el.dataset.hero = tweaks.hero;
-  }, [tweaks]);
+  }, [activeTheme, tweaks]);
 
   const goto = (target) => {
     if (target === page) return;
@@ -54,6 +100,9 @@ function App() {
             onClick={() => goto('rite')}>鑑定の儀</button>
           <button>命　式</button>
           <button>星辰譜</button>
+          <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
+            {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
+          </button>
         </nav>
         <div style={{
           fontFamily: 'var(--f-mono)',
@@ -61,7 +110,7 @@ function App() {
           letterSpacing: '0.3em',
           fontSize: 10,
         }}>
-          令和七年 · 丙午
+          令和八年 · 丙午
         </div>
       </header>
 
@@ -82,13 +131,17 @@ function App() {
           }}>
             {THEMES.map(t => (
               <button key={t.key}
-                onClick={() => setTweak('theme', t.key)}
+                onClick={() => {
+                  setTweak('theme', t.key);
+                  setActiveTheme(t.key);
+                  try { localStorage.setItem('hoshi-user-theme', t.key); } catch(e){}
+                }}
                 style={{
                   textAlign: 'left',
                   padding: 10,
-                  border: tweaks.theme === t.key
+                  border: activeTheme === t.key
                     ? '1px solid #fff' : '1px solid rgba(255,255,255,0.16)',
-                  background: tweaks.theme === t.key
+                  background: activeTheme === t.key
                     ? 'rgba(255,255,255,0.06)' : 'transparent',
                   color: '#fff',
                   cursor: 'pointer',

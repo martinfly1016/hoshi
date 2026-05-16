@@ -167,7 +167,6 @@ function App() {
         {page === 'insight' && calcResult && (
           <InsightView 
             calculation={calcResult.chart}
-            profile={calcResult.profile}
             onBack={() => goto('result')}
           />
         )}

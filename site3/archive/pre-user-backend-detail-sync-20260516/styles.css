@@ -807,9 +807,7 @@ input, select { font-family: inherit; color: inherit; }
   grid-template-columns: 1fr 1fr;
   gap: 40px;
   position: relative;
-  min-width: 0;
 }
-.result-card > * { min-width: 0; }
 .result-card::before {
   content: '占断之始';
   position: absolute; top: -10px; left: 32px;
@@ -1226,8 +1224,6 @@ input, select { font-family: inherit; color: inherit; }
   grid-column: 1 / -1;
   border-top: 1px solid var(--rule);
   padding-top: 28px;
-  min-width: 0;
-  max-width: 100%;
 }
 .result-chart-section {
   border-top: 0;
@@ -1672,147 +1668,6 @@ input, select { font-family: inherit; color: inherit; }
   line-height: 1.9;
   letter-spacing: 0.08em;
 }
-.backend-sync-stack {
-  display: grid;
-  gap: 18px;
-  margin-top: 44px;
-}
-.backend-panel {
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--bg-paper) 78%, transparent);
-  padding: 20px;
-  min-width: 0;
-}
-.backend-panel-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 16px;
-}
-.backend-panel-head h3 {
-  margin: 8px 0 0;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: clamp(19px, 3vw, 25px);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.45;
-}
-.backend-panel-head > span {
-  flex: 0 0 auto;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 6px 10px;
-  color: var(--ink-3);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-}
-.backend-copy {
-  margin: 0 0 16px;
-  color: var(--ink-2);
-  font-size: 13px;
-  line-height: 1.85;
-  letter-spacing: 0.06em;
-}
-.backend-card-grid {
-  display: grid;
-  gap: 12px;
-}
-.backend-card-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.backend-card-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.backend-card-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.backend-card-grid.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-.backend-card-grid article {
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-  padding: 14px;
-  min-width: 0;
-}
-.backend-card-grid article.is-primary {
-  border-color: color-mix(in srgb, var(--gold) 45%, var(--rule));
-  background: color-mix(in srgb, var(--gold) 7%, transparent);
-}
-.backend-card-grid small,
-.backend-card-grid em,
-.backend-card-grid b {
-  display: block;
-  color: var(--ink-3);
-  font-size: 11px;
-  font-style: normal;
-  line-height: 1.55;
-}
-.backend-card-grid strong {
-  display: block;
-  margin: 8px 0;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.5;
-}
-.backend-card-grid p {
-  margin: 0 0 8px;
-  color: var(--ink-2);
-  font-size: 12px;
-  line-height: 1.75;
-  letter-spacing: 0.05em;
-}
-.backend-token-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.backend-token-list span {
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 7px 10px;
-  color: var(--ink-2);
-  font-size: 12px;
-  line-height: 1.4;
-}
-.backend-token-list em {
-  display: inline;
-  margin-left: 4px;
-  font-size: 10px;
-}
-.backend-luck-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
-}
-.user-luck-table-wrap {
-  max-width: 100%;
-  overflow-x: auto;
-  border: 1px solid var(--rule);
-}
-.user-luck-table {
-  width: 100%;
-  min-width: 420px;
-  border-collapse: collapse;
-  color: var(--ink-2);
-  font-size: 12px;
-}
-.user-luck-table th,
-.user-luck-table td {
-  border-bottom: 1px solid var(--rule);
-  border-right: 1px solid var(--rule);
-  padding: 9px 10px;
-  text-align: left;
-  white-space: nowrap;
-}
-.user-luck-table th {
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-weight: 500;
-  background: color-mix(in srgb, var(--gold) 7%, transparent);
-}
-.user-luck-table tr:last-child td { border-bottom: none; }
-.user-luck-table th:last-child,
-.user-luck-table td:last-child { border-right: none; }
 .next-actions {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1836,18 +1691,6 @@ input, select { font-family: inherit; color: inherit; }
   font-family: var(--f-mono);
   font-size: 10px;
   letter-spacing: 0.18em;
-}
-.inline-return-btn {
-  margin: 0 0 18px;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--ink) 4%, transparent);
-  color: var(--ink-2);
-  padding: 10px 14px;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  cursor: pointer;
 }
 
 .bazi-board-lite {
@@ -2133,11 +1976,6 @@ input, select { font-family: inherit; color: inherit; }
   .pillar-meaning-grid,
   .chart-state-overview,
   .chart-state-grid,
-  .backend-card-grid.two,
-  .backend-card-grid.three,
-  .backend-card-grid.four,
-  .backend-card-grid.five,
-  .backend-luck-grid,
   .pillar-guide-grid,
   .element-guide-grid,
   .ten-god-map,
@@ -2149,7 +1987,6 @@ input, select { font-family: inherit; color: inherit; }
     grid-template-columns: 1fr;
   }
   .result-wide { overflow-x: visible; }
-  .backend-panel-head { align-items: flex-start; flex-direction: column; }
   .bazi-scroll-hint { display: block; }
   .bazi-board-lite { min-width: 0; }
   .bazi-lite-row strong { font-size: 13px; }

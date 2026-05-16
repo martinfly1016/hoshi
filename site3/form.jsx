@@ -151,7 +151,7 @@ function Rite({ onBack, onSubmitDone }) {
     <section className="rite" data-screen-label="02 命式作成">
       <aside className="rite-side">
         <div className="kanji">命式作成</div>
-        <div className="label">MEISHIKI · CREATION</div>
+        <div className="label">MEISHIKI CREATION</div>
         <div className="seal-stack">
           <div><span className="num">壹</span>　お名前と性別</div>
           <div><span className="num">貳</span>　生年月日</div>
@@ -168,14 +168,14 @@ function Rite({ onBack, onSubmitDone }) {
           </p>
         </div>
 
-        <FormField num="壹 / 一" ja="お名前" romaji="O · NA · MAE"
+        <FormField num="壹 / 一" ja="お名前" romaji="ONAMAE"
           hint="※ 省略可。結果画面での呼び名として使用します">
           <div className="input-line">
             <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
           </div>
         </FormField>
 
-        <FormField num="壹 / 二" ja="性 別" romaji="SEI · BETSU"
+        <FormField num="壹 / 二" ja="性 別" romaji="SEIBETSU"
           hint="※ 大運（10年ごとの運勢）の順逆計算に影響します">
           <div className="gender-row">
             {[
@@ -191,7 +191,7 @@ function Rite({ onBack, onSubmitDone }) {
           </div>
         </FormField>
 
-        <FormField num="貳 / 一" ja="生年月日" romaji="SEI · NEN · GAPPI"
+        <FormField num="貳 / 一" ja="生年月日" romaji="SEINENGAPPI"
           hint="誕生日の暦（西暦または旧暦）を選択し、入力してください">
           <div className="toggle-row">
             {['seireki','showa','heisei','reiwa'].map(c => (
@@ -225,7 +225,7 @@ function Rite({ onBack, onSubmitDone }) {
           </div>
         </FormField>
 
-        <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEI · JI · KAN"
+        <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEIJIKAN"
           hint="該当する出生時間（時辰）を選択してください。不明な場合は「時間不明」を選択してください">
           <div className="input-line">
             <select value={unsure ? 'unsure' : shi} onChange={e => {
@@ -240,7 +240,7 @@ function Rite({ onBack, onSubmitDone }) {
           </div>
         </FormField>
 
-        <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEI · CHI"
+        <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEICHI"
           hint="正確な自然時（太陽の南中時刻）を計算するための時差補正に使用します">
           <div className="input-line">
             <select value={locationId} onChange={e => setLocationId(e.target.value)}>
@@ -441,7 +441,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   return (
     <section className="rite" data-screen-label="03 命式">
       <aside className="rite-side">
-        <div className="kanji">命式</div><div className="label">MEISHIKI · CHART</div>
+        <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
           {['日主と性格','四柱の構成','五行バランス','神煞'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
@@ -541,7 +541,7 @@ function InsightView({ calculation, profile, onBack }) {
   return (
     <section className="rite" data-screen-label="05 鑑定詳解">
       <aside className="rite-side">
-        <div className="kanji">鑑定詳解</div><div className="label">PERSONAL · INSIGHTS</div>
+        <div className="kanji">鑑定詳解</div><div className="label">PERSONAL INSIGHTS</div>
         <div className="seal-stack">
           {TOPICS.map((t, i) => <div key={t.key} style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} onClick={() => setTopic(t.key)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{t.ja}</div>)}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
@@ -574,7 +574,7 @@ function FortuneView({ calculation, profile, onBack }) {
   return (
     <section className="rite" data-screen-label="04 星辰譜">
       <aside className="rite-side">
-        <div className="kanji">星辰譜</div><div className="label">FORTUNE · CYCLES</div>
+        <div className="kanji">星辰譜</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
           {['大運テーマ','今日','大運表'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參'][i]}</span>　{n}</div>

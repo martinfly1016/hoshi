@@ -297,27 +297,6 @@ const BAZI_ROW_GUIDES = {
   地勢: { icon: '勢', hint: '日主から見た勢い' },
   自坐: { icon: '坐', hint: '柱そのものの足場' },
 };
-const SEASONAL_ELEMENT_STATES = {
-  寅: { season: '春', states: { 木: '旺', 火: '相', 水: '休', 金: '囚', 土: '死' } },
-  卯: { season: '春', states: { 木: '旺', 火: '相', 水: '休', 金: '囚', 土: '死' } },
-  辰: { season: '土用', states: { 土: '旺', 金: '相', 火: '休', 木: '囚', 水: '死' } },
-  巳: { season: '夏', states: { 火: '旺', 土: '相', 木: '休', 水: '囚', 金: '死' } },
-  午: { season: '夏', states: { 火: '旺', 土: '相', 木: '休', 水: '囚', 金: '死' } },
-  未: { season: '土用', states: { 土: '旺', 金: '相', 火: '休', 木: '囚', 水: '死' } },
-  申: { season: '秋', states: { 金: '旺', 水: '相', 土: '休', 火: '囚', 木: '死' } },
-  酉: { season: '秋', states: { 金: '旺', 水: '相', 土: '休', 火: '囚', 木: '死' } },
-  戌: { season: '土用', states: { 土: '旺', 金: '相', 火: '休', 木: '囚', 水: '死' } },
-  亥: { season: '冬', states: { 水: '旺', 木: '相', 金: '休', 土: '囚', 火: '死' } },
-  子: { season: '冬', states: { 水: '旺', 木: '相', 金: '休', 土: '囚', 火: '死' } },
-  丑: { season: '土用', states: { 土: '旺', 金: '相', 火: '休', 木: '囚', 水: '死' } },
-};
-const SEASONAL_STATE_TEXT = {
-  旺: '月令の力を直接受け、もっとも勢いが出やすい状態です。',
-  相: '旺じる五行から生じられ、次に伸びやすい状態です。',
-  休: '季節から見ると控えめに働き、力を休める状態です。',
-  囚: '季節の気に抑えられ、出方に制限がかかる状態です。',
-  死: '季節から遠く、意識して補いたい状態です。',
-};
 const ELEMENT_LABELS = ['木', '火', '土', '金', '水'];
 const ELEMENT_CLASS = { 木: 'wood', 火: 'fire', 土: 'earth', 金: 'metal', 水: 'water' };
 const STEM_YINYANG = { 甲: '陽', 乙: '陰', 丙: '陽', 丁: '陰', 戊: '陽', 己: '陰', 庚: '陽', 辛: '陰', 壬: '陽', 癸: '陰' };
@@ -402,45 +381,6 @@ function supportElements(calc) {
   const entries = Object.entries(calc.fiveElements.counts || {});
   const min = Math.min(...entries.map(([, value]) => value));
   return entries.filter(([, value]) => value === min).map(([name]) => name);
-}
-
-function seasonalElementState(calc) {
-  const monthBranch = calc.fiveElements?.basis?.monthBranch || calc.pillars.month.branch;
-  return SEASONAL_ELEMENT_STATES[monthBranch] || { season: '—', states: {} };
-}
-
-function tenGodStats(calc) {
-  const map = new Map();
-  PILLAR_KEYS.forEach(key => {
-    const heavenly = calc.tenGods[key];
-    if (heavenly && heavenly !== '日主') {
-      const item = map.get(heavenly) || { name: heavenly, heavenly: 0, hidden: 0, total: 0 };
-      item.heavenly += 1;
-      item.total += 1;
-      map.set(heavenly, item);
-    }
-    (calc.pillars[key].hiddenStemDetails || []).forEach(detail => {
-      if (!detail.tenGod || detail.tenGod === '日主') return;
-      const item = map.get(detail.tenGod) || { name: detail.tenGod, heavenly: 0, hidden: 0, total: 0 };
-      item.hidden += 1;
-      item.total += 1;
-      map.set(detail.tenGod, item);
-    });
-  });
-  return Array.from(map.values()).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
-}
-
-function hiddenStemStats(calc) {
-  const map = new Map();
-  PILLAR_KEYS.forEach(key => {
-    (calc.pillars[key].hiddenStemDetails || []).forEach(detail => {
-      const id = `${detail.stem}-${detail.element}`;
-      const item = map.get(id) || { stem: detail.stem, element: detail.element, total: 0 };
-      item.total += 1;
-      map.set(id, item);
-    });
-  });
-  return Array.from(map.values()).sort((a, b) => b.total - a.total);
 }
 
 function currentDecadeFortune(decade, targetYear) {
@@ -838,105 +778,6 @@ function ChartStateOverview({ calculation }) {
   );
 }
 
-function BackendDetailSync({ calculation }) {
-  const seasonal = seasonalElementState(calculation);
-  const percentages = elementPercentages(calculation);
-  const basis = calculation.fiveElements?.basis || {};
-  const gods = tenGodStats(calculation);
-  const hidden = hiddenStemStats(calculation);
-  const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
-  return (
-    <div className="backend-sync-stack">
-      <section className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">格局 / 身強身弱 / 用神</div>
-            <h3>検証ページの判定をユーザー向けに整理する</h3>
-          </div>
-          <span>主要判定</span>
-        </div>
-        <div className="backend-card-grid three">
-          <article><small>格局</small><strong>{calculation.pattern?.name || '—'}</strong><p>{calculation.pattern?.text || '月令と天干から命式の型を見ます。'}</p></article>
-          <article><small>身強身弱</small><strong>{calculation.strength?.status || '—'}</strong><p>{calculation.strength?.text || '日主の勢いを見ます。'}</p></article>
-          <article><small>用神</small><strong>{yong}</strong><p>{calculation.yongShen?.text || '命式を整える五行を見ます。'}</p></article>
-        </div>
-      </section>
-
-      <section className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">五行計算の根拠</div>
-            <h3>構成比と旺相休囚死</h3>
-          </div>
-          <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
-        </div>
-        <p className="backend-copy">五行は天干、地支の藏干、月柱の季節補正を合わせて点数化しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節から、五行の働きやすさも重ねて見ます。</p>
-        <div className="backend-card-grid five">
-          {ELEMENT_LABELS.map(el => (
-            <article key={el}>
-              <small>{el}</small>
-              <strong className={elementClass(el)}>{percentages[el] || 0}% / {seasonal.states[el] || '休'}</strong>
-              <p>raw {calculation.fiveElements?.rawPoints?.[el] ?? '—'} / count {calculation.fiveElements?.counts?.[el] ?? 0}</p>
-              <em>{SEASONAL_STATE_TEXT[seasonal.states[el]] || ''}</em>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">十神 / 藏干</div>
-            <h3>表に出る役割と内側のテーマ</h3>
-          </div>
-          <span>構成分析</span>
-        </div>
-        <div className="backend-card-grid two">
-          <article>
-            <small>十神占比</small>
-            <div className="backend-token-list">
-              {gods.slice(0, 8).map(god => <span key={god.name}><strong>{god.name}</strong> ×{god.total} <em>干{god.heavenly}/支{god.hidden}</em></span>)}
-            </div>
-          </article>
-          <article>
-            <small>藏干の重なり</small>
-            <div className="backend-token-list">
-              {hidden.slice(0, 8).map(item => <span key={`${item.stem}-${item.element}`}><strong className={elementClass(item.element)}>{item.stem}{item.element}</strong> ×{item.total}</span>)}
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">読み取り位置 / 四柱の坐</div>
-            <h3>どの柱・どの要素から読んでいるか</h3>
-          </div>
-          <span>四柱定位</span>
-        </div>
-        <div className="backend-card-grid four">
-          {PILLAR_KEYS.map(key => {
-            const p = calculation.pillars[key];
-            const guide = PILLAR_READING[key];
-            const hiddenText = (p.hiddenStemDetails || []).map(detail => `${detail.stem}${detail.element}（${detail.tenGod}）`).join('、') || '—';
-            return (
-              <article key={key} className={key === 'day' ? 'is-primary' : ''}>
-                <small>{PILLAR_LABELS[key]} / {guide.title}</small>
-                <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
-                <p>{guide.text}</p>
-                <em>藏干: {hiddenText}</em>
-                <em>地勢 {p.terrainByDay || '—'} / 自坐 {p.terrainSelf || '—'}</em>
-                {key === 'day' && <b>日支 {p.branch} は婚姻宮として詳解します</b>}
-              </article>
-            );
-          })}
-        </div>
-      </section>
-    </div>
-  );
-}
-
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
@@ -1077,13 +918,11 @@ function InsightView({ calculation, profile, onBack }) {
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
         <div className="result-card" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div className="summary-kicker">{currentTopic.ja}の詳解</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
           <div className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2 }}>{content.p2}</div></div>
           <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>{TOPICS.filter(t => t.key !== topic).map(t => <button key={t.key} onClick={() => setTopic(t.key)} style={{ padding: '16px', background: 'transparent', border: '1px solid var(--rule)', borderRadius: 6, color: 'var(--ink-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13 }}>次：{t.ja} →</button>)}</div>
-          <BackendDetailSync calculation={calculation} />
         </div></div>
       </div>
     </section>
@@ -1114,7 +953,6 @@ function FortuneView({ calculation, profile, onBack }) {
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
         <div className="result-card" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
             <div className="summary-kicker">大運（10年運）の解読</div><h2 style={{ fontSize: 24 }}>{currentDecadeTheme?.title}</h2><p>{currentDecadeTheme?.intro}</p>
@@ -1126,7 +964,7 @@ function FortuneView({ calculation, profile, onBack }) {
           </div>
           <div id="f1" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}><h3>今日の巡り（流年・流月・流日）</h3></div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
               {[ { label: '今年の運気', item: currentAnnual, color: 'var(--accent)' }, { label: '今月の運気', item: monthly[0], color: 'var(--gold)' }, { label: '今日の運気', item: daily[0], color: 'var(--seal)' } ].map(l => (
                 <div key={l.label} style={{ background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8, padding: '20px 12px', textAlign: 'center' }}>
                   <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>{l.label}</div>
@@ -1139,50 +977,9 @@ function FortuneView({ calculation, profile, onBack }) {
           </div>
           <div id="f2" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
              <div style={{ textAlign: 'center' }}><h3>生涯の大運表</h3></div>
-             <LuckItemTable
-               title="大運"
-               subtitle={luck.decadeFortunes?.status === 'ok' ? `${luck.decadeFortunes.gender || '性別'} / ${luck.decadeFortunes.direction || '順逆'} / 起運 ${luck.decadeFortunes.startTime || '—'}` : '性別を選ぶと十年運を定位します'}
-               items={decade}
-               columns={[
-                 { label: '順', value: item => item.index },
-                 { label: '大運', value: item => item.name },
-                 { label: '年齢', value: item => `${item.startAge}-${item.endAge}歳` },
-                 { label: '期間', value: item => `${item.startYear}-${item.endYear}` },
-                 { label: '十神', value: item => item.pillar?.heavenlyTenGod || '—' },
-               ]}
-             />
-             <div className="backend-luck-grid">
-               <LuckItemTable
-                 title="流年"
-                 subtitle={`${luck.target?.year || new Date().getFullYear()}年からの10年`}
-                 items={luck.annualFortunes || []}
-                 columns={[
-                   { label: '年', value: item => item.year },
-                   { label: '干支', value: item => item.name },
-                   { label: '十神', value: item => item.pillar?.heavenlyTenGod || '—' },
-                 ]}
-               />
-               <LuckItemTable
-                 title="流月"
-                 subtitle={`${luck.target?.year || new Date().getFullYear()}年の節月`}
-                 items={monthly}
-                 columns={[
-                   { label: '月', value: item => item.index },
-                   { label: '開始', value: item => item.solarStartDate || '—' },
-                   { label: '干支', value: item => item.name },
-                 ]}
-               />
-               <LuckItemTable
-                 title="流日"
-                 subtitle="対象日から14日"
-                 items={daily}
-                 columns={[
-                   { label: '日付', value: item => item.date },
-                   { label: '干支', value: item => item.name },
-                   { label: '十神', value: item => item.pillar?.heavenlyTenGod || '—' },
-                 ]}
-               />
-             </div>
+             {decade.map(d => (
+               <div key={d.name} style={{ padding: 16, border: '1px solid var(--rule)', marginBottom: 8 }}>{d.startAge}-{d.endAge}歳: {d.pillar.text} ({d.pillar.heavenlyTenGod})</div>
+             ))}
           </div>
         </div>
       </div>
@@ -1197,60 +994,6 @@ function readingTags(calc, gods) {
 }
 
 function currentAnnualFortune(calculation) { return calculation.luckCycles?.annualFortunes?.[0] || null; }
-
-function decadeTheme(decade, gender) {
-  if (!decade) {
-    return {
-      title: '大運は性別を選ぶと定位できます',
-      intro: '十年ごとの運勢は、性別によって順行・逆行が変わります。未選択の場合は流年・流月・流日を中心に確認します。',
-      work: '現在は命式本体の格局と日主を中心に仕事の傾向を見ます。',
-      money: '財運は財星と五行バランスを中心に仮説として見ます。',
-      love: '対人・恋愛は日支と流年の関係を重ねて見ます。',
-      family: '家庭面は日柱と時柱を中心に見ます。',
-    };
-  }
-  const god = decade.pillar?.heavenlyTenGod || '十神';
-  const profile = TEN_GOD_READING[god] || { text: 'この十年に出やすい役割を見ます。', tags: [] };
-  const label = gender === 'male' ? '男性' : gender === 'female' ? '女性' : '性別未指定';
-  return {
-    title: `${decade.name} の大運テーマ`,
-    intro: `${decade.startYear}-${decade.endYear}年（${decade.startAge}-${decade.endAge}歳）は、${god} の働きが前に出やすい十年です。${label}としての順逆計算に基づいて表示しています。${profile.text}`,
-    work: `${god} の役割を仕事の場でどう使うかを見ます。${profile.tags?.join('・') || '役割'} がテーマです。`,
-    money: '財運は収入断定ではなく、現実管理・人脈・責任の出方として読みます。',
-    love: '対人運はこの大運の十神と日支の婚姻宮を重ねて確認します。',
-    family: '家庭や内面は日柱・時柱に、この十年の干支がどう作用するかを見ます。',
-  };
-}
-
-function LuckItemTable({ title, subtitle, items, columns }) {
-  const rows = items || [];
-  return (
-    <section className="backend-panel luck-table-panel">
-      <div className="backend-panel-head">
-        <div>
-          <div className="summary-kicker">{title}</div>
-          <h3>{subtitle}</h3>
-        </div>
-      </div>
-      {rows.length ? (
-        <div className="user-luck-table-wrap">
-          <table className="user-luck-table">
-            <thead><tr>{columns.map(col => <th key={col.label}>{col.label}</th>)}</tr></thead>
-            <tbody>
-              {rows.map((item, index) => (
-                <tr key={`${title}-${index}`}>
-                  {columns.map(col => <td key={col.label}>{col.value(item)}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="backend-copy">表示できるデータがありません。大運は性別を選択すると順行・逆行を定位して表示できます。</p>
-      )}
-    </section>
-  );
-}
 
 window.Rite = Rite;
 window.ResultView = ResultView;

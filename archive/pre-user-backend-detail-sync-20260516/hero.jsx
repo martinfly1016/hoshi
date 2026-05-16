@@ -4,9 +4,8 @@ function Hero({ onEnter }) {
   return (
     <section className="hero" data-screen-label="01 序章">
       <div className="hero-poem">
-        <div className="line">天に二十八宿、地に十二支あり</div>
-        <div className="line">星辰の運び、命の式に映る</div>
-        <div className="line dim">— 陰陽寮古記 卷之壹</div>
+        <div className="line">陰陽五行の運び、命式に映る</div>
+        <div className="line">天に十干、地に十二支あり</div>
       </div>
 
       <div className="hero-title-block">
@@ -23,19 +22,13 @@ function Hero({ onEnter }) {
         </h1>
 
         <button className="hero-cta" onClick={onEnter}>
-          <span>無料にて卜を乞う</span>
+          <span>無料で命式を見る</span>
           <span className="arrow"></span>
-          <span className="seal-mini">卜</span>
+          <span className="seal-mini">占</span>
         </button>
 
-        <div style={{
-          marginTop: 28,
-          fontSize: 11,
-          letterSpacing: '0.3em',
-          color: 'var(--ink-3)',
-          fontFamily: 'var(--f-mono)',
-        }}>
-          生年月日と時辰、出生の地を奉ぜよ ── 星辰、汝が命式を顕さん
+        <div className="hero-lead">
+          生年月日・出生時刻・出生地から、命式をひらきます。
         </div>
       </div>
 
@@ -43,16 +36,17 @@ function Hero({ onEnter }) {
         <StarChart />
       </div>
 
-      <div className="hero-side">星辰廻天 · 卜以識運</div>
+      <div className="hero-side">陰陽五行 · 四柱推命</div>
 
       <div className="hero-bottom">
         <div className="stations">
-          <span>角 · 亢 · 氐</span>
-          <span>斗 · 牛 · 女</span>
-          <span>奎 · 婁 · 胃</span>
-          <span>井 · 鬼 · 柳</span>
+          <span>正財 · 偏財</span>
+          <span>正官 · 七殺</span>
+          <span>正印 · 偏印</span>
+          <span>食神 · 傷官</span>
+          <span>比肩 · 劫財</span>
         </div>
-        <div>陰陽寮 / 令和七年 · MMXXVI</div>
+        <div>四柱推命 / {window.__hoshiYearInfo?.reiwa || '令和八年'} · {window.__hoshiYearInfo?.roman || 'MMXXVI'}</div>
       </div>
     </section>
   );

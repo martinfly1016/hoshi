@@ -934,11 +934,12 @@ input, select { font-family: inherit; color: inherit; }
   padding-top: 0;
 }
 .summary-kicker {
-  font-family: var(--f-mono);
-  color: var(--ink-3);
-  font-size: 11px;
-  letter-spacing: 0.32em;
-  margin-bottom: 12px;
+  font-family: 'Yuji Syuku', var(--f-seal);
+  color: var(--seal);
+  font-size: 13px;
+  letter-spacing: 0.5em;
+  margin-bottom: 16px;
+  opacity: 0.8;
 }
 .result-summary h2 {
   margin: 0 0 14px;

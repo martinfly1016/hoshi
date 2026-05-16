@@ -34,7 +34,6 @@ function App() {
 
     const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
     const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    // 2026: (2026-4)%10=2 => 丙, (2026-4)%12=6 => 午
     const stem = stems[(y - 4) % 10];
     const branch = branches[(y - 4) % 12];
 
@@ -49,12 +48,11 @@ function App() {
     };
   }, []);
   
-  // Expose it to global window for other components like Hero to use
   if (typeof window !== 'undefined') {
     window.__hoshiYearInfo = yearInfo;
   }
 
-  // Active theme state (detects system preference / local storage)
+  // Active theme state
   const [activeTheme, setActiveTheme] = React.useState(() => {
     try {
       const saved = localStorage.getItem('hoshi-user-theme');
@@ -66,7 +64,6 @@ function App() {
     }
   });
 
-  // Sync tweaks panel -> activeTheme
   React.useEffect(() => {
     if (tweaks.theme !== activeTheme && tweaks.theme !== TWEAK_DEFAULTS.theme) {
       setActiveTheme(tweaks.theme);
@@ -74,7 +71,6 @@ function App() {
     }
   }, [tweaks.theme]);
 
-  // Listen for system theme changes if user hasn't explicitly set one
   React.useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: light)');
     const onChange = (e) => {
@@ -91,8 +87,6 @@ function App() {
   }, [setTweak]);
 
   const toggleTheme = () => {
-    // If currently a light theme (kamishiro or shuboku), switch to dark (tsukiyo)
-    // If currently a dark theme (tsukiyo or aifukashi), switch to light (kamishiro)
     const isLight = activeTheme === 'kamishiro' || activeTheme === 'shuboku';
     const next = isLight ? 'tsukiyo' : 'kamishiro';
     setActiveTheme(next);
@@ -100,7 +94,6 @@ function App() {
     try { localStorage.setItem('hoshi-user-theme', next); } catch(e){}
   };
 
-  // apply theme attrs to <html> so global CSS picks them up
   React.useEffect(() => {
     const el = document.documentElement;
     el.dataset.theme = activeTheme;
@@ -147,12 +140,9 @@ function App() {
           </button>
         </nav>
         <div style={{
-          fontFamily: 'var(--f-mono)',
-          color: 'var(--ink-3)',
-          letterSpacing: '0.3em',
-          fontSize: 10,
+          fontFamily: 'var(--f-mono)', color: 'var(--ink-3)', letterSpacing: '0.3em', fontSize: 10,
         }}>
-          {yearInfo.reiwa} · {yearInfo.ganzhi}
+          {yearInfo.reiwa} {yearInfo.ganzhi}
         </div>
       </header>
 
@@ -183,6 +173,7 @@ function App() {
         {page === 'fortune' && calcResult && (
           <FortuneView 
             calculation={calcResult.chart}
+            profile={calcResult.profile}
             onBack={() => goto('result')}
           />
         )}
@@ -192,11 +183,7 @@ function App() {
 
       <TweaksPanel title="Tweaks">
         <TweakSection title="主題 — Theme">
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: 8,
-          }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {THEMES.map(t => (
               <button key={t.key}
                 onClick={() => {
@@ -205,66 +192,34 @@ function App() {
                   try { localStorage.setItem('hoshi-user-theme', t.key); } catch(e){}
                 }}
                 style={{
-                  textAlign: 'left',
-                  padding: 10,
-                  border: activeTheme === t.key
-                    ? '1px solid #fff' : '1px solid rgba(255,255,255,0.16)',
-                  background: activeTheme === t.key
-                    ? 'rgba(255,255,255,0.06)' : 'transparent',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
+                  textAlign: 'left', padding: 10,
+                  border: activeTheme === t.key ? '1px solid #fff' : '1px solid rgba(255,255,255,0.16)',
+                  background: activeTheme === t.key ? 'rgba(255,255,255,0.06)' : 'transparent',
+                  color: '#fff', cursor: 'pointer', fontFamily: 'inherit',
                   display: 'flex', flexDirection: 'column', gap: 8,
                 }}>
                 <div style={{ display: 'flex', gap: 4, height: 18 }}>
-                  {t.palette.map((c, i) => (
-                    <div key={i} style={{ flex: 1, background: c }}></div>
-                  ))}
+                  {t.palette.map((c, i) => <div key={i} style={{ flex: 1, background: c }}></div>)}
                 </div>
                 <div style={{ fontSize: 13, letterSpacing: '0.2em' }}>
                   {t.ja}
-                  <span style={{
-                    fontSize: 9,
-                    color: 'rgba(255,255,255,0.5)',
-                    marginLeft: 8,
-                    letterSpacing: '0.3em',
-                  }}>{t.romaji}</span>
+                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginLeft: 8, letterSpacing: '0.3em' }}>{t.romaji}</span>
                 </div>
               </button>
             ))}
           </div>
         </TweakSection>
-
         <TweakSection title="字体 — Type">
-          <TweakRadio
-            value={tweaks.type}
-            onChange={(v) => setTweak('type', v)}
-            options={[
-              { value: 'mincho', label: '衬线 明朝' },
-              { value: 'song',   label: '仿宋 Yuji' },
-              { value: 'kaisho', label: '楷体 Syuku' },
-            ]} />
+          <TweakRadio value={tweaks.type} onChange={(v) => setTweak('type', v)}
+            options={[{ value: 'mincho', label: '衬线 明朝' }, { value: 'song', label: '仿宋 Yuji' }, { value: 'kaisho', label: '楷体 Syuku' }]} />
         </TweakSection>
-
         <TweakSection title="動效 — Motion">
-          <TweakRadio
-            value={tweaks.motion}
-            onChange={(v) => setTweak('motion', v)}
-            options={[
-              { value: 'off',  label: '関' },
-              { value: 'soft', label: '弱' },
-              { value: 'full', label: '強' },
-            ]} />
+          <TweakRadio value={tweaks.motion} onChange={(v) => setTweak('motion', v)}
+            options={[{ value: 'off', label: '関' }, { value: 'soft', label: '弱' }, { value: 'full', label: '強' }]} />
         </TweakSection>
-
         <TweakSection title="Hero 排版">
-          <TweakRadio
-            value={tweaks.hero}
-            onChange={(v) => setTweak('hero', v)}
-            options={[
-              { value: 'centered', label: '居中庄严' },
-              { value: 'offset',   label: '偏置留白' },
-            ]} />
+          <TweakRadio value={tweaks.hero} onChange={(v) => setTweak('hero', v)}
+            options={[{ value: 'centered', label: '居中庄严' }, { value: 'offset', label: '偏置留白' }]} />
         </TweakSection>
       </TweaksPanel>
     </React.Fragment>

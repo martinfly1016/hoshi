@@ -2079,26 +2079,17 @@ input, select { font-family: inherit; color: inherit; }
   .hero-poem {
     order: 3;
     position: relative; left: auto; top: auto; transform: none;
-    width: 100%;
-    height: auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    margin-top: 28px;
-    padding: 0;
-    border-right: none;
+    height: auto; flex-direction: column;
+    margin-top: 32px;
     writing-mode: horizontal-tb;
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: 1.9;
+    font-size: 12px; letter-spacing: 0.28em;
+    line-height: 2.0;
     gap: 0;
   }
   .hero-poem .line {
-    writing-mode: horizontal-tb;
-    text-orientation: mixed;
-    border-right: none;
-    padding: 12px 0;
+    border-right: none; padding-right: 0;
+    padding: 10px 0;
     border-bottom: 1px solid var(--rule);
-    color: var(--ink-2);
   }
   .hero-poem .line:last-child { border-bottom: none; }
   .hero-side, .hero-bottom { display: none; }
@@ -2314,14 +2305,6 @@ input, select { font-family: inherit; color: inherit; }
     letter-spacing: 0.12em;
   }
   .hero-lead { font-size: 12px; letter-spacing: 0.03em; }
-  .hero-poem {
-    margin-top: 24px;
-    font-size: 12px;
-    line-height: 1.85;
-  }
-  .hero-poem .line {
-    padding: 10px 0;
-  }
   .rite { padding: 80px 16px 80px; }
 
   .chips { grid-template-columns: repeat(3, 1fr); }

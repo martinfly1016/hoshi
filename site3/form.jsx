@@ -919,29 +919,38 @@ function FortuneView({ calculation, onBack }) {
             <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
               大運はあなたの人生の背景を流れる大きな季節のようなものです。
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {decade.map(d => {
                 const isCurrent = d.name === currentDecade?.name;
+                const dTheme = decadeTheme(d);
                 return (
-                  <div key={d.name} style={{ display: 'flex', alignItems: 'center', padding: '16px', background: isCurrent ? 'color-mix(in srgb, var(--gold) 10%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--gold)' : '1px solid var(--rule)', borderRadius: 6 }}>
-                    <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--gold)' : 'var(--ink-3)' }}>
-                      {d.startAge}〜{d.endAge}歳
+                  <div key={d.name} style={{ display: 'flex', flexDirection: 'column', padding: '20px', background: isCurrent ? 'color-mix(in srgb, var(--gold) 10%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--gold)' : '1px solid var(--rule)', borderRadius: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+                      <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--gold)' : 'var(--ink-3)' }}>
+                        {d.startAge}〜{d.endAge}歳
+                      </div>
+                      <div style={{ fontSize: 24, fontFamily: 'var(--f-display)', width: 80, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: '0.6em', filter: 'grayscale(0.3)' }}>{STEM_ICONS[d.pillar.stem]}</span>
+                        {d.pillar.text}
+                      </div>
+                      <div style={{ flex: 1, fontSize: 14, color: 'var(--ink)', fontWeight: 'bold' }}>
+                        {d.pillar.heavenlyTenGod}
+                      </div>
+                      {isCurrent && <div style={{ fontSize: 11, background: 'var(--gold)', color: 'var(--bg)', padding: '2px 10px', borderRadius: 4, letterSpacing: '0.1em', fontWeight: 'bold' }}>現在</div>}
                     </div>
-                    <div style={{ fontSize: 20, fontFamily: 'var(--f-display)', width: 60, color: 'var(--ink)' }}>
-                      {d.pillar.text}
-                    </div>
-                    <div style={{ flex: 1, fontSize: 13, color: 'var(--ink-2)' }}>
-                      {d.pillar.heavenlyTenGod}
-                      <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 4 }}>{d.pillar.fortuneTheme}</div>
+                    
+                    <div style={{ paddingLeft: 8, borderLeft: `2px solid ${isCurrent ? 'var(--gold)' : 'var(--rule)'}` }}>
+                      <div style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.6 }}>
+                        {d.pillar.fortuneTheme}
+                      </div>
                       {d.impacts?.length > 0 && (
-                        <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
                           {d.impacts.map(imp => (
-                            <span key={imp.label} style={{ fontSize: 9, padding: '1px 6px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                            <span key={imp.label} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
                           ))}
                         </div>
                       )}
                     </div>
-                    {isCurrent && <div style={{ fontSize: 11, background: 'var(--gold)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em' }}>現在</div>}
                   </div>
                 );
               })}
@@ -955,29 +964,36 @@ function FortuneView({ calculation, onBack }) {
             <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
               流年はその年ごとに訪れる具体的なテーマや出来事の傾向を示します。
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {(luck.annualFortunes || []).slice(0, 10).map(a => {
                 const isCurrent = a.year === currentAnnual?.year;
                 return (
-                  <div key={a.year} style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', background: isCurrent ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--accent)' : '1px solid var(--rule)', borderRadius: 6 }}>
-                    <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--accent)' : 'var(--ink-3)' }}>
-                      {a.year}年
+                  <div key={a.year} style={{ display: 'flex', flexDirection: 'column', padding: '16px', background: isCurrent ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--accent)' : '1px solid var(--rule)', borderRadius: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+                      <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--accent)' : 'var(--ink-3)' }}>
+                        {a.year}年
+                      </div>
+                      <div style={{ fontSize: 20, fontFamily: 'var(--f-display)', width: 80, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.6em', filter: 'grayscale(0.3)' }}>{STEM_ICONS[a.pillar.stem]}</span>
+                        {a.pillar.text}
+                      </div>
+                      <div style={{ flex: 1, fontSize: 13, color: 'var(--ink)', fontWeight: 'bold' }}>
+                        {a.pillar.heavenlyTenGod}
+                      </div>
+                      {isCurrent && <div style={{ fontSize: 11, background: 'var(--accent)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em', fontWeight: 'bold' }}>今年</div>}
                     </div>
-                    <div style={{ fontSize: 18, fontFamily: 'var(--f-display)', width: 60, color: 'var(--ink)' }}>
-                      {a.pillar.text}
-                    </div>
-                    <div style={{ flex: 1, fontSize: 13, color: 'var(--ink-2)' }}>
-                      {a.pillar.heavenlyTenGod}
-                      <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 2 }}>{a.pillar.fortuneTheme}</div>
+                    <div style={{ paddingLeft: 8, borderLeft: `2px solid ${isCurrent ? 'var(--accent)' : 'var(--rule)'}` }}>
+                      <div style={{ fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>
+                        {a.pillar.fortuneTheme}
+                      </div>
                       {a.impacts?.length > 0 && (
-                        <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+                        <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
                           {a.impacts.map(imp => (
-                            <span key={imp.label} style={{ fontSize: 9, padding: '1px 4px', borderRadius: 2, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
+                            <span key={imp.label} style={{ fontSize: 9, padding: '1px 6px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'var(--bg)', color: imp.type === 'chong' ? '#fff' : 'var(--gold)', border: '1px solid currentColor' }}>{imp.label}</span>
                           ))}
                         </div>
                       )}
                     </div>
-                    {isCurrent && <div style={{ fontSize: 11, background: 'var(--accent)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em' }}>今年</div>}
                   </div>
                 );
               })}

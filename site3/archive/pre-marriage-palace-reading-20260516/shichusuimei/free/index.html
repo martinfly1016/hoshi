@@ -1962,35 +1962,6 @@
     margin-bottom: 14px;
   }
 
-  .marriage-palace-panel {
-    display: grid;
-    gap: 12px;
-  }
-
-  .marriage-palace-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .mini-reading-card {
-    display: grid;
-    gap: 8px;
-    align-content: start;
-    min-height: 188px;
-    padding: 16px;
-    border: 1px solid rgba(235, 216, 196, 0.92);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.62);
-  }
-
-  .mini-reading-card p {
-    color: var(--ink-2);
-    font-size: 13px;
-    line-height: 1.7;
-  }
-
   .luck-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2175,7 +2146,6 @@
     .pillar-grid,
     .detail-grid,
     .theme-grid,
-    .marriage-palace-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2230,16 +2200,7 @@
     .result-rail {
       top: 6px;
       margin-bottom: 0;
-      flex-wrap: wrap;
-      overflow-x: visible;
-      padding: 2px 0 6px;
-    }
-
-    .rail-link {
-      flex: 1 1 calc(25% - 8px);
-      min-height: 34px;
-      padding: 0 8px;
-      font-size: 12px;
+      padding-bottom: 6px;
     }
 
     .results.mobile-tabbed {
@@ -2264,11 +2225,6 @@
       line-height: 1.35;
     }
 
-    .mini-reading-card {
-      min-height: 0;
-      padding: 14px;
-    }
-
     .metric-grid,
     .element-stat-grid,
     .seasonal-state-grid,
@@ -2276,7 +2232,6 @@
     .pillar-grid,
     .detail-grid,
     .theme-grid,
-    .marriage-palace-grid,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: 1fr;
@@ -2427,6 +2382,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260516-marriage-1"></script>
+<script type="module" src="./page.js?v=free-20260516-elements-1"></script>
 </body>
 </html>

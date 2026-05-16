@@ -958,14 +958,38 @@ function normalizeFortuneDate(input, fallbackParts) {
   };
 }
 
+function analyzeClimateBalance(luckPillar, birthMonthBranch) {
+  const summer = ['巳', '午', '未'];
+  const winter = ['亥', '子', '丑'];
+  const luckStem = luckPillar.stem;
+  const luckBranch = luckPillar.branch;
+  const luckElements = [luckPillar.element.stem, luckPillar.element.branch];
+
+  if (summer.includes(birthMonthBranch)) {
+    // Needs cooling (Water)
+    if (luckElements.includes('水')) {
+      return { status: 'good', label: '調候：潤い', text: '夏の生まれに待望の「水」が巡ります。過熱を抑え、冷静な判断ができる実り多い時期です。' };
+    }
+  }
+  if (winter.includes(birthMonthBranch)) {
+    // Needs warming (Fire)
+    if (luckElements.includes('火')) {
+      return { status: 'good', label: '調候：温め', text: '冬の生まれに温かな「火」が巡ります。凍てついた状況が溶け出し、活力が湧いてくる前向きな時期です。' };
+    }
+  }
+  return null;
+}
+
 function buildLuckCycles(input, solarTime, dayStem, effectiveParts, natalPillars) {
   const target = normalizeFortuneDate(input, effectiveParts);
+  const birthMonthBranch = natalPillars.month.branch;
   
   const enrich = (item) => {
     if (!item?.pillar) return item;
     return {
       ...item,
-      impacts: analyzeLuckImpact(item.pillar, natalPillars)
+      impacts: analyzeLuckImpact(item.pillar, natalPillars),
+      climate: analyzeClimateBalance(item.pillar, birthMonthBranch)
     };
   };
 

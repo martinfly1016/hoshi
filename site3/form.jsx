@@ -897,6 +897,12 @@ function FortuneView({ calculation, onBack }) {
                   <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8, minHeight: '3em' }}>
                     {luckItem.item?.pillar?.fortuneTheme}
                   </div>
+                  {luckItem.item?.climate && (
+                    <div style={{ marginTop: 10, padding: '8px', border: `1px solid ${luckItem.color}`, borderRadius: 4, background: 'color-mix(in srgb, var(--bg) 40%, transparent)' }}>
+                       <div style={{ fontSize: 9, color: luckItem.color, marginBottom: 2 }}>{luckItem.item.climate.label}</div>
+                       <div style={{ fontSize: 10, color: 'var(--ink-2)', lineHeight: 1.4 }}>{luckItem.item.climate.text}</div>
+                    </div>
+                  )}
                   {luckItem.item?.impacts?.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 4, marginTop: 10 }}>
                       {luckItem.item.impacts.map(imp => (

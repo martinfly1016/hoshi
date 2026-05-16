@@ -543,29 +543,12 @@ function weakestElements(counts) {
 
 function buildTags(result) {
   const profile = STEM_PROFILES[result.dayMaster] || { tags: [] };
-  const strong = (result.fiveElements.dominant || strongestElements(result.fiveElements.counts)).map((name) => `${ELEMENT_JA[name]}が強め`);
+  const strong = strongestElements(result.fiveElements.counts).map((name) => `${ELEMENT_JA[name]}が強め`);
   const gods = [result.tenGods.month, result.tenGods.hour]
     .filter(Boolean)
     .filter((value) => value !== "日主")
     .map((value) => `${value}の働き`);
   return [...profile.tags, ...strong, ...gods].slice(0, 6);
-}
-
-function buildStructuredTags(result) {
-  const profile = STEM_PROFILES[result.dayMaster] || { tags: [] };
-  const dominant = result.fiveElements.dominant || strongestElements(result.fiveElements.counts);
-  const weak = result.fiveElements.missing?.length ? result.fiveElements.missing : (result.fiveElements.weak || weakestElements(result.fiveElements.counts));
-  const tenGods = aggregateTenGodThemes(result).filter((item) => item.name !== "日主").slice(0, 2);
-  const tags = [
-    { tone: "core", label: "日主", value: dayMasterLabel(result) },
-    { tone: "source", label: "根拠", value: "日柱天干" },
-    ...profile.tags.slice(0, 2).map((value) => ({ tone: "trait", label: "性質", value })),
-    ...dominant.slice(0, 2).map((value) => ({ tone: "element", label: "強", value })),
-    ...weak.slice(0, 2).map((value) => ({ tone: result.fiveElements.missing?.includes(value) ? "warning" : "support", label: result.fiveElements.missing?.includes(value) ? "缺" : "補", value })),
-    ...tenGods.map((item) => ({ tone: "god", label: "十神", value: item.name })),
-    { tone: "source", label: "定位", value: "日支=婚姻宮" },
-  ];
-  return tags.slice(0, 10);
 }
 
 function elementSummary(result) {
@@ -763,48 +746,8 @@ function renderElementBars(result) {
   `;
 }
 
-function normalizeTag(tag) {
-  if (typeof tag === "string") {
-    return { tone: "trait", label: "", value: tag };
-  }
-  return {
-    tone: tag.tone || "trait",
-    label: tag.label || "",
-    value: tag.value || "",
-  };
-}
-
-function renderTags(tags, className = "") {
-  if (!tags?.length) return "";
-  return `
-    <div class="tags ${escapeHtml(className)}">
-      ${tags.map((tag) => {
-        const item = normalizeTag(tag);
-        return `
-          <span class="tag tag-${escapeHtml(item.tone)}">
-            ${item.label ? `<small>${escapeHtml(item.label)}</small>` : ""}
-            <strong>${escapeHtml(item.value)}</strong>
-          </span>
-        `;
-      }).join("")}
-    </div>
-  `;
-}
-
-function renderTagOverview(result) {
-  return `
-    <section class="tag-overview">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">READING TAGS</p>
-          <h3>命式タグ</h3>
-        </div>
-        <span class="balance-badge">要点整理</span>
-      </div>
-      <p class="summary-text">タグは装飾ではなく、読みの入口と根拠を短く整理するために使います。性質、五行、十神、四柱定位を同じルールで表示します。</p>
-      ${renderTags(buildStructuredTags(result), "is-primary-tags")}
-    </section>
-  `;
+function renderTags(tags) {
+  return `<div class="tags">${tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>`;
 }
 
 function renderWarnings(result) {
@@ -1034,7 +977,7 @@ function renderDayMasterSection(result) {
         <p class="lead-copy">この命式では、日主は日柱の天干「${escapeHtml(dayPillar.stem)}」です。</p>
         <h3 class="card-title">${escapeHtml(profile.title)}</h3>
         <p class="summary-text">${escapeHtml(profile.text)}</p>
-        ${renderTags(profile.tags.map((value) => ({ tone: "trait", label: "性質", value })))}
+        ${renderTags(profile.tags)}
       </div>
       ${renderFiveElementWheel(result)}
     </div>
@@ -1314,7 +1257,7 @@ function renderTenGodThemeCards(result) {
                 <p class="theme-meta">出現 ${item.total} · 干神 ${item.heavenly} / 支神 ${item.hidden}</p>
               </div>
             </div>
-            ${renderTags(profile.tags.map((value) => ({ tone: "god", label: "役割", value })))}
+            ${renderTags(profile.tags)}
             <p>${escapeHtml(profile.text)}</p>
           </article>
         `;
@@ -1717,7 +1660,6 @@ function renderMeishikiPage(result) {
           { label: "基準", text: "時刻・出生地・補正" },
         ],
       })}
-      ${renderTagOverview(result)}
       ${renderMeishikiSummaryCards(result)}
       <section class="page-block">
         ${renderChartSection(result)}

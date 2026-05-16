@@ -36,6 +36,7 @@
 | v0.3.6 | 2026-05-16 20:02 JST | 用户首页 | `/index.html` 四柱说明 | 在用户页四柱排盘下新增四柱含义说明卡，解释年柱、月柱、日柱、时柱分别代表的家系/环境、社会/仕事、本人/婚姻宫、未来/内面等领域；点击说明卡可高亮对应四柱 | `/index.html?v=20260516-user-pillars-1` | `/archive/pre-user-backend-sync-20260516/index.html?v=20260516-user-sync-1` | main `aa46bf4` / gh-pages `47fab33` |
 | v0.3.7 | 2026-05-16 20:05 JST | 用户首页 | `/index.html` 命盘整体状态 | 在四柱说明下新增「命盤状態」模块，把后台已有格局、身强身弱、五行偏向、平衡分和用神整理成用户可读的整体状态判断，并标注每项读取来源 | `/index.html?v=20260516-user-state-1` | `/archive/pre-user-chart-state-20260516/index.html?v=20260516-user-pillars-1` | main `28ada62` / gh-pages `47d25d0` |
 | v0.3.8 | 2026-05-16 20:15 JST | 用户首页 | `/index.html` 命式構造表 | 将后台验证页的四柱矩阵显示模式同步到用户页，在排盘区新增「命式構造表」，按年柱/月柱/日柱/时柱横向展示干神、天干、地支、藏干、支神、纳音，并在手机端限制为表格内部横向滚动 | `/index.html?v=20260516-user-board-1` | `/archive/pre-user-bazi-board-20260516/index.html?v=20260516-user-state-1` | main `5a49188` / gh-pages `d448149` |
+| v0.3.9 | 2026-05-16 20:20 JST | 用户首页 | `/index.html` 命式主展示 | 将用户页「命式」区改为直接使用四柱矩阵表作为主展示，移除原四张竖卡重复展示；表格补充空亡、地勢、自坐，并支持点击/说明卡联动高亮对应柱 | `/index.html?v=20260516-user-table-1` | `/archive/pre-user-table-primary-20260516/index.html?v=20260516-user-board-1` | main `7c9a016` / gh-pages `0c18688` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

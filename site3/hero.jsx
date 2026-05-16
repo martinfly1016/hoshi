@@ -47,7 +47,7 @@ function Hero({ onEnter }) {
           <span>食神 · 伤官</span>
           <span>比肩 · 劫财</span>
         </div>
-        <div>四柱推命 / 令和八年 · MMXXVI</div>
+        <div>四柱推命 / {window.__hoshiYearInfo?.reiwa || '令和八年'} · {window.__hoshiYearInfo?.roman || 'MMXXVI'}</div>
       </div>
     </section>
   );

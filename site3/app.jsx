@@ -19,6 +19,40 @@ function App() {
   const [page, setPage] = React.useState('hero');   // hero | rite
   const [washing, setWashing] = React.useState(false);
 
+  // Auto-calculated current year info
+  const yearInfo = React.useMemo(() => {
+    const y = new Date().getFullYear();
+    const reiwaYear = y - 2018;
+    const kanjiDigits = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+    let reiwaStr = '';
+    if (reiwaYear === 1) reiwaStr = '元';
+    else if (reiwaYear < 10) reiwaStr = kanjiDigits[reiwaYear];
+    else if (reiwaYear === 10) reiwaStr = '十';
+    else if (reiwaYear < 20) reiwaStr = '十' + (reiwaYear % 10 === 0 ? '' : kanjiDigits[reiwaYear % 10]);
+    else reiwaStr = kanjiDigits[Math.floor(reiwaYear / 10)] + '十' + (reiwaYear % 10 === 0 ? '' : kanjiDigits[reiwaYear % 10]);
+
+    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    // 2026: (2026-4)%10=2 => 丙, (2026-4)%12=6 => 午
+    const stem = stems[(y - 4) % 10];
+    const branch = branches[(y - 4) % 12];
+
+    const tens = ['', 'X', 'XX', 'XXX', 'XL', 'L'];
+    const units = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+    const roman = 'MM' + tens[Math.floor((y % 100) / 10)] + units[y % 10];
+
+    return {
+      reiwa: `令和${reiwaStr}年`,
+      ganzhi: `${stem}${branch}`,
+      roman: roman
+    };
+  }, []);
+  
+  // Expose it to global window for other components like Hero to use
+  if (typeof window !== 'undefined') {
+    window.__hoshiYearInfo = yearInfo;
+  }
+
   // Active theme state (detects system preference / local storage)
   const [activeTheme, setActiveTheme] = React.useState(() => {
     try {
@@ -110,7 +144,7 @@ function App() {
           letterSpacing: '0.3em',
           fontSize: 10,
         }}>
-          令和八年 · 丙午
+          {yearInfo.reiwa} · {yearInfo.ganzhi}
         </div>
       </header>
 

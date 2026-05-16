@@ -255,31 +255,31 @@ function Rite({ onBack, onSubmitDone }) {
         </FormField>
 
         <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEI · JI · KAN"
-          hint="正確な出生時間がわかる場合は入力してください。不明な場合は「時間不明」を選択してください">
-          <div className="input-line with-mark" data-mark="時刻">
-            <input
-              type="time"
-              value={birthTime}
-              disabled={unsure}
+          hint="該当する出生時間（時辰）を選択してください。不明な場合は「時間不明」を選択してください">
+          <div className="input-line">
+            <select
+              value={unsure ? 'unsure' : shi}
               onChange={e => {
-                setBirthTime(e.target.value);
-                setShi('');
-              }} />
-          </div>
-          <div className="chips">
-            {SHI_HOURS.map(s => (
-              <button key={s.ji}
-                className={`chip ${shi === s.ji && !unsure ? 'on' : ''}`}
-                onClick={() => { setShi(s.ji); setBirthTime(representativeTime(s.ji)); setUnsure(false); }}>
-                <span className="ji">{s.ji}</span>
-                <span className="hours">{s.hours}</span>
-              </button>
-            ))}
-            <button
-              className={`chip full-w ${unsure ? 'on' : ''}`}
-              onClick={() => { setUnsure(true); setShi(''); }}>
-              ── 時間不明 ──
-            </button>
+                const val = e.target.value;
+                if (val === 'unsure') {
+                  setUnsure(true);
+                  setShi('');
+                  setBirthTime('12:00');
+                } else {
+                  setUnsure(false);
+                  setShi(val);
+                  setBirthTime(representativeTime(val));
+                }
+              }}
+            >
+              <option value="" disabled>-- 時辰を選択 --</option>
+              {SHI_HOURS.map(s => (
+                <option key={s.ji} value={s.ji}>
+                  {s.ji}の刻 ({s.hours.replace('–', ':00 ～ ') + ':00'})
+                </option>
+              ))}
+              <option value="unsure">時間不明</option>
+            </select>
           </div>
         </FormField>
 

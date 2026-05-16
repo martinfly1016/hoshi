@@ -82,8 +82,7 @@ function FormField({ num, ja, romaji, hint, children }) {
 function Rite({ onBack, onSubmitDone }) {
   const [name, setName] = React.useState('');
   const [gender, setGender] = React.useState('gen');
-  // calendar state maps to the era toggle (seireki/showa/heisei/reiwa)
-  const [calendar, setCalendar] = React.useState('seireki'); // seireki | showa | heisei | reiwa
+  const [calendar, setCalendar] = React.useState('seireki'); 
   const [year, setYear]   = React.useState('');
   const [month, setMonth] = React.useState('');
   const [day, setDay]     = React.useState('');
@@ -118,9 +117,9 @@ function Rite({ onBack, onSubmitDone }) {
           date: (() => {
             let y = parseInt(year, 10);
             if (!isNaN(y)) {
-              if (calendar === 'showa') y += 1925; // Showa 1 = 1926
-              else if (calendar === 'heisei') y += 1988; // Heisei 1 = 1989
-              else if (calendar === 'reiwa') y += 2018; // Reiwa 1 = 2019
+              if (calendar === 'showa') y += 1925;
+              else if (calendar === 'heisei') y += 1988;
+              else if (calendar === 'reiwa') y += 2018;
             }
             return `${String(y).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           })(),
@@ -133,17 +132,10 @@ function Rite({ onBack, onSubmitDone }) {
           gender: gender === 'yang' ? 'male' : gender === 'yin' ? 'female' : 'unspecified',
         };
         const calculated = api.calculateShichusuimei(input);
-        setResult({ input, chart: calculated, profile: { name, gender, location: selectedLocation, shi, unsure } });
+        const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, shi, unsure } };
+        setResult(res);
         setDone(true);
-        window.setTimeout(() => {
-          const el = document.getElementById('result-card');
-          if (el) {
-            window.scrollTo({
-              top: el.getBoundingClientRect().top + window.scrollY - 120,
-              behavior: 'smooth',
-            });
-          }
-        }, 200);
+        if (onSubmitDone) onSubmitDone(res);
       } catch (err) {
         setDone(false);
         setResult(null);
@@ -179,11 +171,7 @@ function Rite({ onBack, onSubmitDone }) {
         <FormField num="壹 / 一" ja="お名前" romaji="O · NA · MAE"
           hint="※ 省略可。結果画面での呼び名として使用します">
           <div className="input-line">
-            <input
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="例 ）田中 太郎" />
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
           </div>
         </FormField>
 
@@ -195,9 +183,7 @@ function Rite({ onBack, onSubmitDone }) {
               { key: 'yin',  ja: '女性 (陰)', sym: '☷' },
               { key: 'gen',  ja: '選択しない', sym: '☯' },
             ].map(g => (
-              <button key={g.key}
-                className={`gender-btn ${gender === g.key ? 'on' : ''}`}
-                onClick={() => setGender(g.key)}>
+              <button key={g.key} className={`gender-btn ${gender === g.key ? 'on' : ''}`} onClick={() => setGender(g.key)}>
                 <span className="glyph">{g.sym}</span>
                 <span>{g.ja}</span>
               </button>
@@ -206,49 +192,34 @@ function Rite({ onBack, onSubmitDone }) {
         </FormField>
 
         <FormField num="貳 / 一" ja="生年月日" romaji="SEI · NEN · GAPPI"
-          hint="西暦または和暦（昭和・平成・令和）を選択し、入力してください">
+          hint="誕生日の暦（西暦または旧暦）を選択し、入力してください">
           <div className="toggle-row">
-            <button className={calendar === 'seireki' ? 'on' : ''}
-              onClick={() => setCalendar('seireki')}>西　暦</button>
-            <button className={calendar === 'showa' ? 'on' : ''}
-              onClick={() => setCalendar('showa')}>昭　和</button>
-            <button className={calendar === 'heisei' ? 'on' : ''}
-              onClick={() => setCalendar('heisei')}>平　成</button>
-            <button className={calendar === 'reiwa' ? 'on' : ''}
-              onClick={() => setCalendar('reiwa')}>令　和</button>
+            {['seireki','showa','heisei','reiwa'].map(c => (
+               <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
+                 {c === 'seireki' ? '西暦' : (c === 'showa' ? '昭和' : (c === 'heisei' ? '平成' : '令和'))}
+               </button>
+            ))}
           </div>
           <div className="input-row">
             <div className="input-line with-mark" data-mark="年 / Y">
               <select value={year} onChange={e => setYear(e.target.value)}>
                 <option value="" disabled>--</option>
-                {calendar === 'seireki' && Array.from({length: 107}, (_, i) => 2026 - i).map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-                {calendar === 'showa' && Array.from({length: 64}, (_, i) => 64 - i).map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-                {calendar === 'heisei' && Array.from({length: 31}, (_, i) => 31 - i).map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-                {calendar === 'reiwa' && Array.from({length: 8}, (_, i) => 8 - i).map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
+                {calendar === 'seireki' && Array.from({length: 107}, (_, i) => 2026 - i).map(y => <option key={y} value={y}>{y}</option>)}
+                {calendar === 'showa' && Array.from({length: 64}, (_, i) => 64 - i).map(y => <option key={y} value={y}>{y}</option>)}
+                {calendar === 'heisei' && Array.from({length: 31}, (_, i) => 31 - i).map(y => <option key={y} value={y}>{y}</option>)}
+                {calendar === 'reiwa' && Array.from({length: 8}, (_, i) => 8 - i).map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
             <div className="input-line with-mark" data-mark="月 / M">
               <select value={month} onChange={e => setMonth(e.target.value)}>
                 <option value="" disabled>--</option>
-                {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
+                {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
             <div className="input-line with-mark" data-mark="日 / D">
               <select value={day} onChange={e => setDay(e.target.value)}>
                 <option value="" disabled>--</option>
-                {Array.from({length: 31}, (_, i) => i + 1).map(d => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
+                {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
           </div>
@@ -257,44 +228,23 @@ function Rite({ onBack, onSubmitDone }) {
         <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEI · JI · KAN"
           hint="該当する出生時間（時辰）を選択してください。不明な場合は「時間不明」を選択してください">
           <div className="input-line">
-            <select
-              value={unsure ? 'unsure' : shi}
-              onChange={e => {
+            <select value={unsure ? 'unsure' : shi} onChange={e => {
                 const val = e.target.value;
-                if (val === 'unsure') {
-                  setUnsure(true);
-                  setShi('');
-                  setBirthTime('12:00');
-                } else {
-                  setUnsure(false);
-                  setShi(val);
-                  setBirthTime(representativeTime(val));
-                }
-              }}
-            >
+                if (val === 'unsure') { setUnsure(true); setShi(''); setBirthTime('12:00'); }
+                else { setUnsure(false); setShi(val); setBirthTime(representativeTime(val)); }
+              }}>
               <option value="" disabled>-- 時辰を選択 --</option>
-              {SHI_HOURS.map(s => (
-                <option key={s.ji} value={s.ji}>
-                  {s.ji}の刻 ({s.hours.replace('–', ':00 ～ ') + ':00'})
-                </option>
-              ))}
+              {SHI_HOURS.map(s => <option key={s.ji} value={s.ji}>{s.ji}の刻 ({s.hours.replace('–', ':00 ～ ') + ':00'})</option>)}
               <option value="unsure">時間不明</option>
             </select>
           </div>
         </FormField>
 
         <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEI · CHI"
-          hint="正確な自然時（太陽の南中時刻）を計算するための時差補正に使用します。一番近い場所を選んでください">
+          hint="正確な自然時（太陽の南中時刻）を計算するための時差補正に使用します">
           <div className="input-line">
             <select value={locationId} onChange={e => setLocationId(e.target.value)}>
-              {locations.map(location => {
-                // Strip "日本 / " and the city name (keep only prefecture)
-                let label = stripJapan(location.label);
-                label = label.split(' ')[0];
-                return (
-                  <option key={location.id} value={location.id}>{label}</option>
-                );
-              })}
+              {locations.map(l => <option key={l.id} value={l.id}>{stripJapan(l.label).split(' ')[0]}</option>)}
               <option value="overseas">海外（日本標準時以外）</option>
             </select>
           </div>
@@ -302,37 +252,22 @@ function Rite({ onBack, onSubmitDone }) {
 
         <div className="rite-submit">
           <div className="legal">
-            出生時間が不明でも鑑定できます。<br/>
-            その場合、時柱は12:00の仮計算として表示します。<br/>
+            出生時間が不明でも鑑定できます。その場合、時柱は12:00の仮計算として表示します。<br/>
             <span style={{ fontSize: '0.85em', color: 'var(--ink-3)', display: 'block', marginTop: '8px' }}>
               ※ 入力内容はこの端末上で計算し、サーバーには保存しません。
             </span>
           </div>
-          <button className={`submit-btn ${busy ? 'busy' : ''}`}
-            disabled={!valid || busy}
-            onClick={submit}>
+          <button className={`submit-btn ${busy ? 'busy' : ''}`} disabled={!valid || busy} onClick={submit}>
             <span>無料で命式を見る</span>
             <span className="arrow"></span>
             <span className="seal-mini">占</span>
           </button>
         </div>
-
         {error && <div className="notice result-error">{error}</div>}
-
-        {done && result && <ResultPreview id="result-card"
-          name={name} calculation={result.chart} profile={result.profile} />}
-
         <div style={{ marginTop: 56, textAlign: 'center' }}>
-          <button onClick={onBack}
-            style={{
-              fontSize: 11, letterSpacing: '0.4em',
-              color: 'var(--ink-3)', fontFamily: 'var(--f-mono)',
-            }}>
-            ← 序章へ戻る
-          </button>
+          <button onClick={onBack} style={{ fontSize: 11, letterSpacing: '0.4em', color: 'var(--ink-3)', fontFamily: 'var(--f-mono)' }}>← 序章へ戻る</button>
         </div>
       </div>
-
       <div className={`seal-overlay ${showStamp ? 'show' : ''}`}>
         <div className="stamp">命</div>
         <div className="caption">星辰、命式を顕す</div>
@@ -342,1403 +277,289 @@ function Rite({ onBack, onSubmitDone }) {
 }
 
 const PILLAR_KEYS = ['year', 'month', 'day', 'hour'];
-const PILLAR_LABELS = {
-  year: '年柱',
-  month: '月柱',
-  day: '日柱',
-  hour: '時柱',
-};
-const STEM_ICONS = {
-  '甲': '🌳', // 大樹
-  '乙': '🌿', // 草花
-  '丙': '☀️', // 太陽
-  '丁': '🕯️', // 灯火
-  '戊': '⛰️', // 山
-  '己': '🪴', // 大地
-  '庚': '⚔️', // 剣
-  '辛': '✨', // 宝石
-  '壬': '🌊', // 海
-  '癸': '💧', // 雨
-};
-const BRANCH_READING = {
-  '子': '万物が芽生え始める時期。知恵と順応性を表します。',
-  '丑': '土の中で種が成長を待つ時期。粘り強さと着実さを表します。',
-  '寅': '芽が地上に伸び出す時期。勢いと開拓精神を表します。',
-  '卯': '草木が茂る時期。柔軟性と協調性を表します。',
-  '辰': '万物が振動し整う時期。変化と理想を表します。',
-  '巳': '陽の気が極まる時期。情熱と華やかさを表します。',
-  '午': '最も輝き、方向を転じる時期。求心力と率直さを表します。',
-  '未': '実を結び、味が出る時期。包容力と安定を表します。',
-  '申': '実が固まり始める時期。決断力と合理性を表します。',
-  '酉': '収穫の時期。洗練された感性と美意識を表します。',
-  '戌': '土に戻る時期。誠実さと守りの力を表します。',
-  '亥': '次の生命を育む時期。自由と構想力を表します。'
-};
-
+const PILLAR_LABELS = { year: '年柱', month: '月柱', day: '日柱', hour: '時柱' };
+const STEM_ICONS = { '甲': '🌳', '乙': '🌿', '丙': '☀️', '丁': '🕯️', '戊': '⛰️', '己': '🪴', '庚': '⚔️', '辛': '✨', '壬': '🌊', '癸': '💧' };
+const BRANCH_READING = { '子': '万物が芽生え始める時期。', '丑': '粘り強さと着実さを表します。', '寅': '勢いと開拓精神を表します。', '卯': '柔軟性と協調性を表します。', '辰': '変化と理想を表します。', '巳': '情熱と華やかさを表します。', '午': '求心力と率直さを表します。', '未': '包容力と安定を表します。', '申': '決断力と合理性を表します。', '酉': '洗練された感性と美意識。', '戌': '誠実さと守りの力。', '亥': '自由と構想力を表します。' };
 const PILLAR_READING = {
-  year: {
-    icon: '根',
-    title: '年柱はルーツと外側の環境',
-    text: '家族、育った環境、社会から見えやすい雰囲気を見ます。',
-  },
-  month: {
-    icon: '場',
-    title: '月柱は社会性と仕事の土台',
-    text: '季節の力が強く出る柱で、仕事や役割、社会での使い方を見ます。',
-  },
-  day: {
-    icon: '我',
-    title: '日柱は本人と大切な関係',
-    text: '日主を含む中心の柱です。本人の核と、近い関係性の傾向を見ます。',
-  },
-  hour: {
-    icon: '芽',
-    title: '時柱は未来と内側の可能性',
-    text: '出生時間から出す柱です。内面、晩年、これから育つテーマを見ます。',
-  },
+  year: { icon: '根', title: '年柱はルーツと外側の環境', text: '家族、育った環境、社会から見えやすい雰囲気を見ます。' },
+  month: { icon: '場', title: '月柱は社会性と仕事の土台', text: '季節の力が強く出る柱で、仕事や役割、社会での使い方を見ます。' },
+  day: { icon: '我', title: '日柱は本人と大切な関係', text: '日主を含む中心の柱です。本人の核と、近い関係性の傾向を見ます。' },
+  hour: { icon: '芽', title: '時柱は未来と内側の可能性', text: '内面、晩年、これから育つテーマを見ます。' },
 };
 const ELEMENT_LABELS = ['木', '火', '土', '金', '水'];
-const ELEMENT_CLASS = {
-  木: 'wood',
-  火: 'fire',
-  土: 'earth',
-  金: 'metal',
-  水: 'water',
-};
-function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
-  const result = [];
-  
-  // 天乙貴人 (Tian Yi Gui Ren)
-  const tianYiMap = {
-    '甲': ['丑', '未'], '戊': ['丑', '未'], '庚': ['丑', '未'],
-    '乙': ['子', '申'], '己': ['子', '申'],
-    '丙': ['亥', '酉'], '丁': ['亥', '酉'],
-    '壬': ['卯', '巳'], '癸': ['卯', '巳'],
-    '辛': ['寅', '午']
-  };
-  if (tianYiMap[dayStem]?.includes(targetBranch)) result.push('天乙貴人');
-
-  // 太極貴人 (Tai Ji Gui Ren)
-  const taiJiMap = {
-    '甲': ['子', '午'], '乙': ['子', '午'],
-    '丙': ['卯', '酉'], '丁': ['卯', '酉'],
-    '戊': ['辰', '戌', '丑', '未'], '己': ['辰', '戌', '丑', '未'],
-    '庚': ['寅', '亥'], '辛': ['寅', '亥'],
-    '壬': ['巳', '申'], '癸': ['巳', '申']
-  };
-  if (taiJiMap[dayStem]?.includes(targetBranch)) result.push('太極貴人');
-
-  // 文昌貴人 (Wen Chang)
-  const wenChangMap = {
-    '甲': '巳', '乙': '午', '丙': '申', '戊': '申',
-    '丁': '酉', '己': '酉', '庚': '亥', '辛': '子',
-    '壬': '寅', '癸': '卯'
-  };
-  if (wenChangMap[dayStem] === targetBranch) result.push('文昌貴人');
-
-  // 天厨貴人 (Tian Chu)
-  const tianChuMap = {
-    '甲': '巳', '乙': '午', '丙': '子', '丁': '巳',
-    '戊': '午', '己': '申', '庚': '寅', '辛': '午',
-    '壬': '酉', '癸': '亥'
-  };
-  if (tianChuMap[dayStem] === targetBranch) result.push('天厨貴人');
-
-  // 羊刃 (Yang Ren)
-  const yangRenMap = {
-    '甲': '卯', '乙': '辰', '丙': '午', '丁': '未',
-    '戊': '午', '己': '未', '庚': '酉', '辛': '戌',
-    '壬': '子', '癸': '丑'
-  };
-  if (yangRenMap[dayStem] === targetBranch) result.push('羊刃');
-
-  // 詞館 (Ci Guan)
-  const ciGuanMap = {
-    '甲': '寅', '乙': '卯', '丙': '巳', '戊': '巳',
-    '丁': '午', '己': '午', '庚': '申', '辛': '酉',
-    '壬': '亥', '癸': '子'
-  };
-  if (ciGuanMap[dayStem] === targetBranch) result.push('詞館');
-
-  // 紅鸞 (Hong Luan) & 天喜 (Tian Xi) - based on Year Branch
-  const hongLuanMap = {
-    '子': '卯', '丑': '寅', '寅': '丑', '卯': '子', '辰': '亥', '巳': '戌',
-    '午': '酉', '未': '申', '申': '未', '酉': '午', '戌': '巳', '亥': '辰'
-  };
-  const tianXiMap = {
-    '子': '酉', '丑': '申', '寅': '未', '卯': '午', '辰': '巳', '巳': '辰',
-    '午': '卯', '未': '寅', '申': '丑', '酉': '子', '戌': '亥', '亥': '戌'
-  };
-  if (hongLuanMap[yearBranch] === targetBranch) result.push('紅鸞');
-  if (tianXiMap[yearBranch] === targetBranch) result.push('天喜');
-
-  // 孤辰 (Gu Chen) & 寡宿 (Gua Su) - based on Year Branch
-  const seasonalGroups = {
-    '寅': 'spring', '卯': 'spring', '辰': 'spring',
-    '巳': 'summer', '午': 'summer', '未': 'summer',
-    '申': 'autumn', '酉': 'autumn', '戌': 'autumn',
-    '亥': 'winter', '子': 'winter', '丑': 'winter'
-  };
-  const season = seasonalGroups[yearBranch];
-  if (season === 'spring') {
-    if (targetBranch === '巳') result.push('孤辰');
-    if (targetBranch === '丑') result.push('寡宿');
-  } else if (season === 'summer') {
-    if (targetBranch === '申') result.push('孤辰');
-    if (targetBranch === '辰') result.push('寡宿');
-  } else if (season === 'autumn') {
-    if (targetBranch === '亥') result.push('孤辰');
-    if (targetBranch === '未') result.push('寡宿');
-  } else if (season === 'winter') {
-    if (targetBranch === '寅') result.push('孤辰');
-    if (targetBranch === '戌') result.push('寡宿');
-  }
-
-  // Groups based on Year or Day Branch
-  const zhiGroup = (branch) => {
-    if (['申', '子', '辰'].includes(branch)) return 'shui';
-    if (['亥', '卯', '未'].includes(branch)) return 'mu';
-    if (['寅', '午', '戌'].includes(branch)) return 'huo';
-    if (['巳', '酉', '丑'].includes(branch)) return 'jin';
-    return null;
-  };
-
-  const checkSanzhi = (baseBranch) => {
-    const group = zhiGroup(baseBranch);
-    if (group === 'shui') {
-      if (targetBranch === '寅') result.push('駅馬');
-      if (targetBranch === '子') result.push('将星');
-      if (targetBranch === '辰') result.push('華蓋');
-      if (targetBranch === '酉') result.push('桃花');
-      if (targetBranch === '午') result.push('災殺');
-    }
-    if (group === 'mu') {
-      if (targetBranch === '巳') result.push('駅馬');
-      if (targetBranch === '卯') result.push('将星');
-      if (targetBranch === '未') result.push('華蓋');
-      if (targetBranch === '子') result.push('桃花');
-      if (targetBranch === '酉') result.push('災殺');
-    }
-    if (group === 'huo') {
-      if (targetBranch === '申') result.push('駅馬');
-      if (targetBranch === '午') result.push('将星');
-      if (targetBranch === '戌') result.push('華蓋');
-      if (targetBranch === '卯') result.push('桃花');
-      if (targetBranch === '子') result.push('災殺');
-    }
-    if (group === 'jin') {
-      if (targetBranch === '亥') result.push('駅馬');
-      if (targetBranch === '酉') result.push('将星');
-      if (targetBranch === '丑') result.push('華蓋');
-      if (targetBranch === '午') result.push('桃花');
-      if (targetBranch === '卯') result.push('災殺');
-    }
-  };
-
-  checkSanzhi(yearBranch);
-  checkSanzhi(dayBranch);
-
-  return [...new Set(result)]; // Unique
-}
-
-const WARNING_LABELS = {
-  BIRTH_TIME_DEFAULTED_TO_NOON: '出生時間不詳のため、時柱は12:00で仮計算しています。',
-  TRUE_SOLAR_TIME_APPLIED: '出生地の経度から真太陽時補正を適用しています。',
-  TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: '真太陽時計算には出生地の経緯度が必要です。',
-  LATE_ZI_HOUR_MODE_USER_SELECTABLE: '23:00台は晚子時/子初換日で流派差が出ます。',
-};
-const STEM_YINYANG = {
-  甲: '陽', 乙: '陰', 丙: '陽', 丁: '陰', 戊: '陽',
-  己: '陰', 庚: '陽', 辛: '陰', 壬: '陽', 癸: '陰',
-};
+const ELEMENT_CLASS = { 木: 'wood', 火: 'fire', 土: 'earth', 金: 'metal', 水: 'water' };
+const STEM_YINYANG = { 甲: '陽', 乙: '陰', 丙: '陽', 丁: '陰', 戊: '陽', 己: '陰', 庚: '陽', 辛: '陰', 壬: '陽', 癸: '陰' };
 const STEM_READING = {
-  甲: { title: '大樹のようにまっすぐ伸びる人', text: '理想を掲げ、時間をかけて形にしていく力があります。焦らず根を張るほど、信頼が育ちます。', tags: ['誠実', '成長志向', '長期戦'] },
-  乙: { title: '草花のようにしなやかに場を読む人', text: '柔らかな感受性と調整力があります。人との関係の中で才能が開きやすいタイプです。', tags: ['柔軟', '協調', '美意識'] },
-  丙: { title: '太陽のように場を明るくする人', text: '明るさと表現力で人を惹きつけます。隠すより見せることで運が動きやすいタイプです。', tags: ['表現力', '率直', '求心力'] },
-  丁: { title: '灯火のように心を照らす人', text: '細やかな洞察と集中力があります。小さな違和感を拾い、丁寧に磨くほど強みになります。', tags: ['洞察', '集中', '繊細'] },
-  戊: { title: '山のように安定をつくる人', text: '物事を受け止め、場の土台を整える力があります。信頼を積むほど大きな役割を任されます。', tags: ['安定', '包容', '責任感'] },
-  己: { title: '田畑のように人や環境を育てる人', text: '現実感覚と育成力があります。人や環境を整えながら成果へつなげることが得意です。', tags: ['育成', '実務', '調整役'] },
-  庚: { title: '鋼のように道を切り開く人', text: '決断力と突破力があります。曖昧な状況を整理し、必要な一手を打つことで力を発揮します。', tags: ['決断', '突破', '実行'] },
-  辛: { title: '宝石のように磨かれて光る人', text: '繊細な美意識と基準の高さがあります。細部を磨き、質を高めるほど存在感が増します。', tags: ['美意識', '精密', '洗練'] },
-  壬: { title: '大河のように広がる人', text: '視野が広く、変化に乗る力があります。固定されすぎない環境で発想が広がります。', tags: ['自由', '構想', '移動'] },
-  癸: { title: '雨露のように静かに満たす人', text: '観察力と知性があり、静かに情報を集めて本質へ近づくタイプです。', tags: ['観察', '知性', '内省'] },
+  甲: { title: '大樹のようにまっすぐ伸びる人', text: '理想を掲げ、時間をかけて形にしていく力があります。', tags: ['誠実', '成長志向'] },
+  乙: { title: '草花のようにしなやかに場を読む人', text: '柔らかな感受性と調整力があります。', tags: ['柔軟', '美意識'] },
+  丙: { title: '太陽のように場を明るくする人', text: '明るさと表現力で人を惹きつけます。', tags: ['表現力', '率直'] },
+  丁: { title: '灯火のように心を照らす人', text: '細やかな洞察と集中力があります。', tags: ['洞察', '集中'] },
+  戊: { title: '山のように安定をつくる人', text: '物事を受け止め、場の土台を整える力があります。', tags: ['安定', '責任感'] },
+  己: { title: '田畑のように人や環境を育てる人', text: '現実感覚と育成力があります。', tags: ['育成', '実務'] },
+  庚: { title: '鋼のように道を切り開く人', text: '決断力と突破力があります。', tags: ['決断', '突破'] },
+  辛: { title: '宝石のように磨かれて光る人', text: '繊細な美意識と基準の高さがあります。', tags: ['美意識', '洗練'] },
+  壬: { title: '大河のように広がる人', text: '視野が広く、変化に乗る力があります。', tags: ['自由', '構想'] },
+  癸: { title: '雨露のように静かに満たす人', text: '観察力と知性があり、本質へ近づくタイプです。', tags: ['知性', '内省'] },
 };
 const TEN_GOD_READING = {
-  比肩: { tags: ['自立', '対等', '芯の強さ'], text: '自分の判断で立ち、同じ立場の相手と並走しやすい星です。' },
-  劫财: { tags: ['競争', '突破', '巻き込み'], text: '競争心と突破力が前に出やすく、人や状況を動かしながら進む星です。' },
-  食神: { tags: ['表現', '余裕', '育成'], text: '自然体の表現、楽しさ、育てる力として出やすい星です。' },
-  伤官: { tags: ['批評', '才気', '鋭さ'], text: '感覚が鋭く、型を破って言語化したり改善したりする星です。' },
-  偏财: { tags: ['機動力', '対人', '現場感'], text: '人や機会に素早く反応し、流れをつかみにいく星です。' },
-  正财: { tags: ['実務', '管理', '積み上げ'], text: '現実感覚が強く、着実に管理しながら成果へつなぐ星です。' },
-  七杀: { tags: ['緊張感', '決断', '負荷対応'], text: 'プレッシャーの中で判断し、厳しい局面を切り抜ける力として出ます。' },
-  正官: { tags: ['規律', '責任', '信頼'], text: '秩序や役割意識を重んじ、きちんと形にしていく星です。' },
-  偏印: { tags: ['直感', '独自視点', '再編集'], text: '独自の見方やひらめきで情報を再解釈しやすい星です。' },
-  正印: { tags: ['学習', '保護', '吸収'], text: '知識や型を吸収し、守られながら安定して伸びやすい星です。' },
+  比肩: { tags: ['自立', '対等'], text: '自分の判断で立ち、同じ立場の相手と並走しやすい星です。' },
+  劫财: { tags: ['競争', '突破'], text: '競争心と突破力が前に出やすく、人を動かしながら進む星です。' },
+  食神: { tags: ['表現', '余裕'], text: '自然体の表現、楽しさ、育てる力として出やすい星です。' },
+  伤官: { tags: ['批評', '才気'], text: '感覚が鋭く、型を破って新しい価値を生む星です。' },
+  偏财: { tags: ['機動力', '対人'], text: '人や機会に素早く反応し、流れをつかみにいく星です。' },
+  正财: { tags: ['実務', '管理'], text: '現実感覚が強く、着実に管理しながら成果へつなぐ星です。' },
+  七杀: { tags: ['緊張感', '決断'], text: 'プレッシャーの中で判断し、厳しい局面を切り抜ける力です。' },
+  正官: { tags: ['規律', '責任'], text: '秩序や役割意識を重んじ、きちんと形にしていく星です。' },
+  偏印: { tags: ['直感', '独自視点'], text: '独自の見方やひらめきで情報を再解釈しやすい星です。' },
+  正印: { tags: ['学習', '保護'], text: '知識や型を吸収し、守られながら伸びやすい星です。' },
 };
 const TEN_GOD_GROUPS = {
-  比肩: { role: '自分軸', icon: '自', text: '自立心、同じ立場の仲間、対等な関係を表します。' },
-  劫财: { role: '競争と仲間', icon: '競', text: '競争心、巻き込み力、強い突破力として出ます。' },
-  食神: { role: '表現と楽しさ', icon: '表', text: '自然な表現、楽しさ、育てる力として現れます。' },
-  伤官: { role: '感性と改善', icon: '鋭', text: '鋭い感覚、批評性、型を越える才能として出ます。' },
-  偏财: { role: '機会と対人', icon: '機', text: '人や機会に素早く反応し、現場で流れをつかむ力です。' },
-  正财: { role: '管理と積み上げ', icon: '積', text: '現実感覚、管理、安定した積み上げを表します。' },
-  七杀: { role: '決断と負荷対応', icon: '決', text: '緊張感の中で決める力、責任ある局面への強さです。' },
-  正官: { role: '信頼と秩序', icon: '秩', text: '役割意識、社会的信用、ルールの中で整える力です。' },
-  偏印: { role: '直感と再編集', icon: '直', text: '独自視点、直感、情報を組み替える力として出ます。' },
-  正印: { role: '学習と保護', icon: '学', text: '学び、吸収、守られながら伸びる力を表します。' },
+  比肩: { role: '自分軸', icon: '自' }, 劫财: { role: '競争', icon: '競' },
+  食神: { role: '表現', icon: '表' }, 伤官: { role: '感性', icon: '鋭' },
+  偏财: { role: '機会', icon: '機' }, 正财: { role: '管理', icon: '積' },
+  七杀: { role: '決断', icon: '決' }, 正官: { role: '信頼', icon: '秩' },
+  偏印: { role: '直感', icon: '直' }, 正印: { role: '学習', icon: '学' },
 };
 
-function elementClass(elementName) {
-  return ELEMENT_CLASS[elementName] || 'neutral';
+function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
+  const result = [];
+  const tianYiMap = { '甲': ['丑','未'], '戊': ['丑','未'], '庚': ['丑','未'], '乙': ['子','申'], '己': ['子','申'], '丙': ['亥','酉'], '丁': ['亥','酉'], '壬': ['卯','巳'], '癸': ['卯','巳'], '辛': ['寅','午'] };
+  if (tianYiMap[dayStem]?.includes(targetBranch)) result.push('天乙貴人');
+  const hongLuanMap = { '子': '卯', '丑': '寅', '寅': '丑', '卯': '子', '辰': '亥', '巳': '戌', '午': '酉', '未': '申', '申': '未', '酉': '午', '戌': '巳', '亥': '辰' };
+  if (hongLuanMap[yearBranch] === targetBranch) result.push('紅鸞');
+  const seasonalGroups = { '寅':'spring','卯':'spring','辰':'spring','巳':'summer','午':'summer','未':'summer','申':'autumn','酉':'autumn','戌':'autumn','亥':'winter','子':'winter','丑':'winter' };
+  const season = seasonalGroups[yearBranch];
+  if (season === 'spring' && targetBranch === '巳') result.push('孤辰');
+  if (season === 'spring' && targetBranch === '丑') result.push('寡宿');
+  return [...new Set(result)];
 }
 
-function elementPercentages(result) {
-  const counts = result.fiveElements.counts;
-  const total = Math.max(1, Object.values(counts).reduce((sum, value) => sum + value, 0));
-  return Object.fromEntries(ELEMENT_LABELS.map((name) => [name, Math.round(((counts[name] || 0) / total) * 100)]));
+function elementClass(el) { return ELEMENT_CLASS[el] || 'neutral'; }
+function elementPercentages(res) {
+  const counts = res.fiveElements.counts;
+  const total = Math.max(1, Object.values(counts).reduce((s,v) => s+v, 0));
+  return Object.fromEntries(ELEMENT_LABELS.map(n => [n, Math.round((counts[n]||0)/total*100)]));
 }
-
-function formatDateTimeLabel(value) {
-  const [date = '', time = ''] = String(value || '').split(' ');
-  const [year, month, day] = date.split('-');
-  if (!year || !month || !day) return value || '—';
-  return `${year}年${month}月${day}日 ${time}`;
-}
-
-function collectHiddenStems(result) {
+function formatDateTimeLabel(v) { return v || '—'; }
+function collectTenGods(res) {
   const counts = new Map();
-  PILLAR_KEYS.forEach((key) => {
-    (result.pillars[key].hiddenStemDetails || []).forEach((detail) => {
-      const current = counts.get(detail.stem) || { ...detail, total: 0 };
-      current.total += 1;
-      counts.set(detail.stem, current);
-    });
+  PILLAR_KEYS.forEach(k => {
+    const god = res.tenGods[k];
+    if (god && god !== '日主') counts.set(god, (counts.get(god)||0)+1);
   });
-  return Array.from(counts.values()).sort((a, b) => b.total - a.total);
-}
-
-function collectTenGods(result) {
-  const counts = new Map();
-  PILLAR_KEYS.forEach((key) => {
-    const god = result.tenGods[key];
-    counts.set(god, (counts.get(god) || 0) + 1);
-    (result.pillars[key].hiddenStemDetails || []).forEach((detail) => {
-      counts.set(detail.tenGod, (counts.get(detail.tenGod) || 0) + 1);
-    });
-  });
-  return Array.from(counts.entries())
-    .filter(([name]) => name && name !== '日主')
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6);
-}
-
-function strongestElements(result) {
-  const entries = Object.entries(result.fiveElements.counts);
-  const max = Math.max(...entries.map(([, value]) => value));
-  return entries.filter(([, value]) => value === max).map(([name]) => name);
-}
-
-function weakestElements(result) {
-  const entries = Object.entries(result.fiveElements.counts);
-  const min = Math.min(...entries.map(([, value]) => value));
-  return entries.filter(([, value]) => value === min).map(([name]) => name);
-}
-
-function dayMasterType(calculation) {
-  const stem = calculation.dayMaster;
-  const element = calculation.pillars.day.element.stem;
-  return `${STEM_YINYANG[stem] || ''}${element}`;
-}
-
-function readingTags(calculation, tenGods) {
-  const stemTags = STEM_READING[calculation.dayMaster]?.tags || [];
-  const godTags = tenGods.slice(0, 2).flatMap(([god]) => TEN_GOD_READING[god]?.tags || []);
-  return [...stemTags, ...godTags].slice(0, 6);
-}
-
-function balanceAdvice(calculation) {
-  const missing = ELEMENT_LABELS.filter((name) => (calculation.fiveElements.counts[name] || 0) === 0);
-  const support = missing.length ? missing : weakestElements(calculation);
-  const advice = {
-    木: '学び直し、計画づくり、自然に触れる時間が助けになります。',
-    火: '発信、表現、朝日や温かい場に触れる行動が助けになります。',
-    土: '生活リズム、食事、片づけ、貯蓄計画など土台づくりが合います。',
-    金: '金属アクセサリー、白や金色の小物、道具の整理、ルール化が助けになります。',
-    水: '休息、読書、移動、水辺の散歩、情報収集で流れを作ると安定しやすいです。',
-  };
-  return {
-    support,
-    text: support.map((name) => advice[name]).join(' '),
-  };
-}
-
-function mainThemeText(tenGods) {
-  const names = tenGods.slice(0, 3).map(([god]) => god);
-  if (!names.length) return '目立つ通変星に大きな偏りはありません。';
-  return names.map((name) => `${name}（${(TEN_GOD_READING[name]?.tags || []).join('・')}）`).join('、');
-}
-
-function elementStateLabel(calculation, name) {
-  const counts = calculation.fiveElements.counts;
-  const values = Object.values(counts);
-  const max = Math.max(...values);
-  const min = Math.min(...values);
-  const value = counts[name] || 0;
-  if (value === 0) return '不足';
-  if (max === min) return '均衡';
-  if (value === max) return '強め';
-  if (value === min) return '控えめ';
-  return '中位';
-}
-
-function elementGuideText(name) {
-  const guide = {
-    木: '成長、企画、広がりを表します。新しい方向へ伸びる力です。',
-    火: '表現、熱量、直感を表します。外へ伝える力です。',
-    土: '安定、蓄積、調整を表します。場を支える力です。',
-    金: '判断、整理、完成度を表します。形を整える力です。',
-    水: '知性、流れ、適応を表します。情報を受け取り変化する力です。',
-  };
-  return guide[name] || '';
-}
-
-function topTenGodEntries(calculation) {
-  return collectTenGods(calculation).slice(0, 5).map(([name, total]) => ({
-    name,
-    total,
-    ...(TEN_GOD_GROUPS[name] || { role: name, icon: name?.slice(0, 1) || '星', text: TEN_GOD_READING[name]?.text || '' }),
-  }));
-}
-
-function genderLabel(value) {
-  if (value === 'male') return '男性';
-  if (value === 'female') return '女性';
-  return '未指定';
-}
-
-function directionLabel(value) {
-  if (value === 'forward') return '順行';
-  if (value === 'backward') return '逆行';
-  return '未判定';
-}
-
-function cycleReading(pillar) {
-  if (!pillar) return '';
-  const stemElement = pillar.element?.stem || '';
-  const branchElement = pillar.element?.branch || '';
-  const god = pillar.heavenlyTenGod;
-  const godText = TEN_GOD_GROUPS[god]?.role || TEN_GOD_READING[god]?.tags?.join('・') || 'テーマ';
-  return `${stemElement}${branchElement ? `と${branchElement}` : ''}の気が巡り、${god ? `${god}（${godText}）` : '命式のテーマ'}が表に出やすい時期として見ます。`;
-}
-
-function currentAnnualFortune(calculation) {
-  return calculation.luckCycles?.annualFortunes?.[0] || null;
-}
-
-function currentDecadeFortune(decade, targetYear) {
-  if (!decade || decade.status !== 'ok') return null;
-  const items = decade.items || [];
-  return items.find((item) => item.startYear <= targetYear && targetYear <= item.endYear)
-    || items.find((item) => targetYear < item.startYear)
-    || items[items.length - 1]
-    || null;
-}
-
-function decadeTheme(item) {
-  if (!item) return null;
-  const god = item.pillar?.heavenlyTenGod;
-  const role = TEN_GOD_GROUPS[god]?.role || TEN_GOD_READING[god]?.tags?.join('・') || '命式のテーマ';
-  const element = item.pillar?.element?.stem || '';
-  const branch = item.pillar?.element?.branch || '';
-  return {
-    title: `${item.name}の10年は「${role}」を育てる時期`,
-    intro: `${item.startYear}年から${item.endYear}年、${item.startAge}歳から${item.endAge}歳にかけての大きな流れです。${element}${branch ? `と${branch}` : ''}の気が巡り、${god || '通変星'}のテーマが背景に出やすくなります。`,
-    work: `仕事では、${role}をどう使うかが焦点になります。新しい肩書きの断定ではなく、役割の取り方・責任の持ち方・動き方の癖として読みます。`,
-    money: god === '偏财' || god === '正财'
-      ? '財星が出るため、収入断定ではなく、現実管理・対人機会・お金の扱い方を整える10年として見ます。'
-      : '財運は直接の金額ではなく、五行と通変星の使い方から、機会を受け取る姿勢や管理力として見ます。',
-    love: '恋愛や対人では、表に出る態度と内側の欲求が変わりやすい時期です。相手との役割分担を固定しすぎないことが読みのポイントです。',
-    care: '大運は10年単位の背景運です。年ごとの流年と重ねることで、強く出る年・調整したい年を見ていきます。',
-  };
-}
-
-function WuxingDiagram({ dayElement, elementCounts }) {
-  const ELEMENTS = [
-    { key: '火', color: 'var(--seal)' },
-    { key: '土', color: 'var(--gold)' },
-    { key: '金', color: 'var(--ink)' },
-    { key: '水', color: 'var(--accent)' },
-    { key: '木', color: '#58a66c' },
-  ];
-
-  // Coordinates for a pentagon
-  const cx = 200, cy = 200, r = 130;
-  const nodes = ELEMENTS.map((el, i) => {
-    // Start at top (-90 deg), go clockwise by 72 deg
-    const angle = (i * 72 - 90) * (Math.PI / 180);
-    return {
-      ...el,
-      x: cx + r * Math.cos(angle),
-      y: cy + r * Math.sin(angle),
-    };
-  });
-
-  const getGodFamily = (targetElement) => {
-    const wuxingCycle = ['木', '火', '土', '金', '水'];
-    const idxDay = wuxingCycle.indexOf(dayElement);
-    const idxTarget = wuxingCycle.indexOf(targetElement);
-    const diff = (idxTarget - idxDay + 5) % 5;
-    if (diff === 0) return '比肩 · 劫財'; // Same
-    if (diff === 1) return '食神 · 傷官'; // Generates
-    if (diff === 2) return '正財 · 偏財'; // Overcomes
-    if (diff === 3) return '正官 · 七殺'; // Overcome by
-    if (diff === 4) return '正印 · 偏印'; // Generated by
-    return '';
-  };
-
-  return (
-    <div className="wuxing-diagram">
-      <svg viewBox="0 0 400 400" aria-hidden="true" style={{ width: '100%', height: 'auto', maxWidth: 400, margin: '0 auto', display: 'block' }}>
-        {/* Generate lines (outer pentagon) */}
-        <polygon
-          points={nodes.map(n => `${n.x},${n.y}`).join(' ')}
-          fill="none" stroke="var(--rule-strong)" strokeWidth="2" strokeDasharray="4 6"
-        />
-        {/* Overcome lines (inner star) */}
-        <polygon
-          points={`${nodes[0].x},${nodes[0].y} ${nodes[2].x},${nodes[2].y} ${nodes[4].x},${nodes[4].y} ${nodes[1].x},${nodes[1].y} ${nodes[3].x},${nodes[3].y}`}
-          fill="none" stroke="var(--rule)" strokeWidth="1.5"
-        />
-        
-        {/* Nodes */}
-        {nodes.map(node => {
-          const count = elementCounts[node.key] || 0;
-          const isDayMaster = node.key === dayElement;
-          return (
-            <g key={node.key}>
-              <circle cx={node.x} cy={node.y} r={isDayMaster ? 36 : 28} fill="var(--bg)" stroke={node.color} strokeWidth={isDayMaster ? 3 : 1.5} />
-              {isDayMaster && <circle cx={node.x} cy={node.y} r={42} fill="none" stroke={node.color} strokeWidth={1} strokeOpacity={0.4} strokeDasharray="2 4" />}
-              
-              <text x={node.x} y={node.y + 4} textAnchor="middle" fill={node.color} fontSize={isDayMaster ? 20 : 16} fontFamily="var(--f-display)">
-                {node.key}
-              </text>
-              
-              {/* Badge for element count */}
-              <circle cx={node.x + 22} cy={node.y - 22} r={10} fill={node.color} />
-              <text x={node.x + 22} y={node.y - 18} textAnchor="middle" fill="var(--bg)" fontSize="10" fontFamily="var(--f-mono)" fontWeight="bold">
-                {count}
-              </text>
-
-              {/* Ten God Family Label */}
-              <text x={node.x} y={node.y + (isDayMaster ? 58 : 46)} textAnchor="middle" fill="var(--ink-2)" fontSize="11" letterSpacing="0.1em" fontFamily="var(--f-display)">
-                {getGodFamily(node.key)}
-              </text>
-              {isDayMaster && (
-                <text x={node.x} y={node.y - 48} textAnchor="middle" fill={node.color} fontSize="12" letterSpacing="0.2em" fontFamily="var(--f-display)">
-                  日主
-                </text>
-              )}
-            </g>
-          );
-        })}
-
-        {/* Center Label */}
-        <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--ink-3)" fontSize="13" letterSpacing="0.4em" fontFamily="var(--f-display)">
-          五行生剋
-        </text>
-        <text x={cx} y={cy + 14} textAnchor="middle" fill="var(--ink-3)" fontSize="10" letterSpacing="0.1em" opacity="0.6" fontFamily="var(--f-body)">
-          ( 相生 --- / 相剋 — )
-        </text>
-      </svg>
-    </div>
-  );
-}
-
-function FortuneView({ calculation, onBack }) {
-  const luck = calculation.luckCycles || {};
-  const decade = luck.decadeFortunes?.items || [];
-  const currentAnnual = currentAnnualFortune(calculation);
-  const currentDecade = currentDecadeFortune(luck.decadeFortunes, luck.target?.year || currentAnnual?.year);
-  const currentDecadeTheme = decadeTheme(currentDecade);
-
-  const monthly = luck.monthlyFortunes || [];
-  const daily = luck.dailyFortunes || [];
-
-  const scrollTo = (sectionId) => {
-    const el = document.getElementById(sectionId);
-    if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <section className="rite" data-screen-label="04 星辰譜">
-      <aside className="rite-side">
-        <div className="kanji">星辰譜</div>
-        <div className="label">FORTUNE · CYCLES</div>
-        <div className="seal-stack">
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-summary')}><span className="num">壹</span>　現在の大運テーマ</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-current-luck')}><span className="num">貳</span>　今日（年・月・日）</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-list')}><span className="num">參</span>　生涯の大運表</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-annual-list')}><span className="num">肆</span>　直近の流年表</div>
-          <div style={{ marginTop: 24 }}>
-             <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
-               ← 命式へ戻る
-             </button>
-          </div>
-        </div>
-      </aside>
-
-      <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="result-card" style={{ marginTop: 0 }}>
-          
-          <div className="result-summary result-wide" id="section-decade-summary" style={{ paddingTop: 20 }}>
-            <div className="summary-kicker">大運（10年運）の解読</div>
-            <h2 style={{ fontSize: 24, margin: '0 0 16px', letterSpacing: '0.05em' }}>{currentDecadeTheme?.title || '現在の大運テーマ'}</h2>
-            <p style={{ fontSize: 14, lineHeight: 1.8, color: 'var(--ink-2)' }}>
-              {currentDecadeTheme?.intro}
-            </p>
-          </div>
-
-          {currentDecadeTheme && (
-            <div className="result-wide visual-block" style={{ marginTop: 32, display: 'grid', gap: 16 }}>
-              <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
-                <strong style={{ display: 'block', color: 'var(--seal)', marginBottom: 8, fontSize: 13 }}>◆ 仕事・役割</strong>
-                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.work}</p>
-              </article>
-              <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
-                <strong style={{ display: 'block', color: 'var(--gold)', marginBottom: 8, fontSize: 13 }}>◆ 財と価値</strong>
-                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.money}</p>
-              </article>
-              <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
-                <strong style={{ display: 'block', color: 'var(--accent)', marginBottom: 8, fontSize: 13 }}>◆ 对人・恋爱</strong>
-                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.love}</p>
-              </article>
-            </div>
-          )}
-
-          <div id="section-current-luck" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-            <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>
-              今日の巡り（流年・流月・流日）
-            </div>
-            <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
-              大運という大きな季節の流れの中で、今日この瞬間に巡っている「気」の組み合わせです。
-            </p>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-              {[
-                { label: '今年の運気 (流年)', item: currentAnnual, color: 'var(--accent)' },
-                { label: '今月の運気 (流月)', item: monthly.find(m => {
-                  const now = new Date();
-                  return m.solarStartDate.includes(`-${String(now.getMonth() + 1).padStart(2, '0')}-`);
-                }) || monthly[0], color: 'var(--gold)' },
-                { label: '今日の運気 (流日)', item: daily[0], color: 'var(--seal)' }
-              ].map(luckItem => (
-                <div key={luckItem.label} style={{ background: 'var(--bg-paper)', border: `1px solid var(--rule)`, borderRadius: 8, padding: '20px 12px', textAlign: 'center' }}>
-                  <div style={{ fontSize: 10, color: 'var(--ink-3)', marginBottom: 12, letterSpacing: '0.1em' }}>{luckItem.label}</div>
-                  <div style={{ fontSize: 28, fontFamily: 'var(--f-display)', color: 'var(--ink)', marginBottom: 8 }}>
-                    {luckItem.item?.pillar?.text}
-                  </div>
-                  <div style={{ fontSize: 12, color: luckItem.color, fontWeight: 'bold' }}>
-                    {luckItem.item?.pillar?.heavenlyTenGod}
-                  </div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8, minHeight: '3em' }}>
-                    {luckItem.item?.pillar?.fortuneTheme}
-                  </div>
-                  {luckItem.item?.climate && (
-                    <div style={{ marginTop: 10, padding: '8px', border: `1px solid ${luckItem.color}`, borderRadius: 4, background: 'color-mix(in srgb, var(--bg) 40%, transparent)' }}>
-                       <div style={{ fontSize: 9, color: luckItem.color, marginBottom: 2 }}>{luckItem.item.climate.label}</div>
-                       <div style={{ fontSize: 10, color: 'var(--ink-2)', lineHeight: 1.4 }}>{luckItem.item.climate.text}</div>
-                    </div>
-                  )}
-                  {luckItem.item?.impacts?.length > 0 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12, textAlign: 'left' }}>
-                      {luckItem.item.impacts.map(imp => (
-                        <div key={imp.label} style={{ fontSize: 10, padding: '8px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'color-mix(in srgb, var(--gold) 15%, transparent)', color: imp.type === 'chong' ? '#fff' : 'var(--ink-2)', border: '1px solid currentColor' }}>
-                           <strong style={{ display: 'block', marginBottom: 2 }}>{imp.label}</strong>
-                           <div style={{ opacity: 0.9, lineHeight: 1.4 }}>{imp.text}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div style={{ fontSize: 10, color: 'var(--ink-3)', marginTop: 8 }}>
-                    {luckItem.item?.year || luckItem.item?.date || ''}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div id="section-decade-list" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-            <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>
-              生涯の大運表（10年ごとの運勢）
-            </div>
-            <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
-              大運はあなたの人生の背景を流れる大きな季節のようなものです。
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {decade.map(d => {
-                const isCurrent = d.name === currentDecade?.name;
-                const dTheme = decadeTheme(d);
-                return (
-                  <div key={d.name} style={{ display: 'flex', flexDirection: 'column', padding: '20px', background: isCurrent ? 'color-mix(in srgb, var(--gold) 10%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--gold)' : '1px solid var(--rule)', borderRadius: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-                      <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--gold)' : 'var(--ink-3)' }}>
-                        {d.startAge}〜{d.endAge}歳
-                      </div>
-                      <div style={{ fontSize: 24, fontFamily: 'var(--f-display)', width: 80, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: '0.6em', filter: 'grayscale(0.3)' }}>{STEM_ICONS[d.pillar.stem]}</span>
-                        {d.pillar.text}
-                      </div>
-                      <div style={{ flex: 1, fontSize: 14, color: 'var(--ink)', fontWeight: 'bold' }}>
-                        {d.pillar.heavenlyTenGod}
-                      </div>
-                      {isCurrent && <div style={{ fontSize: 11, background: 'var(--gold)', color: 'var(--bg)', padding: '2px 10px', borderRadius: 4, letterSpacing: '0.1em', fontWeight: 'bold' }}>現在</div>}
-                    </div>
-                    
-                    <div style={{ paddingLeft: 8, borderLeft: `2px solid ${isCurrent ? 'var(--gold)' : 'var(--rule)'}` }}>
-                      <div style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.6 }}>
-                        {d.pillar.fortuneTheme}
-                      </div>
-                      {d.impacts?.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 10 }}>
-                          {d.impacts.map(imp => (
-                            <div key={imp.label} style={{ fontSize: 11, padding: '8px 12px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'color-mix(in srgb, var(--gold) 15%, transparent)', color: imp.type === 'chong' ? '#fff' : 'var(--ink-2)', border: '1px solid currentColor' }}>
-                               <strong style={{ display: 'block', marginBottom: 2 }}>{imp.label}</strong>
-                               <div style={{ opacity: 0.9, lineHeight: 1.4 }}>{imp.text}</div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div id="section-annual-list" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-            <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>
-              直近の流年表（1年ごとの運勢）
-            </div>
-            <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
-              流年はその年ごとに訪れる具体的なテーマや出来事の傾向を示します。
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {(luck.annualFortunes || []).slice(0, 10).map(a => {
-                const isCurrent = a.year === currentAnnual?.year;
-                return (
-                  <div key={a.year} style={{ display: 'flex', flexDirection: 'column', padding: '16px', background: isCurrent ? 'color-mix(in srgb, var(--accent) 15%, transparent)' : 'var(--bg-paper)', border: isCurrent ? '1px solid var(--accent)' : '1px solid var(--rule)', borderRadius: 8 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-                      <div style={{ width: 80, fontSize: 13, fontFamily: 'var(--f-mono)', color: isCurrent ? 'var(--accent)' : 'var(--ink-3)' }}>
-                        {a.year}年
-                      </div>
-                      <div style={{ fontSize: 20, fontFamily: 'var(--f-display)', width: 80, color: 'var(--ink)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.6em', filter: 'grayscale(0.3)' }}>{STEM_ICONS[a.pillar.stem]}</span>
-                        {a.pillar.text}
-                      </div>
-                      <div style={{ flex: 1, fontSize: 13, color: 'var(--ink)', fontWeight: 'bold' }}>
-                        {a.pillar.heavenlyTenGod}
-                      </div>
-                      {isCurrent && <div style={{ fontSize: 11, background: 'var(--accent)', color: 'var(--bg)', padding: '2px 8px', borderRadius: 4, letterSpacing: '0.1em', fontWeight: 'bold' }}>今年</div>}
-                    </div>
-                    <div style={{ paddingLeft: 8, borderLeft: `2px solid ${isCurrent ? 'var(--accent)' : 'var(--rule)'}` }}>
-                      <div style={{ fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>
-                        {a.pillar.fortuneTheme}
-                      </div>
-                      {a.impacts?.length > 0 && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
-                          {a.impacts.map(imp => (
-                            <div key={imp.label} style={{ fontSize: 10, padding: '6px 10px', borderRadius: 4, background: imp.type === 'chong' ? 'var(--seal-deep)' : 'color-mix(in srgb, var(--gold) 10%, transparent)', color: imp.type === 'chong' ? '#fff' : 'var(--ink-2)', border: '1px solid currentColor' }}>
-                               <strong style={{ display: 'block', marginBottom: 2 }}>{imp.label}</strong>
-                               <div style={{ opacity: 0.9, lineHeight: 1.4 }}>{imp.text}</div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function InsightView({ calculation, onBack }) {
-  const [topic, setTopic] = React.useState('personality');
-  
-  const TOPICS = [
-    { key: 'personality', ja: '性格特質', icon: '👤', title: 'あなたの「強み」と「本質」' },
-    { key: 'talent',      ja: '才能・天分', icon: '✨', title: '天から授かった「才能」' },
-    { key: 'career',      ja: '事業・金運', icon: '💰', title: '「仕事」と「財の流れ」' },
-    { key: 'marriage',    ja: '情感・婚姻', icon: '❤️', title: '「愛」と「パートナーシップ」' },
-  ];
-
-  const currentTopic = TOPICS.find(t => t.key === topic);
-
-  const getInsightContent = (key) => {
-    // These are simplified interpretations based on Day Master / Ten Gods
-    const stem = calculation.dayMaster;
-    const god = collectTenGods(calculation)[0]?.[0] || '比肩';
-    
-    const contents = {
-      personality: {
-        intro: `日主「${stem}」と主星「${god}」から見る、あなたの魂の設計図です。`,
-        p1: STEM_READING[stem]?.text,
-        p2: TEN_GOD_READING[god]?.text,
-      },
-      talent: {
-        intro: `あなたの適性と、最も輝ける場所を読み解きます。`,
-        p1: `${god}の星が強く影響しており、専門性を磨くことで評価されるタイプです。`,
-        p2: `五行の「${calculation.pillars.day.element.stem}」が持つ性質を活かした表現や活動が、あなたの天分を開花させます。`,
-      },
-      career: {
-        intro: `社会での活躍と、豊かさを手にするためのヒントです。`,
-        p1: `身強・身弱のエネルギーから見ると、${calculation.strength?.status === '身強' ? '自ら事業を興したり、リーダーシップを執ることで財が安定します。' : '組織やチームの中で専門性を発揮し、周囲の信頼を得ることで着実な収入に繋がります。'}`,
-        p2: `「${calculation.pattern?.name}」の特性を活かし、規律ある環境や特定の役割を全うすることが成功への近道です。`,
-      },
-      marriage: {
-        intro: `心を通わせる相手との関係性や、幸福の形を探ります。`,
-        p1: `日支（配偶者宮）の「${calculation.pillars.day.branch}」が持つ気が、あなたのパートナーとの接し方を象徴しています。`,
-        p2: `感情の安定が運気全体の底上げに繋がります。お互いの「五行」を補い合える関係を大切にしてください。`,
-      }
-    };
-    return contents[key] || contents.personality;
-  };
-
-  const content = getInsightContent(topic);
-
-  return (
-    <section className="rite" data-screen-label="05 鑑定詳解">
-      <aside className="rite-side">
-        <div className="kanji">鑑定詳解</div>
-        <div className="label">PERSONAL · INSIGHTS</div>
-        <div className="seal-stack">
-          {TOPICS.map((t, i) => (
-            <div key={t.key} 
-              style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} 
-              onClick={() => setTopic(t.key)}>
-              <span className="num">{['壹','貳','參','肆'][i]}</span>　{t.ja}
-            </div>
-          ))}
-          <div style={{ marginTop: 24 }}>
-             <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
-               ← 命式へ戻る
-             </button>
-          </div>
-        </div>
-      </aside>
-
-      <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="result-card" style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide" style={{ paddingTop: 20 }}>
-            <div className="summary-kicker">{currentTopic.ja}の詳解</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, marginTop: 12 }}>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>
-                {currentTopic.icon}
-              </div>
-              <h2 style={{ margin: 0, fontSize: 24, letterSpacing: '0.05em' }}>{currentTopic.title}</h2>
-            </div>
-            
-            <div className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}>
-               <p style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 24, letterSpacing: '0.1em' }}>{content.intro}</p>
-               <div style={{ fontSize: 15, lineHeight: 2, color: 'var(--ink)', marginBottom: 24 }}>
-                 {content.p1}
-               </div>
-               <div style={{ fontSize: 15, lineHeight: 2, color: 'var(--ink)' }}>
-                 {content.p2}
-               </div>
-            </div>
-
-            <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              {TOPICS.filter(t => t.key !== topic).map(t => (
-                <button key={t.key} onClick={() => setTopic(t.key)} style={{ padding: '16px', background: 'transparent', border: '1px solid var(--rule)', borderRadius: 6, color: 'var(--ink-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13 }}>
-                  次を読む：{t.ja} →
-                </button>
-              ))}
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return Array.from(counts.entries()).sort((a,b) => b[1]-a[1]);
 }
 
 function analyzeSynthesis(calculation, profile) {
   const dayBranch = calculation.pillars.day.branch;
-  const dayStem = calculation.dayMaster;
   const gender = profile.gender;
   const tenGodsSet = new Set(collectTenGods(calculation).map(([god]) => god));
   const pattern = calculation.pattern?.name || '';
-
-  const allShenSha = PILLAR_KEYS.flatMap(key => {
-    const p = calculation.pillars[key];
-    return getShenSha(p.branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch);
-  });
-  
+  const allShenSha = PILLAR_KEYS.flatMap(k => getShenSha(calculation.pillars[k].branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch));
   const hasHongLuan = allShenSha.includes('紅鸞');
-  const hasGuChen = allShenSha.includes('孤辰');
-  const hasGuaSu = allShenSha.includes('寡宿');
 
-  // 1. Marriage Synthesis
-  let marriage = '';
   let marriagePoints = [];
-  
-  // A. Spouse Star Dimension
   if (gender === 'female') {
     if (tenGodsSet.has('正官')) marriagePoints.push('命式内に「正官（夫の星）」があり、誠実な縁に恵まれやすい徳を持っています。');
-    else if (tenGodsSet.has('七殺')) marriagePoints.push('「七殺（情熱の星）」が強い影響を与えており、ドラマチックで刺激的なパートナーシップを求める傾向にあります。');
-    else marriagePoints.push('特定の配偶者星が目立たないため、自立した個としての生き方を尊重し合える関係が幸福の鍵です。');
+    else if (tenGodsSet.has('七殺')) marriagePoints.push('「七殺」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
+    else marriagePoints.push('自立した個としての生き方を尊重し合える関係が幸福の鍵です。');
   } else if (gender === 'male') {
-    if (tenGodsSet.has('正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力を持っています。');
-    else if (tenGodsSet.has('偏財')) marriagePoints.push('「偏財（社交の星）」が巡っており、華やかな対人関係の中から縁が広がりやすいタイプです。');
-    else marriagePoints.push('特定の配偶者星が目立たないため、共通の趣味や目的を持つことで絆が深まるパートナーシップが理想的です。');
+    if (tenGodsSet.has('正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力があります。');
+    else if (tenGodsSet.has('偏財')) marriagePoints.push('「偏財」が巡っており、華やかな対人関係の中から縁が広がりやすいタイプです。');
+    else marriagePoints.push('共通の目的を持つことで絆が深まるパートナーシップが理想的です。');
   }
-
-  // B. Spouse Palace Dimension
-  marriagePoints.push(`配偶者の場所である日支に「${dayBranch}」を宿しています。これは親密な関係における、あなたの無意識の振る舞いや相手に求める気質を表します。`);
-
-  // C. Interactions (Clash/He)
-  const dayInteractions = (calculation.luckCycles?.natalInteractions || []).filter(i => i.label.includes('日柱'));
-  if (dayInteractions.length > 0) {
-    dayInteractions.forEach(i => marriagePoints.push(`【${i.label}】${i.text}`));
-  }
-
-  // D. Shen Sha Dimension
-  if (hasHongLuan) marriagePoints.push('また、良縁を呼び込む「紅鸞」を宿しており、対人面での華やかな魅力が助けとなります。');
-  if (hasGuChen || hasGuaSu) marriagePoints.push('一方で「孤辰・寡宿」といった星も重なっており、一人の時間を大切にする気質が強く出ることがあります。');
-
-  marriage = marriagePoints.join(' ');
-
-  // 2. Career Synthesis
-  const career = `月支の「${calculation.pillars.month.branch}」と格局「${pattern}」があなたの社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝き、${collectTenGods(calculation)[0]?.[0]}の星を活かすことが成功の鍵です。`;
-
-  return { marriage, career };
+  marriagePoints.push(`配偶者の場所（日支）に「${dayBranch}」を宿しており、これが親密な関係での振る舞いを象徴します。`);
+  if (hasHongLuan) marriagePoints.push('また「紅鸞」を宿しており、華やかな魅力と良縁に恵まれやすいでしょう。');
+  
+  const career = `月支の「${calculation.pillars.month.branch}」と格局「${pattern}」が社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝きます。`;
+  return { marriage: marriagePoints.join(' '), career };
 }
 
-function ResultView({ id, name, calculation, profile, onBack }) {
+function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
-  const [activeTab, setActiveTab] = React.useState('chart');
-  
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
   const tenGods = collectTenGods(calculation);
-  const hiddenStems = collectHiddenStems(calculation);
-  const meta = calculation.calculationMeta;
-  const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '', tags: [] };
-  const primaryGod = tenGods[0]?.[0];
-  const secondaryGod = tenGods[1]?.[0] || primaryGod;
-  const primaryGodReading = TEN_GOD_READING[primaryGod] || { tags: [], text: '通変星の出方を見ながら、表に出やすい行動傾向を読みます。' };
-  const secondaryGodReading = TEN_GOD_READING[secondaryGod] || primaryGodReading;
-  const strong = strongestElements(calculation).join('・');
-  const weakAdvice = balanceAdvice(calculation);
+  const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '' };
   const tags = readingTags(calculation, tenGods);
-  const tenGodRoles = topTenGodEntries(calculation);
-  const luck = calculation.luckCycles || {};
-  const decade = luck.decadeFortunes;
-  const annualFortunes = (luck.annualFortunes || []).slice(0, 6);
-  const currentAnnual = currentAnnualFortune(calculation);
-  const currentDecade = currentDecadeFortune(decade, luck.target?.year || currentAnnual?.year);
-  const currentDecadeTheme = decadeTheme(currentDecade);
-
-  const scrollTo = (sectionId) => {
-    const el = document.getElementById(sectionId);
-    if (el) {
-      // Offset for fixed header if needed
-      const y = el.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  };
-
   const shenShaSet = new Set();
-  PILLAR_KEYS.forEach(key => {
-    const pillar = calculation.pillars[key];
-    getShenSha(pillar.branch, calculation.pillars.day.stem, calculation.pillars.year.branch, calculation.pillars.day.branch).forEach(ss => shenShaSet.add(ss));
-  });
+  PILLAR_KEYS.forEach(k => getShenSha(calculation.pillars[k].branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch).forEach(ss => shenShaSet.add(ss)));
   const uniqueShenSha = Array.from(shenShaSet);
+
+  const scrollTo = (sid) => {
+    const el = document.getElementById(sid);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+  };
 
   return (
     <section className="rite" data-screen-label="03 命式">
       <aside className="rite-side">
-        <div className="kanji">命式</div>
-        <div className="label">MEISHIKI · CHART</div>
+        <div className="kanji">命式</div><div className="label">MEISHIKI · CHART</div>
         <div className="seal-stack">
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-daymaster')}><span className="num">壹</span>　日主と性格</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-pillars')}><span className="num">貳</span>　四柱の構成</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-wuxing')}><span className="num">參</span>　五行バランス</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-tengod')}><span className="num">肆</span>　十神の強み</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-shensha')}><span className="num">伍</span>　神煞（特殊星）</div>
-          <div style={{ marginTop: 24 }}>
-             <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
-               ← 入力へ戻る
-             </button>
-          </div>
+          {['日主と性格','四柱の構成','五行バランス','十神の強み','神煞'].map((n, i) => (
+            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆','伍'][i]}</span>　{n}</div>
+          ))}
+          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
         </div>
       </aside>
-
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="result-card" id={id} style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide" id="section-daymaster" style={{ paddingTop: 20 }}>
+        <div className="result-card" id="s0" style={{ marginTop: 0 }}>
+          <div className="result-summary result-wide" style={{ paddingTop: 20 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, marginTop: 12 }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 32, filter: 'grayscale(0.2)' }}>
-                {STEM_ICONS[calculation.dayMaster]}
-              </div>
-              <div>
-                <div style={{ fontSize: 13, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 4 }}>
-                  あなたを表す星（日主）： <strong className={elementClass(calculation.pillars.day.element.stem)} style={{ fontSize: 16 }}>{calculation.dayMaster} ({calculation.pillars.day.element.stem})</strong>
-                </div>
-                <h2 style={{ margin: 0, fontSize: 24, letterSpacing: '0.05em' }}>
-                  {stemReading.title}
-                </h2>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 32 }}>{STEM_ICONS[calculation.dayMaster]}</div>
+              <div><div style={{ fontSize: 13, color: 'var(--ink-3)' }}>日主： <strong>{calculation.dayMaster}</strong></div><h2 style={{ margin: 0, fontSize: 24 }}>{stemReading.title}</h2></div>
             </div>
-            <p style={{ fontSize: 14, lineHeight: 1.8, color: 'var(--ink-2)' }}>
-              {stemReading.text}
-            </p>
-            <div className="result-tags">
-              {tags.map((tag) => <span key={tag}># {tag}</span>)}
-            </div>
-            {calculation.strength && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
-                <div style={{ padding: '16px 20px', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
-                  <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 6 }}>エネルギーの強弱</div>
-                  <strong style={{ fontSize: 15, color: 'var(--gold)', display: 'block', marginBottom: 4 }}>◆ {calculation.strength.status}</strong>
-                  <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.5 }}>{calculation.strength.text}</p>
-                </div>
-                {calculation.pattern && (
-                  <div style={{ padding: '16px 20px', background: 'color-mix(in srgb, var(--accent) 10%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
-                    <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 6 }}>命式の格局（社会的役割）</div>
-                    <strong style={{ fontSize: 15, color: 'var(--accent)', display: 'block', marginBottom: 4 }}>◆ {calculation.pattern.name}</strong>
-                    <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.5 }}>{calculation.pattern.text}</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {calculation.yongShen && (
-              <div style={{ marginTop: 16, padding: '20px', background: 'color-mix(in srgb, var(--seal) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
-                <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>守護の五行（窮通宝鑑による調候用神）</div>
-                <div style={{ display: 'flex', gap: 20, alignItems: 'start' }}>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontSize: 24 }}>{STEM_ICONS[calculation.yongShen.primary]}</div>
-                      <div style={{ fontSize: 18, color: 'var(--seal)', fontWeight: 'bold' }}>{calculation.yongShen.primary}</div>
-                      <div style={{ fontSize: 9, color: 'var(--ink-3)' }}>第一守護</div>
-                    </div>
-                    {calculation.yongShen.secondary && (
-                      <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: 24 }}>{STEM_ICONS[calculation.yongShen.secondary]}</div>
-                        <div style={{ fontSize: 18, color: 'var(--gold)', fontWeight: 'bold' }}>{calculation.yongShen.secondary}</div>
-                        <div style={{ fontSize: 9, color: 'var(--ink-3)' }}>第二守護</div>
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ flex: 1, paddingTop: 4 }}>
-                    <p style={{ margin: 0, fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.7 }}>
-                      {calculation.yongShen.text}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-      <div id="section-pillars" style={{ paddingTop: 40, marginTop: 40, borderTop: '1px solid var(--rule)' }}>
-        <div style={{
-          fontFamily: 'var(--f-display)',
-          fontSize: 16,
-          letterSpacing: '0.2em',
-          color: 'var(--ink)',
-          marginBottom: 12,
-          textAlign: 'center'
-        }}>
-          四柱の構成
-        </div>
-        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
-          命主 {name || '無名'} が生まれ持った4つの柱です。<br/>日柱が自分自身を表し、他の柱は周囲の環境や時間軸を表します。
-        </p>
-        <div className="pillars">
-          {['hour', 'day', 'month', 'year'].map((key) => {
-            const pillar = calculation.pillars[key];
-            const shenShaList = getShenSha(pillar.branch, calculation.pillars.day.stem, calculation.pillars.year.branch, calculation.pillars.day.branch);
-            const isVoid = pillar.voidBranches?.includes(pillar.branch);
-            const pillarRole = {
-              year: '先祖・環境',
-              month: '社会・仕事',
-              day: '自分・家庭',
-              hour: '未来・子供'
-            }[key];
-
-            return (
-            <div key={key} 
-              className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`}
-              onClick={() => setActivePillar(activePillar === key ? null : key)}
-              style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}>
-              <div className="lbl">
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
-                  <span>{PILLAR_LABELS[key]}</span>
-                  {isVoid && <span style={{ color: 'var(--seal)', fontSize: 9 }}>[空亡]</span>}
-                </div>
-                <div style={{ fontSize: 9, opacity: 0.6, letterSpacing: 0, marginTop: 2 }}>{pillarRole}</div>
-              </div>
-              <div className="gz">
-                <span className={`top ${elementClass(pillar.element.stem)}`}>
-                  <div style={{ fontSize: '0.45em', opacity: 0.85, marginBottom: 4, filter: 'grayscale(0.2)' }}>{STEM_ICONS[pillar.stem] || ''}</div>
-                  {pillar.stem}
-                </span>
-                <span className={`btm ${elementClass(pillar.element.branch)}`}>{pillar.branch}</span>
-              </div>
-              <div className="nayin">
-                <span style={{ fontWeight: 'bold', color: 'var(--ink)' }}>{calculation.tenGods[key]}</span>
-                <div style={{ fontSize: '0.9em', marginTop: 2 }}>{pillar.lifeStage || '—'}</div>
-                <div style={{ fontSize: '0.8em', opacity: 0.6, marginTop: 4 }}>{pillar.naYin || '—'}</div>
-              </div>
-              <div className="shensha">
-                {shenShaList.map(ss => <div key={ss} className="shensha-badge">{ss}</div>)}
-              </div>
-            </div>
-            );
-          })}
-        </div>
-
-        {activePillar && (
-          <div style={{ marginTop: 12, padding: '20px', background: 'var(--bg-paper)', border: `1px solid ${activePillar === 'day' ? 'var(--gold)' : 'var(--rule-strong)'}`, borderRadius: 8, animation: 'fadeIn 0.4s ease' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{ fontSize: 18, color: 'var(--ink)' }}>{PILLAR_LABELS[activePillar]}の解説</span>
-                <span style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.1em' }}>— {PILLAR_READING[activePillar].title}</span>
-              </div>
-              <button onClick={(e) => { e.stopPropagation(); setActivePillar(null); }} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', fontSize: 18, cursor: 'pointer' }}>✕</button>
-            </div>
-            <p style={{ margin: '0 0 16px', fontSize: 14, lineHeight: 1.8, color: 'var(--ink-2)' }}>{PILLAR_READING[activePillar].text}</p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-              <div style={{ padding: '12px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', borderRadius: 4 }}>
-                <strong style={{ fontSize: 12, color: 'var(--ink)', display: 'block', marginBottom: 6 }}>天干：{calculation.pillars[activePillar].stem}</strong>
-                <div style={{ fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>{STEM_READING[calculation.pillars[activePillar].stem]?.text || 'この天干はあなたの命式の精神的な側面を表します。'}</div>
-              </div>
-              <div style={{ padding: '12px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', borderRadius: 4 }}>
-                <strong style={{ fontSize: 12, color: 'var(--ink)', display: 'block', marginBottom: 6 }}>地支：{calculation.pillars[activePillar].branch}</strong>
-                <div style={{ fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>{BRANCH_READING[calculation.pillars[activePillar].branch] || 'この地支はあなたの命式の現実的な基盤を表します。'}</div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 40 }}>
-          <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}>
-            <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>
-              <span style={{ marginRight: 8 }}>❤️</span> 情感・婚姻の視点
-            </div>
-            <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.7 }}>
-              {synthesis.marriage}
-            </p>
-          </div>
-          <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}>
-            <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>
-              <span style={{ marginRight: 8 }}>💰</span> 事業・仕事の視点
-            </div>
-            <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.7 }}>
-              {synthesis.career}
-            </p>
-          </div>
-        </div>
-
-        {calculation.luckCycles?.natalInteractions?.length > 0 && (
-          <div style={{ marginTop: 24, padding: '16px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
-            <div style={{ fontSize: 11, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>命局内の干支関係（冲・合）</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {calculation.luckCycles.natalInteractions.map(inter => (
-                <div key={inter.label}>
-                  <strong style={{ fontSize: 13, color: 'var(--gold)', display: 'block', marginBottom: 2 }}>◆ {inter.label}</strong>
-                  <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.6 }}>{inter.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="calculation-meta">
-          <span>真太陽時：{formatDateTimeLabel(meta.effectiveBirthDateTime)}</span>
-          <span>出生地：{stripJapan(meta.location?.label)}</span>
-          <span>日主：{calculation.dayMaster}{calculation.pillars.day.element.stem}</span>
-        </div>
-      </div>
-
-      <div id="section-wuxing" className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-        <div style={{
-          fontFamily: 'var(--f-display)',
-          fontSize: 16,
-          letterSpacing: '0.2em',
-          color: 'var(--ink)',
-          marginBottom: 12,
-          textAlign: 'center'
-        }}>
-          五行と十神のバランス
-        </div>
-        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
-          {calculation.dayMaster}{calculation.pillars.day.element.stem} を日主（自分自身）とした時の、五行の相生・相剋と十神の対応図です。<br/>
-          数字は命式内の各五行の数を表します。
-        </p>
-        <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
-      </div>
-
-      <div id="section-tengod" className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-        <div style={{
-          fontFamily: 'var(--f-display)',
-          fontSize: 16,
-          letterSpacing: '0.2em',
-          color: 'var(--ink)',
-          marginBottom: 12,
-          textAlign: 'center'
-        }}>
-          命式から見えた あなたの「強み」と「武器」
-        </div>
-        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
-          命式に現れた「十神（通変星）」の力関係から、<br/>あなたが無意識に使っている才能や、社会で活かしやすい武器を読み解きます。
-        </p>
-
-        <div className="ten-god-map" style={{ display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-          {tenGodRoles.map((god, idx) => (
-            <article key={god.name} style={{ display: 'flex', gap: '16px', padding: '20px', border: '1px solid var(--rule-strong)', background: 'var(--bg-paper)', borderRadius: '8px' }}>
-              <div className="god-symbol" style={{ width: '48px', height: '48px', flexShrink: 0, borderRadius: '50%', background: 'var(--bg)', border: '1px solid var(--rule)', display: 'grid', placeItems: 'center', fontSize: '20px', fontFamily: 'var(--f-display)', color: 'var(--ink)' }}>
-                {god.icon}
-              </div>
-              <div>
-                <strong style={{ display: 'block', fontSize: '15px', color: 'var(--ink)', marginBottom: '4px', letterSpacing: '0.1em' }}>
-                  {god.role} <span style={{ fontSize: '11px', color: 'var(--ink-3)', marginLeft: '8px', letterSpacing: '0' }}>{god.name} ({god.total}個)</span>
-                </strong>
-                <p style={{ margin: 0, fontSize: '13px', lineHeight: '1.7', color: 'var(--ink-2)' }}>
-                  {god.text}
-                </p>
-                <div style={{ marginTop: '10px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {(TEN_GOD_READING[god.name]?.tags || []).map(tag => (
-                    <span key={tag} style={{ fontSize: '10px', color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 15%, transparent)', padding: '2px 8px', borderRadius: '4px' }}>#{tag}</span>
-                  ))}
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div className="divinations">
-        <div className="head">命式 要点</div>
-        <div className="row"><span>命式</span><span className="v">{calculation.pillarLine}</span></div>
-        <div className="row"><span>日主</span><span className="v">{calculation.dayMaster}{calculation.pillars.day.element.stem}</span></div>
-        <div className="row"><span>主要十神</span><span className="v">{tenGods.slice(0, 3).map(([god]) => god).join('・') || '—'}</span></div>
-        <div className="row"><span>藏干</span><span className="v">{hiddenStems.slice(0, 4).map(item => `${item.stem}${item.element}`).join('・') || '—'}</span></div>
-        <div className="row"><span>時柱</span><span className="v">{profile.unsure ? '不詳 / 午時仮計算' : calculation.pillars.hour.text}</span></div>
-        <div style={{ marginTop: 10, fontSize: 12, lineHeight: 2.0, color: 'var(--ink-3)' }}>
-          ※ 結果は四柱推命の命式をわかりやすく整理したものです。断定ではなく、自分を理解するためのヒントとしてご覧ください。
-        </div>
-      </div>
-
-      <div className="result-wide reading-block">
-        <div className="section-caption">あなたの本質</div>
-        <div className="reading-grid">
-          <article>
-            <span>日主</span>
-            <h3>{stemReading.title}</h3>
             <p>{stemReading.text}</p>
-          </article>
-          <article>
-            <span>性格の傾向</span>
-            <h3>{primaryGod || '命式全体'}</h3>
-            <p>{primaryGodReading.text}</p>
-          </article>
-          <article>
-            <span>恋愛・対人</span>
-            <h3>{secondaryGod || '関係性'}</h3>
-            <p>関係性では、表に出る態度と内側の欲求のバランスを見ます。{secondaryGodReading.text}</p>
-          </article>
-          <article>
-            <span>仕事・才能</span>
-            <h3>{strong || '五行バランス'}</h3>
-            <p>仕事では、自然に使いやすい五行と通変星の組み合わせが強みになります。無理に職種を断定せず、力を出しやすい役割として見ます。</p>
-          </article>
-        </div>
-      </div>
-
-      <div className="result-wide">
-        <div className="section-caption">五行バランス</div>
-        <div className="element-bars user-bars">
-          {ELEMENT_LABELS.map((name) => (
-            <div className="element-row" key={name}>
-              <span>{name}</span>
-              <div className="bar"><span className={elementClass(name)} style={{ width: `${Math.max(4, percentages[name])}%` }}></span></div>
-              <strong>{percentages[name]}%</strong>
+            <div className="result-tags">{tags.map(t => <span key={t}># {t}</span>)}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 24 }}>
+              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}><strong>◆ {calculation.strength?.status}</strong><p style={{ fontSize: 12 }}>{calculation.strength?.text}</p></div>
+              <div style={{ padding: '16px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 6 }}><strong>◆ {calculation.pattern?.name}</strong><p style={{ fontSize: 12 }}>{calculation.pattern?.text}</p></div>
             </div>
-          ))}
-        </div>
-        <p className="balance-copy">
-          五行は木・火・土・金・水のバランスを見ます。この命式では {strong} が出やすく、
-          {weakAdvice.support.join('・')} を生活の中で意識すると整いやすい配置です。{weakAdvice.text}
-        </p>
-        <div className="element-guide-grid">
-          {ELEMENT_LABELS.map((name) => (
-            <article className={`element-guide ${elementClass(name)}`} key={name}>
-              <span className="element-symbol">{name}</span>
-              <div>
-                <strong>{elementStateLabel(calculation, name)}</strong>
-                <p>{elementGuideText(name)}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div id="section-shensha" className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-        <div style={{
-          fontFamily: 'var(--f-display)',
-          fontSize: 16,
-          letterSpacing: '0.2em',
-          color: 'var(--ink)',
-          marginBottom: 12,
-          textAlign: 'center'
-        }}>
-          命局の「神煞（特殊星）」
-        </div>
-        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
-          特定の干支の組み合わせによって生じる特殊な星「神煞」です。<br/>あなたの運命に宿る特別なご加護や傾向を示します。
-        </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-          {uniqueShenSha.length > 0 ? uniqueShenSha.map(ss => (
-            <div key={ss} style={{ border: '1px solid var(--gold)', background: 'color-mix(in srgb, var(--gold) 10%, var(--bg))', padding: '12px 24px', borderRadius: '4px', fontFamily: 'var(--f-display)', color: 'var(--ink)', letterSpacing: '0.1em' }}>
-              {ss}
+          </div>
+          <div id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div className="pillars">
+              {['hour', 'day', 'month', 'year'].map((key) => {
+                const p = calculation.pillars[key];
+                const ss = getShenSha(p.branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch);
+                return (
+                  <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`} onClick={() => setActivePillar(activePillar === key ? null : key)}>
+                    <div className="lbl">{PILLAR_LABELS[key]}</div>
+                    <div className="gz"><span className={`top ${elementClass(p.element.stem)}`}>{p.stem}</span><span className={`btm ${elementClass(p.element.branch)}`}>{p.branch}</span></div>
+                    <div className="nayin"><strong>{calculation.tenGods[key]}</strong><br/>{p.lifeStage}</div>
+                  </div>
+                );
+              })}
             </div>
-          )) : (
-            <div style={{ color: 'var(--ink-3)', fontSize: '13px' }}>特に目立つ神煞はありません（フラットな命局です）。</div>
-          )}
-        </div>
-      </div>
-
-      <div className="result-wide visual-block">
-        <div className="section-caption">大運・流年を見る</div>
-        <div className="luck-summary">
-          <div>
-            <span className="summary-kicker">CURRENT YEAR</span>
-            <h3>{currentAnnual ? `${currentAnnual.year}年 · ${currentAnnual.name}` : '流年'}</h3>
-            <p>{currentAnnual ? cycleReading(currentAnnual.pillar) : '今年の干支を命式と合わせて読みます。'}</p>
           </div>
-          <div>
-            <span className="summary-kicker">DECADE FLOW</span>
-            <h3>大運は10年単位の流れ</h3>
-            <p>大運は人生の背景に流れる大きな運の周期です。性別により順行・逆行が変わるため、正確に見る場合は性別指定が必要です。</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 40 }}>
+            <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}><strong>❤️ 婚姻の視点</strong><p style={{ fontSize: 12 }}>{synthesis.marriage}</p></div>
+            <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}><strong>💰 事業の視点</strong><p style={{ fontSize: 12 }}>{synthesis.career}</p></div>
           </div>
-        </div>
-
-        {decade?.status === 'ok' ? (
-          <React.Fragment>
-            {currentDecadeTheme && (
-              <div className="current-decade-card">
-                <span className="luck-chip">現在の大運</span>
-                <h3>{currentDecadeTheme.title}</h3>
-                <p>{currentDecadeTheme.intro}</p>
-                <div className="decade-theme-grid">
-                  <article><strong>仕事</strong><p>{currentDecadeTheme.work}</p></article>
-                  <article><strong>財運</strong><p>{currentDecadeTheme.money}</p></article>
-                  <article><strong>恋愛・対人</strong><p>{currentDecadeTheme.love}</p></article>
-                  <article><strong>読み方</strong><p>{currentDecadeTheme.care}</p></article>
-                </div>
-              </div>
-            )}
-            <div className="luck-reading-grid decade-grid">
-              {decade.items.slice(0, 4).map((item) => (
-                <article className={`luck-card ${item === currentDecade ? 'is-current' : ''}`} key={`${item.index}-${item.name}`}>
-                  <span className="luck-chip">{item.startAge}-{item.endAge}歳</span>
-                  <h3>{item.name}</h3>
-                  <p>{item.startYear}年 - {item.endYear}年 / {genderLabel(decade.gender)}・{directionLabel(decade.direction)}</p>
-                  <small>{cycleReading(item.pillar)}</small>
-                </article>
-              ))}
+          <div id="s2" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+             <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
+          </div>
+          <div id="s4" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+              {uniqueShenSha.map(s => <div key={s} style={{ border: '1px solid var(--gold)', padding: '10px 20px', borderRadius: 4 }}>{s}</div>)}
             </div>
-          </React.Fragment>
-        ) : (
-          <div className="luck-note">
-            <strong>大運を表示するには性別を選択してください</strong>
-            <p>現在は「無 / 不問」のため、大運の順逆を確定できません。フォーム上部の性別で「陽 / 男」または「陰 / 女」を選ぶと、大運表と解説を表示します。</p>
           </div>
-        )}
-
-        <div className="luck-reading-grid annual-grid">
-          {annualFortunes.map((item) => (
-            <article className={`luck-card ${item === currentAnnual ? 'is-current' : ''}`} key={item.year}>
-              <span className="luck-chip">{item.year}</span>
-              <h3>{item.name}</h3>
-              <p>{item.pillar.heavenlyTenGod || '—'} / {item.pillar.element.stem}・{item.pillar.element.branch}</p>
-              <small>{cycleReading(item.pillar)}</small>
-            </article>
-          ))}
-        </div>
-      </div>
-
-      <div className="result-wide">
-        <div className="section-caption">命式詳細</div>
-        <div className="bazi-board-lite">
-          <div className="bazi-lite-row head">
-            <span>項目</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{PILLAR_LABELS[key]}</strong>)}
-          </div>
-          <div className="bazi-lite-row">
-            <span>干神</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{calculation.tenGods[key]}</strong>)}
-          </div>
-          <div className="bazi-lite-row">
-            <span>天干</span>
-            {PILLAR_KEYS.map((key) => <strong key={key} className={elementClass(calculation.pillars[key].element.stem)}>{calculation.pillars[key].stem}</strong>)}
-          </div>
-          <div className="bazi-lite-row">
-            <span>地支</span>
-            {PILLAR_KEYS.map((key) => <strong key={key} className={elementClass(calculation.pillars[key].element.branch)}>{calculation.pillars[key].branch}</strong>)}
-          </div>
-          <div className="bazi-lite-row compact">
-            <span>藏干</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{calculation.pillars[key].hiddenStems.join('・') || '—'}</strong>)}
-          </div>
-          <div className="bazi-lite-row compact">
-            <span>纳音</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{calculation.pillars[key].naYin || '—'}</strong>)}
-          </div>
-          <div className="bazi-lite-row compact">
-            <span>空亡</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{(calculation.pillars[key].voidBranches || []).join('') || '—'}</strong>)}
-          </div>
-          <div className="bazi-lite-row compact">
-            <span>地勢</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{calculation.pillars[key].terrainByDay || '—'}</strong>)}
-          </div>
-          <div className="bazi-lite-row compact">
-            <span>自坐</span>
-            {PILLAR_KEYS.map((key) => <strong key={key}>{calculation.pillars[key].terrainSelf || '—'}</strong>)}
+          <div className="result-wide next-actions" style={{ marginTop: 64 }}>
+            <button onClick={onShowInsight}>性格・才能の詳解 <span>診断</span></button>
+            <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
           </div>
         </div>
       </div>
-
-      {meta.warnings?.length > 0 && (
-        <div className="result-wide notice-list">
-          {meta.warnings.map((warning) => (
-            <div className="notice" key={warning}>{WARNING_LABELS[warning] || warning}</div>
-          ))}
-        </div>
-      )}
-
-      <div className="result-wide next-actions">
-        <button onClick={onShowInsight}>性格・才能の詳解 <span>診断</span></button>
-        <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
-        <button disabled>相性を見る <span>準備中</span></button>
-        <button disabled>結果を保存する <span>準備中</span></button>
-      </div>
-    </div>
-    </div>
     </section>
   );
+}
+
+function InsightView({ calculation, profile, onBack }) {
+  const [topic, setTopic] = React.useState('personality');
+  const tenGodsEntries = collectTenGods(calculation);
+  const primaryGod = tenGodsEntries[0]?.[0] || '比肩';
+  const secondaryGod = tenGodsEntries[1]?.[0] || primaryGod;
+  const dayBranch = calculation.pillars.day.branch;
+  const dayStem = calculation.dayMaster;
+  const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
+  const TOPICS = [ { key: 'personality', ja: '性格特質', icon: '👤', title: 'あなたの「強み」と「本質」' }, { key: 'talent', ja: '才能・天分', icon: '✨', title: '天から授かった「才能」' }, { key: 'career', ja: '事業・金運', icon: '💰', title: '「仕事」と「財の流れ」' }, { key: 'marriage', ja: '情感・婚姻', icon: '❤️', title: '「愛」と「パートナーシップ」' } ];
+  const currentTopic = TOPICS.find(t => t.key === topic);
+  const getInsightContent = (key) => {
+    const stemReading = STEM_READING[dayStem];
+    const godReading = TEN_GOD_READING[primaryGod];
+    const contents = {
+      personality: { intro: `本質の日主「${dayStem}」と、主星「${primaryGod}」を軸に解析します。`, p1: `【本質】${stemReading?.text}`, p2: `【行動】主星の${primaryGod}は、${godReading?.text}` },
+      talent: { intro: `あなたの適性と、最も輝ける場所を特定します。`, p1: `あなたの格局は「${calculation.pattern?.name}」です。${calculation.pattern?.text}`, p2: `補助する${secondaryGod}の星が、独自性を高めています。` },
+      career: { intro: `エネルギーバランスから、最適なビジネススタイルを提案します。`, p1: `あなたは「${calculation.strength?.status}」の性質を持っています。${calculation.strength?.text}`, p2: `【総合分析】${synthesis.career}` },
+      marriage: { intro: `配偶者宮と、宿る星から理想のパートナーシップを導きます。`, p1: `配偶者の場所には「${dayBranch}」が鎮座。${BRANCH_READING[dayBranch]}`, p2: `【多角分析】${synthesis.marriage}` }
+    };
+    return contents[key] || contents.personality;
+  };
+  const content = getInsightContent(topic);
+  return (
+    <section className="rite" data-screen-label="05 鑑定詳解">
+      <aside className="rite-side">
+        <div className="kanji">鑑定詳解</div><div className="label">PERSONAL · INSIGHTS</div>
+        <div className="seal-stack">
+          {TOPICS.map((t, i) => <div key={t.key} style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} onClick={() => setTopic(t.key)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{t.ja}</div>)}
+          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
+        </div>
+      </aside>
+      <div className="rite-main" style={{ paddingBottom: 120 }}>
+        <div className="result-card" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
+          <div className="summary-kicker">{currentTopic.ja}の詳解</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
+          <div className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p style={{ fontSize: 13, color: 'var(--ink-3)' }}>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, color: 'var(--ink)', marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2, color: 'var(--ink)' }}>{content.p2}</div></div>
+          <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>{TOPICS.filter(t => t.key !== topic).map(t => <button key={t.key} onClick={() => setTopic(t.key)} style={{ padding: '16px', background: 'transparent', border: '1px solid var(--rule)', borderRadius: 6, color: 'var(--ink-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13 }}>次を読む：{t.ja} →</button>)}</div>
+        </div></div>
+      </div>
+    </section>
+  );
+}
+
+function FortuneView({ calculation, profile, onBack }) {
+  const luck = calculation.luckCycles || {};
+  const decade = luck.decadeFortunes?.items || [];
+  const currentAnnual = currentAnnualFortune(calculation);
+  const currentDecade = currentDecadeFortune(luck.decadeFortunes, luck.target?.year || currentAnnual?.year);
+  const currentDecadeTheme = decadeTheme(currentDecade, profile?.gender);
+  const monthly = luck.monthlyFortunes || [];
+  const daily = luck.dailyFortunes || [];
+  const scrollTo = (sid) => {
+    const el = document.getElementById(sid);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+  };
+  return (
+    <section className="rite" data-screen-label="04 星辰譜">
+      <aside className="rite-side">
+        <div className="kanji">星辰譜</div><div className="label">FORTUNE · CYCLES</div>
+        <div className="seal-stack">
+          {['大運テーマ','今日（年・月・日）','生涯の大運表','直近の流年表'].map((n, i) => (
+            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
+          ))}
+          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
+        </div>
+      </aside>
+      <div className="rite-main" style={{ paddingBottom: 120 }}>
+        <div className="result-card" style={{ marginTop: 0 }}>
+          <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
+            <div className="summary-kicker">大運（10年運）の解読</div><h2 style={{ fontSize: 24 }}>{currentDecadeTheme?.title}</h2><p>{currentDecadeTheme?.intro}</p>
+          </div>
+          {currentDecadeTheme && (
+            <div className="result-wide visual-block" style={{ marginTop: 32, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+              {[ { l: '◆ 仕事・役割', v: currentDecadeTheme.work, c: 'var(--seal)' }, { l: '◆ 財と価値', v: currentDecadeTheme.money, c: 'var(--gold)' }, { l: '◆ 対人・恋愛', v: currentDecadeTheme.love, c: 'var(--accent)' }, { l: '◆ 家庭・環境', v: currentDecadeTheme.family, c: 'var(--ink-3)' } ].map(x => (
+                <article key={x.l} style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}><strong style={{ display: 'block', color: x.c, marginBottom: 8, fontSize: 13 }}>{x.l}</strong><p style={{ fontSize: 13 }}>{x.v}</p></article>
+              ))}
+            </div>
+          )}
+          <div id="f1" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div style={{ textAlign: 'center', marginBottom: 24 }}><h3>今日の巡り（流年・流月・流日）</h3></div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+              {[ { label: '今年の運気', item: currentAnnual, color: 'var(--accent)' }, { label: '今月の運気', item: monthly[0], color: 'var(--gold)' }, { label: '今日の運気', item: daily[0], color: 'var(--seal)' } ].map(l => (
+                <div key={l.label} style={{ background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8, padding: '20px 12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>{l.label}</div>
+                  <div style={{ fontSize: 28, fontFamily: 'var(--f-display)' }}>{l.item?.pillar?.text}</div>
+                  <div style={{ fontSize: 12, color: l.color }}><strong>{l.item?.pillar?.heavenlyTenGod}</strong></div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8 }}>{l.item?.pillar?.fortuneTheme}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div id="f2" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+             <div style={{ textAlign: 'center' }}><h3>生涯の大運表</h3></div>
+             {decade.map(d => (
+               <div key={d.name} style={{ padding: 16, border: '1px solid var(--rule)', marginBottom: 8 }}>{d.startAge}-{d.endAge}歳: {d.pillar.text} ({d.pillar.heavenlyTenGod})</div>
+             ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function readingTags(calc, gods) {
+  const st = STEM_READING[calc.dayMaster]?.tags || [];
+  const gt = gods.slice(0, 2).flatMap(([g]) => TEN_GOD_READING[g]?.tags || []);
+  return [...st, ...gt].slice(0, 6);
 }
 
 window.Rite = Rite;

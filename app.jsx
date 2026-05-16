@@ -16,7 +16,7 @@ const THEMES = [
 
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [page, setPage] = React.useState('hero');   // hero | rite | result
+  const [page, setPage] = React.useState('hero');   // hero | rite | result | fortune
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
 
@@ -136,7 +136,9 @@ function App() {
           <button className={page === 'result' ? 'is-active' : ''}
             onClick={() => { if (calcResult) goto('result'); }}
             style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命　式</button>
-          <button>星辰譜</button>
+          <button className={page === 'fortune' ? 'is-active' : ''}
+            onClick={() => { if (calcResult) goto('fortune'); }}
+            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>星辰譜</button>
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
             {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
           </button>
@@ -165,6 +167,13 @@ function App() {
             calculation={calcResult.chart} 
             profile={calcResult.profile}
             onBack={() => goto('rite')}
+            onShowFortune={() => goto('fortune')}
+          />
+        )}
+        {page === 'fortune' && calcResult && (
+          <FortuneView 
+            calculation={calcResult.chart}
+            onBack={() => goto('result')}
           />
         )}
       </main>

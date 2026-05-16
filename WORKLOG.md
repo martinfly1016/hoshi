@@ -45,6 +45,7 @@
 | v0.3.15 | 2026-05-16 21:08 JST | 后台验证页 | `/shichusuimei/free/index.html` 三页信息分层 | 将后台/测试页也同步为同样的三页边界：「命式」只放基础信息和排盘表；标签索引、日主、五行、格局/身强身弱/用神、十神、藏干、四柱坐、婚姻宫等全部移到「命式詳細」；大运流年保持独立 | `/shichusuimei/free/index.html?v=free-20260516-baseonly-1` | `/archive/pre-free-base-only-20260516/shichusuimei/free/index.html?v=free-20260516-linked-tags-1` | main `420bb78` / gh-pages `bd9c677` |
 | v0.3.16 | 2026-05-16 21:14 JST | 后台验证页 | `/shichusuimei/free/index.html` 四柱显示 | 「命式」页去掉重复的四张四柱卡和矩阵下方的四柱补充卡，统一保留横向四柱矩阵；表头直接显示年柱/月柱/日柱/时柱及对应干支；行项目保留干神、天干、地支、藏干、支神、纳音、空亡、地勢、自坐，去掉空的神煞行；手机端增加表格横向滚动提示 | `/shichusuimei/free/index.html?v=free-20260516-chart-2` | `/archive/pre-free-chart-display-20260516/shichusuimei/free/index.html?v=free-20260516-baseonly-1` | main `2c8dfe8` / gh-pages `ce204bd` |
 | v0.3.17 | 2026-05-16 21:19 JST | 用户首页 | `/index.html` 手机端首屏文案 | 修正手机端 hero 引用文案仍继承桌面竖排 writing-mode 的问题；移动端改为两行横排文案块，占满内容宽度并用细分割线区分，避免截图中竖排文字贴右侧、断行不自然 | `/index.html?v=20260516-mobile-poem-1` | `/archive/pre-mobile-hero-poem-20260516/index.html?v=20260516-user-baseonly-2` | main `7221bec` / gh-pages `0ee9c91` |
+| v0.3.18 | 2026-05-16 21:23 JST | 用户首页 | `/index.html` 结果页四柱矩阵 | 修正用户页「命式構造表」在手机上列宽过大、首屏只露出年柱的问题；表头增加对应干支，手机端改为紧凑五列表格，让年柱/月柱/日柱/時柱同时可见，并压缩藏干/支神等小字显示 | `/index.html?v=20260516-user-bazi-mobile-1` | `/archive/pre-user-bazi-mobile-20260516/index.html?v=20260516-mobile-poem-1` | main `1c96efb` / gh-pages `c1cd92e` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

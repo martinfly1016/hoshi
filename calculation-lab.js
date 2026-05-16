@@ -1137,6 +1137,39 @@ function buildInputParts(input) {
   return parts;
 }
 
+function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
+  const wuxingCycle = ['木', '火', '土', '金', '水'];
+  const idx = wuxingCycle.indexOf(dayStem);
+  const supportElements = [wuxingCycle[(idx - 1 + 5) % 5], dayStem]; // Mother + Same
+  
+  // 1. Seasonality (De Ling)
+  const seasons = {
+    '木': ['寅', '卯', '辰'],
+    '火': ['巳', '午', '未'],
+    '金': ['申', '酉', '戌'],
+    '水': ['亥', '子', '丑'],
+    '土': ['辰', '戌', '丑', '未']
+  };
+  const isDeLing = seasons[dayStem].includes(monthBranch);
+  
+  // 2. Peer/Seal count (De Zhu)
+  const supportCount = supportElements.reduce((sum, el) => sum + (elementCounts[el] || 0), 0);
+  
+  let score = (isDeLing ? 3 : 0) + supportCount;
+  let status = '中和';
+  let text = '中和：五行のバランスが取れた命局です。環境に左右されすぎず、安定した歩みが可能です。';
+  
+  if (score >= 6) {
+    status = '身強';
+    text = '身強：自己のエネルギーが強く、自力で運を切り拓く力があります。強い目標を持つことで輝きます。';
+  } else if (score <= 3) {
+    status = '身弱';
+    text = '身弱：周囲の環境や人の影響を繊細に受け取る命局です。他者の支援や環境を整えることで本領を発揮します。';
+  }
+  
+  return { status, text, score };
+}
+
 function calculateShichusuimei(input) {
   const location = normalizeInputLocation(input);
   const rawParts = buildInputParts(input);
@@ -1236,6 +1269,7 @@ function calculateShichusuimei(input) {
     fiveElements: {
       counts: countElements(pillars),
     },
+    strength: analyzeDayMasterStrength(dayStem.toString(), pillars.month.branch, countElements(pillars)),
     luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts, pillars),
   };
 }

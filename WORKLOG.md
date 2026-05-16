@@ -41,6 +41,7 @@
 | v0.3.11 | 2026-05-16 20:52 JST | 用户首页 | `/index.html` 命式快速页 | 按信息架构原则收敛「命式」页：保留快速排盘、四柱含义、日主和五行简图，移除标签索引、格局/身强身弱/用神细卡、十神占比、旺相休囚死、婚姻/事业详解和神煞列表；详细内容继续放在「命式詳細」「大運流年」 | `/index.html?v=20260516-user-quick-1` | `/archive/pre-user-quick-chart-20260516/index.html?v=20260516-user-backend-1` | main `ffac226` / gh-pages `c9a904b` |
 | v0.3.12 | 2026-05-16 20:56 JST | 用户首页 | `/index.html` 命式基础信息 | 在「命式」页顶部新增「基本情報」确认区，集中展示姓名、性别、生年月日、出生时间/时辰、出生地、时区、真太阳时换算和四柱一览；保持详细判断仍在「命式詳細」「大運流年」 | `/index.html?v=20260516-user-basic-1` | `/archive/pre-user-basic-info-20260516/index.html?v=20260516-user-quick-1` | main `ef69917` / gh-pages `a5de38b` |
 | v0.3.13 | 2026-05-16 20:59 JST | 用户首页 | `/index.html` 命式/详解信息分层 | 进一步收紧信息架构：「命式」页只保留基本信息、四柱排盘表和进入后续页面的按钮；将四柱含义、日主说明、五行比例/生剋图等解释性内容移动到「命式詳細」页，和格局/身强身弱/用神、十神、藏干、四柱坐等详解一起阅读 | `/index.html?v=20260516-user-baseonly-1` | `/archive/pre-user-base-only-20260516/index.html?v=20260516-user-basic-1` | main `2b35bd0` / gh-pages `3b753ee` |
+| v0.3.14 | 2026-05-16 21:04 JST | 用户首页 | 缓存刷新入口 | 将用户页静态资源版本升到 `20260516-user-baseonly-2`，并新增 `/latest.html` 自动跳转到带时间戳的最新版用户页，避免手机/微信浏览器继续读取旧 JS | `/latest.html` / `/index.html?v=20260516-user-baseonly-2` | `/archive/pre-user-base-only-20260516/index.html?v=20260516-user-basic-1` | main `d6615bc` / gh-pages `5fb2bab` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

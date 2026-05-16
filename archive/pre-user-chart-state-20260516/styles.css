@@ -925,81 +925,6 @@ input, select { font-family: inherit; color: inherit; }
   margin-top: 8px;
   color: var(--ink-3);
 }
-.chart-state-overview {
-  display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
-  gap: 18px;
-  margin-top: 22px;
-  border: 1px solid var(--rule-strong);
-  background:
-    radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--gold) 10%, transparent), transparent 34%),
-    color-mix(in srgb, var(--bg-paper) 76%, transparent);
-  padding: 22px;
-}
-.chart-state-copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-}
-.chart-state-copy h2 {
-  margin: 8px 0 12px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: clamp(22px, 3vw, 30px);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.45;
-}
-.chart-state-copy p {
-  margin: 0 0 12px;
-  color: var(--ink-2);
-  font-size: 13px;
-  line-height: 1.9;
-  letter-spacing: 0.06em;
-}
-.chart-state-copy p:last-child {
-  margin-bottom: 0;
-  color: var(--ink-3);
-}
-.chart-state-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  min-width: 0;
-}
-.chart-state-card {
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-  padding: 14px;
-  min-width: 0;
-}
-.chart-state-card span,
-.chart-state-card small {
-  display: block;
-  color: var(--ink-3);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  line-height: 1.5;
-}
-.chart-state-card strong {
-  display: block;
-  margin: 7px 0 8px;
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1.5;
-}
-.chart-state-card p {
-  margin: 0 0 10px;
-  color: var(--ink-2);
-  font-size: 12px;
-  line-height: 1.75;
-  letter-spacing: 0.06em;
-}
 
 .shensha {
   display: flex;
@@ -1804,8 +1729,6 @@ input, select { font-family: inherit; color: inherit; }
   .reading-grid,
   .user-tag-detail-grid,
   .pillar-meaning-grid,
-  .chart-state-overview,
-  .chart-state-grid,
   .pillar-guide-grid,
   .element-guide-grid,
   .ten-god-map,

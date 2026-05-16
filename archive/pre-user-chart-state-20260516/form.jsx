@@ -469,55 +469,6 @@ function buildUserReadingTags(calc, tenGods) {
   ];
 }
 
-function chartStateSummary(calc) {
-  const dominant = strongestElements(calc).filter(Boolean);
-  const support = supportElements(calc).filter(Boolean);
-  const yong = [calc.yongShen?.primary, calc.yongShen?.secondary].filter(Boolean);
-  const ratio = Number.isFinite(calc.strength?.ratio) ? Math.round(calc.strength.ratio * 100) : null;
-  const balance = Number.isFinite(calc.fiveElements?.balanceScore) ? Math.round(calc.fiveElements.balanceScore) : null;
-  const dominantLabel = dominant.length ? dominant.join('・') : '五行';
-  const supportLabel = support.length ? support.join('・') : '調整五行';
-  const yongLabel = yong.length ? yong.join('・') : supportLabel;
-  const balanceTone = balance === null
-    ? '五行の偏りは構成比から見ます。'
-    : balance >= 75
-      ? '五行の配分は比較的まとまり、持ち味を安定して使いやすい命盤です。'
-      : balance >= 55
-        ? '五行に少し偏りがあり、強い要素を活かしながら不足を補うと整います。'
-        : '五行の偏りがはっきり出る命盤です。強い要素が長所にも課題にもなりやすく、補う五行が重要です。';
-  return {
-    title: `${calc.pattern?.name || '格局'} / ${calc.strength?.status || '身強弱'}`,
-    lead: `この命盤は「${calc.pattern?.name || '格局'}」を土台に、日主 ${calc.dayMaster} が ${calc.strength?.status || '判定中'} の状態で動く構成です。五行では ${dominantLabel} が前に出やすく、${supportLabel} を意識すると全体の流れが整いやすくなります。`,
-    note: `${balanceTone} 用神は ${yongLabel} を中心に読み、性格・仕事・対人関係の説明にもこの状態を反映します。`,
-    cards: [
-      {
-        label: '命式の型',
-        value: calc.pattern?.name || '格局',
-        text: calc.pattern?.text || '月令と天干から、命式全体の方向性を読みます。',
-        source: `月支 ${calc.pillars.month.branch} / 月柱 ${calc.pillars.month.text}`,
-      },
-      {
-        label: '日主の状態',
-        value: ratio === null ? (calc.strength?.status || '身強弱') : `${calc.strength?.status || '身強弱'} ${ratio}%`,
-        text: calc.strength?.text || '日主の勢いを、月令と五行の支えから見ます。',
-        source: `日主 ${calc.dayMaster} / 日柱 ${calc.pillars.day.text}`,
-      },
-      {
-        label: '五行の偏り',
-        value: balance === null ? dominantLabel : `平衡 ${balance}`,
-        text: `強く出る五行は ${dominantLabel}、補いたい五行は ${supportLabel} です。`,
-        source: '天干・地支・藏干・月令補正',
-      },
-      {
-        label: '整える鍵',
-        value: yongLabel,
-        text: calc.yongShen?.text || `${supportLabel} を生活・仕事・環境で補うと、命盤の偏りを整えやすくなります。`,
-        source: '調候用神 / 補五行',
-      },
-    ],
-  };
-}
-
 function analyzeSynthesis(calculation, profile) {
   const dayBranch = calculation.pillars.day.branch;
   const gender = profile.gender;
@@ -645,30 +596,6 @@ function PillarMeaningCards({ calculation, onFocus }) {
   );
 }
 
-function ChartStateOverview({ calculation }) {
-  const state = chartStateSummary(calculation);
-  return (
-    <section className="chart-state-overview" aria-label="命盤が映す全体状態">
-      <div className="chart-state-copy">
-        <div className="summary-kicker">命盤状態</div>
-        <h2>命盤が映す全体の状態</h2>
-        <p>{state.lead}</p>
-        <p>{state.note}</p>
-      </div>
-      <div className="chart-state-grid">
-        {state.cards.map(card => (
-          <article key={card.label} className="chart-state-card">
-            <span>{card.label}</span>
-            <strong>{card.value}</strong>
-            <p>{card.text}</p>
-            <small>{card.source}</small>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
@@ -729,7 +656,6 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
               })}
             </div>
             <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
-            <ChartStateOverview calculation={calculation} />
           </div>
 
           <div className="result-summary result-wide" id="s1" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>

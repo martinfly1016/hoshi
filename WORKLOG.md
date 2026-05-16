@@ -44,6 +44,7 @@
 | v0.3.14 | 2026-05-16 21:04 JST | 用户首页 | 缓存刷新入口 | 将用户页静态资源版本升到 `20260516-user-baseonly-2`，并新增 `/latest.html` 自动跳转到带时间戳的最新版用户页，避免手机/微信浏览器继续读取旧 JS | `/latest.html` / `/index.html?v=20260516-user-baseonly-2` | `/archive/pre-user-base-only-20260516/index.html?v=20260516-user-basic-1` | main `d6615bc` / gh-pages `5fb2bab` |
 | v0.3.15 | 2026-05-16 21:08 JST | 后台验证页 | `/shichusuimei/free/index.html` 三页信息分层 | 将后台/测试页也同步为同样的三页边界：「命式」只放基础信息和排盘表；标签索引、日主、五行、格局/身强身弱/用神、十神、藏干、四柱坐、婚姻宫等全部移到「命式詳細」；大运流年保持独立 | `/shichusuimei/free/index.html?v=free-20260516-baseonly-1` | `/archive/pre-free-base-only-20260516/shichusuimei/free/index.html?v=free-20260516-linked-tags-1` | main `420bb78` / gh-pages `bd9c677` |
 | v0.3.16 | 2026-05-16 21:14 JST | 后台验证页 | `/shichusuimei/free/index.html` 四柱显示 | 「命式」页去掉重复的四张四柱卡和矩阵下方的四柱补充卡，统一保留横向四柱矩阵；表头直接显示年柱/月柱/日柱/时柱及对应干支；行项目保留干神、天干、地支、藏干、支神、纳音、空亡、地勢、自坐，去掉空的神煞行；手机端增加表格横向滚动提示 | `/shichusuimei/free/index.html?v=free-20260516-chart-2` | `/archive/pre-free-chart-display-20260516/shichusuimei/free/index.html?v=free-20260516-baseonly-1` | main `2c8dfe8` / gh-pages `ce204bd` |
+| v0.3.17 | 2026-05-16 21:19 JST | 用户首页 | `/index.html` 手机端首屏文案 | 修正手机端 hero 引用文案仍继承桌面竖排 writing-mode 的问题；移动端改为两行横排文案块，占满内容宽度并用细分割线区分，避免截图中竖排文字贴右侧、断行不自然 | `/index.html?v=20260516-mobile-poem-1` | `/archive/pre-mobile-hero-poem-20260516/index.html?v=20260516-user-baseonly-2` | main `7221bec` / gh-pages `0ee9c91` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

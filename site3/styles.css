@@ -561,7 +561,7 @@ input, select { font-family: inherit; color: inherit; }
   border: none;
   border-bottom: 1px solid var(--rule-strong);
   background: transparent;
-  padding: 12px 0 12px;
+  padding: 12px 24px 12px 0;
   font-family: var(--f-display);
   font-size: 18px;
   letter-spacing: 0.1em;
@@ -571,6 +571,9 @@ input, select { font-family: inherit; color: inherit; }
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+.input-line select::-ms-expand {
+  display: none;
 }
 .input-line input::placeholder { color: var(--ink-3); }
 .input-line input:focus,

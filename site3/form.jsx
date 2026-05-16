@@ -627,7 +627,7 @@ function ResultView({ id, name, calculation, profile, onBack }) {
         <div className="label">MEISHIKI · CHART</div>
         <div className="seal-stack">
           <div><span className="num">壹</span>　命式の構成</div>
-          <div><span className="num">貳</span>　図解と五行</div>
+          <div><span className="num">貳</span>　日主と五行</div>
           <div style={{ marginTop: 24 }}>
              <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
                ← 入力へ戻る
@@ -639,16 +639,11 @@ function ResultView({ id, name, calculation, profile, onBack }) {
       <div className="rite-main" style={{ paddingBottom: 120 }}>
         <div className="result-card" id={id} style={{ marginTop: 0 }}>
           <div className="result-summary result-wide">
-            <div className="summary-kicker">四柱推命 無料鑑定</div>
+            <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2>{name || 'あなた'}の命式は、{dayMasterType(calculation)}の日主を中心に読みます</h2>
             <p>
               {stemReading.text}
-              五行では {strong} が目立ち、補いたい候補は {weakAdvice.support.join('・')} です。
-              通変星では {mainThemeText(tenGods)} がテーマとして現れています。
             </p>
-            <div className="result-tags">
-              {tags.map((tag) => <span key={tag}>{tag}</span>)}
-            </div>
           </div>
 
       <div>
@@ -662,7 +657,7 @@ function ResultView({ id, name, calculation, profile, onBack }) {
           ── 命主 {name || '無名'} の四柱 ──
         </div>
         <div className="pillars">
-          {PILLAR_KEYS.map((key) => {
+          {['hour', 'day', 'month', 'year'].map((key) => {
             const pillar = calculation.pillars[key];
             return (
             <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''}`}>
@@ -671,7 +666,7 @@ function ResultView({ id, name, calculation, profile, onBack }) {
                 <span className={`top ${elementClass(pillar.element.stem)}`}>{pillar.stem}</span>
                 <span className={`btm ${elementClass(pillar.element.branch)}`}>{pillar.branch}</span>
               </div>
-              <div className="nayin">{calculation.tenGods[key]} · {pillar.naYin || '—'}</div>
+              <div className="nayin">{calculation.tenGods[key]}<br/>{pillar.naYin || '—'}</div>
             </div>
             );
           })}

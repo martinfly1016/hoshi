@@ -23,7 +23,7 @@
 | v0.2.3 | 2026-05-15 00:15 JST | 用户首页 | 首页结果区 `/index.html` | 在用户页加入大运、流年初版计算展示与解说；未选性别时提示大运需性别，流年直接展示今年起的年度干支主题 | `/index.html?v=20260515-luck-reading-1` | `/archive/pre-user-luck-reading-20260515/index.html?v=20260515-pre-luck-reading-1` | main `b80da28` / gh-pages `ea3d0fd` |
 | v0.2.4 | 2026-05-15 00:20 JST | 用户首页 | 首页结果区 `/index.html` | 增强当前十年大运解说：自动识别当前年份所在大运并高亮，补充工作、财运、恋爱/对人、读法四维说明 | `/index.html?v=20260515-current-decade-1` | `/archive/pre-current-decade-reading-20260515/index.html?v=20260515-pre-current-decade-1` | main `49b08e8` / gh-pages `b1d1bfe` |
 | v0.2.5 | 2026-05-15 00:26 JST | 用户首页 | 首页移动端首屏 `/index.html` | 根据手机截图修正首屏 UI：CTA 文案改为清晰日文、按钮不再挤字，说明文案避免异常断行，手机端顶部仅保留可用导航项 | `/index.html?v=20260515-mobile-hero-1` | `/archive/pre-mobile-hero-ui-20260515/index.html?v=20260515-pre-mobile-hero-1` | main `82eca01` / gh-pages `533cfbb` |
-| v0.2.6 | 2026-05-16 18:44 JST | 后台验证页 | `/shichusuimei/free/index.html` 五行结果区 | 按反馈将五行关系图移到构成比前面，新增“偏多/补五行”说明与按月令计算的旺相休囚死状态卡，并修正中窄屏下解说卡两列过窄的问题 | `/shichusuimei/free/index.html?v=free-20260516-elements-1` | `/archive/pre-five-elements-reading-20260516/shichusuimei/free/index.html?v=free-20260514-luck-1` | main 本次提交 / gh-pages 待发布 |
+| v0.2.6 | 2026-05-16 18:44 JST | 后台验证页 | `/shichusuimei/free/index.html` 五行结果区 | 按反馈将五行关系图移到构成比前面，新增“偏多/补五行”说明与按月令计算的旺相休囚死状态卡，并修正中窄屏下解说卡两列过窄的问题 | `/shichusuimei/free/index.html?v=free-20260516-elements-1` | `/archive/pre-five-elements-reading-20260516/shichusuimei/free/index.html?v=free-20260514-luck-1` | main `f36116f` / gh-pages `2076dce` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

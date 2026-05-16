@@ -25,7 +25,7 @@ function Hero({ onEnter }) {
         <button className="hero-cta" onClick={onEnter}>
           <span>無料で命式を見る</span>
           <span className="arrow"></span>
-          <span className="seal-mini">命</span>
+          <span className="seal-mini">占</span>
         </button>
 
         <div className="hero-lead">

@@ -19,94 +19,14 @@ function App() {
   const [page, setPage] = React.useState('hero');   // hero | rite
   const [washing, setWashing] = React.useState(false);
 
-  // Auto-calculated current year info
-  const yearInfo = React.useMemo(() => {
-    const y = new Date().getFullYear();
-    const reiwaYear = y - 2018;
-    const kanjiDigits = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-    let reiwaStr = '';
-    if (reiwaYear === 1) reiwaStr = '元';
-    else if (reiwaYear < 10) reiwaStr = kanjiDigits[reiwaYear];
-    else if (reiwaYear === 10) reiwaStr = '十';
-    else if (reiwaYear < 20) reiwaStr = '十' + (reiwaYear % 10 === 0 ? '' : kanjiDigits[reiwaYear % 10]);
-    else reiwaStr = kanjiDigits[Math.floor(reiwaYear / 10)] + '十' + (reiwaYear % 10 === 0 ? '' : kanjiDigits[reiwaYear % 10]);
-
-    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-    const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    // 2026: (2026-4)%10=2 => 丙, (2026-4)%12=6 => 午
-    const stem = stems[(y - 4) % 10];
-    const branch = branches[(y - 4) % 12];
-
-    const tens = ['', 'X', 'XX', 'XXX', 'XL', 'L'];
-    const units = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
-    const roman = 'MM' + tens[Math.floor((y % 100) / 10)] + units[y % 10];
-
-    return {
-      reiwa: `令和${reiwaStr}年`,
-      ganzhi: `${stem}${branch}`,
-      roman: roman
-    };
-  }, []);
-  
-  // Expose it to global window for other components like Hero to use
-  if (typeof window !== 'undefined') {
-    window.__hoshiYearInfo = yearInfo;
-  }
-
-  // Active theme state (detects system preference / local storage)
-  const [activeTheme, setActiveTheme] = React.useState(() => {
-    try {
-      const saved = localStorage.getItem('hoshi-user-theme');
-      if (saved) return saved;
-      const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      return isLight ? 'kamishiro' : 'tsukiyo';
-    } catch (e) {
-      return tweaks.theme;
-    }
-  });
-
-  // Sync tweaks panel -> activeTheme
-  React.useEffect(() => {
-    if (tweaks.theme !== activeTheme && tweaks.theme !== TWEAK_DEFAULTS.theme) {
-      setActiveTheme(tweaks.theme);
-      try { localStorage.setItem('hoshi-user-theme', tweaks.theme); } catch(e){}
-    }
-  }, [tweaks.theme]);
-
-  // Listen for system theme changes if user hasn't explicitly set one
-  React.useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: light)');
-    const onChange = (e) => {
-      try {
-        if (!localStorage.getItem('hoshi-user-theme')) {
-          const next = e.matches ? 'kamishiro' : 'tsukiyo';
-          setActiveTheme(next);
-          setTweak('theme', next);
-        }
-      } catch(e){}
-    };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, [setTweak]);
-
-  const toggleTheme = () => {
-    // If currently a light theme (kamishiro or shuboku), switch to dark (tsukiyo)
-    // If currently a dark theme (tsukiyo or aifukashi), switch to light (kamishiro)
-    const isLight = activeTheme === 'kamishiro' || activeTheme === 'shuboku';
-    const next = isLight ? 'tsukiyo' : 'kamishiro';
-    setActiveTheme(next);
-    setTweak('theme', next);
-    try { localStorage.setItem('hoshi-user-theme', next); } catch(e){}
-  };
-
   // apply theme attrs to <html> so global CSS picks them up
   React.useEffect(() => {
     const el = document.documentElement;
-    el.dataset.theme = activeTheme;
+    el.dataset.theme = tweaks.theme;
     el.dataset.type = tweaks.type;
     el.dataset.motion = tweaks.motion;
     el.dataset.hero = tweaks.hero;
-  }, [activeTheme, tweaks]);
+  }, [tweaks]);
 
   const goto = (target) => {
     if (target === page) return;
@@ -134,9 +54,6 @@ function App() {
             onClick={() => goto('rite')}>鑑定の儀</button>
           <button>命　式</button>
           <button>星辰譜</button>
-          <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
-            {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
-          </button>
         </nav>
         <div style={{
           fontFamily: 'var(--f-mono)',
@@ -144,7 +61,7 @@ function App() {
           letterSpacing: '0.3em',
           fontSize: 10,
         }}>
-          {yearInfo.reiwa} · {yearInfo.ganzhi}
+          令和七年 · 丙午
         </div>
       </header>
 
@@ -165,17 +82,13 @@ function App() {
           }}>
             {THEMES.map(t => (
               <button key={t.key}
-                onClick={() => {
-                  setTweak('theme', t.key);
-                  setActiveTheme(t.key);
-                  try { localStorage.setItem('hoshi-user-theme', t.key); } catch(e){}
-                }}
+                onClick={() => setTweak('theme', t.key)}
                 style={{
                   textAlign: 'left',
                   padding: 10,
-                  border: activeTheme === t.key
+                  border: tweaks.theme === t.key
                     ? '1px solid #fff' : '1px solid rgba(255,255,255,0.16)',
-                  background: activeTheme === t.key
+                  background: tweaks.theme === t.key
                     ? 'rgba(255,255,255,0.06)' : 'transparent',
                   color: '#fff',
                   cursor: 'pointer',

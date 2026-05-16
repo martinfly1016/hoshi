@@ -158,7 +158,7 @@ input, select { font-family: inherit; color: inherit; }
   border-radius: 2px;
   background: color-mix(in srgb, var(--seal) 6%, transparent);
 }
-.chrome nav { display: flex; gap: 28px; align-items: center; }
+.chrome nav { display: flex; gap: 28px; }
 .chrome nav button {
   font-size: 11px; letter-spacing: 0.32em;
   color: var(--ink-2);
@@ -173,8 +173,6 @@ input, select { font-family: inherit; color: inherit; }
   border-radius: 50%;
   transform: translateX(-50%);
 }
-.chrome nav button.theme-toggle { font-size: 14px; letter-spacing: 0; padding: 4px; opacity: 0.8; margin-left: 8px; }
-.chrome nav button.theme-toggle:hover { opacity: 1; }
 
 @media (max-width: 768px) {
   .chrome { padding: 16px 18px; }

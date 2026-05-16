@@ -4,9 +4,9 @@ function Hero({ onEnter }) {
   return (
     <section className="hero" data-screen-label="01 序章">
       <div className="hero-poem">
-        <div className="line">天有十干，地有十二支</div>
-        <div className="line">阴阳五行之运，皆映于八字命局</div>
-        <div className="line dim">— 四柱推命古记 卷之壹</div>
+        <div className="line">天に二十八宿、地に十二支あり</div>
+        <div className="line">星辰の運び、命の式に映る</div>
+        <div className="line dim">— 陰陽寮古記 卷之壹</div>
       </div>
 
       <div className="hero-title-block">
@@ -37,17 +37,16 @@ function Hero({ onEnter }) {
         <StarChart />
       </div>
 
-      <div className="hero-side">阴阳五行 · 八字推命</div>
+      <div className="hero-side">星辰廻天 · 卜以識運</div>
 
       <div className="hero-bottom">
         <div className="stations">
-          <span>正财 · 偏财</span>
-          <span>正官 · 七杀</span>
-          <span>正印 · 偏印</span>
-          <span>食神 · 伤官</span>
-          <span>比肩 · 劫财</span>
+          <span>角 · 亢 · 氐</span>
+          <span>斗 · 牛 · 女</span>
+          <span>奎 · 婁 · 胃</span>
+          <span>井 · 鬼 · 柳</span>
         </div>
-        <div>四柱推命 / {window.__hoshiYearInfo?.reiwa || '令和八年'} · {window.__hoshiYearInfo?.roman || 'MMXXVI'}</div>
+        <div>陰陽寮 / 令和七年 · MMXXVI</div>
       </div>
     </section>
   );

@@ -142,7 +142,7 @@ function App() {
         <div style={{
           fontFamily: 'var(--f-mono)', color: 'var(--ink-3)', letterSpacing: '0.3em', fontSize: 10,
         }}>
-          {yearInfo.reiwa} · {yearInfo.ganzhi}
+          {yearInfo.reiwa} {yearInfo.ganzhi}
         </div>
       </header>
 

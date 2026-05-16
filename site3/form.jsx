@@ -826,14 +826,33 @@ function ResultView({ id, name, calculation, profile, onBack }) {
   const currentDecade = currentDecadeFortune(decade, luck.target?.year || currentAnnual?.year);
   const currentDecadeTheme = decadeTheme(currentDecade);
 
+  const scrollTo = (sectionId) => {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      // Offset for fixed header if needed
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  const shenShaSet = new Set();
+  PILLAR_KEYS.forEach(key => {
+    const pillar = calculation.pillars[key];
+    getShenSha(pillar.branch, calculation.pillars.day.stem, calculation.pillars.year.branch, calculation.pillars.day.branch).forEach(ss => shenShaSet.add(ss));
+  });
+  const uniqueShenSha = Array.from(shenShaSet);
+
   return (
     <section className="rite" data-screen-label="03 命式">
       <aside className="rite-side">
         <div className="kanji">命式</div>
         <div className="label">MEISHIKI · CHART</div>
         <div className="seal-stack">
-          <div><span className="num">壹</span>　命式の構成</div>
-          <div><span className="num">貳</span>　日主と五行</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-daymaster')}><span className="num">壹</span>　日主と性格</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-pillars')}><span className="num">貳</span>　四柱の構成</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-wuxing')}><span className="num">參</span>　五行バランス</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-tengod')}><span className="num">肆</span>　十神の強み</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-shensha')}><span className="num">伍</span>　神煞（特殊星）</div>
           <div style={{ marginTop: 24 }}>
              <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
                ← 入力へ戻る
@@ -844,7 +863,7 @@ function ResultView({ id, name, calculation, profile, onBack }) {
 
       <div className="rite-main" style={{ paddingBottom: 120 }}>
         <div className="result-card" id={id} style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide">
+          <div className="result-summary result-wide" id="section-daymaster" style={{ paddingTop: 20 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2>{name || 'あなた'}の命式は、{dayMasterType(calculation)}の日主を中心に読みます</h2>
             <p>
@@ -855,16 +874,20 @@ function ResultView({ id, name, calculation, profile, onBack }) {
             </div>
           </div>
 
-      <div>
+      <div id="section-pillars" style={{ paddingTop: 40, marginTop: 40, borderTop: '1px solid var(--rule)' }}>
         <div style={{
           fontFamily: 'var(--f-display)',
-          fontSize: 13,
-          letterSpacing: '0.3em',
-          color: 'var(--ink-2)',
-          marginBottom: 18,
+          fontSize: 16,
+          letterSpacing: '0.2em',
+          color: 'var(--ink)',
+          marginBottom: 12,
+          textAlign: 'center'
         }}>
-          ── 命主 {name || '無名'} の四柱 ──
+          四柱の構成
         </div>
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
+          命主 {name || '無名'} が生まれ持った4つの柱です。<br/>日柱が自分自身を表し、他の柱は周囲の環境や時間軸を表します。
+        </p>
         <div className="pillars">
           {['hour', 'day', 'month', 'year'].map((key) => {
             const pillar = calculation.pillars[key];
@@ -894,7 +917,7 @@ function ResultView({ id, name, calculation, profile, onBack }) {
         </div>
       </div>
 
-      <div className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+      <div id="section-wuxing" className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
         <div style={{
           fontFamily: 'var(--f-display)',
           fontSize: 16,
@@ -912,7 +935,7 @@ function ResultView({ id, name, calculation, profile, onBack }) {
         <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
       </div>
 
-      <div className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+      <div id="section-tengod" className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
         <div style={{
           fontFamily: 'var(--f-display)',
           fontSize: 16,
@@ -1017,19 +1040,28 @@ function ResultView({ id, name, calculation, profile, onBack }) {
         </div>
       </div>
 
-      <div className="result-wide visual-block">
-        <div className="section-caption">通変星を役割で読む</div>
-        <div className="ten-god-map">
-          {tenGodRoles.map((item) => (
-            <article key={item.name}>
-              <span className="god-symbol">{item.icon}</span>
-              <div>
-                <strong>{item.name} · {item.role}</strong>
-                <p>{item.text}</p>
-                <small>命式内の出現: {item.total}</small>
-              </div>
-            </article>
-          ))}
+      <div id="section-shensha" className="result-wide visual-block" style={{ marginTop: 48, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+        <div style={{
+          fontFamily: 'var(--f-display)',
+          fontSize: 16,
+          letterSpacing: '0.2em',
+          color: 'var(--ink)',
+          marginBottom: 12,
+          textAlign: 'center'
+        }}>
+          命局の「神煞（特殊星）」
+        </div>
+        <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 32 }}>
+          特定の干支の組み合わせによって生じる特殊な星「神煞」です。<br/>あなたの運命に宿る特別なご加護や傾向を示します。
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+          {uniqueShenSha.length > 0 ? uniqueShenSha.map(ss => (
+            <div key={ss} style={{ border: '1px solid var(--gold)', background: 'color-mix(in srgb, var(--gold) 10%, var(--bg))', padding: '12px 24px', borderRadius: '4px', fontFamily: 'var(--f-display)', color: 'var(--ink)', letterSpacing: '0.1em' }}>
+              {ss}
+            </div>
+          )) : (
+            <div style={{ color: 'var(--ink-3)', fontSize: '13px' }}>特に目立つ神煞はありません（フラットな命局です）。</div>
+          )}
         </div>
       </div>
 

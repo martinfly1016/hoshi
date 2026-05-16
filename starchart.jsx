@@ -99,8 +99,16 @@ function StarChart() {
                     transform={`rotate(${(i / GAN.length) * 360}, ${x}, ${y})`}>
                     {gan.c}
                   </text>
-                  {/* Wuxing dot/label */}
-                  <circle cx={x} cy={y + 8} r={3} fill={gan.color} transform={`rotate(${(i / GAN.length) * 360}, ${x}, ${y})`} opacity="0.6" />
+                  {/* Wuxing label */}
+                  <text x={x} y={y + 10}
+                    fill={gan.color}
+                    fontSize="10"
+                    fontFamily="var(--f-display)"
+                    textAnchor="middle"
+                    opacity="0.6"
+                    transform={`rotate(${(i / GAN.length) * 360}, ${x}, ${y})`}>
+                    {gan.w}
+                  </text>
                 </g>
               );
             })}
@@ -209,9 +217,9 @@ function StarChart() {
             <text x={cx} y={cy + 56}
               fill="var(--ink-3)"
               fontSize="9"
-              fontFamily="var(--f-mono)"
+              fontFamily="var(--f-display)"
               letterSpacing="3"
-              textAnchor="middle">BAZI</text>
+              textAnchor="middle">四柱推命</text>
           </g>
 
           {/* corner sigils */}

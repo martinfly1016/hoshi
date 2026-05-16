@@ -1137,9 +1137,36 @@ function InsightView({ calculation, onBack }) {
   );
 }
 
-function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
+function analyzeSynthesis(calculation, profile) {
+  const dayBranch = calculation.pillars.day.branch;
+  const dayStem = calculation.dayMaster;
+  const gender = profile.gender;
+  const tenGods = collectTenGods(calculation);
+  const pattern = calculation.pattern?.name || '';
+
+  // 1. Marriage Synthesis
+  let marriage = '';
+  if (gender === 'female') {
+    const hasOfficer = tenGods.some(([god]) => god === '正官');
+    marriage = `日支の「${dayBranch}」が配偶者の場所となります。${hasOfficer ? '命式内に正官（夫の星）が見られるため、パートナーシップが人生の安定に繋がりやすいでしょう。' : '自立心が強く、対等な関係を築くことで幸福を感じる傾向にあります。'}`;
+  } else if (gender === 'male') {
+    const hasWealth = tenGods.some(([god]) => god === '正財');
+    marriage = `日支の「${dayBranch}」は妻の場所を指します。${hasWealth ? '命式内に正財（妻の星）が巡っており、家庭を大切にすることで運気が整います。' : '自由な感性を持ち、お互いの個性を尊重し合うパートナーシップを好むようです。'}`;
+  } else {
+    marriage = `日支の「${dayBranch}」は親密なパートナーシップのあり方を象徴します。自分と相手の境界線をどう保つかが鍵となります。`;
+  }
+
+  // 2. Career Synthesis
+  const career = `月支の「${calculation.pillars.month.branch}」と格局「${pattern}」があなたの社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝き、${tenGods[0]?.[0]}の星を活かすことが成功の鍵です。`;
+
+  return { marriage, career };
+}
+
+function ResultView({ id, name, calculation, profile, onBack }) {
   const [activePillar, setActivePillar] = React.useState(null);
-  const percentages = elementPercentages(calculation);
+  const [activeTab, setActiveTab] = React.useState('chart');
+  
+  const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
   const tenGods = collectTenGods(calculation);
   const hiddenStems = collectHiddenStems(calculation);
   const meta = calculation.calculationMeta;
@@ -1343,6 +1370,24 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           </div>
         )}
 
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 40 }}>
+          <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}>
+            <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>
+              <span style={{ marginRight: 8 }}>❤️</span> 情感・婚姻の視点
+            </div>
+            <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.7 }}>
+              {synthesis.marriage}
+            </p>
+          </div>
+          <div style={{ padding: '20px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}>
+            <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>
+              <span style={{ marginRight: 8 }}>💰</span> 事業・仕事の視点
+            </div>
+            <p style={{ margin: 0, fontSize: 12, color: 'var(--ink-2)', lineHeight: 1.7 }}>
+              {synthesis.career}
+            </p>
+          </div>
+        </div>
 
         {calculation.luckCycles?.natalInteractions?.length > 0 && (
           <div style={{ marginTop: 24, padding: '16px', background: 'color-mix(in srgb, var(--ink) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>

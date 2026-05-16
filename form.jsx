@@ -348,6 +348,18 @@ const PILLAR_LABELS = {
   day: '日柱',
   hour: '時柱',
 };
+const STEM_ICONS = {
+  '甲': '🌳', // 大樹
+  '乙': '🌿', // 草花
+  '丙': '☀️', // 太陽
+  '丁': '🕯️', // 灯火
+  '戊': '⛰️', // 山
+  '己': '🪴', // 大地
+  '庚': '⚔️', // 剣
+  '辛': '✨', // 宝石
+  '壬': '🌊', // 海
+  '癸': '💧', // 雨
+};
 const PILLAR_READING = {
   year: {
     icon: '根',
@@ -755,7 +767,10 @@ function ResultView({ id, name, calculation, profile, onBack }) {
             <div key={key} className={`pillar ${key === 'day' ? 'is-day' : ''}`}>
               <div className="lbl">{PILLAR_LABELS[key]}</div>
               <div className="gz">
-                <span className={`top ${elementClass(pillar.element.stem)}`}>{pillar.stem}</span>
+                <span className={`top ${elementClass(pillar.element.stem)}`}>
+                  <div style={{ fontSize: '0.45em', opacity: 0.85, marginBottom: 4, filter: 'grayscale(0.2)' }}>{STEM_ICONS[pillar.stem] || ''}</div>
+                  {pillar.stem}
+                </span>
                 <span className={`btm ${elementClass(pillar.element.branch)}`}>{pillar.branch}</span>
               </div>
               <div className="nayin">{calculation.tenGods[key]}<br/>{pillar.naYin || '—'}</div>

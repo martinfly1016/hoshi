@@ -1298,7 +1298,8 @@ function buildInputParts(input) {
 function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
   const wuxingCycle = ['木', '火', '土', '金', '水'];
   const idx = wuxingCycle.indexOf(dayStem);
-  const supportElements = [wuxingCycle[(idx - 1 + 5) % 5], dayStem]; // Mother + Same
+  const motherElement = wuxingCycle[(idx - 1 + 5) % 5];
+  const supportElements = [motherElement, dayStem]; // Mother + Same
   
   const totalPoints = Object.values(elementCounts).reduce((a, b) => a + b, 0);
   const supportPoints = supportElements.reduce((sum, el) => sum + (elementCounts[el] || 0), 0);
@@ -1307,16 +1308,23 @@ function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
   let status = '中和';
   let text = '中和：五行のバランスが取れた命局です。極端な偏りがなく、環境の変化に柔軟に対応できる安定感を持っています。';
   
-  if (ratio >= 0.65) {
+  if (ratio >= 0.8) {
+    status = '極強';
+    text = '極強（専旺格）：特定の五行にエネルギーが集中した非常に力強い命局です。自らの信念を貫くことで道が拓けます。';
+  } else if (ratio >= 0.65) {
     status = '身強';
     text = '身強：自己のエネルギーに溢れ、主体的に運命を切り拓く力強い命局です。強い意志を持ち、リーダーシップを発揮する場面で輝きます。';
+  } else if (ratio <= 0.15) {
+    status = '従格';
+    text = '極弱（従格）：自己を空じ、周囲の強大なエネルギーの流れに乗ることで大成する特殊な命局です。環境への順応が成功の鍵です。';
   } else if (ratio <= 0.35) {
     status = '身弱';
-    text = '身弱：繊細な感受性を持ち、周囲の支援や環境を活かすことで本領を発揮する命局です。協調性を大切にし、チームで成果を上げるのに適しています。';
+    text = '身弱：周囲の支援や環境を活かすことで本領を発揮する命局です。協調性を大切にし、チームや組織の中で成果を上げるのに適しています。';
   }
   
   return { status, text, ratio };
 }
+
 
 
 function analyzePattern(dayStem, monthBranch, revealedStems) {

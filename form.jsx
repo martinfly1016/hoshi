@@ -163,9 +163,7 @@ function Rite({ onBack, onSubmitDone }) {
         <div className="rite-intro">
           <h2>生年月日から、あなたの命式を作成します</h2>
           <p>
-            四柱推命では、生年月日・出生時間・出生地から命式を作ります。<br/>
-            結果では日主、五行バランス、通変星をもとに、性格・恋愛・仕事の傾向をやさしく整理します。
-            入力内容はこの端末上で計算し、サーバーには保存しません。
+            四柱推命では、生年月日・出生時間・出生地から命式を作ります。
           </p>
         </div>
 
@@ -276,7 +274,10 @@ function Rite({ onBack, onSubmitDone }) {
         <div className="rite-submit">
           <div className="legal">
             出生時間が不明でも鑑定できます。<br/>
-            その場合、時柱は12:00の仮計算として表示します。
+            その場合、時柱は12:00の仮計算として表示します。<br/>
+            <span style={{ fontSize: '0.85em', color: 'var(--ink-3)', display: 'block', marginTop: '8px' }}>
+              ※ 入力内容はこの端末上で計算し、サーバーには保存しません。
+            </span>
           </div>
           <button className={`submit-btn ${busy ? 'busy' : ''}`}
             disabled={!valid || busy}

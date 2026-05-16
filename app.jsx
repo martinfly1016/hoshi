@@ -16,8 +16,9 @@ const THEMES = [
 
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [page, setPage] = React.useState('hero');   // hero | rite
+  const [page, setPage] = React.useState('hero');   // hero | rite | result
   const [washing, setWashing] = React.useState(false);
+  const [calcResult, setCalcResult] = React.useState(null);
 
   // Auto-calculated current year info
   const yearInfo = React.useMemo(() => {
@@ -132,7 +133,9 @@ function App() {
             onClick={() => goto('hero')}>序　章</button>
           <button className={page === 'rite' ? 'is-active' : ''}
             onClick={() => goto('rite')}>命式作成</button>
-          <button>命　式</button>
+          <button className={page === 'result' ? 'is-active' : ''}
+            onClick={() => { if (calcResult) goto('result'); }}
+            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命　式</button>
           <button>星辰譜</button>
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
             {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
@@ -151,7 +154,19 @@ function App() {
       <main className="page">
         {page === 'hero' && <Hero onEnter={() => goto('rite')} />}
         {page === 'rite' && <Rite onBack={() => goto('hero')}
-          onSubmitDone={() => {}} />}
+          onSubmitDone={(res) => {
+            setCalcResult(res);
+            goto('result');
+          }} />}
+        {page === 'result' && calcResult && (
+          <ResultView 
+            id="result-card"
+            name={calcResult.profile.name} 
+            calculation={calcResult.chart} 
+            profile={calcResult.profile}
+            onBack={() => goto('rite')}
+          />
+        )}
       </main>
 
       <div className={`ink-wash ${washing ? 'show' : ''}`}></div>

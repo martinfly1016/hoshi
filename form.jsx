@@ -165,9 +165,6 @@ function Rite({ onBack, onSubmitDone }) {
           <div><span className="num">貳</span>　生年月日</div>
           <div><span className="num">參</span>　出生時間</div>
           <div><span className="num">肆</span>　出生地</div>
-          <div style={{ marginTop: 18, color: 'var(--seal)' }}>
-            <span className="num" style={{ color: 'var(--seal)' }}>伍</span>　無料で命式を見る
-          </div>
         </div>
       </aside>
 

@@ -31,6 +31,7 @@
 | v0.3.1 | 2026-05-16 19:21 JST | 后台验证页 | 三页初版页面 | 在三页拆分基础上补齐页面头与页面级说明：完善「命式」总览卡，同时给「命式詳細」「大運流年」制作可独立阅读的初版页面开头 | `/shichusuimei/free/index.html?v=free-20260516-three-page-drafts-1` | `/archive/pre-three-page-first-drafts-20260516/shichusuimei/free/index.html?v=free-20260516-three-pages-1` | main `2f8651a` / gh-pages `1938d5d` |
 | v0.3.2 | 2026-05-16 19:34 JST | 后台算法 / 三页可视化 | `/shichusuimei/free/index.html` 五行算法与三页结果 | 五行统计从展示用整数升级为 raw points、构成比、主导/弱项/缺项、平衡分和计算根拠；「命式」显示平衡摘要，「命式詳細」新增五行計算の根拠卡，「大運流年」新增当前大运/流年/流月/流日概览卡 | `/shichusuimei/free/index.html?v=free-20260516-accuracy-visual-1` | `/archive/pre-algorithm-visual-20260516/shichusuimei/free/index.html?v=free-20260516-three-page-drafts-1` | main `c0fc22b` / gh-pages `5e0d13e` |
 | v0.3.3 | 2026-05-16 19:40 JST | 后台验证页 | 标签体系 / 三页可视化 | 优化标签应用：新增「命式タグ」总览，把日主、读取根拠、性质、强五行、补/缺五行、十神、婚姻宮定位做成结构化彩色标签；详解里的日主/十神标签也改用统一组件 | `/shichusuimei/free/index.html?v=free-20260516-tags-1` | `/archive/pre-tag-optimization-20260516/shichusuimei/free/index.html?v=free-20260516-accuracy-visual-1` | main `52019fd` / gh-pages `b57da43` |
+| v0.3.4 | 2026-05-16 19:48 JST | 后台验证页 | 标签索引 / 详解跳转 | 将命式标签从关键词升级为可点击索引：新增格局、身强身弱、性格、强五行、补/缺五行、好运来源、主要课题、婚姻宮、运势走势等标签；每个标签显示依据和简短说明，点击可跳转到对应详解模块 | `/shichusuimei/free/index.html?v=free-20260516-linked-tags-1` | `/archive/pre-linked-tags-20260516/shichusuimei/free/index.html?v=free-20260516-tags-1` | main `pending` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -82,3 +83,6 @@
 - v0.3.2 验证记录：`node --check site3/calculation-lab.js` 和 `node --check site3/shichusuimei/free/page.js` 通过；Node 样例 `1990-06-15 10:30 male` 返回 `庚午 / 壬午 / 辛亥 / 癸巳`，五行 raw points、百分比、平衡分和大运均正常；本地 390px 手机截图检查 `section=meishiki/detail/luck`，三页结果可见，无明显重叠或裁切。
 - 后台验证页 v0.3.3：按 Wreal 对标签应用的反馈，将标签从单纯性格词升级为结构化阅读入口。命式页新增「命式タグ」总览，按日主、根拠、性質、強、補/缺、十神、定位分类；标签颜色与类别绑定，帮助用户快速知道“这个结论来自哪里、属于哪类信息、该关注什么”。
 - v0.3.3 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机截图检查 `section=meishiki/detail`，命式标签和详解标签无明显重叠、裁切，长标签增加留白后可读性正常。
+- 后台验证页 v0.3.4：按 Wreal 对“标签要连接其他解析部分”的反馈，将「命式タグ」改为可点击索引。标签现在覆盖格局、身强身弱、性格特点、五行强弱、补/缺五行、好运来源、人生主要课题、婚姻宫定位、人生运势走势；每个标签下方新增解释卡，显示该标签的依据与说明。
+- v0.3.4 详解承接：命式詳細页新增「格局 / 身強身弱 / 用神」说明区，承接格局、身强身弱和好运来源标签；五行、人生课题、婚姻宫和大运走势标签分别跳转到五行详解、人生主题、婚姻宫、大運流年概览。点击后会切换到目标页面并滚动到对应模块。
+- v0.3.4 验证记录：`node --check site3/shichusuimei/free/page.js` 通过；本地 390px 手机截图检查命式标签索引，标签、说明卡和「詳解へ」按钮无明显重叠或裁切。

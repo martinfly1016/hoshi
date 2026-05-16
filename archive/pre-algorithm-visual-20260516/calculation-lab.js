@@ -38,7 +38,6 @@ const BRANCH_ELEMENTS = {
 };
 
 const PILLAR_KEYS = ["year", "month", "day", "hour"];
-const ELEMENT_LABELS = ["木", "火", "土", "金", "水"];
 const PILLAR_LABELS = {
   year: "年柱",
   month: "月柱",
@@ -846,7 +845,7 @@ const SEASONAL_ELEMENT_STRENGTH = {
   '丑': { '木': 1.0, '火': 0.8, '土': 1.2, '金': 0.9, '水': 1.1 },
 };
 
-function countElementPoints(pillars) {
+function countElements(pillars) {
   const points = { 木: 0, 火: 0, 土: 0, 金: 0, 水: 0 };
   const monthBranch = pillars.month.branch;
   const seasonalWeights = SEASONAL_ELEMENT_STRENGTH[monthBranch] || {};
@@ -869,48 +868,12 @@ function countElementPoints(pillars) {
     });
   });
 
-  return points;
-}
-
-function analyzeFiveElements(pillars) {
-  const rawPoints = countElementPoints(pillars);
-  const counts = {};
-  const totalPoints = Math.max(1, ELEMENT_LABELS.reduce((sum, name) => sum + rawPoints[name], 0));
-  const percentages = {};
-  ELEMENT_LABELS.forEach((name) => {
-    counts[name] = Math.round(rawPoints[name] / 5);
-    percentages[name] = Math.round((rawPoints[name] / totalPoints) * 100);
+  // Normalize to small integers for display (divide by 10 and round)
+  const result = {};
+  Object.keys(points).forEach(k => {
+    result[k] = Math.round(points[k] / 5); 
   });
-
-  const countValues = ELEMENT_LABELS.map((name) => counts[name]);
-  const max = Math.max(...countValues);
-  const min = Math.min(...countValues);
-  const dominant = ELEMENT_LABELS.filter((name) => counts[name] === max);
-  const weak = ELEMENT_LABELS.filter((name) => counts[name] === min);
-  const missing = ELEMENT_LABELS.filter((name) => counts[name] === 0);
-  const balanceScore = Math.max(0, Math.min(100, Math.round(100 - ((max - min) / Math.max(1, max)) * 100)));
-
-  return {
-    counts,
-    rawPoints: Object.fromEntries(ELEMENT_LABELS.map((name) => [name, Number(rawPoints[name].toFixed(2))])),
-    percentages,
-    dominant,
-    weak,
-    missing,
-    totalPoints: Number(totalPoints.toFixed(2)),
-    balanceScore,
-    basis: {
-      monthBranch: pillars.month.branch,
-      monthPillarMultiplier: 2.5,
-      stemBasePoint: 10,
-      branchHiddenQiBasePoint: 20,
-      seasonalWeights: SEASONAL_ELEMENT_STRENGTH[pillars.month.branch] || {},
-    },
-  };
-}
-
-function countElements(pillars) {
-  return analyzeFiveElements(pillars).counts;
+  return result;
 }
 
 
@@ -1568,7 +1531,6 @@ function calculateShichusuimei(input) {
   };
   const tenGods = collectTenGods(pillarsWithRaw);
   const pillars = stripRawPillars(pillarsWithRaw);
-  const fiveElementAnalysis = analyzeFiveElements(pillars);
 
   return {
     ok: true,
@@ -1599,8 +1561,10 @@ function calculateShichusuimei(input) {
     dayMaster: pillars.day.stem,
     tenGods,
     hiddenStems: Object.fromEntries(PILLAR_KEYS.map((key) => [key, pillars[key].hiddenStems])),
-    fiveElements: fiveElementAnalysis,
-    strength: analyzeDayMasterStrength(dayStem.toString(), pillars.month.branch, fiveElementAnalysis.counts),
+    fiveElements: {
+      counts: countElements(pillars),
+    },
+    strength: analyzeDayMasterStrength(dayStem.toString(), pillars.month.branch, countElements(pillars)),
     pattern: analyzePattern(dayStem.toString(), pillars.month.branch, [pillars.year.stem, pillars.month.stem, pillars.hour.stem]),
     yongShen: getYongShen(dayStem.toString(), pillars.month.branch),
     luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts, pillars),

@@ -583,67 +583,6 @@
     gap: 10px;
   }
 
-  .algorithm-panel {
-    display: grid;
-    gap: 16px;
-    margin-top: 18px;
-    padding: 18px;
-    border: 1px solid rgba(233, 216, 197, 0.96);
-    border-radius: 22px;
-    background:
-      linear-gradient(135deg, rgba(255, 250, 244, 0.98), rgba(255, 243, 230, 0.9)),
-      radial-gradient(circle at 88% 18%, rgba(216, 142, 103, 0.16), transparent 34%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
-  }
-
-  .algorithm-panel .summary-text {
-    margin-top: 0;
-    max-width: 860px;
-  }
-
-  .algorithm-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .algorithm-card {
-    display: grid;
-    gap: 8px;
-    min-width: 0;
-    padding: 12px;
-    border: 1px solid rgba(213, 190, 166, 0.72);
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.62);
-  }
-
-  .algorithm-card strong {
-    color: #5c4535;
-    font-size: 24px;
-    line-height: 1;
-  }
-
-  .algorithm-card p {
-    color: #9a7c62;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    line-height: 1.45;
-    overflow-wrap: anywhere;
-  }
-
-  .algorithm-meta {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding-top: 2px;
-  }
-
-  .algorithm-meta span {
-    min-width: 0;
-    padding: 10px 12px;
-    border: 1px solid rgba(213, 190, 166, 0.58);
-    border-radius: 14px;
-    background: rgba(255, 252, 248, 0.72);
-  }
-
   .element-row {
     display: grid;
     grid-template-columns: 42px minmax(0, 1fr) 24px;
@@ -2469,8 +2408,6 @@
     .source-map-grid,
     .pillar-seat-grid,
     .summary-mini-grid,
-    .algorithm-grid,
-    .algorithm-meta,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2584,8 +2521,6 @@
     .source-map-grid,
     .pillar-seat-grid,
     .summary-mini-grid,
-    .algorithm-grid,
-    .algorithm-meta,
     .luck-grid,
     .auxiliary-grid {
       grid-template-columns: 1fr;
@@ -2736,6 +2671,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260516-accuracy-visual-1"></script>
+<script type="module" src="./page.js?v=free-20260516-three-page-drafts-1"></script>
 </body>
 </html>

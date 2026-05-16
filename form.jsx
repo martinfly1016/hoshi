@@ -1116,6 +1116,33 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
                 )}
               </div>
             )}
+
+            {calculation.yongShen && (
+              <div style={{ marginTop: 16, padding: '20px', background: 'color-mix(in srgb, var(--seal) 4%, transparent)', border: '1px solid var(--rule)', borderRadius: 6 }}>
+                <div style={{ fontSize: 10, color: 'var(--ink-3)', letterSpacing: '0.1em', marginBottom: 12 }}>守護の五行（窮通宝鑑による調候用神）</div>
+                <div style={{ display: 'flex', gap: 20, alignItems: 'start' }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 24 }}>{STEM_ICONS[calculation.yongShen.primary]}</div>
+                      <div style={{ fontSize: 18, color: 'var(--seal)', fontWeight: 'bold' }}>{calculation.yongShen.primary}</div>
+                      <div style={{ fontSize: 9, color: 'var(--ink-3)' }}>第一守護</div>
+                    </div>
+                    {calculation.yongShen.secondary && (
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: 24 }}>{STEM_ICONS[calculation.yongShen.secondary]}</div>
+                        <div style={{ fontSize: 18, color: 'var(--gold)', fontWeight: 'bold' }}>{calculation.yongShen.secondary}</div>
+                        <div style={{ fontSize: 9, color: 'var(--ink-3)' }}>第二守護</div>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ flex: 1, paddingTop: 4 }}>
+                    <p style={{ margin: 0, fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.7 }}>
+                      {calculation.yongShen.text}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
       <div id="section-pillars" style={{ paddingTop: 40, marginTop: 40, borderTop: '1px solid var(--rule)' }}>

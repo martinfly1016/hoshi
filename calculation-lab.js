@@ -1227,6 +1227,87 @@ function analyzePattern(dayStem, monthBranch, revealedStems) {
   };
 }
 
+function getYongShen(dayStem, monthBranch) {
+  const summer = ['巳', '午', '未'];
+  const winter = ['亥', '子', '丑'];
+  const spring = ['寅', '卯', '辰'];
+  const autumn = ['申', '酉', '戌'];
+
+  // Qiong Tong Bao Jian inspired logic
+  const logic = {
+    '甲': {
+      spring: { primary: '丙', secondary: '癸', text: '初春の木はまだ寒く、太陽の光（丙火）を喜びます。適度な潤い（癸水）で根を養うのが理想です。' },
+      summer: { primary: '癸', secondary: '丁', text: '夏の木は乾燥しやすいため、潤い（癸水）が最優先です。生い茂った枝葉を整える力も必要です。' },
+      autumn: { primary: '庚', secondary: '丁', text: '秋の木は収穫の時。斧（庚金）で切り出し、火（丁火）で鍛えることで、社会の役に立つ材木となります。' },
+      winter: { primary: '丙', secondary: '丁', text: '冬の木は凍てついています。何よりも温かさ（丙火）が必要です。太陽が万物を溶かす流れが吉です。' }
+    },
+    '乙': {
+      spring: { primary: '丙', secondary: '癸', text: '春の草花は太陽（丙火）を浴びて輝きます。癸水の潤いがあれば、さらに美しく咲き誇ります。' },
+      summer: { primary: '癸', secondary: '丙', text: '夏の草花は枯れやすいため、癸水による冷却が欠かせません。太陽も程よくあれば成長が促されます。' },
+      autumn: { primary: '癸', secondary: '丙', text: '秋の草花は枯れていく時期。癸水で潤いを保ちつつ、太陽（丙火）で最後の大輪を咲かせるのが吉です。' },
+      winter: { primary: '丙', secondary: '戊', text: '冬の草花は寒さに弱いです。太陽（丙火）で温め、土（戊土）で根元を保護することが命を繋ぎます。' }
+    },
+    '丙': {
+      spring: { primary: '壬', secondary: '甲', text: '春の太陽は強い輝きを持ちます。大河（壬水）に映ることでその美しさが増し、甲木を育てて威光を保ちます。' },
+      summer: { primary: '壬', secondary: '庚', text: '夏の太陽は熱すぎます。壬水での冷却が必須です。庚金があれば水流を助け、バランスが整います。' },
+      autumn: { primary: '壬', secondary: '辛', text: '秋の太陽は西に沈みゆくもの。壬水で輝きを反射させ、辛金でその美しさを際立たせます。' },
+      winter: { primary: '壬', secondary: '戊', text: '冬の太陽は雲に隠れがち。壬水でその存在を証明し、戊土で水流をコントロールして穏やかに照らします。' }
+    },
+    '丁': {
+      spring: { primary: '甲', secondary: '庚', text: '春の灯火は風に弱いです。甲木を薪とし、庚金で薪を割る（劈甲引丁）ことで、消えない情熱の炎となります。' },
+      summer: { primary: '壬', secondary: '庚', text: '夏の灯火は熱気で霞みます。壬水でクールダウンし、庚金で火の力を適度に導くのが吉です。' },
+      autumn: { primary: '甲', secondary: '庚', text: '秋の灯火は薪が必要です。甲木で力を補い、庚金でその質を高めることで、長く輝き続けます。' },
+      winter: { primary: '甲', secondary: '庚', text: '冬の灯火は寒さを追い払う貴重な存在。厚い薪（甲木）をくべ続けることが、運勢を安定させる鍵です。' }
+    },
+    '戊': {
+      spring: { primary: '丙', secondary: '甲', text: '春の山はまだ冷たいです。太陽（丙火）で土を温め、甲木で山を彩ることで、豊かな景色（格）が生まれます。' },
+      summer: { primary: '癸', secondary: '丙', text: '夏の山はカラカラです。慈雨（癸水）で潤すことが最優先。丙火があれば万物の成長を助けます。' },
+      autumn: { primary: '丙', secondary: '癸', text: '秋の山は収穫の時。太陽（丙火）で恵みを照らし、癸水で瑞々しさを保つことが、豊かさに繋がります。' },
+      winter: { primary: '丙', secondary: '甲', text: '冬の山は凍土。太陽（丙火）で凍えを溶かし、甲木で活力を与えることで、春への準備が整います。' }
+    },
+    '己': {
+      spring: { primary: '丙', secondary: '癸', text: '春の田畑は太陽（丙火）と雨（癸水）が命です。これらが揃うことで、作物を育てる力が最大限に発揮されます。' },
+      summer: { primary: '癸', secondary: '丙', text: '夏の田畑は乾燥厳禁。癸水での潤いが第一です。太陽（丙火）があれば光合成を助け、収穫が増えます。' },
+      autumn: { primary: '丙', secondary: '癸', text: '秋の田畑は収穫期。冷え込む前に太陽（丙火）で温め、癸水で土の質を維持するのが理想です。' },
+      winter: { primary: '丙', secondary: '甲', text: '冬の田畑は凍っています。太陽（丙火）で凍土を溶かすことが最優先。甲木があれば土の活力が戻ります。' }
+    },
+    '庚': {
+      spring: { primary: '甲', secondary: '丁', text: '春の鋼はまだ硬さが足りません。丁火で鍛え、甲木を火の燃料にすることで、名刀へと生まれ変わります。' },
+      summer: { primary: '壬', secondary: '癸', text: '夏の鋼は熱で溶けそうになります。壬水や癸水で冷やす（淬火）ことが、強靭な精神を作る鍵です。' },
+      autumn: { primary: '丁', secondary: '甲', text: '秋の鋼は最も鋭い時。丁火で磨き、甲木でその形を整えることで、大きな成果を勝ち取れます。' },
+      winter: { primary: '丁', secondary: '甲', text: '冬の鋼は凍てついて脆いです。丁火で温め、甲木で炎を絶やさないことが、折れない心を作ります。' }
+    },
+    '辛': {
+      spring: { primary: '壬', secondary: '己', text: '春の宝石は汚れやすいです。壬水で洗い流し、己土で台座を整えることで、その真価が発揮されます。' },
+      summer: { primary: '壬', secondary: '己', text: '夏の宝石は熱で曇ります。壬水の冷却と洗浄が必須です。己土があれば適度な影となり輝きを守ります。' },
+      autumn: { primary: '壬', secondary: '甲', text: '秋の宝石は美しさが最高潮。壬水で磨き、甲木でその価値を広めることで、多くの人を魅了します。' },
+      winter: { primary: '丙', secondary: '壬', text: '冬の宝石は冷え切っています。太陽（丙火）で光を当て、壬水で澄んだ輝きを保つのが理想的です。' }
+    },
+    '壬': {
+      spring: { primary: '庚', secondary: '丙', text: '春の大河は源流が細くなりがち。庚金で水源を助け、太陽（丙火）で凍てつきを溶かして、悠々と流れるのが吉です。' },
+      summer: { primary: '壬', secondary: '辛', text: '夏の大河は干上がりやすいため、仲間の水（壬水）や水源（辛金）を喜びます。勢いを保つことが成功への道です。' },
+      autumn: { primary: '戊', secondary: '丁', text: '秋の大河は荒れ狂うことがあります。戊土の堤防で流れを整え、丁火で温かみを添えることで、豊かさをもたらします。' },
+      winter: { primary: '戊', secondary: '丙', text: '冬の大河は凍結の恐れがあります。戊土で形を保ち、太陽（丙火）で水を流し続けることが、停滞を防ぐ鍵です。' }
+    },
+    '癸': {
+      spring: { primary: '庚', secondary: '丙', text: '春の雨露は庚金で源を強め、太陽（丙火）で温まることで、万物を育む慈愛の雨となります。' },
+      summer: { primary: '庚', secondary: '辛', text: '夏の雨露は蒸発しやすいため、水源（庚金・辛金）を極めて重視します。絶え間ない供給が知性を支えます。' },
+      autumn: { primary: '辛', secondary: '丙', text: '秋の雨露は冷たく澄んでいます。辛金でその清らかさを保ち、太陽（丙火）で輝きを添えるのが吉です。' },
+      winter: { primary: '丙', secondary: '戊', text: '冬の雨露は氷や雪になります。太陽（丙火）で温めて水に戻し、戊土でその力を受け止めることが安定に繋がります。' }
+    }
+  };
+
+  const dayLogic = logic[dayStem];
+  if (!dayLogic) return null;
+
+  let seasonKey = 'spring';
+  if (summer.includes(monthBranch)) seasonKey = 'summer';
+  else if (autumn.includes(monthBranch)) seasonKey = 'autumn';
+  else if (winter.includes(monthBranch)) seasonKey = 'winter';
+
+  return dayLogic[seasonKey];
+}
+
 function calculateShichusuimei(input) {
   const location = normalizeInputLocation(input);
   const rawParts = buildInputParts(input);
@@ -1328,6 +1409,7 @@ function calculateShichusuimei(input) {
     },
     strength: analyzeDayMasterStrength(dayStem.toString(), pillars.month.branch, countElements(pillars)),
     pattern: analyzePattern(dayStem.toString(), pillars.month.branch, [pillars.year.stem, pillars.month.stem, pillars.hour.stem]),
+    yongShen: getYongShen(dayStem.toString(), pillars.month.branch),
     luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts, pillars),
   };
 }

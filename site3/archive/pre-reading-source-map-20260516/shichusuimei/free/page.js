@@ -128,25 +128,6 @@ const PILLAR_SEAT_GUIDES = {
   },
 };
 
-const READING_SOURCE_GUIDES = {
-  year: {
-    stem: "外に出る印象",
-    branch: "家系・幼少期の土台",
-  },
-  month: {
-    stem: "社会で見せる役割",
-    branch: "仕事環境・月令",
-  },
-  day: {
-    stem: "日主・本人の核",
-    branch: "婚姻宮・親密な関係",
-  },
-  hour: {
-    stem: "内側の願い・表現",
-    branch: "未来・晩年・子女",
-  },
-};
-
 const TERRAIN_SELF_READING = {
   長生: "始まりと成長の気があり、素直に伸ばすほど力が出ます。",
   沐浴: "感受性と揺らぎが強く、魅力と迷いが同時に出やすい状態です。",
@@ -1407,50 +1388,6 @@ function renderMarriagePalaceDetail(result) {
   `;
 }
 
-function renderReadingSourceMap(result) {
-  return `
-    <div class="soft-panel reading-source-panel">
-      <div class="card-subhead">
-        <div>
-          <p class="card-kicker">読み取り位置</p>
-          <h3>どの柱・どの要素から読んでいるか</h3>
-        </div>
-        <span class="balance-badge">四柱定位</span>
-      </div>
-      <p class="summary-text">詳解では、命式のどの場所を根拠にしているかを先に示します。たとえば婚姻や親密な関係は、日柱の地支、つまり「日支」を配偶者宮・婚姻宮として読んでいます。</p>
-      <div class="source-map-grid">
-        ${PILLAR_KEYS.map((key) => {
-          const pillar = result.pillars[key];
-          const guide = READING_SOURCE_GUIDES[key];
-          const isDay = key === "day";
-          return `
-            <article class="source-pillar-card ${isDay ? "is-primary" : ""}">
-              <div class="source-pillar-label">
-                <strong>${escapeHtml(PILLAR_LABELS[key])}</strong>
-                <span>${escapeHtml(pillar.text)}</span>
-              </div>
-              <div class="source-pillar-stack" aria-label="${escapeHtml(PILLAR_LABELS[key])}の天干と地支">
-                <div class="source-token source-stem">
-                  <span>天干</span>
-                  <strong class="${elementClass(pillar.element.stem)}">${escapeHtml(pillar.stem)}</strong>
-                  <em>${escapeHtml(guide.stem)}</em>
-                </div>
-                <div class="source-token source-branch ${isDay ? "is-highlighted" : ""}">
-                  <span>地支</span>
-                  <strong class="${elementClass(pillar.element.branch)}">${escapeHtml(pillar.branch)}</strong>
-                  <em>${escapeHtml(guide.branch)}</em>
-                  ${isDay ? `<b class="source-badge">婚姻宮</b>` : ""}
-                </div>
-              </div>
-              ${isDay ? `<p class="source-note">この「日柱の地支」が婚姻宮です。下の婚姻宮詳解は、ここを中心に藏干・支神・五行関係を重ねて読んでいます。</p>` : `<p class="source-note">${escapeHtml(PILLAR_SEAT_GUIDES[key].scope)}を読む入口です。</p>`}
-            </article>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
-
 function pillarSeatReading(result, key) {
   const pillar = result.pillars[key];
   const guide = PILLAR_SEAT_GUIDES[key];
@@ -1528,7 +1465,6 @@ function renderInterpretationSection(result) {
     <p class="section-copy">この解説は、排盤結果からルールベースで作る初版文案です。吉凶を断定せず、日本ユーザーに命式の見方を説明する目的で配置しています。</p>
     ${renderInterpretationSummary(result)}
     ${renderBalancingSection(result)}
-    ${renderReadingSourceMap(result)}
     ${renderPillarSeatDetails(result)}
     ${renderMarriagePalaceDetail(result)}
     ${renderLifeThemeCards(result)}

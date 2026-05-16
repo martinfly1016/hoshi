@@ -19,6 +19,12 @@
   --gold: #b89968;
   --paper-grain: 0.06;
 
+  --wood: #58a66c;
+  --fire: #d36a4a;
+  --earth: #c2a56a;
+  --metal: #d6d0bd;
+  --water: #6f9fd5;
+
   /* fonts */
   --f-display: 'Shippori Mincho', 'Noto Serif JP', 'Songti SC', serif;
   --f-body:    'Noto Serif JP', 'Shippori Mincho', 'Songti SC', serif;
@@ -175,6 +181,37 @@ input, select { font-family: inherit; color: inherit; }
 }
 .chrome nav button.theme-toggle { font-size: 14px; letter-spacing: 0; padding: 4px; opacity: 0.8; margin-left: 8px; }
 .chrome nav button.theme-toggle:hover { opacity: 1; }
+
+.sub-nav {
+  display: flex;
+  gap: 8px;
+  padding: 4px;
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  border-radius: 100px;
+  width: fit-content;
+  margin: 32px auto 40px;
+  border: 1px solid var(--rule);
+}
+.sub-nav button {
+  appearance: none; border: 0; background: transparent;
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-family: var(--f-display);
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.1em;
+}
+.sub-nav button.active {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.sub-nav button:hover:not(.active) {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
 
 @media (max-width: 768px) {
   .chrome { padding: 16px 18px; }

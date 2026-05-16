@@ -957,6 +957,23 @@ const BRANCH_HE_6_DESC = {
   '午未': '支合（火）：太陽と月の調和。大きな包容力で、周囲を安心させるエネルギー。',
 };
 
+const BRANCH_HAI = {
+  '子未': '害：妨害や不一致。歯車が噛み合わないような違和感や、健康管理に注意が必要な暗示。',
+  '丑午': '害：感情の対立。表面化しにくい不満や、身内との距離感に配慮が求められる時期。',
+  '寅巳': '害：協力の阻害。親切心が裏目に出やすく、過度な干渉を避けることで安定します。',
+  '卯辰': '害：意思の疎通不良。言葉足らずによる誤解が生じやすく、丁寧な対話を心がける好機。',
+  '申亥': '害：嫉妬や摩擦。成功を妬まれやすく、謙虚な姿勢を保つことで災いを回避できます。',
+  '酉戌': '害：裏切りや不和。信頼していた場所での変化。自分の芯を強く持つことが大切です。',
+};
+
+const BRANCH_PO = {
+  '子酉': '破：散財や変化。物事の完成間際での変更。詰めを甘くせず、最後まで確認を。',
+  '丑辰': '破：内部の亀裂。地道な準備が試される時。基礎を見直し、誠実に対応することが吉。',
+  '卯午': '破：情熱の空回り。急ぎすぎてミスを招きやすい。落ち着いて状況を判断してください。',
+  '未戌': '破：強欲への戒め。利己的になりすぎると関係が壊れる暗示。分かち合う心を。',
+  // Note: Some Po overlap with He or others, commonly listed in Japanese Suimei
+};
+
 function analyzeLuckImpact(luckPillar, natalPillars) {
   const impacts = [];
   const luckBranch = luckPillar.branch;
@@ -992,7 +1009,37 @@ function analyzeLuckImpact(luckPillar, natalPillars) {
     }
   });
 
-  // 3. Three-Combinations (San He) - Check if luck completes a trio in natal
+  // 3. Hai (害)
+  PILLAR_KEYS.forEach(key => {
+    const natal = natalPillars[key];
+    const pair = [luckBranch, natal.branch].sort().join('');
+    if (BRANCH_HAI[pair]) {
+      impacts.push({
+        type: 'hai',
+        pillar: key,
+        label: `${PILLAR_LABELS[key]}と害`,
+        text: BRANCH_HAI[pair],
+        severity: 'mid'
+      });
+    }
+  });
+
+  // 4. Po (破)
+  PILLAR_KEYS.forEach(key => {
+    const natal = natalPillars[key];
+    const pair = [luckBranch, natal.branch].sort().join('');
+    if (BRANCH_PO[pair]) {
+      impacts.push({
+        type: 'po',
+        pillar: key,
+        label: `${PILLAR_LABELS[key]}と破`,
+        text: BRANCH_PO[pair],
+        severity: 'low'
+      });
+    }
+  });
+
+  // 5. Three-Combinations (San He) - Check if luck completes a trio in natal
   BRANCH_HE_3.forEach(trio => {
     if (trio.branches.includes(luckBranch)) {
       const countInNatal = trio.branches.filter(b => natalBranches.includes(b)).length;
@@ -1253,33 +1300,24 @@ function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
   const idx = wuxingCycle.indexOf(dayStem);
   const supportElements = [wuxingCycle[(idx - 1 + 5) % 5], dayStem]; // Mother + Same
   
-  // 1. Seasonality (De Ling)
-  const seasons = {
-    '木': ['寅', '卯', '辰'],
-    '火': ['巳', '午', '未'],
-    '金': ['申', '酉', '戌'],
-    '水': ['亥', '子', '丑'],
-    '土': ['辰', '戌', '丑', '未']
-  };
-  const isDeLing = seasons[dayStem].includes(monthBranch);
-  
-  // 2. Peer/Seal count (De Zhu)
-  const supportCount = supportElements.reduce((sum, el) => sum + (elementCounts[el] || 0), 0);
-  
-  let score = (isDeLing ? 3 : 0) + supportCount;
+  const totalPoints = Object.values(elementCounts).reduce((a, b) => a + b, 0);
+  const supportPoints = supportElements.reduce((sum, el) => sum + (elementCounts[el] || 0), 0);
+  const ratio = supportPoints / totalPoints;
+
   let status = '中和';
-  let text = '中和：五行のバランスが取れた命局です。環境に左右されすぎず、安定した歩みが可能です。';
+  let text = '中和：五行のバランスが取れた命局です。極端な偏りがなく、環境の変化に柔軟に対応できる安定感を持っています。';
   
-  if (score >= 6) {
+  if (ratio >= 0.65) {
     status = '身強';
-    text = '身強：自己のエネルギーが強く、自力で運を切り拓く力があります。強い目標を持つことで輝きます。';
-  } else if (score <= 3) {
+    text = '身強：自己のエネルギーに溢れ、主体的に運命を切り拓く力強い命局です。強い意志を持ち、リーダーシップを発揮する場面で輝きます。';
+  } else if (ratio <= 0.35) {
     status = '身弱';
-    text = '身弱：周囲の環境や人の影響を繊細に受け取る命局です。他者の支援や環境を整えることで本領を発揮します。';
+    text = '身弱：繊細な感受性を持ち、周囲の支援や環境を活かすことで本領を発揮する命局です。協調性を大切にし、チームで成果を上げるのに適しています。';
   }
   
-  return { status, text, score };
+  return { status, text, ratio };
 }
+
 
 function analyzePattern(dayStem, monthBranch, revealedStems) {
   // Main Qi of each branch

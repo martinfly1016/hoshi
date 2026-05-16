@@ -1170,6 +1170,63 @@ function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
   return { status, text, score };
 }
 
+function analyzePattern(dayStem, monthBranch, revealedStems) {
+  // Main Qi of each branch
+  const mainQiMap = {
+    '子': '癸', '丑': '己', '寅': '甲', '卯': '乙', '辰': '戊', '巳': '丙',
+    '午': '丁', '未': '己', '申': '庚', '酉': '辛', '戌': '戊', '亥': '壬'
+  };
+  const mainStem = mainQiMap[monthBranch];
+  
+  // Determine Ten God of that main stem vs dayStem
+  // Using simplified logic here as we can't easily call the API outside the main function
+  const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+  const elements = ['木','木','火','火','土','土','金','金','水','水'];
+  const yinyang = ['陽','陰','陽','陰','陽','陰','陽','陰','陽','陰'];
+  
+  const idxDay = stems.indexOf(dayStem);
+  const idxMain = stems.indexOf(mainStem);
+  
+  const elDay = elements[idxDay];
+  const elMain = elements[idxMain];
+  const yyDay = yinyang[idxDay];
+  const yyMain = yinyang[idxMain];
+  
+  const wuxingCycle = ['木', '火', '土', '金', '水'];
+  const diff = (wuxingCycle.indexOf(elMain) - wuxingCycle.indexOf(elDay) + 5) % 5;
+  const isSamePolarity = yyDay === yyMain;
+  
+  let god = '';
+  if (diff === 0) god = isSamePolarity ? '比肩' : '劫財';
+  if (diff === 1) god = isSamePolarity ? '食神' : '傷官';
+  if (diff === 2) god = isSamePolarity ? '偏財' : '正財';
+  if (diff === 3) god = isSamePolarity ? '七殺' : '正官';
+  if (diff === 4) god = isSamePolarity ? '偏印' : '正印';
+
+  const isRevealed = revealedStems.includes(mainStem);
+  
+  const DESCS = {
+    '正官': '正官格：品格と規律を重んじ、社会的な信頼を得て発展する王道の格局です。',
+    '七殺': '七殺格：困難を突破する力と果敢な決断力を持ち、カリスマ性を発揮する格局です。',
+    '正財': '正財格：着実な努力と誠実な管理能力で、安定した富と地位を築く格局です。',
+    '偏財': '偏財格：機転が利き、変化する流れやチャンスを捉えて大きく飛躍する格局です。',
+    '食神': '食神格：衣食住や感性に恵まれ、ゆとりある表現や才能で人を惹きつける格局です。',
+    '傷官': '傷官格：卓越した知性と美意識を持ち、既存の枠を超えた創造性を発揮する格局です。',
+    '正印': '正印格：学習能力と慈愛に溢れ、知識や名誉を通じて周囲に守られ発展する格局です。',
+    '偏印': '偏印格：鋭い直感と独自の視点を持ち、専門的な技術や神秘的な分野で輝く格局です。',
+    '建禄': '建禄格：自立心が非常に強く、自らの実力で道を切り拓くバイタリティ溢れる格局です。',
+    '月刃': '月刃格：不屈の精神と強い意志を持ち、逆境であればあるほど力を発揮する格局です。'
+  };
+
+  let finalName = god === '比肩' ? '建禄' : (god === '劫財' ? '月刃' : god);
+  
+  return {
+    name: `${finalName}格`,
+    revealed: isRevealed,
+    text: DESCS[finalName] || '標準的な命式構成です。'
+  };
+}
+
 function calculateShichusuimei(input) {
   const location = normalizeInputLocation(input);
   const rawParts = buildInputParts(input);
@@ -1270,6 +1327,7 @@ function calculateShichusuimei(input) {
       counts: countElements(pillars),
     },
     strength: analyzeDayMasterStrength(dayStem.toString(), pillars.month.branch, countElements(pillars)),
+    pattern: analyzePattern(dayStem.toString(), pillars.month.branch, [pillars.year.stem, pillars.month.stem, pillars.hour.stem]),
     luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts, pillars),
   };
 }

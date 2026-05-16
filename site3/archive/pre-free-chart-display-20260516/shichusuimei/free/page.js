@@ -191,7 +191,7 @@ const ROW_GUIDES = {
     icon: "空",
     hint: "作用が弱まりやすい支",
   },
-  地勢: {
+  地势: {
     icon: "勢",
     hint: "日主から見た十二運",
   },
@@ -1059,12 +1059,7 @@ function renderTraditionalChart(result) {
     <div class="bazi-board">
       <div class="bazi-row bazi-head">
         <div class="bazi-label"><span class="bazi-head-label">項目</span></div>
-        ${PILLAR_KEYS.map((key) => `
-          <div class="bazi-cell ${key === "day" ? "is-day" : ""}">
-            <span class="pillar-title">${escapeHtml(PILLAR_LABELS[key])}</span>
-            <strong class="pillar-value">${escapeHtml(result.pillars[key].text)}</strong>
-          </div>
-        `).join("")}
+        ${PILLAR_KEYS.map((key) => `<div class="bazi-cell">${PILLAR_LABELS[key]}</div>`).join("")}
       </div>
       ${renderTraditionalRow(result, "干神", "bazi-god", (_pillar, key) => escapeHtml(result.tenGods[key]))}
       ${renderTraditionalRow(result, "天干", "bazi-stem", (pillar) => `<span class="${elementClass(pillar.element.stem)}">${escapeHtml(pillar.stem)}</span>`)}
@@ -1073,10 +1068,10 @@ function renderTraditionalChart(result) {
       ${renderTraditionalRow(result, "支神", "bazi-detail", (pillar) => renderHiddenGodCell(pillar))}
       ${renderTraditionalRow(result, "纳音", "bazi-flat", (pillar) => `<span class="${elementClass((pillar.naYin || "").slice(-1))}">${escapeHtml(pillar.naYin || "—")}</span>`)}
       ${renderTraditionalRow(result, "空亡", "bazi-flat", (pillar) => escapeHtml((pillar.voidBranches || []).join("") || "—"))}
-      ${renderTraditionalRow(result, "地勢", "bazi-flat", (pillar) => escapeHtml(pillar.terrainByDay || "—"))}
+      ${renderTraditionalRow(result, "地势", "bazi-flat", (pillar) => escapeHtml(pillar.terrainByDay || "—"))}
       ${renderTraditionalRow(result, "自坐", "bazi-flat", (pillar) => escapeHtml(pillar.terrainSelf || "—"))}
+      ${renderTraditionalRow(result, "神煞", "bazi-shensha", () => `<span class="muted">—</span>`)}
     </div>
-    <p class="bazi-scroll-hint">横にスクロールして、年柱・月柱・日柱・時柱を確認できます</p>
   `;
 }
 
@@ -1798,7 +1793,8 @@ function renderChartSection(result) {
         <h2>命式盤をそのまま確認する</h2>
       </div>
     </div>
-    <p class="section-copy">四柱は横並びの表で確認します。縦の行は読み取り項目、横の列は年柱・月柱・日柱・時柱です。</p>
+    <p class="section-copy">まずは四柱そのものを確認し、そのあとに納音・空亡・地勢・自坐の補足を見られるようにしています。</p>
+    ${renderPillarCards(result)}
     <div class="chart-shell">
       ${renderTraditionalChart(result)}
     </div>

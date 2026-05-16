@@ -291,11 +291,12 @@ input, select { font-family: inherit; color: inherit; }
   margin-top: 40px;
   padding: 18px 28px 18px 32px;
   border: 1px solid var(--rule-strong);
-  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--f-display);
   font-size: 16px; letter-spacing: 0.4em;
   position: relative;
+  z-index: 10;
   transition: background 0.5s ease, border-color 0.5s ease, transform 0.5s ease;
 }
 .hero-cta:hover {

@@ -1180,14 +1180,24 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune }) {
             const pillar = calculation.pillars[key];
             const shenShaList = getShenSha(pillar.branch, calculation.pillars.day.stem, calculation.pillars.year.branch, calculation.pillars.day.branch);
             const isVoid = pillar.voidBranches?.includes(pillar.branch);
+            const pillarRole = {
+              year: '先祖・環境',
+              month: '社会・仕事',
+              day: '自分・家庭',
+              hour: '未来・子供'
+            }[key];
+
             return (
             <div key={key} 
               className={`pillar ${key === 'day' ? 'is-day' : ''} ${activePillar === key ? 'is-active-card' : ''}`}
               onClick={() => setActivePillar(activePillar === key ? null : key)}
               style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}>
               <div className="lbl">
-                {PILLAR_LABELS[key]}
-                {isVoid && <span style={{ marginLeft: 6, color: 'var(--seal)', fontSize: 9 }}>[空亡]</span>}
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
+                  <span>{PILLAR_LABELS[key]}</span>
+                  {isVoid && <span style={{ color: 'var(--seal)', fontSize: 9 }}>[空亡]</span>}
+                </div>
+                <div style={{ fontSize: 9, opacity: 0.6, letterSpacing: 0, marginTop: 2 }}>{pillarRole}</div>
               </div>
               <div className="gz">
                 <span className={`top ${elementClass(pillar.element.stem)}`}>

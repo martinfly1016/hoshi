@@ -807,10 +807,13 @@ function WuxingDiagram({ dayElement, elementCounts }) {
 
 function FortuneView({ calculation, onBack }) {
   const luck = calculation.luckCycles || {};
-  const decade = luck.decadeFortunes || [];
+  const decade = luck.decadeFortunes?.items || [];
   const currentAnnual = currentAnnualFortune(calculation);
-  const currentDecade = currentDecadeFortune(decade, luck.target?.year || currentAnnual?.year);
+  const currentDecade = currentDecadeFortune(luck.decadeFortunes, luck.target?.year || currentAnnual?.year);
   const currentDecadeTheme = decadeTheme(currentDecade);
+
+  const monthly = luck.monthlyFortunes || [];
+  const daily = luck.dailyFortunes || [];
 
   const scrollTo = (sectionId) => {
     const el = document.getElementById(sectionId);
@@ -827,8 +830,9 @@ function FortuneView({ calculation, onBack }) {
         <div className="label">FORTUNE · CYCLES</div>
         <div className="seal-stack">
           <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-summary')}><span className="num">壹</span>　現在の大運テーマ</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-list')}><span className="num">貳</span>　生涯の大運表</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-annual-list')}><span className="num">參</span>　直近の流年表</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-current-luck')}><span className="num">貳</span>　今日（年・月・日）</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-decade-list')}><span className="num">參</span>　生涯の大運表</div>
+          <div style={{ cursor: 'pointer' }} onClick={() => scrollTo('section-annual-list')}><span className="num">肆</span>　直近の流年表</div>
           <div style={{ marginTop: 24 }}>
              <button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>
                ← 命式へ戻る
@@ -859,11 +863,44 @@ function FortuneView({ calculation, onBack }) {
                 <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.money}</p>
               </article>
               <article style={{ border: '1px solid var(--rule)', background: 'var(--bg-paper)', padding: 20, borderRadius: 6 }}>
-                <strong style={{ display: 'block', color: 'var(--accent)', marginBottom: 8, fontSize: 13 }}>◆ 対人・恋愛</strong>
+                <strong style={{ display: 'block', color: 'var(--accent)', marginBottom: 8, fontSize: 13 }}>◆ 对人・恋爱</strong>
                 <p style={{ margin: 0, fontSize: 13, lineHeight: 1.8, color: 'var(--ink-2)' }}>{currentDecadeTheme.love}</p>
               </article>
             </div>
           )}
+
+          <div id="section-current-luck" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+            <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>
+              今日の巡り（流年・流月・流日）
+            </div>
+            <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.8, marginBottom: 24 }}>
+              大運という大きな季節の流れの中で、今日この瞬間に巡っている「気」の組み合わせです。
+            </p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+              {[
+                { label: '今年の運気 (流年)', item: currentAnnual, color: 'var(--accent)' },
+                { label: '今月の運気 (流月)', item: monthly.find(m => {
+                  const now = new Date();
+                  return m.solarStartDate.includes(`-${String(now.getMonth() + 1).padStart(2, '0')}-`);
+                }) || monthly[0], color: 'var(--gold)' },
+                { label: '今日の運気 (流日)', item: daily[0], color: 'var(--seal)' }
+              ].map(luckItem => (
+                <div key={luckItem.label} style={{ background: 'var(--bg-paper)', border: `1px solid var(--rule)`, borderRadius: 8, padding: '20px 12px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 10, color: 'var(--ink-3)', marginBottom: 12, letterSpacing: '0.1em' }}>{luckItem.label}</div>
+                  <div style={{ fontSize: 28, fontFamily: 'var(--f-display)', color: 'var(--ink)', marginBottom: 8 }}>
+                    {luckItem.item?.pillar?.text}
+                  </div>
+                  <div style={{ fontSize: 12, color: luckItem.color, fontWeight: 'bold' }}>
+                    {luckItem.item?.pillar?.heavenlyTenGod}
+                  </div>
+                  <div style={{ fontSize: 10, color: 'var(--ink-3)', marginTop: 8 }}>
+                    {luckItem.item?.year || luckItem.item?.date || ''}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <div id="section-decade-list" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ fontFamily: 'var(--f-display)', fontSize: 16, letterSpacing: '0.2em', color: 'var(--ink)', marginBottom: 12, textAlign: 'center' }}>

@@ -1252,7 +1252,6 @@ input, select { font-family: inherit; color: inherit; }
   padding-top: 28px;
   min-width: 0;
   max-width: 100%;
-  scroll-margin-top: 104px;
 }
 .result-chart-section {
   border-top: 0;
@@ -1273,7 +1272,6 @@ input, select { font-family: inherit; color: inherit; }
   color: var(--seal);
   font-size: 13px;
   letter-spacing: 0.5em;
-  line-height: 1.7;
   margin-bottom: 16px;
   opacity: 0.8;
 }
@@ -2314,7 +2312,6 @@ input, select { font-family: inherit; color: inherit; }
     grid-template-columns: 1fr;
   }
   .result-wide { overflow-x: visible; }
-  .result-wide { scroll-margin-top: 132px; }
   .backend-panel-head { align-items: flex-start; flex-direction: column; }
   .bazi-scroll-hint { display: block; }
   .bazi-structure-section {

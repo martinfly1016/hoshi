@@ -1078,14 +1078,15 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="return-action-row">
-          <button className="inline-return-btn edit" onClick={onBack}>入力内容を修正する</button>
-        </div>
         <div className="result-card" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>まずは命盤そのものを素早く確認できます。詳しい読み解きは「命式詳細」と「大運・流年」に分けています。</p>
+            <button className="result-edit-btn" onClick={onBack}>
+              入力内容を修正する
+              <span>戻って再計算</span>
+            </button>
           </div>
           <BasicInfoPanel name={name} calculation={calculation} profile={profile} />
           

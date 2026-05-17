@@ -1081,7 +1081,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
         <div className="return-action-row">
           <button className="inline-return-btn edit" onClick={onBack}>入力内容を修正する</button>
         </div>
-        <div className="result-card" data-card-label="占断の始まり" style={{ marginTop: 0 }}>
+        <div className="result-card" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
@@ -1142,7 +1142,7 @@ function InsightView({ calculation, profile, onBack, onEditInput }) {
           <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
         </div>
-        <div className="result-card" data-card-label="詳解の鑑定" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
+        <div className="result-card" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div className="summary-kicker">{currentTopic.ja}の詳解</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
           <div className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2 }}>{content.p2}</div></div>
@@ -1186,7 +1186,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput }) {
           <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
         </div>
-        <div className="result-card" data-card-label="運勢の流れ" style={{ marginTop: 0 }}>
+        <div className="result-card" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
             <div className="summary-kicker">大運（10年運）の解読</div><h2 style={{ fontSize: 24 }}>{currentDecadeTheme?.title}</h2><p>{currentDecadeTheme?.intro}</p>
             <div className="result-wide visual-block" style={{ marginTop: 32, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>

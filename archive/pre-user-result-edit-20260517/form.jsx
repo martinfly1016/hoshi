@@ -79,18 +79,17 @@ function FormField({ num, ja, romaji, hint, children }) {
   );
 }
 
-function Rite({ onBack, onSubmitDone, initialResult }) {
-  const initialForm = initialResult?.form || {};
-  const [name, setName] = React.useState(initialForm.name || '');
-  const [gender, setGender] = React.useState(initialForm.gender || 'gen');
-  const [calendar, setCalendar] = React.useState(initialForm.calendar || 'seireki'); 
-  const [year, setYear]   = React.useState(initialForm.year || '');
-  const [month, setMonth] = React.useState(initialForm.month || '');
-  const [day, setDay]     = React.useState(initialForm.day || '');
-  const [shi, setShi] = React.useState(initialForm.shi || '');
-  const [birthTime, setBirthTime] = React.useState(initialForm.birthTime || '12:00');
-  const [unsure, setUnsure] = React.useState(initialForm.unsure || false);
-  const [locationId, setLocationId] = React.useState(initialForm.locationId || initialResult?.profile?.location?.id || 'tokyo');
+function Rite({ onBack, onSubmitDone }) {
+  const [name, setName] = React.useState('');
+  const [gender, setGender] = React.useState('gen');
+  const [calendar, setCalendar] = React.useState('seireki'); 
+  const [year, setYear]   = React.useState('');
+  const [month, setMonth] = React.useState('');
+  const [day, setDay]     = React.useState('');
+  const [shi, setShi] = React.useState('');
+  const [birthTime, setBirthTime] = React.useState('12:00');
+  const [unsure, setUnsure] = React.useState(false);
+  const [locationId, setLocationId] = React.useState('tokyo');
   const [city, setCity] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [done, setDone] = React.useState(false);
@@ -133,8 +132,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           gender: gender === 'yang' ? 'male' : gender === 'yin' ? 'female' : 'unspecified',
         };
         const calculated = api.calculateShichusuimei(input);
-        const form = { name, gender, calendar, year, month, day, shi, birthTime, unsure, locationId };
-        const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, shi, unsure }, form };
+        const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, shi, unsure } };
         setResult(res);
         setDone(true);
         if (onSubmitDone) onSubmitDone(res);
@@ -1083,10 +1081,6 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>まずは命盤そのものを素早く確認できます。詳しい読み解きは「命式詳細」と「大運・流年」に分けています。</p>
-            <button className="result-edit-btn" onClick={onBack}>
-              入力内容を修正する
-              <span>戻って再計算</span>
-            </button>
           </div>
           <BasicInfoPanel name={name} calculation={calculation} profile={profile} />
           

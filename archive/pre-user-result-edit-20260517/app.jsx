@@ -149,7 +149,6 @@ function App() {
       <main className="page">
         {page === 'hero' && <Hero onEnter={() => goto('rite')} />}
         {page === 'rite' && <Rite onBack={() => goto('hero')}
-          initialResult={calcResult}
           onSubmitDone={(res) => {
             setCalcResult(res);
             goto('result');

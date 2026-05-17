@@ -192,7 +192,7 @@ function Rite({ onBack, onSubmitDone }) {
         </FormField>
 
         <FormField num="貳 / 一" ja="生年月日" romaji="SEINENGAPPI"
-          hint="誕生日の暦（西暦または和暦）を選択し、入力してください">
+          hint="誕生日の暦（西暦または旧暦）を選択し、入力してください">
           <div className="toggle-row">
             {['seireki','showa','heisei','reiwa'].map(c => (
                <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>

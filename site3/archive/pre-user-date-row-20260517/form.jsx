@@ -200,7 +200,7 @@ function Rite({ onBack, onSubmitDone }) {
                </button>
             ))}
           </div>
-          <div className="input-row date-row">
+          <div className="input-row">
             <div className="input-line with-mark" data-mark="年 / Y">
               <select value={year} onChange={e => setYear(e.target.value)}>
                 <option value="" disabled>--</option>

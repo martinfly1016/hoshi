@@ -814,7 +814,7 @@ input, select { font-family: inherit; color: inherit; }
 }
 .result-card > * { min-width: 0; }
 .result-card::before {
-  content: attr(data-card-label);
+  content: '占断之始';
   position: absolute; top: -10px; left: 32px;
   background: var(--bg);
   padding: 0 12px;

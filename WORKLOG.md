@@ -52,7 +52,7 @@
 | v0.3.22 | 2026-05-17 18:27 JST | 用户首页 | `/index.html` 结果页手机定位 | 修正手机结果页跳到「基本情報」时顶部小标题容易被固定导航/浏览器顶部裁切的问题；提高结果页锚点滚动预留距离，并给 `summary-kicker` 增加稳定行高 | `/latest.html` / `/index.html?v=20260517-user-result-anchor-1` | `/archive/pre-user-result-anchor-20260517/index.html?v=20260517-user-calendar-copy-1` | main `9a37b47` / gh-pages `fa07c09` |
 | v0.3.23 | 2026-05-17 18:33 JST | 用户首页 | `/index.html` 命式页返回编辑 | 在命式结果页顶部新增「入力内容を修正する」按钮，手机端也能明显返回输入页；返回时保留刚才输入的姓名、性别、生年月日、时辰和出生地，方便直接改错后重新计算 | `/latest.html` / `/index.html?v=20260517-user-result-edit-1` | `/archive/pre-user-result-edit-20260517/index.html?v=20260517-user-result-anchor-1` | main `388027d` / gh-pages `b9a36ba` |
 | v0.3.24 | 2026-05-17 18:40 JST | 用户首页 | `/index.html` 详解/运势页返回编辑 | 将「入力内容を修正する」补到命式詳細和大運・流年页顶部，让用户在深层页面也能一步回到预填输入页；保留「命式へ戻る」作为返回结果首页的路径 | `/latest.html` / `/index.html?v=20260517-user-deep-edit-1` | `/archive/pre-user-deep-edit-20260517/index.html?v=20260517-user-result-edit-1` | main `51dd9da` / gh-pages `682d615` |
-| v0.3.25 | 2026-05-17 18:45 JST | 用户首页 | `/index.html` 命式页顶部返回编辑 | 将命式页的「入力内容を修正する」移动到结果卡片上方，和命式詳細/大運・流年页顶部操作条保持一致；保留返回后预填表单的行为 | `/latest.html` / `/index.html?v=20260517-user-meishiki-top-edit-1` | `/archive/pre-user-meishiki-top-edit-20260517/index.html?v=20260517-user-deep-edit-1` | pending |
+| v0.3.25 | 2026-05-17 18:45 JST | 用户首页 | `/index.html` 命式页顶部返回编辑 | 将命式页的「入力内容を修正する」移动到结果卡片上方，和命式詳細/大運・流年页顶部操作条保持一致；保留返回后预填表单的行为 | `/latest.html` / `/index.html?v=20260517-user-meishiki-top-edit-1` | `/archive/pre-user-meishiki-top-edit-20260517/index.html?v=20260517-user-deep-edit-1` | main `07b68b3` / gh-pages `20c0dc7` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

@@ -1294,32 +1294,6 @@ input, select { font-family: inherit; color: inherit; }
   line-height: 2;
   letter-spacing: 0.08em;
 }
-.result-edit-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
-  border: 1px solid var(--rule-strong);
-  background: color-mix(in srgb, var(--ink) 5%, transparent);
-  color: var(--ink);
-  padding: 11px 14px;
-  font-family: var(--f-display);
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-align: left;
-}
-.result-edit-btn::before {
-  content: '←';
-  font-family: var(--f-mono);
-  color: var(--gold);
-  letter-spacing: 0;
-}
-.result-edit-btn span {
-  color: var(--ink-3);
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-}
 .basic-info-panel {
   margin-top: 24px;
   border: 1px solid var(--rule);
@@ -2298,10 +2272,6 @@ input, select { font-family: inherit; color: inherit; }
   .result-card::before {
     left: 18px;
     letter-spacing: 0.24em;
-  }
-  .result-edit-btn {
-    width: 100%;
-    justify-content: space-between;
   }
   .pillars { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
   .pillar { padding: 16px 4px; min-height: 160px; }

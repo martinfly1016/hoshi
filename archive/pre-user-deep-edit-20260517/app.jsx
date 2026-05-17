@@ -170,7 +170,6 @@ function App() {
             calculation={calcResult.chart}
             profile={calcResult.profile}
             onBack={() => goto('result')}
-            onEditInput={() => goto('rite')}
           />
         )}
         {page === 'fortune' && calcResult && (
@@ -178,7 +177,6 @@ function App() {
             calculation={calcResult.chart}
             profile={calcResult.profile}
             onBack={() => goto('result')}
-            onEditInput={() => goto('rite')}
           />
         )}
       </main>

@@ -2021,20 +2021,6 @@ input, select { font-family: inherit; color: inherit; }
   letter-spacing: 0.14em;
   cursor: pointer;
 }
-.return-action-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-.return-action-row .inline-return-btn {
-  margin: 0;
-}
-.inline-return-btn.edit {
-  border-color: var(--rule-strong);
-  color: var(--ink);
-  background: color-mix(in srgb, var(--ink) 6%, transparent);
-}
 
 .bazi-board-lite {
   border: 1px solid var(--rule);
@@ -2316,14 +2302,6 @@ input, select { font-family: inherit; color: inherit; }
   .result-edit-btn {
     width: 100%;
     justify-content: space-between;
-  }
-  .return-action-row {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-  .return-action-row .inline-return-btn {
-    width: 100%;
-    text-align: left;
   }
   .pillars { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
   .pillar { padding: 16px 4px; min-height: 160px; }

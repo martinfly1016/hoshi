@@ -50,7 +50,7 @@
 | v0.3.20 | 2026-05-17 18:03 JST | 用户首页 | `/index.html` 手机表单 | 修正手机宽度下「生年月日」年月日输入被拆成两行的问题；新增生日输入专用 `date-row` 样式，让年月日稳定保持同一行，并更新 `/latest.html` 到新缓存版本 | `/latest.html` / `/index.html?v=20260517-user-date-row-1` | `/archive/pre-user-date-row-20260517/index.html?v=20260516-user-baseonly-2` | main `1ee0cde` / gh-pages `148e559` |
 | v0.3.21 | 2026-05-17 18:08 JST | 用户首页 | `/index.html` 生年月日文案 | 修正表单说明术语：昭和/平成/令和属于和暦，不是旧暦；将「西暦または旧暦」改为「西暦または和暦」，并更新 `/latest.html` 到新缓存版本 | `/latest.html` / `/index.html?v=20260517-user-calendar-copy-1` | `/archive/pre-user-calendar-copy-20260517/index.html?v=20260517-user-date-row-1` | main `47b08ec` / gh-pages `497e5a5` |
 | v0.3.22 | 2026-05-17 18:27 JST | 用户首页 | `/index.html` 结果页手机定位 | 修正手机结果页跳到「基本情報」时顶部小标题容易被固定导航/浏览器顶部裁切的问题；提高结果页锚点滚动预留距离，并给 `summary-kicker` 增加稳定行高 | `/latest.html` / `/index.html?v=20260517-user-result-anchor-1` | `/archive/pre-user-result-anchor-20260517/index.html?v=20260517-user-calendar-copy-1` | main `9a37b47` / gh-pages `fa07c09` |
-| v0.3.23 | 2026-05-17 18:33 JST | 用户首页 | `/index.html` 命式页返回编辑 | 在命式结果页顶部新增「入力内容を修正する」按钮，手机端也能明显返回输入页；返回时保留刚才输入的姓名、性别、生年月日、时辰和出生地，方便直接改错后重新计算 | `/latest.html` / `/index.html?v=20260517-user-result-edit-1` | `/archive/pre-user-result-edit-20260517/index.html?v=20260517-user-result-anchor-1` | pending |
+| v0.3.23 | 2026-05-17 18:33 JST | 用户首页 | `/index.html` 命式页返回编辑 | 在命式结果页顶部新增「入力内容を修正する」按钮，手机端也能明显返回输入页；返回时保留刚才输入的姓名、性别、生年月日、时辰和出生地，方便直接改错后重新计算 | `/latest.html` / `/index.html?v=20260517-user-result-edit-1` | `/archive/pre-user-result-edit-20260517/index.html?v=20260517-user-result-anchor-1` | main `388027d` / gh-pages `b9a36ba` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

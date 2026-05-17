@@ -1112,7 +1112,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   );
 }
 
-function InsightView({ calculation, profile, onBack, onEditInput }) {
+function InsightView({ calculation, profile, onBack }) {
   const [topic, setTopic] = React.useState('personality');
   const primaryGod = collectTenGods(calculation)[0]?.[0] || '比肩';
   const dayStem = calculation.dayMaster;
@@ -1139,10 +1139,7 @@ function InsightView({ calculation, profile, onBack, onEditInput }) {
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="return-action-row">
-          <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
-          <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
-        </div>
+        <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
         <div className="result-card" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div className="summary-kicker">{currentTopic.ja}の詳解</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
@@ -1156,7 +1153,7 @@ function InsightView({ calculation, profile, onBack, onEditInput }) {
   );
 }
 
-function FortuneView({ calculation, profile, onBack, onEditInput }) {
+function FortuneView({ calculation, profile, onBack }) {
   const luck = calculation.luckCycles || {};
   const decade = luck.decadeFortunes?.items || [];
   const currentAnnual = currentAnnualFortune(calculation);
@@ -1183,10 +1180,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput }) {
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="return-action-row">
-          <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
-          <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
-        </div>
+        <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
         <div className="result-card" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
             <div className="summary-kicker">大運（10年運）の解読</div><h2 style={{ fontSize: 24 }}>{currentDecadeTheme?.title}</h2><p>{currentDecadeTheme?.intro}</p>

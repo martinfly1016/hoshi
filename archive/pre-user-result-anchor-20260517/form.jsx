@@ -1051,10 +1051,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   const readingTags = React.useMemo(() => buildUserReadingTags(calculation, collectTenGods(calculation)), [calculation]);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
-    if (el) {
-      const offset = window.matchMedia('(max-width: 768px)').matches ? 132 : 88;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-    }
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
   };
   const handleTagNavigate = (action) => {
     if (action === 'fortune') {
@@ -1157,10 +1154,7 @@ function FortuneView({ calculation, profile, onBack }) {
   const daily = luck.dailyFortunes || [];
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
-    if (el) {
-      const offset = window.matchMedia('(max-width: 768px)').matches ? 132 : 88;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-    }
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
   };
   return (
     <section className="rite" data-screen-label="04 星辰譜">

@@ -13,43 +13,6 @@ const FALLBACK_LOCATIONS = [
   { id: 'hokkaido', label: '日本 / 北海道 札幌市', timezone: 'Asia/Tokyo', utcOffset: 9, latitude: 43.0642, longitude: 141.3469 },
 ];
 
-const REGION_OPTIONS = [
-  { key: 'jp', label: '日本' },
-  { key: 'cn', label: '中国・香港・台湾' },
-  { key: 'us', label: '米国' },
-  { key: 'world', label: 'その他海外' },
-];
-
-const WORLD_LOCATIONS = [
-  { id: 'cn-beijing', country: 'cn', label: '中国 / 北京市', city: '北京市', region: '北京市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.9042, longitude: 116.4074, keywords: '北京 beijing' },
-  { id: 'cn-shanghai', country: 'cn', label: '中国 / 上海市', city: '上海市', region: '上海市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 31.2304, longitude: 121.4737, keywords: '上海 shanghai' },
-  { id: 'cn-guangzhou', country: 'cn', label: '中国 / 広東省 広州市', city: '広州市', region: '広東省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 23.1291, longitude: 113.2644, keywords: '广东 廣東 広東 广州 廣州 guangzhou canton' },
-  { id: 'cn-shenzhen', country: 'cn', label: '中国 / 広東省 深圳市', city: '深圳市', region: '広東省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 22.5431, longitude: 114.0579, keywords: '广东 廣東 広東 深圳 shenzhen' },
-  { id: 'cn-hangzhou', country: 'cn', label: '中国 / 浙江省 杭州市', city: '杭州市', region: '浙江省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 30.2741, longitude: 120.1551, keywords: '浙江 杭州 hangzhou' },
-  { id: 'cn-nanjing', country: 'cn', label: '中国 / 江蘇省 南京市', city: '南京市', region: '江蘇省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 32.0603, longitude: 118.7969, keywords: '江苏 江蘇 南京 nanjing' },
-  { id: 'cn-chengdu', country: 'cn', label: '中国 / 四川省 成都市', city: '成都市', region: '四川省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 30.5728, longitude: 104.0668, keywords: '四川 成都 chengdu' },
-  { id: 'cn-chongqing', country: 'cn', label: '中国 / 重慶市', city: '重慶市', region: '重慶市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 29.563, longitude: 106.5516, keywords: '重庆 重慶 chongqing' },
-  { id: 'cn-wuhan', country: 'cn', label: '中国 / 湖北省 武漢市', city: '武漢市', region: '湖北省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 30.5928, longitude: 114.3055, keywords: '湖北 武汉 武漢 wuhan' },
-  { id: 'cn-xian', country: 'cn', label: '中国 / 陝西省 西安市', city: '西安市', region: '陝西省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 34.3416, longitude: 108.9398, keywords: '陕西 陝西 西安 xian xi an' },
-  { id: 'cn-tianjin', country: 'cn', label: '中国 / 天津市', city: '天津市', region: '天津市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.3434, longitude: 117.3616, keywords: '天津 tianjin' },
-  { id: 'cn-hong-kong', country: 'cn', label: '中国 / 香港', city: '香港', region: '香港', timezone: 'Asia/Hong_Kong', utcOffset: 8, latitude: 22.3193, longitude: 114.1694, keywords: '香港 hong kong hk' },
-  { id: 'cn-taipei', country: 'cn', label: '台湾 / 台北市', city: '台北市', region: '台湾', timezone: 'Asia/Taipei', utcOffset: 8, latitude: 25.033, longitude: 121.5654, keywords: '台湾 臺灣 台北 taipei' },
-  { id: 'us-new-york', country: 'us', label: '米国 / New York, NY', city: 'New York', region: 'NY', timezone: 'America/New_York', utcOffset: -5, latitude: 40.7128, longitude: -74.006, keywords: 'new york ny ニューヨーク' },
-  { id: 'us-los-angeles', country: 'us', label: '米国 / Los Angeles, CA', city: 'Los Angeles', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 34.0522, longitude: -118.2437, keywords: 'los angeles california ca ロサンゼルス' },
-  { id: 'us-san-francisco', country: 'us', label: '米国 / San Francisco, CA', city: 'San Francisco', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 37.7749, longitude: -122.4194, keywords: 'san francisco california ca サンフランシスコ' },
-  { id: 'us-chicago', country: 'us', label: '米国 / Chicago, IL', city: 'Chicago', region: 'IL', timezone: 'America/Chicago', utcOffset: -6, latitude: 41.8781, longitude: -87.6298, keywords: 'chicago illinois il シカゴ' },
-  { id: 'us-houston', country: 'us', label: '米国 / Houston, TX', city: 'Houston', region: 'TX', timezone: 'America/Chicago', utcOffset: -6, latitude: 29.7604, longitude: -95.3698, keywords: 'houston texas tx ヒューストン' },
-  { id: 'us-seattle', country: 'us', label: '米国 / Seattle, WA', city: 'Seattle', region: 'WA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 47.6062, longitude: -122.3321, keywords: 'seattle washington wa シアトル' },
-  { id: 'us-boston', country: 'us', label: '米国 / Boston, MA', city: 'Boston', region: 'MA', timezone: 'America/New_York', utcOffset: -5, latitude: 42.3601, longitude: -71.0589, keywords: 'boston massachusetts ma ボストン' },
-  { id: 'us-honolulu', country: 'us', label: '米国 / Honolulu, HI', city: 'Honolulu', region: 'HI', timezone: 'Pacific/Honolulu', utcOffset: -10, latitude: 21.3069, longitude: -157.8583, keywords: 'honolulu hawaii hi ハワイ ホノルル' },
-  { id: 'world-london', country: 'world', label: '英国 / London', city: 'London', region: 'England', timezone: 'Europe/London', utcOffset: 0, latitude: 51.5074, longitude: -0.1278, keywords: 'london uk england ロンドン' },
-  { id: 'world-paris', country: 'world', label: 'フランス / Paris', city: 'Paris', region: 'Ile-de-France', timezone: 'Europe/Paris', utcOffset: 1, latitude: 48.8566, longitude: 2.3522, keywords: 'paris france パリ' },
-  { id: 'world-sydney', country: 'world', label: 'オーストラリア / Sydney', city: 'Sydney', region: 'NSW', timezone: 'Australia/Sydney', utcOffset: 10, latitude: -33.8688, longitude: 151.2093, keywords: 'sydney australia シドニー' },
-  { id: 'world-singapore', country: 'world', label: 'シンガポール / Singapore', city: 'Singapore', region: 'Singapore', timezone: 'Asia/Singapore', utcOffset: 8, latitude: 1.3521, longitude: 103.8198, keywords: 'singapore シンガポール' },
-  { id: 'world-bangkok', country: 'world', label: 'タイ / Bangkok', city: 'Bangkok', region: 'Bangkok', timezone: 'Asia/Bangkok', utcOffset: 7, latitude: 13.7563, longitude: 100.5018, keywords: 'bangkok thailand バンコク' },
-  { id: 'world-seoul', country: 'world', label: '韓国 / Seoul', city: 'Seoul', region: 'Seoul', timezone: 'Asia/Seoul', utcOffset: 9, latitude: 37.5665, longitude: 126.978, keywords: 'seoul korea ソウル 韓国' },
-];
-
 function calcApi() {
   return window.HOSHI_CALC || null;
 }
@@ -58,57 +21,15 @@ function locationOptions() {
   return calcApi()?.LOCATIONS || FALLBACK_LOCATIONS;
 }
 
-function japanLocations() {
-  const municipalities = calcApi()?.JAPAN_MUNICIPALITIES || [];
-  if (municipalities.length) {
-    return municipalities.map((location) => ({
-      ...location,
-      id: location.id,
-      country: 'jp',
-      label: `日本 / ${location.label}`,
-      city: location.municipality,
-      region: location.prefecture,
-      keywords: `${location.prefecture} ${location.municipality}`,
-    }));
+function findLocation(id) {
+  if (id === 'overseas') {
+    return { id: 'overseas', label: '海外', timezone: 'Asia/Hong_Kong', utcOffset: 8, latitude: 22.3193, longitude: 114.1694 };
   }
-  return locationOptions().filter((location) => location.label.startsWith('日本')).map((location) => ({
-    ...location,
-    country: 'jp',
-    city: stripJapan(location.label).split(' ').slice(-1)[0],
-    region: stripJapan(location.label).split(' ')[0],
-    keywords: stripJapan(location.label),
-  }));
-}
-
-function allRegisteredLocations() {
-  return [...japanLocations(), ...WORLD_LOCATIONS];
-}
-
-function findRegisteredLocation(id, registry = allRegisteredLocations()) {
-  return registry.find((location) => location.id === id) || registry[0];
-}
-
-function inferRegionFromLocationId(id) {
-  if (String(id || '').startsWith('jp-') || locationOptions().some((location) => location.id === id && location.label.startsWith('日本'))) return 'jp';
-  if (String(id || '').startsWith('cn-')) return 'cn';
-  if (String(id || '').startsWith('us-')) return 'us';
-  if (String(id || '').startsWith('world-')) return 'world';
-  return 'jp';
+  return locationOptions().find((location) => location.id === id) || locationOptions()[0];
 }
 
 function stripJapan(label) {
   return String(label || '').replace(/^日本\s*\/\s*/, '');
-}
-
-function searchableText(location) {
-  return [location.label, location.region, location.city, location.prefecture, location.municipality, location.keywords]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-}
-
-function displayRegisteredLocation(location) {
-  return stripJapan(location?.label || '');
 }
 
 function parseBirthTime(value) {
@@ -149,35 +70,18 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [birthHour, setBirthHour] = React.useState(initialBirthTime.hour);
   const [birthMinute, setBirthMinute] = React.useState(initialBirthTime.minute);
   const [unsure, setUnsure] = React.useState(initialForm.unsure || false);
-  const initialLocationId = initialForm.locationId || initialResult?.profile?.location?.id || 'jp-131016';
-  const [locationRegion, setLocationRegion] = React.useState(initialForm.locationRegion || inferRegionFromLocationId(initialLocationId));
-  const [locationId, setLocationId] = React.useState(initialLocationId);
-  const [locationQuery, setLocationQuery] = React.useState(initialForm.locationQuery || '');
+  const [locationId, setLocationId] = React.useState(initialForm.locationId || initialResult?.profile?.location?.id || 'tokyo');
+  const [city, setCity] = React.useState('');
   const [busy, setBusy] = React.useState(false);
   const [done, setDone] = React.useState(false);
   const [result, setResult] = React.useState(null);
   const [error, setError] = React.useState('');
   const [showStamp, setShowStamp] = React.useState(false);
 
-  const registeredLocations = allRegisteredLocations();
-  const selectedLocation = findRegisteredLocation(locationId, registeredLocations);
-  const regionLocations = registeredLocations.filter((location) => location.country === locationRegion);
-  const normalizedLocationQuery = locationQuery.trim().toLowerCase();
-  const filteredLocations = (normalizedLocationQuery
-    ? regionLocations.filter((location) => searchableText(location).includes(normalizedLocationQuery))
-    : regionLocations
-  ).slice(0, 80);
-  const locationChoices = filteredLocations.some((location) => location.id === selectedLocation?.id)
-    ? filteredLocations
-    : [selectedLocation, ...filteredLocations].filter(Boolean);
+  const locations = locationOptions();
+  const selectedLocation = findLocation(locationId);
   const birthTime = composeBirthTime(birthHour, birthMinute);
-  const valid = year && month && day && locationId && selectedLocation && (unsure || birthTime);
-
-  React.useEffect(() => {
-    if (filteredLocations.length && !filteredLocations.some((location) => location.id === locationId)) {
-      setLocationId(filteredLocations[0].id);
-    }
-  }, [locationRegion, normalizedLocationQuery]);
+  const valid = year && month && day && locationId && (unsure || birthTime);
 
   const submit = () => {
     if (!valid || busy) return;
@@ -210,7 +114,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           gender: gender === 'yang' ? 'male' : gender === 'yin' ? 'female' : 'unspecified',
         };
         const calculated = api.calculateShichusuimei(input);
-        const form = { name, gender, calendar, year, month, day, birthTime, unsure, locationId, locationRegion, locationQuery };
+        const form = { name, gender, calendar, year, month, day, birthTime, unsure, locationId };
         const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, unsure }, form };
         setResult(res);
         setDone(true);
@@ -331,35 +235,12 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </FormField>
 
         <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEICHI"
-          hint="県・省・州・都市名で検索し、候補から出生地を選択してください">
-          <div className="toggle-row compact location-region-row">
-            {REGION_OPTIONS.map(region => (
-              <button key={region.key} className={locationRegion === region.key ? 'on' : ''} onClick={() => {
-                setLocationRegion(region.key);
-                setLocationQuery('');
-              }}>
-                {region.label}
-              </button>
-            ))}
-          </div>
-          <div className="input-line with-mark" data-mark="検索">
-            <input
-              type="text"
-              value={locationQuery}
-              onChange={e => setLocationQuery(e.target.value)}
-              placeholder={locationRegion === 'jp' ? '例 ）東京都 / 京都市 / 札幌市' : locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）California / New York' : '例 ）London / Seoul / Singapore'}
-            />
-          </div>
-          <div className="input-line with-mark" data-mark="候補">
-            <select value={selectedLocation?.id || ''} onChange={e => setLocationId(e.target.value)}>
-              {locationChoices.map(location => (
-                <option key={location.id} value={location.id}>{displayRegisteredLocation(location)}</option>
-              ))}
+          hint="正確な自然時（太陽の南中時刻）を計算するための時差補正に使用します（※海外は香港時間を基準とします）">
+          <div className="input-line">
+            <select value={locationId} onChange={e => setLocationId(e.target.value)}>
+              {locations.filter(l => l.label.startsWith('日本')).map(l => <option key={l.id} value={l.id}>{stripJapan(l.label).split(' ')[0]}</option>)}
+              <option value="overseas">海外</option>
             </select>
-          </div>
-          <div className="location-note">
-            選択中: {displayRegisteredLocation(selectedLocation)}
-            {selectedLocation?.timezone ? ` / ${selectedLocation.timezone}` : ''}
           </div>
         </FormField>
 

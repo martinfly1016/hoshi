@@ -768,7 +768,7 @@ input, select { font-family: inherit; color: inherit; }
 .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .submit-btn.busy { color: transparent; }
 .submit-btn.busy::after {
-  content: '鑑定中';
+  content: '卜算中';
   position: absolute; inset: 0;
   display: grid; place-items: center;
   color: var(--ink);

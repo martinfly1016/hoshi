@@ -405,7 +405,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
       </div>
       <div className={`seal-overlay ${showStamp ? 'show' : ''}`}>
         <div className="stamp">命</div>
-        <div className="caption">命式を作成しています</div>
+        <div className="caption">星辰、命式を顕す</div>
       </div>
     </section>
   );
@@ -512,26 +512,6 @@ function displayTenGod(name) {
 }
 function hasTenGod(set, name) {
   return set.has(name) || Array.from(set).some((item) => displayTenGod(item) === name);
-}
-function localizeReadingTerm(text) {
-  return String(text || '')
-    .replaceAll('七杀', '偏官')
-    .replaceAll('七殺', '偏官')
-    .replaceAll('劫财', '劫財')
-    .replaceAll('伤官', '傷官')
-    .replaceAll('偏财', '偏財')
-    .replaceAll('正财', '正財')
-    .replaceAll('正印格', '印綬格')
-    .replaceAll('正印', '印綬')
-    .replaceAll('藏干', '蔵干')
-    .replaceAll('纳音', '納音')
-    .replaceAll('格局', '命式の型');
-}
-function displayPatternName(pattern) {
-  return localizeReadingTerm(pattern?.name || '命式の型');
-}
-function displayPatternText(pattern, fallback = '月令と天干から命式の型を見ます。') {
-  return localizeReadingTerm(pattern?.text || fallback);
 }
 
 function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
@@ -657,9 +637,9 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'pattern',
-      label: '命式の型',
-      value: displayPatternName(calc.pattern),
-      detail: displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。'),
+      label: '格局',
+      value: calc.pattern?.name || '格局',
+      detail: calc.pattern?.text || '月令と天干から命式の大枠を見ます。',
       evidence: '月令・天干',
       action: 'insight',
       target: { page: 'insight', topic: 'talent', anchor: 'insight-judgement' },
@@ -747,14 +727,14 @@ function chartStateSummary(calc) {
         ? '五行に少し偏りがあり、強い要素を活かしながら不足を補うと整います。'
         : '五行の偏りがはっきり出る命盤です。強い要素が長所にも課題にもなりやすく、補う五行が重要です。';
   return {
-    title: `${displayPatternName(calc.pattern)} / ${calc.strength?.status || '身強弱'}`,
-    lead: `この命盤は「${displayPatternName(calc.pattern)}」を土台に、日主 ${calc.dayMaster} が ${calc.strength?.status || '判定中'} の状態で動く構成です。五行では ${dominantLabel} が前に出やすく、${supportLabel} を意識すると全体の流れが整いやすくなります。`,
+    title: `${calc.pattern?.name || '格局'} / ${calc.strength?.status || '身強弱'}`,
+    lead: `この命盤は「${calc.pattern?.name || '格局'}」を土台に、日主 ${calc.dayMaster} が ${calc.strength?.status || '判定中'} の状態で動く構成です。五行では ${dominantLabel} が前に出やすく、${supportLabel} を意識すると全体の流れが整いやすくなります。`,
     note: `${balanceTone} 用神は ${yongLabel} を中心に読み、性格・仕事・対人関係の説明にもこの状態を反映します。`,
     cards: [
       {
         label: '命式の型',
-        value: displayPatternName(calc.pattern),
-        text: displayPatternText(calc.pattern, '月令と天干から、命式全体の方向性を読みます。'),
+        value: calc.pattern?.name || '格局',
+        text: calc.pattern?.text || '月令と天干から、命式全体の方向性を読みます。',
         source: `月支 ${calc.pillars.month.branch} / 月柱 ${calc.pillars.month.text}`,
       },
       {
@@ -783,7 +763,7 @@ function analyzeSynthesis(calculation, profile) {
   const dayBranch = calculation.pillars.day.branch;
   const gender = profile.gender;
   const tenGodsSet = new Set(collectTenGods(calculation).map(([god]) => god));
-  const pattern = displayPatternName(calculation.pattern);
+  const pattern = calculation.pattern?.name || '';
   const allShenSha = PILLAR_KEYS.flatMap(k => getShenSha(calculation.pillars[k].branch, calculation.dayMaster, calculation.pillars.year.branch, calculation.pillars.day.branch));
   
   const hasHongLuan = allShenSha.includes('紅鸞');
@@ -803,7 +783,7 @@ function analyzeSynthesis(calculation, profile) {
   if (hasHongLuan) marriagePoints.push('また「紅鸞」を宿しており、華やかな魅力と良縁に恵まれやすいでしょう。');
   if (hasGuChen) marriagePoints.push('一方で一人の時間を大切にする気質もあり、適度な距離感が関係維持のポイントです。');
   
-  const career = `月支の「${calculation.pillars.month.branch}」と命式の型「${pattern}」が社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝きます。`;
+  const career = `月支の「${calculation.pillars.month.branch}」と格局「${pattern}」が社会的な武器です。${calculation.strength?.status === '身強' ? '自ら主導権を握る環境' : '組織の中での専門的な役割'}で最も輝きます。`;
   return { marriage: marriagePoints.join(' '), career };
 }
 
@@ -1059,13 +1039,13 @@ function BackendDetailSync({ calculation }) {
       <section id="insight-judgement" className="backend-panel">
         <div className="backend-panel-head">
           <div>
-            <div className="summary-kicker">命式の型 / 身強身弱 / 用神</div>
+            <div className="summary-kicker">格局 / 身強身弱 / 用神</div>
             <h3>検証ページの判定をユーザー向けに整理する</h3>
           </div>
           <span>主要判定</span>
         </div>
         <div className="backend-card-grid three">
-          <article><small>命式の型</small><strong>{displayPatternName(calculation.pattern)}</strong><p>{displayPatternText(calculation.pattern)}</p></article>
+          <article><small>格局</small><strong>{calculation.pattern?.name || '—'}</strong><p>{calculation.pattern?.text || '月令と天干から命式の型を見ます。'}</p></article>
           <article><small>身強身弱</small><strong>{calculation.strength?.status || '—'}</strong><p>{calculation.strength?.text || '日主の勢いを見ます。'}</p></article>
           <article><small>用神</small><strong>{yong}</strong><p>{calculation.yongShen?.text || '命式を整える五行を見ます。'}</p></article>
         </div>
@@ -1278,7 +1258,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['基本情報','四柱命式','タグ索引','詳しい解説'].map((n, i) => (
+          {['基本情報','四柱排盤','タグ索引','詳しい鑑定'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
@@ -1288,7 +1268,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
         <div className="return-action-row">
           <button className="inline-return-btn edit" onClick={onBack}>入力内容を修正する</button>
         </div>
-        <div className="result-card" data-card-label="命式の確認" style={{ marginTop: 0 }}>
+        <div className="result-card" data-card-label="占断の始まり" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
@@ -1298,7 +1278,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           
           <div id="s1" className="result-wide result-chart-section" style={{ paddingTop: 10 }}>
             <div className="result-summary result-wide" style={{ paddingTop: 0 }}>
-              <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式</h2>
+              <h2 style={{ margin: '0 0 8px', fontSize: 24, letterSpacing: '0.05em' }}>四柱の命式（排盤）</h2>
               <p style={{ fontSize: 13, color: 'var(--ink-2)', marginBottom: 24 }}>年柱・月柱・日柱・時柱を横に並べ、命盤の基本構造だけを確認します。</p>
             </div>
             <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
@@ -1329,7 +1309,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   const getInsightContent = (key) => {
     const contents = {
       personality: { intro: `日主「${dayStem}」と「${displayTenGod(primaryGod)}」から解析します。`, p1: `【本質】${STEM_READING[dayStem]?.text}`, p2: `【行動】${TEN_GOD_READING[primaryGod]?.text}` },
-      talent: { intro: `あなたの才能の活かし所を特定します。`, p1: `あなたの命式の型は「${displayPatternName(calculation.pattern)}」です。${displayPatternText(calculation.pattern)}`, p2: `補助する要素があなたの独自性を高めています。` },
+      talent: { intro: `あなたの才能の活かし所を特定します。`, p1: `あなたの格局は「${calculation.pattern?.name}」です。${calculation.pattern?.text}`, p2: `補助する要素があなたの独自性を高めています。` },
       career: { intro: `最適なビジネススタイルを提案します。`, p1: `エネルギーは「${calculation.strength?.status}」です。${calculation.strength?.text}`, p2: `【分析】${synthesis.career}` },
       marriage: { intro: `配偶者宮から理想のパートナーシップを導きます。`, p1: `配偶者の場所には「${calculation.pillars.day.branch}」が鎮座。${BRANCH_READING[calculation.pillars.day.branch]}`, p2: `【分析】${synthesis.marriage}` }
     };
@@ -1355,9 +1335,9 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
     handledRouteKey.current = routeTarget.key;
   }, [routeTarget, topic]);
   return (
-    <section className="rite" data-screen-label="05 命式詳細">
+    <section className="rite" data-screen-label="05 鑑定詳解">
       <aside className="rite-side">
-        <div className="kanji">命式詳細</div><div className="label">PERSONAL INSIGHTS</div>
+        <div className="kanji">鑑定詳解</div><div className="label">PERSONAL INSIGHTS</div>
         <div className="seal-stack">
           {TOPICS.map((t, i) => <div key={t.key} style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} onClick={() => setTopic(t.key)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{t.ja}</div>)}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
@@ -1368,7 +1348,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
           <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
         </div>
-        <div className="result-card" data-card-label="命式詳細" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
+        <div className="result-card" data-card-label="詳解の鑑定" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div className="summary-kicker">{currentTopic.ja}の詳解</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
           <div id="insight-topic-main" className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2 }}>{content.p2}</div></div>
@@ -1403,9 +1383,9 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
     handledRouteKey.current = routeTarget.key;
   }, [routeTarget]);
   return (
-    <section className="rite" data-screen-label="04 大運・流年">
+    <section className="rite" data-screen-label="04 星辰譜">
       <aside className="rite-side">
-        <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
+        <div className="kanji">星辰譜</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
           {['大運テーマ','今日','大運表'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參'][i]}</span>　{n}</div>
@@ -1506,7 +1486,7 @@ function decadeTheme(decade, gender) {
     return {
       title: '大運は性別を選ぶと定位できます',
       intro: '十年ごとの運勢は、性別によって順行・逆行が変わります。未選択の場合は流年・流月・流日を中心に確認します。',
-      work: '現在は命式本体の型と日主を中心に仕事の傾向を見ます。',
+      work: '現在は命式本体の格局と日主を中心に仕事の傾向を見ます。',
       money: '財運は財星と五行バランスを中心に仮説として見ます。',
       love: '対人・恋愛は日支と流年の関係を重ねて見ます。',
       family: '家庭面は日柱と時柱を中心に見ます。',

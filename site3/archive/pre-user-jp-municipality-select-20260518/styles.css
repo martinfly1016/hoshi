@@ -642,11 +642,6 @@ input, select { font-family: inherit; color: inherit; }
 .location-region-row button {
   min-width: 110px;
 }
-.japan-location-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 18px;
-}
 .location-note {
   font-size: 11px;
   line-height: 1.8;
@@ -2446,10 +2441,6 @@ input, select { font-family: inherit; color: inherit; }
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.92fr) minmax(0, 0.92fr);
   }
   .input-row.two { grid-template-columns: 1fr; gap: 14px; }
-  .japan-location-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
 
   .chips { grid-template-columns: repeat(4, 1fr); gap: 5px; }
   .chip { padding: 10px 2px 8px; }

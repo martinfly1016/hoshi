@@ -58,6 +58,7 @@
 | v0.3.28 | 2026-05-18 15:37 JST | 用户首页 | `/index.html` 出生地输入 | 将出生地从日本都道府县/海外二选一升级为地区切换 + 关键词搜索 + 候选地点选择；日本接入 1736 个市区町村，海外首版内置中国、美国和主要国际城市坐标，选中地点后按其经纬度/时区计算真太阳时 | `/latest.html` / `/index.html?v=20260518-user-global-location-1` | `/archive/pre-user-global-location-20260518/index.html?v=20260518-user-minute-time-1` | main `b9a96ff` / gh-pages `13dbecb` |
 | v0.3.29 | 2026-05-18 15:26 JST | 用户首页 | `/index.html` 出生地显示 | 修正只选择日本都道府县时结果页误显示代表市区町村的问题；新增都道府县级候选（如「東京都」），市区町村级候选仍可继续选择，内部真太阳时使用代表坐标但展示不再擅自追加「千代田区」 | `/latest.html` / `/index.html?v=20260518-user-prefecture-display-1` | `/archive/pre-user-prefecture-display-20260518/index.html?v=20260518-user-global-location-1` | main `e090695` / gh-pages `e0f847d` |
 | v0.3.30 | 2026-05-18 15:31 JST | 用户首页 | `/index.html` 命式タグ顺序 | 将「命式」页标签索引中的日主标签固定为第一项，显示为「日主 辛（金）」这类日主天干与五行属性，强调日主是看盘起点；原格局、身强弱等标签顺延 | `/latest.html` / `/index.html?v=20260518-user-daymaster-tag-1` | `/archive/pre-user-daymaster-tag-first-20260518/index.html?v=20260518-user-prefecture-display-1` | main `b145f54` / gh-pages `cc7058d` |
+| v0.3.31 | 2026-05-18 15:39 JST | 用户首页 | `/index.html` 命式タグ点击行为 | 将「命式」页标签索引改为先滚动到同页下方的标签概要说明卡，并高亮当前卡片；只有说明卡中的「詳細説明」按钮才继续跳转到「命式詳細」或「大運・流年」深层页面 | `/latest.html` / `/index.html?v=20260518-user-tag-local-detail-1` | `/archive/pre-user-tag-local-detail-20260518/index.html?v=20260518-user-daymaster-tag-1` | main `dc978ba` / gh-pages `299e22c` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

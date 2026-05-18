@@ -601,14 +601,6 @@ function buildUserReadingTags(calc, tenGods) {
   const god = tenGods[0]?.[0];
   return [
     {
-      kind: 'core',
-      label: '日主',
-      value: `${calc.dayMaster}（${calc.pillars.day.element.stem}）`,
-      detail: stem.text || '日主は日柱の天干で、命式全体を読む起点です。',
-      evidence: `日柱天干 ${calc.dayMaster} / 五行 ${calc.pillars.day.element.stem}`,
-      action: 'daymaster',
-    },
-    {
       kind: 'pattern',
       label: '格局',
       value: calc.pattern?.name || '格局',
@@ -622,6 +614,14 @@ function buildUserReadingTags(calc, tenGods) {
       value: calc.strength?.status || '未判定',
       detail: calc.strength?.text || '日主の勢いを月令と五行構成から見ます。',
       evidence: `日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
+      action: 'daymaster',
+    },
+    {
+      kind: 'core',
+      label: '性格',
+      value: `${calc.dayMaster}${calc.pillars.day.element.stem}`,
+      detail: stem.text,
+      evidence: '日柱天干',
       action: 'daymaster',
     },
     {

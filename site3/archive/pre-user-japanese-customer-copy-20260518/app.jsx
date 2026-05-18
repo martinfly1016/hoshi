@@ -125,7 +125,7 @@ function App() {
         </div>
         <nav>
           <button className={page === 'hero' ? 'is-active' : ''}
-            onClick={() => goto('hero')}>トップ</button>
+            onClick={() => goto('hero')}>序　章</button>
           <button className={page === 'rite' ? 'is-active' : ''}
             onClick={() => goto('rite')}>命式作成</button>
           <button className={page === 'result' ? 'is-active' : ''}
@@ -133,10 +133,10 @@ function App() {
             style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命　式</button>
           <button className={page === 'insight' ? 'is-active' : ''}
             onClick={() => { if (calcResult) goto('insight'); }}
-            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命式詳細</button>
+            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>詳　解</button>
           <button className={page === 'fortune' ? 'is-active' : ''}
             onClick={() => { if (calcResult) goto('fortune'); }}
-            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>大運・流年</button>
+            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>星辰譜</button>
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
             {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
           </button>
@@ -217,15 +217,15 @@ function App() {
             ))}
           </div>
         </TweakSection>
-        <TweakSection title="書体 — Type">
+        <TweakSection title="字体 — Type">
           <TweakRadio value={tweaks.type} onChange={(v) => setTweak('type', v)}
             options={[{ value: 'mincho', label: '明朝体' }, { value: 'song', label: '宋朝風 Yuji' }, { value: 'kaisho', label: '楷書体 Syuku' }]} />
         </TweakSection>
-        <TweakSection title="動き — Motion">
+        <TweakSection title="動效 — Motion">
           <TweakRadio value={tweaks.motion} onChange={(v) => setTweak('motion', v)}
-            options={[{ value: 'off', label: 'なし' }, { value: 'soft', label: '控えめ' }, { value: 'full', label: 'しっかり' }]} />
+            options={[{ value: 'off', label: '関' }, { value: 'soft', label: '弱' }, { value: 'full', label: '強' }]} />
         </TweakSection>
-        <TweakSection title="Hero レイアウト">
+        <TweakSection title="Hero 排版">
           <TweakRadio value={tweaks.hero} onChange={(v) => setTweak('hero', v)}
             options={[{ value: 'centered', label: '中央配置' }, { value: 'offset', label: '余白を活かす' }]} />
         </TweakSection>

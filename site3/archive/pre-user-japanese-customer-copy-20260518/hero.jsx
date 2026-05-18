@@ -2,7 +2,7 @@
 
 function Hero({ onEnter }) {
   return (
-    <section className="hero" data-screen-label="01 トップ">
+    <section className="hero" data-screen-label="01 序章">
       <div className="hero-poem">
         <div className="line">陰陽五行の運び、命式に映る</div>
         <div className="line">天に十干、地に十二支あり</div>
@@ -10,7 +10,7 @@ function Hero({ onEnter }) {
 
       <div className="hero-title-block">
         <div className="hero-meta">
-          <span className="index">壹 / 始</span>
+          <span className="index">壹 / 序</span>
           <span className="div"></span>
           <span>SHO·SHŌ</span>
         </div>
@@ -41,7 +41,7 @@ function Hero({ onEnter }) {
       <div className="hero-bottom">
         <div className="stations">
           <span>正財 · 偏財</span>
-          <span>正官 · 偏官</span>
+          <span>正官 · 七殺</span>
           <span>正印 · 偏印</span>
           <span>食神 · 傷官</span>
           <span>比肩 · 劫財</span>

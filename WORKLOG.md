@@ -59,6 +59,7 @@
 | v0.3.29 | 2026-05-18 15:26 JST | 用户首页 | `/index.html` 出生地显示 | 修正只选择日本都道府县时结果页误显示代表市区町村的问题；新增都道府县级候选（如「東京都」），市区町村级候选仍可继续选择，内部真太阳时使用代表坐标但展示不再擅自追加「千代田区」 | `/latest.html` / `/index.html?v=20260518-user-prefecture-display-1` | `/archive/pre-user-prefecture-display-20260518/index.html?v=20260518-user-global-location-1` | main `e090695` / gh-pages `e0f847d` |
 | v0.3.30 | 2026-05-18 15:31 JST | 用户首页 | `/index.html` 命式タグ顺序 | 将「命式」页标签索引中的日主标签固定为第一项，显示为「日主 辛（金）」这类日主天干与五行属性，强调日主是看盘起点；原格局、身强弱等标签顺延 | `/latest.html` / `/index.html?v=20260518-user-daymaster-tag-1` | `/archive/pre-user-daymaster-tag-first-20260518/index.html?v=20260518-user-prefecture-display-1` | main `b145f54` / gh-pages `cc7058d` |
 | v0.3.31 | 2026-05-18 15:39 JST | 用户首页 | `/index.html` 命式タグ点击行为 | 将「命式」页标签索引改为先滚动到同页下方的标签概要说明卡，并高亮当前卡片；只有说明卡中的「詳細説明」按钮才继续跳转到「命式詳細」或「大運・流年」深层页面 | `/latest.html` / `/index.html?v=20260518-user-tag-local-detail-1` | `/archive/pre-user-tag-local-detail-20260518/index.html?v=20260518-user-daymaster-tag-1` | main `dc978ba` / gh-pages `299e22c` |
+| v0.3.32 | 2026-05-18 15:48 JST | 用户首页 | `/index.html` 标签深层锚点 | 为标签说明卡的「詳細説明」补充页面内目标位置：日主跳到日主说明、强五行跳到五行バランス、补/缺五行跳到五行计算根拠、主要课题跳到十神/藏干、婚姻宫跳到婚姻主题，大运走势跳到大運主题区；从标签进入详解页/大运页不再只停在页面顶端 | `/latest.html` / `/index.html?v=20260518-user-deep-anchor-1` | `/archive/pre-user-deep-anchor-20260518/index.html?v=20260518-user-tag-local-detail-1` | main `3e8a6c4` / gh-pages `17b41ef` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

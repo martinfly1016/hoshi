@@ -91,25 +91,6 @@ function japanLocations() {
   return prefectures;
 }
 
-function japanMunicipalityLocations(prefecture) {
-  const municipalities = calcApi()?.JAPAN_MUNICIPALITIES || [];
-  return municipalities
-    .filter((location) => location.prefecture === prefecture)
-    .map((location) => ({
-      ...location,
-      id: location.id,
-      country: 'jp',
-      label: `日本 / ${location.label}`,
-      city: location.municipality,
-      region: location.prefecture,
-      keywords: `${location.prefecture} ${location.municipality}`,
-    }));
-}
-
-function japanPrefectureLocation(prefecture) {
-  return japanPrefectureLocations().find((location) => location.region === prefecture) || japanPrefectureLocations()[0];
-}
-
 function allRegisteredLocations() {
   return [...japanLocations(), ...WORLD_LOCATIONS];
 }
@@ -191,13 +172,8 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [birthMinute, setBirthMinute] = React.useState(initialBirthTime.minute);
   const [unsure, setUnsure] = React.useState(initialForm.unsure || false);
   const initialLocationId = normalizeInitialLocationId(initialForm.locationId || initialResult?.profile?.location?.id || 'jp-pref-tokyo');
-  const initialRegisteredLocations = allRegisteredLocations();
-  const initialLocation = findRegisteredLocation(initialLocationId, initialRegisteredLocations);
-  const initialJapanPrefecture = initialForm.japanPrefecture || initialLocation?.region || initialLocation?.prefecture || '東京都';
   const [locationRegion, setLocationRegion] = React.useState(initialForm.locationRegion || inferRegionFromLocationId(initialLocationId));
   const [locationId, setLocationId] = React.useState(initialLocationId);
-  const [japanPrefecture, setJapanPrefecture] = React.useState(initialJapanPrefecture);
-  const [japanMunicipalityId, setJapanMunicipalityId] = React.useState(initialForm.japanMunicipalityId || (initialLocation?.country === 'jp' && initialLocation?.displayScope !== 'prefecture' ? initialLocation.id : ''));
   const [locationQuery, setLocationQuery] = React.useState(initialForm.locationQuery || '');
   const [busy, setBusy] = React.useState(false);
   const [done, setDone] = React.useState(false);
@@ -206,8 +182,6 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [showStamp, setShowStamp] = React.useState(false);
 
   const registeredLocations = allRegisteredLocations();
-  const japanPrefectures = japanPrefectureLocations();
-  const municipalityChoices = japanMunicipalityLocations(japanPrefecture);
   const selectedLocation = findRegisteredLocation(locationId, registeredLocations);
   const regionLocations = registeredLocations.filter((location) => location.country === locationRegion);
   const normalizedLocationQuery = locationQuery.trim().toLowerCase();
@@ -222,19 +196,10 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const valid = year && month && day && locationId && selectedLocation && (unsure || birthTime);
 
   React.useEffect(() => {
-    if (locationRegion === 'jp') return;
     if (filteredLocations.length && !filteredLocations.some((location) => location.id === locationId)) {
       setLocationId(filteredLocations[0].id);
     }
   }, [locationRegion, normalizedLocationQuery]);
-
-  React.useEffect(() => {
-    if (locationRegion !== 'jp') return;
-    const municipality = municipalityChoices.find((location) => location.id === japanMunicipalityId);
-    const prefecture = japanPrefectureLocation(japanPrefecture);
-    const nextLocation = municipality || prefecture;
-    if (nextLocation && nextLocation.id !== locationId) setLocationId(nextLocation.id);
-  }, [locationRegion, japanPrefecture, japanMunicipalityId, municipalityChoices.length]);
 
   const submit = () => {
     if (!valid || busy) return;
@@ -267,7 +232,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           gender: gender === 'yang' ? 'male' : gender === 'yin' ? 'female' : 'unspecified',
         };
         const calculated = api.calculateShichusuimei(input);
-        const form = { name, gender, calendar, year, month, day, birthTime, unsure, locationId, locationRegion, japanPrefecture, japanMunicipalityId, locationQuery };
+        const form = { name, gender, calendar, year, month, day, birthTime, unsure, locationId, locationRegion, locationQuery };
         const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, unsure }, form };
         setResult(res);
         setDone(true);
@@ -399,57 +364,21 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
               </button>
             ))}
           </div>
-          {locationRegion === 'jp' ? (
-            <div className="japan-location-grid">
-              <div className="input-line with-mark" data-mark="都道府県">
-                <select value={japanPrefecture} onChange={e => {
-                  const prefecture = e.target.value;
-                  const nextPrefectureLocation = japanPrefectureLocation(prefecture);
-                  setJapanPrefecture(prefecture);
-                  setJapanMunicipalityId('');
-                  if (nextPrefectureLocation) setLocationId(nextPrefectureLocation.id);
-                }}>
-                  {japanPrefectures.map(location => (
-                    <option key={location.id} value={location.region}>{location.region}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="input-line with-mark" data-mark="市区町村">
-                <select value={japanMunicipalityId} onChange={e => {
-                  const nextId = e.target.value;
-                  setJapanMunicipalityId(nextId);
-                  if (nextId) setLocationId(nextId);
-                  else {
-                    const nextPrefectureLocation = japanPrefectureLocation(japanPrefecture);
-                    if (nextPrefectureLocation) setLocationId(nextPrefectureLocation.id);
-                  }
-                }}>
-                  <option value="">都道府県のみ</option>
-                  {municipalityChoices.map(location => (
-                    <option key={location.id} value={location.id}>{location.municipality}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="input-line with-mark" data-mark="検索">
-                <input
-                  type="text"
-                  value={locationQuery}
-                  onChange={e => setLocationQuery(e.target.value)}
-                  placeholder={locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）California / New York' : '例 ）London / Seoul / Singapore'}
-                />
-              </div>
-              <div className="input-line with-mark" data-mark="候補">
-                <select value={selectedLocation?.id || ''} onChange={e => setLocationId(e.target.value)}>
-                  {locationChoices.map(location => (
-                    <option key={location.id} value={location.id}>{displayRegisteredLocation(location)}</option>
-                  ))}
-                </select>
-              </div>
-            </>
-          )}
+          <div className="input-line with-mark" data-mark="検索">
+            <input
+              type="text"
+              value={locationQuery}
+              onChange={e => setLocationQuery(e.target.value)}
+              placeholder={locationRegion === 'jp' ? '例 ）東京都 / 京都市 / 札幌市' : locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）California / New York' : '例 ）London / Seoul / Singapore'}
+            />
+          </div>
+          <div className="input-line with-mark" data-mark="候補">
+            <select value={selectedLocation?.id || ''} onChange={e => setLocationId(e.target.value)}>
+              {locationChoices.map(location => (
+                <option key={location.id} value={location.id}>{displayRegisteredLocation(location)}</option>
+              ))}
+            </select>
+          </div>
           <div className="location-note">
             選択中: {displayRegisteredLocation(selectedLocation)}
             {selectedLocation?.timezone ? ` / ${selectedLocation.timezone}` : ''}

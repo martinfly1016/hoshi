@@ -58,27 +58,10 @@ function locationOptions() {
   return calcApi()?.LOCATIONS || FALLBACK_LOCATIONS;
 }
 
-function japanPrefectureLocations() {
-  return locationOptions().filter((location) => location.label.startsWith('日本')).map((location) => {
-    const prefecture = stripJapan(location.label).split(' ')[0];
-    return {
-      ...location,
-      id: `jp-pref-${location.id}`,
-      country: 'jp',
-      label: `日本 / ${prefecture}`,
-      city: '',
-      region: prefecture,
-      displayScope: 'prefecture',
-      keywords: `${prefecture} ${stripJapan(location.label)}`,
-    };
-  });
-}
-
 function japanLocations() {
   const municipalities = calcApi()?.JAPAN_MUNICIPALITIES || [];
-  const prefectures = japanPrefectureLocations();
   if (municipalities.length) {
-    return [...prefectures, ...municipalities.map((location) => ({
+    return municipalities.map((location) => ({
       ...location,
       id: location.id,
       country: 'jp',
@@ -86,9 +69,15 @@ function japanLocations() {
       city: location.municipality,
       region: location.prefecture,
       keywords: `${location.prefecture} ${location.municipality}`,
-    }))];
+    }));
   }
-  return prefectures;
+  return locationOptions().filter((location) => location.label.startsWith('日本')).map((location) => ({
+    ...location,
+    country: 'jp',
+    city: stripJapan(location.label).split(' ').slice(-1)[0],
+    region: stripJapan(location.label).split(' ')[0],
+    keywords: stripJapan(location.label),
+  }));
 }
 
 function allRegisteredLocations() {
@@ -105,17 +94,6 @@ function inferRegionFromLocationId(id) {
   if (String(id || '').startsWith('us-')) return 'us';
   if (String(id || '').startsWith('world-')) return 'world';
   return 'jp';
-}
-
-function normalizeInitialLocationId(id) {
-  const rawId = id || 'jp-pref-tokyo';
-  if (String(rawId).startsWith('jp-') || String(rawId).startsWith('cn-') || String(rawId).startsWith('us-') || String(rawId).startsWith('world-')) {
-    return rawId;
-  }
-  const legacyJapanLocation = locationOptions().find((location) => location.id === rawId && location.label.startsWith('日本'));
-  if (legacyJapanLocation) return `jp-pref-${legacyJapanLocation.id}`;
-  if (rawId === 'overseas') return 'cn-hong-kong';
-  return rawId;
 }
 
 function stripJapan(label) {
@@ -171,7 +149,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [birthHour, setBirthHour] = React.useState(initialBirthTime.hour);
   const [birthMinute, setBirthMinute] = React.useState(initialBirthTime.minute);
   const [unsure, setUnsure] = React.useState(initialForm.unsure || false);
-  const initialLocationId = normalizeInitialLocationId(initialForm.locationId || initialResult?.profile?.location?.id || 'jp-pref-tokyo');
+  const initialLocationId = initialForm.locationId || initialResult?.profile?.location?.id || 'jp-131016';
   const [locationRegion, setLocationRegion] = React.useState(initialForm.locationRegion || inferRegionFromLocationId(initialLocationId));
   const [locationId, setLocationId] = React.useState(initialLocationId);
   const [locationQuery, setLocationQuery] = React.useState(initialForm.locationQuery || '');

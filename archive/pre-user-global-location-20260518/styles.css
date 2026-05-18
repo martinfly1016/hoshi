@@ -636,20 +636,6 @@ input, select { font-family: inherit; color: inherit; }
 .toggle-row.compact button {
   padding: 8px 14px;
 }
-.location-region-row {
-  flex-wrap: wrap;
-}
-.location-region-row button {
-  min-width: 110px;
-}
-.location-note {
-  font-size: 11px;
-  line-height: 1.8;
-  letter-spacing: 0.08em;
-  color: var(--ink-3);
-  border-left: 1px solid var(--rule);
-  padding-left: 12px;
-}
 
 .chips {
   display: grid;

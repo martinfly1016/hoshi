@@ -422,12 +422,12 @@ const PILLAR_READING = {
   hour: { icon: '芽', title: '時柱は未来と内側の可能性', text: '内面、晩年、これから育つテーマを見ます。' },
 };
 const BAZI_ROW_GUIDES = {
-  通変星: { icon: '神', hint: '表に出る役割' },
+  干神: { icon: '神', hint: '表に出る役割' },
   天干: { icon: '天', hint: '外に見える性質' },
   地支: { icon: '地', hint: '足元の環境' },
-  蔵干: { icon: '蔵', hint: '内側の気配' },
-  蔵干通変: { icon: '支', hint: '内側の役割' },
-  納音: { icon: '音', hint: '補助的な象意' },
+  藏干: { icon: '蔵', hint: '内側の気配' },
+  支神: { icon: '支', hint: '内側の役割' },
+  纳音: { icon: '音', hint: '補助的な象意' },
   空亡: { icon: '空', hint: '抜けやすい気' },
   地勢: { icon: '勢', hint: '日主から見た勢い' },
   自坐: { icon: '坐', hint: '柱そのものの足場' },
@@ -487,32 +487,6 @@ const TEN_GOD_GROUPS = {
   七杀: { role: '決断', icon: '決' }, 正官: { role: '信頼', icon: '秩' },
   偏印: { role: '直感', icon: '直' }, 正印: { role: '学習', icon: '学' },
 };
-const TEN_GOD_DISPLAY = {
-  比肩: '比肩',
-  劫财: '劫財',
-  劫財: '劫財',
-  食神: '食神',
-  伤官: '傷官',
-  傷官: '傷官',
-  偏财: '偏財',
-  偏財: '偏財',
-  正财: '正財',
-  正財: '正財',
-  七杀: '偏官',
-  七殺: '偏官',
-  偏官: '偏官',
-  正官: '正官',
-  偏印: '偏印',
-  正印: '印綬',
-  印綬: '印綬',
-  日主: '日主',
-};
-function displayTenGod(name) {
-  return TEN_GOD_DISPLAY[name] || name || '—';
-}
-function hasTenGod(set, name) {
-  return set.has(name) || Array.from(set).some((item) => displayTenGod(item) === name);
-}
 
 function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
   const result = [];
@@ -655,16 +629,16 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'element',
-      label: '強い五行',
+      label: '强五行',
       value: dominant.join('・'),
       detail: `${dominant.join('・')} が命式全体で前に出やすい五行です。`,
-      evidence: '天干・蔵干・月令補正',
+      evidence: '天干・藏干・月令補正',
       action: 'elements',
       target: { page: 'insight', topic: 'talent', anchor: 'insight-elements' },
     },
     {
       kind: calc.fiveElements?.missing?.length ? 'warning' : 'support',
-      label: calc.fiveElements?.missing?.length ? '不足五行' : '補う五行',
+      label: calc.fiveElements?.missing?.length ? '缺五行' : '補五行',
       value: support.join('・'),
       detail: `${support.join('・')} は意識して補うと全体が整いやすい候補です。`,
       evidence: '五行構成比',
@@ -673,7 +647,7 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'support',
-      label: '幸運の源',
+      label: '好运来源',
       value: [calc.yongShen?.primary, calc.yongShen?.secondary].filter(Boolean).join('・') || '用神',
       detail: calc.yongShen?.text || '命式の偏りを整える要素を見ます。',
       evidence: '調候・用神',
@@ -682,8 +656,8 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'god',
-      label: '主な課題',
-      value: displayTenGod(god) || '十神',
+      label: '主要课题',
+      value: god || '十神',
       detail: god ? TEN_GOD_READING[god]?.text : '命式で重なる十神テーマです。',
       evidence: god ? `十神出現 ${tenGods[0]?.[1] || 0}` : '十神',
       action: 'insight',
@@ -700,7 +674,7 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'trend',
-      label: '運勢の流れ',
+      label: '走势',
       value: fortuneTrendTag(calc),
       detail: current ? `現在は ${current.name}（${current.startYear}-${current.endYear}）の大運です。` : '性別を選ぶと大運の流れを定位できます。',
       evidence: current ? `大運 ${current.name}` : '大運未判定',
@@ -747,7 +721,7 @@ function chartStateSummary(calc) {
         label: '五行の偏り',
         value: balance === null ? dominantLabel : `平衡 ${balance}`,
         text: `強く出る五行は ${dominantLabel}、補いたい五行は ${supportLabel} です。`,
-        source: '天干・地支・蔵干・月令補正',
+        source: '天干・地支・藏干・月令補正',
       },
       {
         label: '整える鍵',
@@ -771,12 +745,12 @@ function analyzeSynthesis(calculation, profile) {
 
   let marriagePoints = [];
   if (gender === 'female') {
-    if (hasTenGod(tenGodsSet, '正官')) marriagePoints.push('命式内に「正官（夫の星）」があり、誠実な縁に恵まれやすい徳を持っています。');
-    else if (hasTenGod(tenGodsSet, '偏官')) marriagePoints.push('「偏官」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
+    if (tenGodsSet.has('正官')) marriagePoints.push('命式内に「正官（夫の星）」があり、誠実な縁に恵まれやすい徳を持っています。');
+    else if (tenGodsSet.has('七殺')) marriagePoints.push('「七殺」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
     else marriagePoints.push('自立した個としての生き方を尊重し合える関係が幸福の鍵です。');
   } else if (gender === 'male') {
-    if (hasTenGod(tenGodsSet, '正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力があります。');
-    else if (hasTenGod(tenGodsSet, '偏財')) marriagePoints.push('「偏財」が巡っており、華やかな対人関係の中から縁が広がりやすいタイプです。');
+    if (tenGodsSet.has('正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力があります。');
+    else if (tenGodsSet.has('偏財')) marriagePoints.push('「偏財」が巡っており、華やかな対人関係の中から縁が広がりやすいタイプです。');
     else marriagePoints.push('共通の目的を持つことで絆が深まるパートナーシップが理想的です。');
   }
   marriagePoints.push(`配偶者の場所（日支）に「${dayBranch}」を宿しており、これが親密な関係での振る舞いを象徴します。`);
@@ -799,7 +773,7 @@ function WuxingDiagram({ dayElement, elementCounts }) {
     const idxDay = wuxingCycle.indexOf(dayElement);
     const idxTarget = wuxingCycle.indexOf(targetElement);
     const diff = (idxTarget - idxDay + 5) % 5;
-    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・偏官', '印綬・偏印'];
+    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・七殺', '正印・偏印'];
     return families[diff] || '';
   };
   return (
@@ -908,9 +882,9 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
   const order = ['year', 'month', 'day', 'hour'];
   const rows = [
     {
-      label: '通変星',
+      label: '干神',
       className: 'bazi-god',
-      render: (_pillar, key) => <strong>{displayTenGod(calculation.tenGods[key])}</strong>,
+      render: (_pillar, key) => <strong>{calculation.tenGods[key] || '—'}</strong>,
     },
     {
       label: '天干',
@@ -923,7 +897,7 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
       render: (pillar) => <strong className={elementClass(pillar.element.branch)}>{pillar.branch}</strong>,
     },
     {
-      label: '蔵干',
+      label: '藏干',
       className: 'bazi-detail',
       render: (pillar) => (pillar.hiddenStemDetails?.length
         ? pillar.hiddenStemDetails
@@ -933,14 +907,14 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
       )),
     },
     {
-      label: '蔵干通変',
+      label: '支神',
       className: 'bazi-detail',
       render: (pillar) => pillar.hiddenStemDetails?.length ? pillar.hiddenStemDetails.map((detail, index) => (
-        <span key={`${detail.tenGod}-${index}`} className={`mini-line ${elementClass(detail.element)}`}>{displayTenGod(detail.tenGod)}</span>
+        <span key={`${detail.tenGod}-${index}`} className={`mini-line ${elementClass(detail.element)}`}>{detail.tenGod || '—'}</span>
       )) : <span className="muted">—</span>,
     },
     {
-      label: '納音',
+      label: '纳音',
       className: 'bazi-flat',
       render: (pillar) => <span className={elementClass((pillar.naYin || '').slice(-1))}>{pillar.naYin || '—'}</span>,
     },
@@ -1059,7 +1033,7 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
         </div>
-        <p className="backend-copy">五行は天干、地支の蔵干、月柱の季節補正を合わせて点数化しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節から、五行の働きやすさも重ねて見ます。</p>
+        <p className="backend-copy">五行は天干、地支の藏干、月柱の季節補正を合わせて点数化しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節から、五行の働きやすさも重ねて見ます。</p>
         <div className="backend-card-grid five">
           {ELEMENT_LABELS.map(el => (
             <article key={el}>
@@ -1075,20 +1049,20 @@ function BackendDetailSync({ calculation }) {
       <section id="insight-ten-gods" className="backend-panel">
         <div className="backend-panel-head">
           <div>
-            <div className="summary-kicker">十神 / 蔵干</div>
+            <div className="summary-kicker">十神 / 藏干</div>
             <h3>表に出る役割と内側のテーマ</h3>
           </div>
           <span>構成分析</span>
         </div>
         <div className="backend-card-grid two">
           <article>
-            <small>十神の割合</small>
+            <small>十神占比</small>
             <div className="backend-token-list">
-              {gods.slice(0, 8).map(god => <span key={god.name}><strong>{displayTenGod(god.name)}</strong> ×{god.total} <em>干{god.heavenly}/支{god.hidden}</em></span>)}
+              {gods.slice(0, 8).map(god => <span key={god.name}><strong>{god.name}</strong> ×{god.total} <em>干{god.heavenly}/支{god.hidden}</em></span>)}
             </div>
           </article>
           <article>
-            <small>蔵干の重なり</small>
+            <small>藏干の重なり</small>
             <div className="backend-token-list">
               {hidden.slice(0, 8).map(item => <span key={`${item.stem}-${item.element}`}><strong className={elementClass(item.element)}>{item.stem}{item.element}</strong> ×{item.total}</span>)}
             </div>
@@ -1102,19 +1076,19 @@ function BackendDetailSync({ calculation }) {
             <div className="summary-kicker">読み取り位置 / 四柱の坐</div>
             <h3>どの柱・どの要素から読んでいるか</h3>
           </div>
-          <span>四柱の位置</span>
+          <span>四柱定位</span>
         </div>
         <div className="backend-card-grid four">
           {PILLAR_KEYS.map(key => {
             const p = calculation.pillars[key];
             const guide = PILLAR_READING[key];
-            const hiddenText = (p.hiddenStemDetails || []).map(detail => `${detail.stem}${detail.element}（${displayTenGod(detail.tenGod)}）`).join('、') || '—';
+            const hiddenText = (p.hiddenStemDetails || []).map(detail => `${detail.stem}${detail.element}（${detail.tenGod}）`).join('、') || '—';
             return (
               <article key={key} className={key === 'day' ? 'is-primary' : ''}>
                 <small>{PILLAR_LABELS[key]} / {guide.title}</small>
                 <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
                 <p>{guide.text}</p>
-                <em>蔵干: {hiddenText}</em>
+                <em>藏干: {hiddenText}</em>
                 <em>地勢 {p.terrainByDay || '—'} / 自坐 {p.terrainSelf || '—'}</em>
                 {key === 'day' && <b>日支 {p.branch} は婚姻宮として詳解します</b>}
               </article>
@@ -1149,8 +1123,8 @@ function BasicInfoPanel({ name, calculation, profile }) {
     { label: '生年月日', value: input.date || meta.inputDateTime?.slice(0, 10) || '—' },
     { label: '出生時間', value: timeDisplay(calculation, profile) },
     { label: '出生地', value: stripJapan(location.label || meta.location?.label || '—') },
-    { label: 'タイムゾーン', value: meta.timezone || location.timezone || '—' },
-    { label: '真太陽時', value: meta.trueSolarTime === 'applied' ? meta.effectiveBirthDateTime : '未補正' },
+    { label: '時区', value: meta.timezone || location.timezone || '—' },
+    { label: '真太阳时', value: meta.trueSolarTime === 'applied' ? meta.effectiveBirthDateTime : '未補正' },
     { label: '四柱', value: calculation.pillarLine || PILLAR_KEYS.map(key => calculation.pillars[key].text).join(' / ') },
   ];
   return (
@@ -1304,11 +1278,11 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   const primaryGod = collectTenGods(calculation)[0]?.[0] || '比肩';
   const dayStem = calculation.dayMaster;
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
-  const TOPICS = [ { key: 'personality', ja: '性格傾向', icon: '👤', title: 'あなたの強みと本質' }, { key: 'talent', ja: '才能・天分', icon: '✨', title: '天から授かった才能' }, { key: 'career', ja: '仕事・金運', icon: '💰', title: '仕事と財の流れ' }, { key: 'marriage', ja: '恋愛・婚姻', icon: '❤️', title: '愛と絆の形' } ];
+  const TOPICS = [ { key: 'personality', ja: '性格特質', icon: '👤', title: 'あなたの強みと本質' }, { key: 'talent', ja: '才能・天分', icon: '✨', title: '天から授かった才能' }, { key: 'career', ja: '事業・金運', icon: '💰', title: '仕事と財の流れ' }, { key: 'marriage', ja: '情感・婚姻', icon: '❤️', title: '愛と絆の形' } ];
   const currentTopic = TOPICS.find(t => t.key === topic);
   const getInsightContent = (key) => {
     const contents = {
-      personality: { intro: `日主「${dayStem}」と「${displayTenGod(primaryGod)}」から解析します。`, p1: `【本質】${STEM_READING[dayStem]?.text}`, p2: `【行動】${TEN_GOD_READING[primaryGod]?.text}` },
+      personality: { intro: `日主「${dayStem}」と「${primaryGod}」から解析します。`, p1: `【本質】${STEM_READING[dayStem]?.text}`, p2: `【行動】${TEN_GOD_READING[primaryGod]?.text}` },
       talent: { intro: `あなたの才能の活かし所を特定します。`, p1: `あなたの格局は「${calculation.pattern?.name}」です。${calculation.pattern?.text}`, p2: `補助する要素があなたの独自性を高めています。` },
       career: { intro: `最適なビジネススタイルを提案します。`, p1: `エネルギーは「${calculation.strength?.status}」です。${calculation.strength?.text}`, p2: `【分析】${synthesis.career}` },
       marriage: { intro: `配偶者宮から理想のパートナーシップを導きます。`, p1: `配偶者の場所には「${calculation.pillars.day.branch}」が鎮座。${BRANCH_READING[calculation.pillars.day.branch]}`, p2: `【分析】${synthesis.marriage}` }
@@ -1414,7 +1388,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                 <div key={l.label} style={{ background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8, padding: '20px 12px', textAlign: 'center' }}>
                   <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>{l.label}</div>
                   <div style={{ fontSize: 28, fontFamily: 'var(--f-display)' }}>{l.item?.pillar?.text}</div>
-                  <div style={{ fontSize: 12, color: l.color }}><strong>{displayTenGod(l.item?.pillar?.heavenlyTenGod)}</strong></div>
+                  <div style={{ fontSize: 12, color: l.color }}><strong>{l.item?.pillar?.heavenlyTenGod}</strong></div>
                   <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8 }}>{l.item?.pillar?.fortuneTheme}</div>
                 </div>
               ))}
@@ -1431,7 +1405,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                  { label: '大運', value: item => item.name },
                  { label: '年齢', value: item => `${item.startAge}-${item.endAge}歳` },
                  { label: '期間', value: item => `${item.startYear}-${item.endYear}` },
-                 { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod) },
+                 { label: '十神', value: item => item.pillar?.heavenlyTenGod || '—' },
                ]}
              />
              <div className="backend-luck-grid">
@@ -1442,7 +1416,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                  columns={[
                    { label: '年', value: item => item.year },
                    { label: '干支', value: item => item.name },
-                   { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod) },
+                   { label: '十神', value: item => item.pillar?.heavenlyTenGod || '—' },
                  ]}
                />
                <LuckItemTable
@@ -1462,7 +1436,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                  columns={[
                    { label: '日付', value: item => item.date },
                    { label: '干支', value: item => item.name },
-                   { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod) },
+                   { label: '十神', value: item => item.pillar?.heavenlyTenGod || '—' },
                  ]}
                />
              </div>
@@ -1494,12 +1468,11 @@ function decadeTheme(decade, gender) {
   }
   const god = decade.pillar?.heavenlyTenGod || '十神';
   const profile = TEN_GOD_READING[god] || { text: 'この十年に出やすい役割を見ます。', tags: [] };
-  const godLabel = displayTenGod(god);
   const label = gender === 'male' ? '男性' : gender === 'female' ? '女性' : '性別未指定';
   return {
     title: `${decade.name} の大運テーマ`,
-    intro: `${decade.startYear}-${decade.endYear}年（${decade.startAge}-${decade.endAge}歳）は、${godLabel} の働きが前に出やすい十年です。${label}としての順逆計算に基づいて表示しています。${profile.text}`,
-    work: `${godLabel} の役割を仕事の場でどう使うかを見ます。${profile.tags?.join('・') || '役割'} がテーマです。`,
+    intro: `${decade.startYear}-${decade.endYear}年（${decade.startAge}-${decade.endAge}歳）は、${god} の働きが前に出やすい十年です。${label}としての順逆計算に基づいて表示しています。${profile.text}`,
+    work: `${god} の役割を仕事の場でどう使うかを見ます。${profile.tags?.join('・') || '役割'} がテーマです。`,
     money: '財運は収入断定ではなく、現実管理・人脈・責任の出方として読みます。',
     love: '対人運はこの大運の十神と日支の婚姻宮を重ねて確認します。',
     family: '家庭や内面は日柱・時柱に、この十年の干支がどう作用するかを見ます。',

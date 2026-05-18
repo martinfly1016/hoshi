@@ -1407,8 +1407,8 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side">
         <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
-          {['十年運マップ','現在の大運','近い流年','明細表'].map((n, i) => (
-            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
+          {['大運テーマ','今日','大運表'].map((n, i) => (
+            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
         </div>
@@ -1420,9 +1420,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
         </div>
         <div className="result-card" data-card-label="運勢の流れ" style={{ marginTop: 0 }}>
           <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
-            <DecadeFortuneMap decade={decade} currentDecade={currentDecade} />
-          </div>
-          <div className="result-summary result-wide" id="f1" style={{ marginTop: 56, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div className="summary-kicker">大運（10年運）の解読</div><h2 style={{ fontSize: 24 }}>{currentDecadeTheme?.title}</h2><p>{currentDecadeTheme?.intro}</p>
             <div className="result-wide visual-block" style={{ marginTop: 32, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
               {[ { l: '◆ 仕事', v: currentDecadeTheme.work, c: 'var(--seal)' }, { l: '◆ 財', v: currentDecadeTheme.money, c: 'var(--gold)' }, { l: '◆ 対人', v: currentDecadeTheme.love, c: 'var(--accent)' }, { l: '◆ 家庭', v: currentDecadeTheme.family, c: 'var(--ink-3)' } ].map(x => (
@@ -1430,7 +1427,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
               ))}
             </div>
           </div>
-          <div id="f2" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+          <div id="f1" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}><h3>今日の巡り（流年・流月・流日）</h3></div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
               {[ { label: '今年の運気', item: currentAnnual, color: 'var(--accent)' }, { label: '今月の運気', item: monthly[0], color: 'var(--gold)' }, { label: '今日の運気', item: daily[0], color: 'var(--seal)' } ].map(l => (
@@ -1438,14 +1435,13 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                   <div style={{ fontSize: 10, color: 'var(--ink-3)' }}>{l.label}</div>
                   <div style={{ fontSize: 28, fontFamily: 'var(--f-display)' }}>{l.item?.pillar?.text}</div>
                   <div style={{ fontSize: 12, color: l.color }}><strong>{displayTenGod(l.item?.pillar?.heavenlyTenGod)}</strong></div>
-                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8 }}>{normalizeDisplayTerms(l.item?.pillar?.fortuneTheme || '')}</div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-3)', marginTop: 8 }}>{l.item?.pillar?.fortuneTheme}</div>
                 </div>
               ))}
             </div>
-            <AnnualFortuneGuide annual={luck.annualFortunes || []} />
           </div>
-          <div id="f3" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-             <div style={{ textAlign: 'center' }}><h3>明細表</h3><p className="backend-copy">上の見取り図で大きな流れを確認したあと、必要に応じて干支・十神の明細を見ます。</p></div>
+          <div id="f2" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+             <div style={{ textAlign: 'center' }}><h3>生涯の大運表</h3></div>
              <LuckItemTable
                title="大運"
                subtitle={luck.decadeFortunes?.status === 'ok' ? `${luck.decadeFortunes.gender || '性別'} / ${luck.decadeFortunes.direction || '順逆'} / 起運 ${luck.decadeFortunes.startTime || '—'}` : '性別を選ぶと十年運を定位します'}
@@ -1504,119 +1500,6 @@ function readingTags(calc, gods) {
 }
 
 function currentAnnualFortune(calculation) { return calculation.luckCycles?.annualFortunes?.[0] || null; }
-
-const TEN_GOD_FORTUNE_GUIDE = {
-  比肩: { keywords: ['自立', '基礎固め'], rhythm: '自分の軸を整える十年', score: 62, tone: 'steady', advice: '独立心が強まりやすい時期です。無理に広げるより、自分の判断基準、生活基盤、仕事の型を固めるほど後半に活きます。' },
-  劫财: { keywords: ['競争', '突破'], rhythm: '勝負に出やすい十年', score: 72, tone: 'active', advice: '人との競争や共同作業の中で力が出やすい時期です。勢いはありますが、契約・お金・役割分担を曖昧にしないことが運を安定させます。' },
-  食神: { keywords: ['表現', '余裕'], rhythm: '楽しみが広がる十年', score: 70, tone: 'growth', advice: '表現、発信、育成、生活の楽しみが運を開きやすい時期です。無理な勝負より、続けられる形で才能を外へ出すと流れが整います。' },
-  伤官: { keywords: ['才能', '改革'], rhythm: '才能を磨く十年', score: 68, tone: 'active', advice: '鋭さや専門性が前に出やすい時期です。既存の型を壊す力がありますが、言葉が強くなりやすいので、批判より提案に変えると評価につながります。' },
-  偏财: { keywords: ['人脈', 'チャンス'], rhythm: '外へ広がる十年', score: 78, tone: 'peak', advice: '人脈、商機、移動、交渉で運が動きやすい時期です。仕事や収入の入口が増えやすい一方、散漫にならないよう優先順位を決めることが大切です。' },
-  正财: { keywords: ['安定', '管理'], rhythm: '現実を積み上げる十年', score: 66, tone: 'steady', advice: 'お金、生活、仕事の管理力が問われる時期です。派手な変化より、貯蓄・実務・信用を積み上げるほど安定した実りにつながります。' },
-  七杀: { keywords: ['挑戦', '責任'], rhythm: '責任が増す十年', score: 74, tone: 'active', advice: 'プレッシャーや大きな役割が来やすい時期です。挑戦運はありますが、勢いだけで進むより、ルールと健康管理を整えるほど飛躍に変わります。' },
-  正官: { keywords: ['信用', '昇進'], rhythm: '社会的評価が育つ十年', score: 76, tone: 'peak', advice: '肩書き、責任、組織内の評価が育ちやすい時期です。誠実さと継続力が運を押し上げるので、約束を守ることが最大の開運行動になります。' },
-  偏印: { keywords: ['学び', '転換'], rhythm: '視点を変える十年', score: 58, tone: 'rest', advice: '学び直し、専門分野、環境の切り替えに向く時期です。外へ強く攻めるより、次の展開に必要な知識や感性を蓄えると流れが良くなります。' },
-  正印: { keywords: ['休養', '保護'], rhythm: '整えて受け取る十年', score: 60, tone: 'rest', advice: '学び、保護、休養、資格や知識の吸収に向く時期です。無理に成果を急がず、体調や心の余白を整えることが次の上昇につながります。' },
-};
-
-function fortuneGuideForGod(god) {
-  return TEN_GOD_FORTUNE_GUIDE[god] || { keywords: ['確認', '調整'], rhythm: '流れを確認する時期', score: 60, tone: 'steady', advice: '大きな断定はせず、命式本体と流年を重ねて運の出方を確認します。' };
-}
-
-function decadeStageLabel(item) {
-  const age = Number(item?.startAge ?? 0);
-  if (age < 20) return '早年';
-  if (age < 40) return '成長期';
-  if (age < 60) return '充実期';
-  return '成熟期';
-}
-
-function enrichDecadeFortune(item, currentDecade) {
-  const guide = fortuneGuideForGod(item?.pillar?.heavenlyTenGod);
-  const isCurrent = currentDecade && item?.index === currentDecade.index;
-  return {
-    ...item,
-    guide,
-    score: guide.score,
-    scoreLabel: guide.score >= 75 ? '上昇' : guide.score >= 68 ? '活動' : guide.score >= 62 ? '安定' : '整える',
-    stage: decadeStageLabel(item),
-    isCurrent,
-  };
-}
-
-function DecadeFortuneMap({ decade, currentDecade }) {
-  const items = (decade || []).map(item => enrichDecadeFortune(item, currentDecade));
-  if (!items.length) {
-    return <p className="backend-copy">大運の流れは性別を選択すると表示できます。十年ごとのテーマ、運勢の起伏、仕事・財・対人の読みをまとめて確認できます。</p>;
-  }
-  const points = items.map((item, index) => {
-    const x = items.length <= 1 ? 50 : (index / (items.length - 1)) * 100;
-    const y = 100 - item.score;
-    return `${x},${y}`;
-  }).join(' ');
-  return (
-    <section className="fortune-map">
-      <div className="fortune-map-head">
-        <div>
-          <div className="summary-kicker">十年運の見取り図</div>
-          <h3>人生の流れを、十年ごとのテーマで読む</h3>
-          <p>点数は吉凶の断定ではなく、外へ動く力・責任の強さ・整える時期を見やすくしたリズムです。</p>
-        </div>
-      </div>
-      <div className="fortune-curve" aria-label="十年ごとの運勢リズム">
-        <svg viewBox="0 0 100 48" preserveAspectRatio="none">
-          <polyline points={points} />
-          {items.map((item, index) => {
-            const x = items.length <= 1 ? 50 : (index / (items.length - 1)) * 100;
-            const y = 100 - item.score;
-            return <circle key={item.index} cx={x} cy={y} r={item.isCurrent ? 2.8 : 2} className={item.isCurrent ? 'is-current' : ''} />;
-          })}
-        </svg>
-      </div>
-      <div className="decade-readable-grid">
-        {items.map(item => (
-          <article key={item.index} className={`decade-readable-card tone-${item.guide.tone} ${item.isCurrent ? 'is-current' : ''}`}>
-            <div className="decade-readable-top">
-              <span>{item.stage}</span>
-              {item.isCurrent && <b>現在</b>}
-            </div>
-            <strong>{item.startAge}-{item.endAge}歳</strong>
-            <h4>{displayTenGod(item.pillar?.heavenlyTenGod)}：{item.guide.rhythm}</h4>
-            <div className="fortune-score"><i style={{ width: `${item.score}%` }} /><em>{item.scoreLabel}</em></div>
-            <div className="fortune-keywords">
-              {item.guide.keywords.map(keyword => <span key={keyword}>{keyword}</span>)}
-            </div>
-            <p>{item.guide.advice}</p>
-            <small>{item.name} / {item.startYear}-{item.endYear}</small>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function AnnualFortuneGuide({ annual }) {
-  const items = (annual || []).slice(0, 5);
-  if (!items.length) return null;
-  return (
-    <section className="annual-readable-guide">
-      <div className="summary-kicker">近い流年のテーマ</div>
-      <h3>これから数年の動き方</h3>
-      <div className="annual-readable-grid">
-        {items.map(item => {
-          const guide = fortuneGuideForGod(item.pillar?.heavenlyTenGod);
-          return (
-            <article key={item.year}>
-              <span>{item.year}</span>
-              <strong>{displayTenGod(item.pillar?.heavenlyTenGod)}</strong>
-              <p>{guide.keywords.join('・')}</p>
-              <em>{normalizeDisplayTerms(item.pillar?.fortuneTheme || guide.rhythm)}</em>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
 
 function decadeTheme(decade, gender) {
   if (!decade) {

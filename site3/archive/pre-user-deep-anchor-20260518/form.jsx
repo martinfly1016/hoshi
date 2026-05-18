@@ -607,7 +607,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: stem.text || '日主は日柱の天干で、命式全体を読む起点です。',
       evidence: `日柱天干 ${calc.dayMaster} / 五行 ${calc.pillars.day.element.stem}`,
       action: 'daymaster',
-      target: { page: 'insight', topic: 'personality', anchor: 'insight-daymaster' },
     },
     {
       kind: 'pattern',
@@ -616,7 +615,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: calc.pattern?.text || '月令と天干から命式の大枠を見ます。',
       evidence: '月令・天干',
       action: 'insight',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-judgement' },
     },
     {
       kind: 'strength',
@@ -625,7 +623,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: calc.strength?.text || '日主の勢いを月令と五行構成から見ます。',
       evidence: `日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
       action: 'daymaster',
-      target: { page: 'insight', topic: 'career', anchor: 'insight-judgement' },
     },
     {
       kind: 'element',
@@ -634,7 +631,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: `${dominant.join('・')} が命式全体で前に出やすい五行です。`,
       evidence: '天干・藏干・月令補正',
       action: 'elements',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-elements' },
     },
     {
       kind: calc.fiveElements?.missing?.length ? 'warning' : 'support',
@@ -643,7 +639,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: `${support.join('・')} は意識して補うと全体が整いやすい候補です。`,
       evidence: '五行構成比',
       action: 'elements',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-element-basis' },
     },
     {
       kind: 'support',
@@ -652,7 +647,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: calc.yongShen?.text || '命式の偏りを整える要素を見ます。',
       evidence: '調候・用神',
       action: 'insight',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-judgement' },
     },
     {
       kind: 'god',
@@ -661,7 +655,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: god ? TEN_GOD_READING[god]?.text : '命式で重なる十神テーマです。',
       evidence: god ? `十神出現 ${tenGods[0]?.[1] || 0}` : '十神',
       action: 'insight',
-      target: { page: 'insight', topic: 'personality', anchor: 'insight-ten-gods' },
     },
     {
       kind: 'source',
@@ -670,7 +663,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: '親密な関係や婚姻の読みは、日柱の地支を中心に見ます。',
       evidence: `日柱 ${calc.pillars.day.text}`,
       action: 'marriage',
-      target: { page: 'insight', topic: 'marriage', anchor: 'insight-topic-main' },
     },
     {
       kind: 'trend',
@@ -679,7 +671,6 @@ function buildUserReadingTags(calc, tenGods) {
       detail: current ? `現在は ${current.name}（${current.startYear}-${current.endYear}）の大運です。` : '性別を選ぶと大運の流れを定位できます。',
       evidence: current ? `大運 ${current.name}` : '大運未判定',
       action: 'fortune',
-      target: { page: 'fortune', anchor: 'f0' },
     },
   ];
 }
@@ -840,7 +831,7 @@ function UserTagIndex({ tags, onNavigate }) {
                 <small>{tag.label}</small>
                 <strong>{tag.value}</strong>
               </span>
-              <button onClick={() => onNavigate(tag)}>詳細説明</button>
+              <button onClick={() => onNavigate(tag.action)}>詳細説明</button>
             </div>
             <p>{tag.detail}</p>
             <em>{tag.evidence}</em>
@@ -1010,7 +1001,7 @@ function BackendDetailSync({ calculation }) {
   const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
   return (
     <div className="backend-sync-stack">
-      <section id="insight-judgement" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">格局 / 身強身弱 / 用神</div>
@@ -1025,7 +1016,7 @@ function BackendDetailSync({ calculation }) {
         </div>
       </section>
 
-      <section id="insight-element-basis" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">五行計算の根拠</div>
@@ -1046,7 +1037,7 @@ function BackendDetailSync({ calculation }) {
         </div>
       </section>
 
-      <section id="insight-ten-gods" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">十神 / 藏干</div>
@@ -1070,7 +1061,7 @@ function BackendDetailSync({ calculation }) {
         </div>
       </section>
 
-      <section id="insight-reading-position" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">読み取り位置 / 四柱の坐</div>
@@ -1156,7 +1147,7 @@ function FoundationDetailSections({ calculation }) {
   const support = supportElements(calculation).join('・');
   return (
     <div className="foundation-detail-stack">
-      <section id="insight-pillars" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">四柱の意味</div>
@@ -1167,7 +1158,7 @@ function FoundationDetailSections({ calculation }) {
         <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
       </section>
 
-      <section id="insight-daymaster" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">日主</div>
@@ -1184,7 +1175,7 @@ function FoundationDetailSections({ calculation }) {
         </div>
       </section>
 
-      <section id="insight-elements" className="backend-panel">
+      <section className="backend-panel">
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">五行バランス</div>
@@ -1218,13 +1209,12 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
     }
   };
-  const handleTagNavigate = (tag) => {
-    const target = tag?.target || {};
-    if (target.page === 'fortune' || tag?.action === 'fortune') {
-      onShowFortune(target);
+  const handleTagNavigate = (action) => {
+    if (action === 'fortune') {
+      onShowFortune();
       return;
     }
-    onShowInsight(target);
+    onShowInsight();
   };
 
   return (
@@ -1272,9 +1262,8 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   );
 }
 
-function InsightView({ calculation, profile, onBack, onEditInput, routeTarget }) {
-  const [topic, setTopic] = React.useState(routeTarget?.topic || 'personality');
-  const handledRouteKey = React.useRef(null);
+function InsightView({ calculation, profile, onBack, onEditInput }) {
+  const [topic, setTopic] = React.useState('personality');
   const primaryGod = collectTenGods(calculation)[0]?.[0] || '比肩';
   const dayStem = calculation.dayMaster;
   const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
@@ -1290,24 +1279,6 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
     return contents[key] || contents.personality;
   };
   const content = getInsightContent(topic);
-  const scrollTo = (sid) => {
-    const el = document.getElementById(sid);
-    if (el) {
-      const offset = window.matchMedia('(max-width: 768px)').matches ? 132 : 88;
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-    }
-  };
-  React.useEffect(() => {
-    if (!routeTarget?.key || handledRouteKey.current === routeTarget.key) return;
-    if (routeTarget.topic && routeTarget.topic !== topic) {
-      setTopic(routeTarget.topic);
-      return;
-    }
-    if (routeTarget.anchor) {
-      window.requestAnimationFrame(() => scrollTo(routeTarget.anchor));
-    }
-    handledRouteKey.current = routeTarget.key;
-  }, [routeTarget, topic]);
   return (
     <section className="rite" data-screen-label="05 鑑定詳解">
       <aside className="rite-side">
@@ -1325,7 +1296,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
         <div className="result-card" data-card-label="詳解の鑑定" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div className="summary-kicker">{currentTopic.ja}の詳解</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
-          <div id="insight-topic-main" className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2 }}>{content.p2}</div></div>
+          <div className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2 }}>{content.p2}</div></div>
           <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>{TOPICS.filter(t => t.key !== topic).map(t => <button key={t.key} onClick={() => setTopic(t.key)} style={{ padding: '16px', background: 'transparent', border: '1px solid var(--rule)', borderRadius: 6, color: 'var(--ink-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13 }}>次：{t.ja} →</button>)}</div>
           <FoundationDetailSections calculation={calculation} />
           <BackendDetailSync calculation={calculation} />
@@ -1335,8 +1306,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   );
 }
 
-function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget }) {
-  const handledRouteKey = React.useRef(null);
+function FortuneView({ calculation, profile, onBack, onEditInput }) {
   const luck = calculation.luckCycles || {};
   const decade = luck.decadeFortunes?.items || [];
   const currentAnnual = currentAnnualFortune(calculation);
@@ -1351,11 +1321,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
       window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
     }
   };
-  React.useEffect(() => {
-    if (!routeTarget?.anchor || handledRouteKey.current === routeTarget.key) return;
-    window.requestAnimationFrame(() => scrollTo(routeTarget.anchor));
-    handledRouteKey.current = routeTarget.key;
-  }, [routeTarget]);
   return (
     <section className="rite" data-screen-label="04 星辰譜">
       <aside className="rite-side">

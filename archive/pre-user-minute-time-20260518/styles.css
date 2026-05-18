@@ -598,17 +598,6 @@ input, select { font-family: inherit; color: inherit; }
 .date-row {
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.92fr) minmax(0, 0.92fr);
 }
-.time-row {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  max-width: 420px;
-}
-.time-row.is-disabled {
-  opacity: 0.45;
-}
-.input-line select:disabled {
-  cursor: not-allowed;
-  color: var(--ink-3);
-}
 .input-row.two { grid-template-columns: 1fr 1fr; }
 
 .toggle-row {
@@ -629,12 +618,6 @@ input, select { font-family: inherit; color: inherit; }
 .toggle-row button.on {
   background: var(--ink);
   color: var(--bg);
-}
-.toggle-row.compact {
-  letter-spacing: 0.16em;
-}
-.toggle-row.compact button {
-  padding: 8px 14px;
 }
 
 .chips {

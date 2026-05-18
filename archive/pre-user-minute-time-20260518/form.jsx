@@ -1,5 +1,20 @@
 /* 鑑定の儀 — free reading form */
 
+const SHI_HOURS = [
+  { ji: '子', hours: '23–01', en: 'NE' },
+  { ji: '丑', hours: '01–03', en: 'OX' },
+  { ji: '寅', hours: '03–05', en: 'TR' },
+  { ji: '卯', hours: '05–07', en: 'RB' },
+  { ji: '辰', hours: '07–09', en: 'DR' },
+  { ji: '巳', hours: '09–11', en: 'SN' },
+  { ji: '午', hours: '11–13', en: 'HR' },
+  { ji: '未', hours: '13–15', en: 'SH' },
+  { ji: '申', hours: '15–17', en: 'MK' },
+  { ji: '酉', hours: '17–19', en: 'RT' },
+  { ji: '戌', hours: '19–21', en: 'DG' },
+  { ji: '亥', hours: '21–23', en: 'PG' },
+];
+
 const PROVINCES = [
   '京都府','東京都','大阪府','神奈川県','北海道','奈良県','兵庫県',
   '愛知県','福岡県','沖縄県','宮城県','石川県','長野県','広島県',
@@ -32,16 +47,22 @@ function stripJapan(label) {
   return String(label || '').replace(/^日本\s*\/\s*/, '');
 }
 
-function parseBirthTime(value) {
-  const [hour = '12', minute = '00'] = String(value || '12:00').split(':');
-  return {
-    hour: String(Math.min(23, Math.max(0, parseInt(hour, 10) || 0))).padStart(2, '0'),
-    minute: String(Math.min(59, Math.max(0, parseInt(minute, 10) || 0))).padStart(2, '0'),
+function representativeTime(shi) {
+  const map = {
+    子: '00:00',
+    丑: '02:00',
+    寅: '04:00',
+    卯: '06:00',
+    辰: '08:00',
+    巳: '10:00',
+    午: '12:00',
+    未: '14:00',
+    申: '16:00',
+    酉: '18:00',
+    戌: '20:00',
+    亥: '22:00',
   };
-}
-
-function composeBirthTime(hour, minute) {
-  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+  return map[shi] || '12:00';
 }
 
 function FormField({ num, ja, romaji, hint, children }) {
@@ -66,9 +87,8 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [year, setYear]   = React.useState(initialForm.year || '');
   const [month, setMonth] = React.useState(initialForm.month || '');
   const [day, setDay]     = React.useState(initialForm.day || '');
-  const initialBirthTime = parseBirthTime(initialForm.birthTime);
-  const [birthHour, setBirthHour] = React.useState(initialBirthTime.hour);
-  const [birthMinute, setBirthMinute] = React.useState(initialBirthTime.minute);
+  const [shi, setShi] = React.useState(initialForm.shi || '');
+  const [birthTime, setBirthTime] = React.useState(initialForm.birthTime || '12:00');
   const [unsure, setUnsure] = React.useState(initialForm.unsure || false);
   const [locationId, setLocationId] = React.useState(initialForm.locationId || initialResult?.profile?.location?.id || 'tokyo');
   const [city, setCity] = React.useState('');
@@ -80,8 +100,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
 
   const locations = locationOptions();
   const selectedLocation = findLocation(locationId);
-  const birthTime = composeBirthTime(birthHour, birthMinute);
-  const valid = year && month && day && locationId && (unsure || birthTime);
+  const valid = year && month && day && locationId && (unsure || birthTime || shi);
 
   const submit = () => {
     if (!valid || busy) return;
@@ -106,7 +125,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
             return `${String(y).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           })(),
           timeKnown: !unsure,
-          time: unsure ? '12:00' : birthTime,
+          time: unsure ? '12:00' : (birthTime || representativeTime(shi)),
           locationId: selectedLocation.id,
           locationOverride: selectedLocation,
           timeCalculationMode: 'true_solar_time',
@@ -114,8 +133,8 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           gender: gender === 'yang' ? 'male' : gender === 'yin' ? 'female' : 'unspecified',
         };
         const calculated = api.calculateShichusuimei(input);
-        const form = { name, gender, calendar, year, month, day, birthTime, unsure, locationId };
-        const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, unsure }, form };
+        const form = { name, gender, calendar, year, month, day, shi, birthTime, unsure, locationId };
+        const res = { input, chart: calculated, profile: { name, gender, location: selectedLocation, shi, unsure }, form };
         setResult(res);
         setDone(true);
         if (onSubmitDone) onSubmitDone(res);
@@ -209,28 +228,17 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </FormField>
 
         <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEIJIKAN"
-          hint="出生時刻をできるだけ正確に入力してください。真太陽時の補正に使用します">
-          <div className="toggle-row compact">
-            <button className={!unsure ? 'on' : ''} onClick={() => setUnsure(false)}>時刻を入力</button>
-            <button className={unsure ? 'on' : ''} onClick={() => setUnsure(true)}>時間不明</button>
-          </div>
-          <div className={`input-row time-row ${unsure ? 'is-disabled' : ''}`}>
-            <div className="input-line with-mark" data-mark="時 / H">
-              <select value={birthHour} disabled={unsure} aria-disabled={unsure ? 'true' : 'false'} onChange={e => {
-                setUnsure(false);
-                setBirthHour(e.target.value);
+          hint="該当する出生時間（時辰）を選択してください。不明な場合は「時間不明」を選択してください">
+          <div className="input-line">
+            <select value={unsure ? 'unsure' : shi} onChange={e => {
+                const val = e.target.value;
+                if (val === 'unsure') { setUnsure(true); setShi(''); setBirthTime('12:00'); }
+                else { setUnsure(false); setShi(val); setBirthTime(representativeTime(val)); }
               }}>
-                {Array.from({length: 24}, (_, i) => String(i).padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}
-              </select>
-            </div>
-            <div className="input-line with-mark" data-mark="分 / M">
-              <select value={birthMinute} disabled={unsure} aria-disabled={unsure ? 'true' : 'false'} onChange={e => {
-                setUnsure(false);
-                setBirthMinute(e.target.value);
-              }}>
-                {Array.from({length: 60}, (_, i) => String(i).padStart(2, '0')).map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-            </div>
+              <option value="" disabled>-- 時辰を選択 --</option>
+              {SHI_HOURS.map(s => <option key={s.ji} value={s.ji}>{s.ji}の刻 ({s.hours.replace('–', ':00 ～ ') + ':00'})</option>)}
+              <option value="unsure">時間不明</option>
+            </select>
           </div>
         </FormField>
 
@@ -941,8 +949,8 @@ function genderDisplay(profile) {
 function timeDisplay(calculation, profile) {
   const input = calculation.inputEcho || {};
   if (profile?.unsure || !input.timeKnown) return '時間不明（12:00で仮計算）';
-  const branch = calculation.pillars?.hour?.branch ? `${calculation.pillars.hour.branch}の刻` : '時辰';
-  return `${input.time || '—'} / ${branch}`;
+  const shi = profile?.shi ? `${profile.shi}の刻` : '時辰';
+  return `${shi} / ${input.time || '—'}`;
 }
 
 function BasicInfoPanel({ name, calculation, profile }) {

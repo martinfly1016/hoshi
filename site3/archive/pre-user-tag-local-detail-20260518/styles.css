@@ -1512,10 +1512,6 @@ input, select { font-family: inherit; color: inherit; }
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
-.user-tag.is-active {
-  background: color-mix(in srgb, var(--seal) 12%, transparent);
-  border-color: color-mix(in srgb, var(--seal) 58%, var(--rule));
-}
 .user-tag-detail-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1529,10 +1525,6 @@ input, select { font-family: inherit; color: inherit; }
   background: color-mix(in srgb, var(--bg-paper) 76%, transparent);
   padding: 14px;
   min-width: 0;
-}
-.user-tag-detail.is-active {
-  border-color: color-mix(in srgb, var(--seal) 58%, var(--rule));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--seal) 18%, transparent) inset;
 }
 .user-tag-detail-head {
   display: flex;

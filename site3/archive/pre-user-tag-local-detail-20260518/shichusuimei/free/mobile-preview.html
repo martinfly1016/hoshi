@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>四柱推命 無料鑑定 | Mobile Preview</title>
+<style>
+  :root {
+    --bg: #f7ecde;
+    --ink: #5f4737;
+    --ink-2: #8a6c57;
+    --rule: rgba(160, 126, 94, 0.18);
+    --accent: #dd8b6b;
+    --device: #191717;
+    --device-edge: #2c2828;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(255, 222, 189, 0.7), transparent 28%),
+      linear-gradient(180deg, #fbf0e2 0%, #f7ecde 100%);
+    color: var(--ink);
+    font: 14px/1.7 "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+
+  .shell {
+    width: min(1380px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 28px 0 40px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .eyebrow {
+    color: #d58a65;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 8px 0 10px;
+    font: 500 clamp(28px, 4vw, 42px)/1.2 "Hiragino Mincho ProN", "Yu Mincho", serif;
+    letter-spacing: 0.04em;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ink-2);
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .toolbar button,
+  .toolbar a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 14px;
+    border: 1px solid rgba(229, 208, 185, 0.95);
+    border-radius: 999px;
+    background: rgba(255, 250, 244, 0.92);
+    color: #8f654e;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .toolbar button.is-active {
+    border-color: rgba(221, 139, 107, 0.95);
+    background: rgba(255, 236, 220, 0.96);
+    color: #9f5f3c;
+  }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .device-block {
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+  }
+
+  .device-label {
+    color: var(--ink-2);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .device {
+    width: 434px;
+    padding: 16px;
+    border-radius: 52px;
+    background: linear-gradient(160deg, var(--device-edge), var(--device) 45%, var(--device-edge));
+    box-shadow:
+      0 36px 90px rgba(0, 0, 0, 0.28),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+
+  .screen {
+    position: relative;
+    width: 402px;
+    height: 874px;
+    overflow: hidden;
+    border-radius: 42px;
+    background: #000;
+  }
+
+  .island {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    z-index: 3;
+    width: 124px;
+    height: 34px;
+    margin-left: -62px;
+    border-radius: 999px;
+    background: #000;
+  }
+
+  .home-bar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    z-index: 3;
+    width: 134px;
+    height: 5px;
+    margin-left: -67px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    pointer-events: none;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: #fff;
+  }
+
+  .footer {
+    margin-top: 20px;
+    color: var(--ink-2);
+    font-size: 12px;
+  }
+
+  @media (max-width: 1180px) {
+    .preview-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .shell {
+      width: calc(100vw - 20px);
+      padding-top: 18px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .toolbar button,
+    .toolbar a {
+      width: 100%;
+      min-width: 0;
+      padding: 0 10px;
+    }
+
+    .toolbar a {
+      grid-column: 1 / -1;
+    }
+
+    .device {
+      width: calc(100vw - 20px);
+      overflow-x: auto;
+    }
+  }
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="header">
+    <div class="eyebrow">mobile testing workflow</div>
+    <h1>四柱推命 無料鑑定 / Mobile Preview</h1>
+    <p>固定 iPhone 16 Pro 视口。左侧看输入态，右侧看结果态，并切换结果模块确认手机端结构。</p>
+    <div class="toolbar" aria-label="结果模块切换">
+      <button type="button" class="is-active" data-section="day-master">日主</button>
+      <button type="button" data-section="elements">五行</button>
+      <button type="button" data-section="structure">十神</button>
+      <button type="button" data-section="chart">命盤</button>
+      <button type="button" data-section="meta">補足</button>
+      <a href="./index.html" target="_blank" rel="noreferrer">直接打开正式页</a>
+    </div>
+  </header>
+
+  <section class="preview-grid">
+    <article class="device-block">
+      <div class="device-label">Input / 402 × 874</div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <iframe src="./index.html" title="Input Preview"></iframe>
+          <div class="home-bar"></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="device-block">
+      <div class="device-label">Result / 402 × 874</div>
+      <div class="device">
+        <div class="screen">
+          <div class="island"></div>
+          <iframe id="result-frame" src="./index.html?autocalc=1&section=day-master" title="Result Preview"></iframe>
+          <div class="home-bar"></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <p class="footer">建议验收顺序：输入态 → 生成按钮 → 日主 → 五行 → 十神 → 命盤 → 補足，逐一检查文字密度、滚动长度和触达难度。</p>
+</main>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const initialSection = params.get('section') || 'day-master';
+  const buttons = Array.from(document.querySelectorAll('[data-section]'));
+  const resultFrame = document.getElementById('result-frame');
+
+  function setActive(section) {
+    buttons.forEach((button) => {
+      button.classList.toggle('is-active', button.dataset.section === section);
+    });
+    resultFrame.src = `./index.html?autocalc=1&section=${section}`;
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      setActive(button.dataset.section);
+    });
+  });
+
+  setActive(initialSection);
+</script>
+</body>
+</html>

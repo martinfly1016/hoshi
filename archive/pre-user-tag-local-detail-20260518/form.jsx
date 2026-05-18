@@ -792,46 +792,28 @@ function WuxingDiagram({ dayElement, elementCounts }) {
 }
 
 function UserTagIndex({ tags, onNavigate }) {
-  const [activeTagIndex, setActiveTagIndex] = React.useState(null);
-  const focusTagDetail = (index) => {
-    setActiveTagIndex(index);
-    window.requestAnimationFrame(() => {
-      const detail = document.getElementById(`tag-detail-${index}`);
-      if (!detail) return;
-      const offset = window.matchMedia('(max-width: 768px)').matches ? 132 : 88;
-      window.scrollTo({ top: detail.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
-    });
-  };
   return (
     <section className="user-tag-index">
       <div className="summary-kicker">命式タグ索引</div>
       <h2>重要な読みをタグで確認する</h2>
-      <p>タグを押すと、このページ下部の概要説明へ移動します。さらに詳しく読む場合は、各説明カードの「詳細説明」から深い鑑定へ進めます。</p>
+      <p>タグは単なるキーワードではなく、命式のどの部分から読んでいるかを示す入口です。クリックすると該当する説明へ移動します。</p>
       <div className="user-tag-row">
-        {tags.map((tag, index) => (
-          <button
-            key={`${tag.label}-${tag.value}`}
-            className={`user-tag tag-${tag.kind} ${activeTagIndex === index ? 'is-active' : ''}`}
-            onClick={() => focusTagDetail(index)}
-          >
+        {tags.map(tag => (
+          <button key={`${tag.label}-${tag.value}`} className={`user-tag tag-${tag.kind}`} onClick={() => onNavigate(tag.action)}>
             <small>{tag.label}</small>
             <strong>{tag.value}</strong>
           </button>
         ))}
       </div>
       <div className="user-tag-detail-grid">
-        {tags.map((tag, index) => (
-          <article
-            key={`${tag.label}-${tag.value}-detail`}
-            id={`tag-detail-${index}`}
-            className={`user-tag-detail ${activeTagIndex === index ? 'is-active' : ''}`}
-          >
+        {tags.map(tag => (
+          <article key={`${tag.label}-${tag.value}-detail`} className="user-tag-detail">
             <div className="user-tag-detail-head">
               <span className={`user-tag tag-${tag.kind}`}>
                 <small>{tag.label}</small>
                 <strong>{tag.value}</strong>
               </span>
-              <button onClick={() => onNavigate(tag.action)}>詳細説明</button>
+              <button onClick={() => onNavigate(tag.action)}>詳解へ</button>
             </div>
             <p>{tag.detail}</p>
             <em>{tag.evidence}</em>

@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>命式计算库评测</title>
+<style>
+  :root {
+    color-scheme: light;
+    --text: #111827;
+    --muted: #6b7280;
+    --line: #d1d5db;
+    --soft: #f9fafb;
+    --soft-2: #f3f4f6;
+    --accent: #2563eb;
+    --warn: #b45309;
+    --risk: #b91c1c;
+    --ok: #047857;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--text);
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  main {
+    width: min(1200px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 32px 0 64px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin: 36px 0 12px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  h3 {
+    font-size: 16px;
+    margin: 20px 0 8px;
+  }
+
+  p {
+    margin: 0 0 12px;
+    color: var(--muted);
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 24px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--soft);
+    color: #374151;
+    font-size: 12px;
+  }
+
+  .note {
+    margin: 16px 0;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    background: var(--soft);
+  }
+
+  .note.warn {
+    border-left-color: var(--warn);
+  }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+  }
+
+  table {
+    width: 100%;
+    min-width: 920px;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th:last-child,
+  td:last-child {
+    border-right: 0;
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  th {
+    background: var(--soft-2);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td {
+    color: #374151;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .status.todo {
+    background: #fef3c7;
+    color: var(--warn);
+  }
+
+  .status.ok {
+    background: #d1fae5;
+    color: var(--ok);
+  }
+
+  .status.risk {
+    background: #fee2e2;
+    color: var(--risk);
+  }
+
+  .status.info {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0 8px;
+  }
+
+  .summary-card {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 12px;
+    background: var(--soft);
+  }
+
+  .summary-card strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+  }
+
+  .summary-card span {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  code {
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: var(--soft-2);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.92em;
+  }
+
+  ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+  }
+
+  li + li {
+    margin-top: 4px;
+  }
+
+  @media (max-width: 760px) {
+    main {
+      width: min(100vw - 24px, 1200px);
+      padding-top: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    .summary-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>命式计算库评测</h1>
+  <p>用途：记录计算库选型、人工对照工具结果、样例输入输出和最终判断。这个页面只服务内部评测，不承接线上视觉规范。</p>
+
+  <div class="meta">
+    <span class="tag">当前阶段：第一轮 Spike 已跑</span>
+    <span class="tag">首选候选：tyme4ts</span>
+    <span class="tag">对照候选：lunar 系列</span>
+    <span class="tag">人工对照：问真八字 / 八字测测专业版</span>
+  </div>
+
+  <div class="note">
+    计算层目标：只输出可信、可复核的结构化命式 JSON。解释文案由后续其它模型完成，不进入计算库选型范围。已新增可操作页面：<a href="./calculation-lab.html">命式计算验收台</a>。
+  </div>
+
+  <div class="note warn">
+    第一轮结果：7 个样例中，5 个样例 tyme4ts / lunar-javascript / lunar-typescript 三方一致；1 个子时后样例不一致；1 个时辰不详样例不适用。已确认不一致来自「23:00 后是否换日」规则，而不是库异常。
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <strong>tyme4ts</strong>
+      <span>已跑通四柱、藏干、十神。子时后样例与 lunar 系列存在差异。</span>
+    </div>
+    <div class="summary-card">
+      <strong>lunar 系列</strong>
+      <span>lunar-javascript 与 lunar-typescript 输出一致，可作为成熟基准。</span>
+    </div>
+    <div class="summary-card">
+      <strong>当前一致率</strong>
+      <span>5 / 6 个可计算样例一致；时辰不详将在下一轮按默认午时纳入回归。</span>
+    </div>
+    <div class="summary-card">
+      <strong>关键风险</strong>
+      <span>子时换日、真太阳时、时辰不详已转为显式产品规则，不再依赖库默认值。</span>
+    </div>
+  </div>
+
+  <h2>1. 候选库对比</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>候选方案</th>
+          <th>定位</th>
+          <th>优势</th>
+          <th>风险 / 劣势</th>
+          <th>当前判断</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>tyme4ts</code></td>
+          <td>首选底层历法库</td>
+          <td>TypeScript 友好；MIT；依赖面小；与 6tail lunar 系列同源。</td>
+          <td>需要确认 API 是否能直接输出完整四柱，以及节气边界是否满足要求。</td>
+          <td><span class="status info">优先 Spike</span></td>
+        </tr>
+        <tr>
+          <td><code>lunar-typescript</code> / <code>lunar-javascript</code></td>
+          <td>成熟基准与备选</td>
+          <td>使用资料更多；八字能力更直接；适合做对照验证。</td>
+          <td>若使用 JS 版本，需要做 TS 类型封装；也需要验证边界规则。</td>
+          <td><span class="status info">同步验证</span></td>
+        </tr>
+        <tr>
+          <td><code>lunisolar</code></td>
+          <td>参考实现</td>
+          <td>功能覆盖强，适合参考能力边界和 API 设计。</td>
+          <td>GPL-3.0 许可证对商业闭源产品有风险。</td>
+          <td><span class="status risk">不建议生产依赖</span></td>
+        </tr>
+        <tr>
+          <td><code>bazi-calculator-by-alvamind</code></td>
+          <td>直接八字分析库</td>
+          <td>概念接近需求，可能有现成分析结构。</td>
+          <td>成熟度、维护状态、边界样例可信度都需要重验。</td>
+          <td><span class="status todo">仅参考</span></td>
+        </tr>
+        <tr>
+          <td><code>dantalion</code></td>
+          <td>生日/占卜应用库</td>
+          <td>可参考产品包装方式。</td>
+          <td>不适合作为四柱命式计算核心。</td>
+          <td><span class="status risk">不采用</span></td>
+        </tr>
+        <tr>
+          <td>完全自研</td>
+          <td>长期可控方案</td>
+          <td>规则完全可控，便于做流派差异。</td>
+          <td>MVP 阶段校验成本过高，容易在节气和边界规则出错。</td>
+          <td><span class="status todo">暂缓</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>2. 人工对照工具</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>工具</th>
+          <th>用途</th>
+          <th>适合对比的字段</th>
+          <th>录入时必须记录</th>
+          <th>状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>问真八字</td>
+          <td>主人工对照</td>
+          <td>年柱、月柱、日柱、时柱、藏干、大运、流年、节气边界。</td>
+          <td>公历/农历、出生地、是否启用真太阳时、性别、出生时间是否精确。</td>
+          <td><span class="status ok">已录入 Z002 / Z003</span></td>
+        </tr>
+        <tr>
+          <td>八字测测专业版</td>
+          <td>辅助人工对照</td>
+          <td>真太阳时、时辰不详、大运、流年、流月、流日。</td>
+          <td>必须记录地点；该 App 会按真太阳时显示结果。</td>
+          <td><span class="status ok">已录入截图样例</span></td>
+        </tr>
+        <tr>
+          <td>测测</td>
+          <td>体验与解释参考</td>
+          <td>报告结构、解释口吻、分层方式、用户体验。</td>
+          <td>是否只是 AI 解释结果，是否能看到底层四柱和排盘规则。</td>
+          <td><span class="status ok">资料已初筛</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>3. 测试样例矩阵</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>样例编号</th>
+          <th>样例类型</th>
+          <th>输入</th>
+          <th>验证目标</th>
+          <th>tyme4ts 输出</th>
+          <th>lunar-javascript 输出</th>
+          <th>lunar-typescript 输出</th>
+          <th>问真八字输出</th>
+          <th>八字测测输出</th>
+          <th>判定</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>F001</td>
+          <td>普通日期</td>
+          <td>1990-06-15 10:30:00</td>
+          <td>基础四柱、藏干、五行、十神。</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>北京市，真太阳时 09:15：庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td><span class="status ok">三库与测测一致</span></td>
+        </tr>
+        <tr>
+          <td>F002A</td>
+          <td>立春前</td>
+          <td>2024-02-04 15:30:00</td>
+          <td>年柱切换、月柱切换、节气边界。</td>
+          <td>癸卯 / 乙丑 / 戊戌 / 庚申</td>
+          <td>癸卯 / 乙丑 / 戊戌 / 庚申</td>
+          <td>癸卯 / 乙丑 / 戊戌 / 庚申</td>
+          <td>癸卯 / 乙丑 / 戊戌 / 庚申</td>
+          <td>北京市，真太阳时 15:01：癸卯 / 乙丑 / 戊戌 / 庚申</td>
+          <td><span class="status ok">三库与测测一致</span></td>
+        </tr>
+        <tr>
+          <td>F002B</td>
+          <td>立春后</td>
+          <td>2024-02-04 16:30:00</td>
+          <td>年柱切换、月柱切换、节气边界。</td>
+          <td>甲辰 / 丙寅 / 戊戌 / 庚申</td>
+          <td>甲辰 / 丙寅 / 戊戌 / 庚申</td>
+          <td>甲辰 / 丙寅 / 戊戌 / 庚申</td>
+          <td>甲辰 / 丙寅 / 戊戌 / 庚申</td>
+          <td>北京市，真太阳时 16:01：甲辰 / 丙寅 / 戊戌 / 庚申</td>
+          <td><span class="status ok">三库与测测一致</span></td>
+        </tr>
+        <tr>
+          <td>F003A</td>
+          <td>子时前</td>
+          <td>1988-02-15 22:30:00</td>
+          <td>23:00 前后日柱归属。</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>北京市，真太阳时 22:01：戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td><span class="status ok">三库与测测一致</span></td>
+        </tr>
+        <tr>
+          <td>F003B</td>
+          <td>子时后</td>
+          <td>1988-02-15 23:30:00</td>
+          <td>23:00 后是否换日。</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>早晚子时关：戊辰 / 甲寅 / 辛丑 / 戊子；早晚子时开：戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>北京市，真太阳时 23:01（子时换日）：戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td><span class="status risk">测测采用子时换日</span></td>
+        </tr>
+        <tr>
+          <td>F004</td>
+          <td>真太阳时</td>
+          <td>1990-06-15 10:30:00；地点待定</td>
+          <td>出生地经度导致的时辰变化。当前仅按标准时间计算。</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>标准时间：庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td>北京市，真太阳时 09:15：庚午 / 壬午 / 辛亥 / 癸巳</td>
+          <td><span class="status ok">北京真太阳时未改变时柱</span></td>
+        </tr>
+        <tr>
+          <td>F005</td>
+          <td>时辰不详</td>
+          <td>1990-06-15；时辰不详</td>
+          <td>缺失时柱时的结构化输出和解释输入。</td>
+          <td>不计算时柱</td>
+          <td>不计算时柱</td>
+          <td>不计算时柱</td>
+          <td>时辰不详待专门录入</td>
+          <td>App 不支持时辰不详；临时选时后前三柱为 庚午 / 壬午 / 辛亥，时柱不采信。</td>
+          <td><span class="status todo">业务层默认午时</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>4. 子时换日规则拆解</h2>
+  <p>结论：23:00-23:59 是关键分歧区间。sect1 / DefaultEightCharProvider 按次日计算日柱；sect2 / LunarSect2EightCharProvider 保留当日柱。问真八字提供「早晚子时」开关，关闭时换日，开启时不换日。测测按真太阳时计算，北京市东城区输入 23:00 会换算为 22:31，因此不触发子时换日。到次日 00:30 后，各方案重新一致。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>样例</th>
+          <th>输入</th>
+          <th>tyme SixtyCycleHour</th>
+          <th>tyme Lunar 默认</th>
+          <th>tyme Lunar sect2</th>
+          <th>lunar sect1</th>
+          <th>lunar sect2</th>
+          <th>需要人工确认</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Z001</td>
+          <td>1988-02-15 22:30:00</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td>戊辰 / 甲寅 / 庚子 / 丁亥</td>
+          <td><span class="status ok">无分歧</span></td>
+        </tr>
+        <tr>
+          <td>Z002</td>
+          <td>1988-02-15 23:00:00</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td><span class="status risk">需确认</span></td>
+        </tr>
+        <tr>
+          <td>Z003</td>
+          <td>1988-02-15 23:30:00</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td><span class="status risk">需确认</span></td>
+        </tr>
+        <tr>
+          <td>Z004</td>
+          <td>1988-02-16 00:30:00</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td><span class="status ok">无分歧</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>5. 外部工具录入清单</h2>
+  <p>问真八字已录入基础矩阵和 Z002 / Z003。八字测测截图已录入 F001-F005 / F003B / Z002，但该 App 必须选择地点，且按真太阳时显示；本轮地点临时选择北京市东城区。Z003 / Z004 的 1998 年截图不归入当前 1988 年 fixtures。后续若继续用测测比对，必须先明确地点。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>样例</th>
+          <th>输入</th>
+          <th>必须记录的设置</th>
+          <th>候选结果 A</th>
+          <th>候选结果 B</th>
+          <th>问真八字</th>
+          <th>八字测测专业版</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Z002</td>
+          <td>1988-02-15 23:00:00</td>
+          <td>公历/农历、出生地、真太阳时开关、晚子时/夜子时设置、工具版本或截图日期。</td>
+          <td>换日：戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>不换日：戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>2026-05-10：问真网页版，公历，未知地 北京时间，真太阳时关，夏令时关。早晚子时关：戊辰 / 甲寅 / 辛丑 / 戊子；早晚子时开：戊辰 / 甲寅 / 庚子 / 戊子。</td>
+          <td>北京市东城区，输入 23:00，真太阳时 22:31：戊辰 / 甲寅 / 庚子 / 丁亥。因真太阳时退回亥时，不触发子时换日。</td>
+        </tr>
+        <tr>
+          <td>Z003</td>
+          <td>1988-02-15 23:30:00</td>
+          <td>公历/农历、出生地、真太阳时开关、晚子时/夜子时设置、工具版本或截图日期。</td>
+          <td>换日：戊辰 / 甲寅 / 辛丑 / 戊子</td>
+          <td>不换日：戊辰 / 甲寅 / 庚子 / 戊子</td>
+          <td>2026-05-10：问真网页版，公历，未知地 北京时间，真太阳时关，夏令时关。早晚子时关：戊辰 / 甲寅 / 辛丑 / 戊子；早晚子时开：戊辰 / 甲寅 / 庚子 / 戊子。</td>
+          <td>F003B 截图：北京市，真太阳时 1988-02-15 23:01（子时换日）：戊辰 / 甲寅 / 辛丑 / 戊子。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>6. 业务规则确认</h2>
+  <p>23:00 后是否换日没有行业唯一答案。问真八字、参天 AI、四柱推命ネクスト等工具或资料都把它作为可切换或需说明的规则；4Pillars 明确采用不跨日；测测 App 采用子时换日；也有工具固定 23:00 子初换日。因此产品不把该差异隐藏在库默认值里。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>问题</th>
+          <th>产品默认</th>
+          <th>用户可选</th>
+          <th>显示要求</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>23:00-23:59 是否换日</td>
+          <td>默认不换日，按晚子时/夜子时保留当日日柱。</td>
+          <td>高级设置可切换为 23:00 子初换日。</td>
+          <td>23:00-23:59 必须提示“该时段存在流派差异”。</td>
+        </tr>
+        <tr>
+          <td>真太阳时</td>
+          <td>标准版按输入时间直接计算。</td>
+          <td>精细版按出生地经纬度换算真太阳时。</td>
+          <td>精细版必须要求出生地；结果页显示原始时间和换算后时间。</td>
+        </tr>
+        <tr>
+          <td>时辰不详</td>
+          <td>默认按 12:00 午时计算。</td>
+          <td>后续可支持用户选择“大概时段”。</td>
+          <td>时柱必须标记为“12:00 午时假设值”，相关解释降级。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>7. Adapter 预览</h2>
+  <p>adapter 已经按显式配置设计：<code>lateZiHourMode: "same_day"</code> 为产品默认，23:00-23:59 保留当日；<code>lateZiHourMode: "next_day"</code> 为专家选项，23:00-23:59 按次日计算。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>配置</th>
+          <th>含义</th>
+          <th>Z002 / Z003 日柱</th>
+          <th>工程处理</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>same_day</code></td>
+          <td>23:00-23:59 保留当日日柱。</td>
+          <td>庚子</td>
+          <td>产品默认；结果页提示晚子时规则。</td>
+        </tr>
+        <tr>
+          <td><code>next_day</code></td>
+          <td>23:00-23:59 按次日计算。</td>
+          <td>辛丑</td>
+          <td>专家选项；用于匹配问真默认或部分传统排盘。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>8. 输出结构约束</h2>
+  <p>无论最终使用哪个库，产品层只依赖统一函数，不直接依赖第三方 API。</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>层级</th>
+          <th>职责</th>
+          <th>说明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>计算层</td>
+          <td><code>calculateShichusuimei(input)</code></td>
+          <td>输出四柱、藏干、五行、十神、大运、流年基础结构。</td>
+        </tr>
+        <tr>
+          <td>Adapter 层</td>
+          <td><code>adapters/tyme</code>、<code>adapters/lunar</code></td>
+          <td>隔离第三方库 API，便于替换或双跑验证。</td>
+        </tr>
+        <tr>
+          <td>解释输入层</td>
+          <td>结构化 JSON 转模型上下文</td>
+          <td>只做字段编排，不在这里写命理解释。</td>
+        </tr>
+        <tr>
+          <td>解释模型</td>
+          <td>生成最终解读</td>
+          <td>后续可替换模型或做不同解释风格。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>9. 下一步</h2>
+  <ul>
+    <li>继续使用测测比对前，先明确地点；测测必须选地点并按真太阳时计算。</li>
+    <li>补充东京地点下的真太阳时边界样例，避免只用北京样例判断日本产品默认体验。</li>
+    <li>补充标准时间和真太阳时的成对 fixtures，避免把测测结果直接当作标准时间结果。</li>
+    <li>把 <code>same_day</code>、<code>next_day</code>、标准时间、真太阳时、时辰不详默认午时加入 fixtures。</li>
+    <li>规则确认后，把样例冻结为回归 fixtures，再进入正式 adapter 设计。</li>
+  </ul>
+</main>
+</body>
+</html>

@@ -219,7 +219,7 @@ function App() {
         </TweakSection>
         <TweakSection title="字体 — Type">
           <TweakRadio value={tweaks.type} onChange={(v) => setTweak('type', v)}
-            options={[{ value: 'mincho', label: '明朝体' }, { value: 'song', label: '宋朝風 Yuji' }, { value: 'kaisho', label: '楷書体 Syuku' }]} />
+            options={[{ value: 'mincho', label: '衬线 明朝' }, { value: 'song', label: '仿宋 Yuji' }, { value: 'kaisho', label: '楷体 Syuku' }]} />
         </TweakSection>
         <TweakSection title="動效 — Motion">
           <TweakRadio value={tweaks.motion} onChange={(v) => setTweak('motion', v)}
@@ -227,7 +227,7 @@ function App() {
         </TweakSection>
         <TweakSection title="Hero 排版">
           <TweakRadio value={tweaks.hero} onChange={(v) => setTweak('hero', v)}
-            options={[{ value: 'centered', label: '中央配置' }, { value: 'offset', label: '余白を活かす' }]} />
+            options={[{ value: 'centered', label: '居中庄严' }, { value: 'offset', label: '偏置留白' }]} />
         </TweakSection>
       </TweaksPanel>
     </React.Fragment>

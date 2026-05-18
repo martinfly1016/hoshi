@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>四柱命式计算工具</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: #111827;
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+
+  main {
+    width: min(1080px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 28px 0 60px;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 26px;
+    line-height: 1.25;
+  }
+
+  h2 {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #d1d5db;
+    font-size: 20px;
+  }
+
+  h3 {
+    margin: 18px 0 8px;
+    font-size: 16px;
+  }
+
+  p {
+    color: #6b7280;
+  }
+
+  form {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #f9fafb;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  input,
+  select,
+  button {
+    width: 100%;
+    min-height: 40px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: #fff;
+    color: #111827;
+    font: inherit;
+  }
+
+  input,
+  select {
+    padding: 0 10px;
+  }
+
+  input[type="checkbox"] {
+    width: auto;
+    min-height: 0;
+  }
+
+  button {
+    cursor: pointer;
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th,
+  td {
+    padding: 9px 10px;
+    border: 1px solid #d1d5db;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: #f3f4f6;
+    white-space: nowrap;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .full {
+    grid-column: 1 / -1;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+  }
+
+  .checkbox-row label {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .result-summary {
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid #d1d5db;
+    border-left: 4px solid #2563eb;
+    background: #fff;
+  }
+
+  .pillar-line {
+    margin-top: 6px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .notice {
+    display: inline-block;
+    margin: 4px 6px 4px 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .muted {
+    color: #6b7280;
+  }
+
+  .error {
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid #fecaca;
+    border-left: 4px solid #dc2626;
+    background: #fff7f7;
+    color: #991b1b;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .secondary {
+    width: auto;
+    min-height: 34px;
+    padding: 0 12px;
+    border-color: #d1d5db;
+    background: #fff;
+    color: #111827;
+  }
+
+  .status {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  @media (max-width: 720px) {
+    main {
+      width: min(100vw - 24px, 1080px);
+      padding-top: 20px;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>四柱命式计算工具</h1>
+  <p>基于已固定的 tyme4ts 计算库。当前页面只做基础命式计算，不包含解释文案和视觉设计。</p>
+
+  <form id="birth-form">
+    <div class="grid">
+      <div>
+        <label for="birth-date">出生日期</label>
+        <input id="birth-date" type="date" required value="1990-06-15" />
+      </div>
+
+      <div>
+        <label for="birth-time">出生时间</label>
+        <input id="birth-time" type="time" step="60" value="10:30" />
+      </div>
+
+      <div>
+        <label>&nbsp;</label>
+        <div class="checkbox-row">
+          <input id="time-known" type="checkbox" checked />
+          <label for="time-known">出生时间已知</label>
+        </div>
+      </div>
+
+      <div>
+        <label for="location">出生地</label>
+        <select id="location"></select>
+      </div>
+
+      <div>
+        <label for="time-mode">时间计算模式</label>
+        <select id="time-mode">
+          <option value="standard_time">标准时间：按输入时间直接计算</option>
+          <option value="true_solar_time">真太阳时：按出生地经纬度换算</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="late-zi-mode">23:00 子时规则</label>
+        <select id="late-zi-mode">
+          <option value="same_day">产品默认：晚子时不换日</option>
+          <option value="next_day">专家选项：23:00 子初换日</option>
+        </select>
+      </div>
+
+      <div class="full actions">
+        <button id="calculate" type="submit">计算命式</button>
+        <button id="copy-json" class="secondary" type="button">复制 JSON</button>
+        <span id="status" class="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </form>
+
+  <section id="result" aria-live="polite"></section>
+</main>
+
+<script type="module" src="./calculator.js?v=user-tool-20260510-1"></script>
+</body>
+</html>

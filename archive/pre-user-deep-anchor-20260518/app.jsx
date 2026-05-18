@@ -19,7 +19,6 @@ function App() {
   const [page, setPage] = React.useState('hero');   // hero | rite | result | fortune | insight
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
-  const [routeTarget, setRouteTarget] = React.useState(null);
 
   // Auto-calculated current year info
   const yearInfo = React.useMemo(() => {
@@ -103,13 +102,12 @@ function App() {
     el.dataset.hero = tweaks.hero;
   }, [activeTheme, tweaks]);
 
-  const goto = (target, detailTarget = null) => {
-    setRouteTarget(detailTarget ? { ...detailTarget, key: `${Date.now()}-${Math.random()}` } : null);
+  const goto = (target) => {
     if (target === page) return;
     setWashing(true);
     window.setTimeout(() => {
       setPage(target);
-      if (!detailTarget?.anchor) window.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0 });
       window.setTimeout(() => setWashing(false), 80);
     }, 520);
   };
@@ -163,15 +161,14 @@ function App() {
             calculation={calcResult.chart} 
             profile={calcResult.profile}
             onBack={() => goto('rite')}
-            onShowFortune={(target) => goto('fortune', target)}
-            onShowInsight={(target) => goto('insight', target)}
+            onShowFortune={() => goto('fortune')}
+            onShowInsight={() => goto('insight')}
           />
         )}
         {page === 'insight' && calcResult && (
           <InsightView 
             calculation={calcResult.chart}
             profile={calcResult.profile}
-            routeTarget={routeTarget}
             onBack={() => goto('result')}
             onEditInput={() => goto('rite')}
           />
@@ -180,7 +177,6 @@ function App() {
           <FortuneView 
             calculation={calcResult.chart}
             profile={calcResult.profile}
-            routeTarget={routeTarget}
             onBack={() => goto('result')}
             onEditInput={() => goto('rite')}
           />

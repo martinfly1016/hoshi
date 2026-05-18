@@ -55,6 +55,7 @@
 | v0.3.25 | 2026-05-17 18:45 JST | 用户首页 | `/index.html` 命式页顶部返回编辑 | 将命式页的「入力内容を修正する」移动到结果卡片上方，和命式詳細/大運・流年页顶部操作条保持一致；保留返回后预填表单的行为 | `/latest.html` / `/index.html?v=20260517-user-meishiki-top-edit-1` | `/archive/pre-user-meishiki-top-edit-20260517/index.html?v=20260517-user-deep-edit-1` | main `07b68b3` / gh-pages `20c0dc7` |
 | v0.3.26 | 2026-05-17 18:49 JST | 用户首页 | `/index.html` 结果卡片标签 | 将结果卡片角标从固定中文风格「占断之始」改为按页面显示的日文标签：命式页「占断の始まり」、命式詳細页「詳解の鑑定」、大運・流年页「運勢の流れ」 | `/latest.html` / `/index.html?v=20260517-user-card-labels-1` | `/archive/pre-user-card-labels-20260517/index.html?v=20260517-user-meishiki-top-edit-1` | main `58e17de` / gh-pages `5fea1c4` |
 | v0.3.27 | 2026-05-18 15:13 JST | 用户首页 | `/index.html` 出生时间输入 | 将命式作成页出生时间从十二时辰段选择改为小时/分钟两个下拉框，保留「時間不明」；计算输入传递精确 `HH:MM`，结果页显示输入时间和换算后的时柱 | `/latest.html` / `/index.html?v=20260518-user-minute-time-1` | `/archive/pre-user-minute-time-20260518/index.html?v=20260517-user-card-labels-1` | main `c059dcd` / gh-pages `161fb13` |
+| v0.3.28 | 2026-05-18 15:37 JST | 用户首页 | `/index.html` 出生地输入 | 将出生地从日本都道府县/海外二选一升级为地区切换 + 关键词搜索 + 候选地点选择；日本接入 1736 个市区町村，海外首版内置中国、美国和主要国际城市坐标，选中地点后按其经纬度/时区计算真太阳时 | `/latest.html` / `/index.html?v=20260518-user-global-location-1` | `/archive/pre-user-global-location-20260518/index.html?v=20260518-user-minute-time-1` | main `b9a96ff` / gh-pages `13dbecb` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

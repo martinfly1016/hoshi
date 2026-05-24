@@ -501,6 +501,29 @@ const PILLAR_KEYS = ['year', 'month', 'day', 'hour'];
 const PILLAR_LABELS = { year: '年柱', month: '月柱', day: '日柱', hour: '時柱' };
 const STEM_ICONS = { '甲': '🌳', '乙': '🌿', '丙': '☀️', '丁': '🕯️', '戊': '⛰️', '己': '🪴', '庚': '⚔️', '辛': '✨', '壬': '🌊', '癸': '💧' };
 const BRANCH_READING = { '子': '万物が芽生え始める時期。', '丑': '粘り強さと着実さを表します。', '寅': '勢いと開拓精神を表します。', '卯': '柔軟性と協調性を表します。', '辰': '変化と理想を表します。', '巳': '情熱と華やかさを表します。', '午': '求心力と率直さを表します。', '未': '包容力と安定を表します。', '申': '決断力と合理性を表します。', '酉': '洗練された感性と美意識。', '戌': '誠実さと守りの力。', '亥': '自由と構想力を表します。' };
+const BRANCH_RELATIONSHIP_PROFILES = {
+  子: '感情や情報の流れが細やかで、言葉にしない気配を読みやすい婚姻運です。',
+  丑: '安心できる土台を重視し、時間をかけて信頼を積むほど安定しやすい婚姻運です。',
+  寅: '成長意欲が強く、互いに前へ進む刺激を求めやすい婚姻運です。',
+  卯: '柔らかな距離感や美意識が大切で、丁寧な配慮が関係を育てる婚姻運です。',
+  辰: '現実的な調整力があり、理想と生活基盤のすり合わせがテーマになりやすい婚姻運です。',
+  巳: '熱量と感受性が強く、惹きつけ合う一方で言葉の温度管理が大切な婚姻運です。',
+  午: '明るさや率直さが出やすく、関係の中で情熱と自己表現が強まる婚姻運です。',
+  未: '包容力と育てる力があり、互いの不安を受け止める姿勢が関係を整える婚姻運です。',
+  申: '判断力と変化対応が鍵になり、知的な会話や現実的な連携が重要な婚姻運です。',
+  酉: '美意識や基準の高さが出やすく、尊重と適度な余白が関係を長持ちさせる婚姻運です。',
+  戌: '責任感と守る意識が強く、約束や信頼の扱いが関係の軸になる婚姻運です。',
+  亥: '共感や想像力が広がりやすく、自由さと安心感の両方を求める婚姻運です。',
+};
+const ELEMENT_GENERATES = { 木: '火', 火: '土', 土: '金', 金: '水', 水: '木' };
+const ELEMENT_CONTROLS = { 木: '土', 土: '水', 水: '火', 火: '金', 金: '木' };
+const MARRIAGE_ELEMENT_RELATION_READING = {
+  same: '日主と同じ五行なので、対等さや自分らしさを保てる関係を求めやすい配置です。',
+  supported: '日支が日主を生じる関係なので、支えられる安心感や学び合いが関係の軸になりやすい配置です。',
+  output: '日主が日支へ生じる関係なので、表現すること、尽くすこと、相手に向けて力を出すことがテーマになりやすい配置です。',
+  wealth: '日主が日支を制する関係なので、現実的な責任、生活管理、相手との具体的な関わり方がテーマになりやすい配置です。',
+  pressure: '日支が日主を制する関係なので、関係の中で責任感や緊張感が生まれやすく、約束や境界線を整えることが大切です。',
+};
 const PILLAR_READING = {
   year: { icon: '根', title: '年柱はルーツと外側の環境', text: '家族、育った環境、社会から見えやすい雰囲気を見ます。' },
   month: { icon: '場', title: '月柱は社会性と仕事の土台', text: '季節の力が強く出る柱で、仕事や役割、社会での使い方を見ます。' },
@@ -743,6 +766,25 @@ function fortuneTrendTag(calc) {
   return '早期展開';
 }
 
+function marriageElementRelationKey(dayElement, palaceElement) {
+  if (dayElement === palaceElement) return 'same';
+  if (ELEMENT_GENERATES[palaceElement] === dayElement) return 'supported';
+  if (ELEMENT_GENERATES[dayElement] === palaceElement) return 'output';
+  if (ELEMENT_CONTROLS[dayElement] === palaceElement) return 'wealth';
+  if (ELEMENT_CONTROLS[palaceElement] === dayElement) return 'pressure';
+  return 'same';
+}
+
+function marriageFortuneSummary(calc) {
+  const dayPillar = calc.pillars.day;
+  const dayElement = dayPillar.element.stem;
+  const palaceElement = dayPillar.element.branch;
+  const relationKey = marriageElementRelationKey(dayElement, palaceElement);
+  const branchProfile = BRANCH_RELATIONSHIP_PROFILES[dayPillar.branch] || '日支は親密な関係で出やすい距離感や生活感を読む入口です。';
+  const relation = MARRIAGE_ELEMENT_RELATION_READING[relationKey];
+  return `婚姻運は、日柱の地支である「日支」を婚姻宮として見ます。この命盤の日支は ${dayPillar.branch}（${palaceElement}）です。${branchProfile} 日主 ${calc.dayMaster}（${dayElement}）に対して日支がどう働くかを見ると、${relation}`;
+}
+
 function buildUserReadingTags(calc, tenGods) {
   const stem = STEM_READING[calc.dayMaster] || { text: '', tags: [] };
   const dominant = strongestElements(calc);
@@ -794,10 +836,10 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'source',
-      label: '婚姻宮',
+      label: '婚姻運',
       value: `日支 ${calc.pillars.day.branch}`,
-      detail: '親密な関係や婚姻の読みは、日柱の地支を中心に見ます。',
-      evidence: `日柱 ${calc.pillars.day.text}`,
+      detail: marriageFortuneSummary(calc),
+      evidence: `日柱 ${calc.pillars.day.text} / 日支 ${calc.pillars.day.branch} / 日主 ${calc.dayMaster}`,
       action: 'marriage',
       target: { page: 'insight', topic: 'marriage', anchor: 'insight-topic-main' },
     },

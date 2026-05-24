@@ -1360,7 +1360,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   };
 
   return (
-    <section className="rite" data-screen-label="03 命式">
+    <section className="rite result-rite" data-screen-label="03 命式">
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
@@ -1370,7 +1370,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
         </div>
       </aside>
-      <div className="rite-main" style={{ paddingBottom: 120 }}>
+      <div className="rite-main result-main" style={{ paddingBottom: 120 }}>
         <div className="return-action-row">
           <button className="inline-return-btn edit" onClick={onBack}>入力内容を修正する</button>
         </div>

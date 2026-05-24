@@ -1073,7 +1073,6 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
           <div className="summary-kicker">命式構造表</div>
           <h3>四柱を横に並べて、要素ごとに確認する</h3>
         </div>
-        <p>検証ページの詳細表と同じ読み方で、どの柱のどの要素から判断しているかを確認できます。</p>
       </div>
       <div className="bazi-board-pro">
         <div className="bazi-pro-row bazi-pro-head">

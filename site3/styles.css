@@ -1008,9 +1008,9 @@ input, select { font-family: inherit; color: inherit; }
 }
 .bazi-structure-head {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.62fr);
-  gap: 18px;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-items: start;
   margin-bottom: 16px;
 }
 .bazi-structure-head h3 {

@@ -1071,7 +1071,7 @@ function BaziStructureBoard({ calculation, activePillar, onFocus }) {
       <div className="bazi-structure-head">
         <div>
           <div className="summary-kicker">命式構造表</div>
-          <h3>四柱を横に並べて、要素ごとに確認する</h3>
+          <h3>八字要素表</h3>
         </div>
       </div>
       <div className="bazi-board-pro">

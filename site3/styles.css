@@ -1533,6 +1533,18 @@ input, select { font-family: inherit; color: inherit; }
   font-family: inherit;
   cursor: pointer;
 }
+.user-tag-mini-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--f-display);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0;
+}
 .user-tag small {
   color: var(--ink-3);
   font-family: var(--f-mono);
@@ -1558,23 +1570,42 @@ input, select { font-family: inherit; color: inherit; }
 }
 .user-tag-detail {
   display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  align-items: start;
   gap: 10px;
   border: 1px solid var(--rule);
   background: color-mix(in srgb, var(--bg-paper) 76%, transparent);
   padding: 18px;
   min-width: 0;
 }
+.user-tag-detail-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  font-family: var(--f-display);
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+}
 .user-tag-detail.is-active {
   border-color: color-mix(in srgb, var(--seal) 58%, var(--rule));
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--seal) 18%, transparent) inset;
 }
+.user-tag-detail-body {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
 .user-tag-detail-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
 }
-.user-tag-detail-head button {
+.user-tag-detail-action {
   flex: 0 0 auto;
   border: 1px solid var(--rule);
   border-radius: 999px;
@@ -1585,6 +1616,10 @@ input, select { font-family: inherit; color: inherit; }
   font-size: 10px;
   letter-spacing: 0.12em;
   cursor: pointer;
+}
+.user-tag-detail-action:hover {
+  border-color: var(--ink-2);
+  color: var(--ink-2);
 }
 .user-tag-detail p {
   margin: 0;
@@ -2744,6 +2779,18 @@ input, select { font-family: inherit; color: inherit; }
     top: -12px;
     left: 16px;
     padding: 0 10px;
+  }
+  .user-tag-detail {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+  .user-tag-detail-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+  .user-tag-detail-action {
+    grid-column: 2;
+    justify-self: start;
   }
   .divinations .row {
     display: grid;

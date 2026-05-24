@@ -810,6 +810,30 @@ function wealthFortuneSummary(calc) {
   return `金運は、財星（正財・偏財）だけでなく、仕事運、五行バランス、用神を合わせて見ます。${starText} 五行では ${dominantLabel} が出やすく、${supportLabel} を補うほどお金の流れも整えやすくなります。`;
 }
 
+function relationshipFortuneSummary(calc, god) {
+  const mainRole = god ? displayTenGod(god) : '通変星';
+  const dayBranch = calc.pillars.day.branch;
+  const branchProfile = BRANCH_RELATIONSHIP_PROFILES[dayBranch] || '日支は親密な関係や近い相手との距離感を読む入口です。';
+  const roleText = god && TEN_GOD_READING[god]?.text
+    ? `目立つ通変星「${mainRole}」は、対人関係では ${TEN_GOD_READING[god].text}`
+    : `目立つ通変星「${mainRole}」から、対人関係で出やすい役割や振る舞いを見ます。`;
+  return `対人運は、命盤で目立つ通変星と、近い関係を表す日支を合わせて見ます。${roleText} 日支は ${dayBranch} で、${branchProfile}`;
+}
+
+function healthFortuneSummary(calc) {
+  const dominantLabel = strongestElements(calc).filter(Boolean).join('・') || '五行';
+  const supportLabel = supportElements(calc).filter(Boolean).join('・') || '調整五行';
+  const balance = Number.isFinite(calc.fiveElements?.balanceScore) ? Math.round(calc.fiveElements.balanceScore) : null;
+  const balanceText = balance === null
+    ? '五行の偏りから、生活リズムを整える方向を見ます。'
+    : balance >= 75
+      ? `五行バランスは比較的まとまりやすい状態です（平衡 ${balance}）。`
+      : balance >= 55
+        ? `五行に少し偏りがあります（平衡 ${balance}）。強い五行を使いすぎず、弱い五行を補う意識が大切です。`
+        : `五行の偏りがはっきり出やすい状態です（平衡 ${balance}）。生活の中で補う五行を意識すると整えやすくなります。`;
+  return `健康運は病気の診断ではなく、体調管理・生活リズムの傾向として見ます。命盤では ${dominantLabel} が出やすく、${supportLabel} を補うことがバランスの鍵です。${balanceText}`;
+}
+
 function buildUserReadingTags(calc, tenGods) {
   const stem = STEM_READING[calc.dayMaster] || { text: '', tags: [] };
   const dominant = strongestElements(calc);
@@ -885,6 +909,24 @@ function buildUserReadingTags(calc, tenGods) {
       evidence: '正財・偏財 / 五行バランス / 用神',
       action: 'career',
       target: { page: 'insight', topic: 'career', anchor: 'insight-topic-main' },
+    },
+    {
+      kind: 'relationship',
+      label: '対人運',
+      value: god ? `${displayTenGod(god)}の出方` : '人間関係',
+      detail: relationshipFortuneSummary(calc, god),
+      evidence: `通変星 / 日支 ${calc.pillars.day.branch}`,
+      action: 'relationship',
+      target: { page: 'insight', topic: 'personality', anchor: 'insight-ten-gods' },
+    },
+    {
+      kind: 'health',
+      label: '健康運',
+      value: `${supportLabel} ケア`,
+      detail: healthFortuneSummary(calc),
+      evidence: '五行バランス / 補う五行 / 用神',
+      action: 'health',
+      target: { page: 'insight', topic: 'talent', anchor: 'insight-elements' },
     },
     {
       kind: 'trend',
@@ -1025,6 +1067,8 @@ const USER_TAG_ICONS = {
   source: '縁',
   career: '仕',
   money: '財',
+  relationship: '人',
+  health: '健',
   trend: '運',
 };
 

@@ -731,67 +731,45 @@ function buildUserReadingTags(calc, tenGods) {
   const support = supportElements(calc);
   const current = currentDecadeFortune(calc.luckCycles?.decadeFortunes, calc.luckCycles?.target?.year || new Date().getFullYear());
   const god = tenGods[0]?.[0];
+  const patternName = displayPatternName(calc.pattern);
+  const strengthStatus = calc.strength?.status || '身強弱未判定';
+  const dominantLabel = dominant.filter(Boolean).join('・') || '五行';
+  const supportLabel = support.filter(Boolean).join('・') || '調整五行';
+  const yongLabel = [calc.yongShen?.primary, calc.yongShen?.secondary].filter(Boolean).join('・') || supportLabel;
   return [
     {
       kind: 'core',
-      label: '日主',
+      label: '命主タイプ',
       value: `${calc.dayMaster}（${calc.pillars.day.element.stem}）`,
       icon: STEM_ICONS[calc.dayMaster] || '主',
-      detail: stem.text || '日主は日柱の天干で、命式全体を読む起点です。',
+      detail: `この命盤の人物タイプは、日柱の天干「日主」から見ます。日主は ${calc.dayMaster}（${calc.pillars.day.element.stem}）で、${stem.title || 'その人の本質を表すタイプ'}。${stem.text || '命式全体を読む起点になります。'}`,
       evidence: `日柱天干 ${calc.dayMaster} / 五行 ${calc.pillars.day.element.stem}`,
       action: 'daymaster',
       target: { page: 'insight', topic: 'personality', anchor: 'insight-daymaster' },
     },
     {
       kind: 'pattern',
-      label: '命式の型',
-      value: displayPatternName(calc.pattern),
-      detail: displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。'),
-      evidence: '月令・天干',
+      label: '人生格局と特質',
+      value: `${patternName} / ${strengthStatus}`,
+      detail: `人生全体の格局は「${patternName}」を中心に見ます。身強弱は ${strengthStatus}。${displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。')} ${calc.strength?.text || '日主の勢いも合わせて、どんな環境で力を出しやすいかを読みます。'}`,
+      evidence: `月令・天干 / 日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
       action: 'insight',
       target: { page: 'insight', topic: 'talent', anchor: 'insight-judgement' },
     },
     {
-      kind: 'strength',
-      label: '身強弱',
-      value: calc.strength?.status || '未判定',
-      detail: calc.strength?.text || '日主の勢いを月令と五行構成から見ます。',
-      evidence: `日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
-      action: 'daymaster',
-      target: { page: 'insight', topic: 'career', anchor: 'insight-judgement' },
-    },
-    {
       kind: 'element',
-      label: '強い五行',
-      value: dominant.join('・'),
-      detail: `${dominant.join('・')} が命式全体で前に出やすい五行です。`,
-      evidence: '天干・蔵干・月令補正',
+      label: '五行特質',
+      value: `${dominantLabel} 強め / ${supportLabel} 補い`,
+      detail: `五行の状態は、性格の出方と調整ポイントをまとめて見ます。この命盤では ${dominantLabel} が前に出やすく、${supportLabel} を意識して補うとバランスが整いやすい構成です。用神・調候の候補は ${yongLabel} です。`,
+      evidence: '天干・地支・蔵干・月令補正 / 調候・用神',
       action: 'elements',
       target: { page: 'insight', topic: 'talent', anchor: 'insight-elements' },
     },
     {
-      kind: calc.fiveElements?.missing?.length ? 'warning' : 'support',
-      label: calc.fiveElements?.missing?.length ? '不足五行' : '補う五行',
-      value: support.join('・'),
-      detail: `${support.join('・')} は意識して補うと全体が整いやすい候補です。`,
-      evidence: '五行構成比',
-      action: 'elements',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-element-basis' },
-    },
-    {
-      kind: 'support',
-      label: '幸運の源',
-      value: [calc.yongShen?.primary, calc.yongShen?.secondary].filter(Boolean).join('・') || '用神',
-      detail: calc.yongShen?.text || '命式の偏りを整える要素を見ます。',
-      evidence: '調候・用神',
-      action: 'insight',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-judgement' },
-    },
-    {
       kind: 'god',
-      label: '主な課題',
+      label: '行動テーマ',
       value: displayTenGod(god) || '十神',
-      detail: god ? TEN_GOD_READING[god]?.text : '命式で重なる十神テーマです。',
+      detail: god ? `命盤で目立つ通変星は「${displayTenGod(god)}」です。${TEN_GOD_READING[god]?.text || '行動の癖や課題として表れやすいテーマです。'}` : '命式で重なる通変星から、行動の癖や課題を見ます。',
       evidence: god ? `十神出現 ${tenGods[0]?.[1] || 0}` : '十神',
       action: 'insight',
       target: { page: 'insight', topic: 'personality', anchor: 'insight-ten-gods' },

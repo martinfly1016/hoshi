@@ -1532,6 +1532,7 @@ input, select { font-family: inherit; color: inherit; }
   color: var(--ink-2);
   font-family: inherit;
   cursor: pointer;
+  max-width: 100%;
 }
 .user-tag-mini-icon {
   display: inline-grid;
@@ -1556,7 +1557,7 @@ input, select { font-family: inherit; color: inherit; }
   color: inherit;
   font-size: 12px;
   letter-spacing: 0.08em;
-  white-space: nowrap;
+  line-height: 1.45;
 }
 .user-tag.is-active {
   background: color-mix(in srgb, var(--seal) 12%, transparent);

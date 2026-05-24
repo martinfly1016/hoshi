@@ -945,9 +945,9 @@ function UserTagIndex({ tags, onNavigate }) {
   };
   return (
     <section className="user-tag-index">
-      <div className="summary-kicker">命式タグ索引</div>
-      <h2>重要な読みをタグで確認する</h2>
-      <p>タグを押すと、このページ下部の概要説明へ移動します。さらに詳しく読む場合は、各説明カードの「詳細説明」から深い鑑定へ進めます。</p>
+      <div className="summary-kicker">命盤要点解読</div>
+      <h2>命盤の要点をまとめて確認する</h2>
+      <p>気になる要点を押すと、このページ下部の概要説明へ移動します。さらに詳しく読む場合は、各説明カードの「詳細説明」から深い鑑定へ進めます。</p>
       <div className="user-tag-row">
         {tags.map((tag, index) => (
           <button
@@ -1363,7 +1363,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['基本情報','四柱命式','タグ索引','詳しい解説'].map((n, i) => (
+          {['基本情報','四柱命式','要点解読','詳しい解説'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
           ))}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>

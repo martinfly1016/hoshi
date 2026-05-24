@@ -71,7 +71,7 @@
 | v0.3.41 | 2026-05-24 22:40 JST | 用户首页 | `/index.html` 命式页表标题 | 将四柱结构表标题从「四柱を横に並べて、要素ごとに確認する」改为更简洁的「八字要素表」 | `/latest.html` / `/index.html?v=20260524-user-chart-title-1` | - | main `52d29c8` / gh-pages `57e5435` |
 | v0.3.42 | 2026-05-24 22:48 JST | 用户首页 | `/index.html` 命盤要点区 | 将「命式タグ索引」改为「命盤要点解読」，说明文从标签索引语气改为要点解读语气；左侧导航第三项同步从「タグ索引」改为「要点解読」 | `/latest.html` / `/index.html?v=20260524-user-key-reading-1` | - | main `cf6093f` / gh-pages `eb6e398` |
 | v0.3.43 | 2026-05-24 22:55 JST | 用户首页 | `/index.html` 命盤要点区标题 | 将命盤要点区标题调整为「重要な読みをタグで確認」 | `/latest.html` / `/index.html?v=20260524-user-key-reading-2` | - | main `b7c3f69` / gh-pages `ae002d7` |
-| v0.3.44 | 2026-05-24 23:00 JST | 用户首页 | `/index.html` 命盤要点卡片 | 将命盤要点解読的主题说明卡从三列九宫格改为单列纵向排列，并放大卡片内文，减少电脑浏览器上的拥挤感 | `/latest.html` / `/index.html?v=20260524-user-key-reading-list-1` | - | 待提交 |
+| v0.3.44 | 2026-05-24 23:00 JST | 用户首页 | `/index.html` 命盤要点卡片 | 将命盤要点解読的主题说明卡从三列九宫格改为单列纵向排列，并放大卡片内文，减少电脑浏览器上的拥挤感 | `/latest.html` / `/index.html?v=20260524-user-key-reading-list-1` | - | main `44eb35b` / gh-pages `b987f22` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

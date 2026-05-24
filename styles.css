@@ -500,6 +500,25 @@ input, select { font-family: inherit; color: inherit; }
   display: flex; flex-direction: column; gap: 12px;
   font-size: 11px; letter-spacing: 0.3em; color: var(--ink-2);
 }
+.rite-side .seal-stack button {
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.rite-side .seal-stack button:hover,
+.rite-side .seal-stack button:focus-visible {
+  color: var(--ink);
+  transform: translateX(4px);
+}
+.rite-side .seal-stack button:focus-visible {
+  outline: 1px solid var(--seal);
+  outline-offset: 4px;
+}
 .rite-side .seal-stack .num { font-family: var(--f-mono); color: var(--ink-3); }
 
 .rite-main {

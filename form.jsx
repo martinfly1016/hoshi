@@ -164,9 +164,9 @@ function composeBirthTime(hour, minute) {
   return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 }
 
-function FormField({ num, ja, romaji, hint, children }) {
+function FormField({ num, ja, romaji, hint, children, fieldRef }) {
   return (
-    <div className="field">
+    <div className="field" ref={fieldRef}>
       <div className="field-key">
         <span className="num">{num}</span>
         <span className="ja">{ja}</span>
@@ -204,6 +204,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [result, setResult] = React.useState(null);
   const [error, setError] = React.useState('');
   const [showStamp, setShowStamp] = React.useState(false);
+  const fieldRefs = React.useRef({});
 
   const registeredLocations = allRegisteredLocations();
   const japanPrefectures = japanPrefectureLocations();
@@ -220,6 +221,16 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
     : [selectedLocation, ...filteredLocations].filter(Boolean);
   const birthTime = composeBirthTime(birthHour, birthMinute);
   const valid = year && month && day && locationId && selectedLocation && (unsure || birthTime);
+
+  const jumpToStep = (step) => {
+    const target = fieldRefs.current[step];
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.setTimeout(() => {
+      const focusable = target.querySelector('input:not([disabled]), select:not([disabled]), button:not([disabled])');
+      if (focusable) focusable.focus({ preventScroll: true });
+    }, 420);
+  };
 
   React.useEffect(() => {
     if (locationRegion === 'jp') return;
@@ -289,10 +300,10 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <div className="kanji">命式作成</div>
         <div className="label">MEISHIKI CREATION</div>
         <div className="seal-stack">
-          <div><span className="num">壹</span>　お名前と性別</div>
-          <div><span className="num">貳</span>　生年月日</div>
-          <div><span className="num">參</span>　出生時間</div>
-          <div><span className="num">肆</span>　出生地</div>
+          <button type="button" onClick={() => jumpToStep('profile')}><span className="num">壹</span>　お名前と性別</button>
+          <button type="button" onClick={() => jumpToStep('birthday')}><span className="num">貳</span>　生年月日</button>
+          <button type="button" onClick={() => jumpToStep('birthtime')}><span className="num">參</span>　出生時間</button>
+          <button type="button" onClick={() => jumpToStep('birthplace')}><span className="num">肆</span>　出生地</button>
         </div>
       </aside>
 
@@ -305,6 +316,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </div>
 
         <FormField num="壹 / 一" ja="お名前" romaji="ONAMAE"
+          fieldRef={(node) => { fieldRefs.current.profile = node; }}
           hint="※ 省略可。結果画面での呼び名として使用します">
           <div className="input-line">
             <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
@@ -328,6 +340,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </FormField>
 
         <FormField num="貳 / 一" ja="生年月日" romaji="SEINENGAPPI"
+          fieldRef={(node) => { fieldRefs.current.birthday = node; }}
           hint="誕生日の暦（西暦または和暦）を選択し、入力してください">
           <div className="toggle-row">
             {['seireki','showa','heisei','reiwa'].map(c => (
@@ -362,6 +375,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </FormField>
 
         <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEIJIKAN"
+          fieldRef={(node) => { fieldRefs.current.birthtime = node; }}
           hint="出生時刻をできるだけ正確に入力してください。真太陽時の補正に使用します">
           <div className="toggle-row compact">
             <button className={!unsure ? 'on' : ''} onClick={() => setUnsure(false)}>時刻を入力</button>
@@ -388,6 +402,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </FormField>
 
         <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEICHI"
+          fieldRef={(node) => { fieldRefs.current.birthplace = node; }}
           hint="県・省・州・都市名で検索し、候補から出生地を選択してください">
           <div className="toggle-row compact location-region-row">
             {REGION_OPTIONS.map(region => (

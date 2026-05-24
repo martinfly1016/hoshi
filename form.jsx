@@ -932,6 +932,18 @@ function WuxingDiagram({ dayElement, elementCounts }) {
   );
 }
 
+const USER_TAG_ICONS = {
+  pattern: '型',
+  strength: '強',
+  core: '主',
+  element: '五',
+  support: '補',
+  warning: '缺',
+  god: '神',
+  source: '縁',
+  trend: '運',
+};
+
 function UserTagIndex({ tags, onNavigate }) {
   const [activeTagIndex, setActiveTagIndex] = React.useState(null);
   const focusTagDetail = (index) => {
@@ -955,6 +967,7 @@ function UserTagIndex({ tags, onNavigate }) {
             className={`user-tag tag-${tag.kind} ${activeTagIndex === index ? 'is-active' : ''}`}
             onClick={() => focusTagDetail(index)}
           >
+            <span className="user-tag-mini-icon" aria-hidden="true">{USER_TAG_ICONS[tag.kind] || '要'}</span>
             <small>{tag.label}</small>
             <strong>{tag.value}</strong>
           </button>
@@ -967,15 +980,18 @@ function UserTagIndex({ tags, onNavigate }) {
             id={`tag-detail-${index}`}
             className={`user-tag-detail ${activeTagIndex === index ? 'is-active' : ''}`}
           >
-            <div className="user-tag-detail-head">
+            <div className={`user-tag-detail-icon tag-${tag.kind}`} aria-hidden="true">{USER_TAG_ICONS[tag.kind] || '要'}</div>
+            <div className="user-tag-detail-body">
+              <div className="user-tag-detail-head">
               <span className={`user-tag tag-${tag.kind}`}>
                 <small>{tag.label}</small>
                 <strong>{tag.value}</strong>
               </span>
-              <button onClick={() => onNavigate(tag)}>詳細説明</button>
+              </div>
+              <p>{tag.detail}</p>
+              <em>{tag.evidence}</em>
             </div>
-            <p>{tag.detail}</p>
-            <em>{tag.evidence}</em>
+            <button className="user-tag-detail-action" onClick={() => onNavigate(tag)}>詳細説明</button>
           </article>
         ))}
       </div>

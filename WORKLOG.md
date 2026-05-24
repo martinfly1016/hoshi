@@ -64,6 +64,7 @@
 | v0.3.34 | 2026-05-18 16:03 JST | 用户首页 | `/index.html` 日本客户版文案 | 按“面向日本日语客户”的标准进一步整理用户页文案：顶部导航改为「トップ / 命式作成 / 命式 / 命式詳細 / 大運・流年」，将「星辰譜」「鑑定詳解」「七殺格」「格局」「排盤」「卜算中」等偏中文或不够自然的显示改为「大運・流年」「命式詳細」「偏官格」「命式の型」「四柱の命式」「鑑定中」等日语客户可理解的表达 | `/latest.html` / `/index.html?v=20260518-user-japanese-customer-1` | `/archive/pre-user-japanese-customer-copy-20260518/index.html?v=20260518-user-japanese-terms-1` | main `2030453` / gh-pages `2933ce1` |
 | v0.3.35 | 2026-05-18 16:16 JST | 用户首页 | `/index.html` 大運・流年可读化 | 将“大運・流年”页从长表格优先改为「十年運マップ → 現在の大運 → 近い流年 → 明細表」结构；新增十年运起伏曲线、每个十年的年龄段、通変星、上昇/活動/安定/整える节奏标签、关键词和面向初级用户的说明文，流年区也补充近几年主题卡；原大运/流年/流月/流日表格保留在后方作为明细 | `/latest.html` / `/index.html?v=20260518-user-fortune-readable-1` | `/archive/pre-user-fortune-readable-20260518/index.html?v=20260518-user-japanese-customer-1` | main `a126b74` / gh-pages `6eba0c8` |
 | v0.3.36 | 2026-05-18 16:26 JST | 用户首页 | `/index.html` 日本出生地市区町村选择 | 在日本出生地输入中增加两级下拉框：先选都道府县，再选市区町村；市区町村可保持「都道府県のみ」，这样只选東京都时仍只显示東京都，明确选择渋谷区时则用 `JAPAN_MUNICIPALITIES` 的渋谷区坐标计算真太阳时，并在命式结果显示「東京都 渋谷区」 | `/latest.html` / `/index.html?v=20260518-user-jp-municipality-select-1` | `/archive/pre-user-jp-municipality-select-20260518/index.html?v=20260518-user-fortune-readable-1` | main `238d12c` / gh-pages `4dbc34f` |
+| v0.3.37 | 2026-05-24 21:15 JST | 用户首页 | `/index.html` 命式作成左侧步骤 | 将左侧「壹/貳/參/肆」步骤改为可点击快捷跳转；点击后平滑滚动到对应输入区，并将焦点放到该区第一个可输入控件，方便快速修改生年月日、出生时间和出生地 | `/latest.html` / `/index.html?v=20260524-user-form-jump-1` | - | 待提交 |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

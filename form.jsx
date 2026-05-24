@@ -875,7 +875,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: `この命盤の人物タイプは、日柱の天干「日主」から見ます。日主は ${calc.dayMaster}（${calc.pillars.day.element.stem}）で、${stem.title || 'その人の本質を表すタイプ'}。${stem.text || '命式全体を読む起点になります。'}`,
       evidence: `日柱天干 ${calc.dayMaster} / 五行 ${calc.pillars.day.element.stem}`,
       action: 'daymaster',
-      target: { page: 'insight', topic: 'personality', anchor: 'insight-daymaster' },
+      target: { page: 'insight', topic: 'core', anchor: 'insight-topic-main' },
     },
     {
       kind: 'pattern',
@@ -884,7 +884,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: `人生全体の格局は「${patternName}」を中心に見ます。身強弱は ${strengthStatus}。${displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。')} ${calc.strength?.text || '日主の勢いも合わせて、どんな環境で力を出しやすいかを読みます。'}`,
       evidence: `月令・天干 / 日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
       action: 'insight',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-judgement' },
+      target: { page: 'insight', topic: 'pattern', anchor: 'insight-topic-main' },
     },
     {
       kind: 'element',
@@ -893,7 +893,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: `五行の状態は、性格の出方と調整ポイントをまとめて見ます。この命盤では ${dominantLabel} が前に出やすく、${supportLabel} を意識して補うとバランスが整いやすい構成です。用神・調候の候補は ${yongLabel} です。`,
       evidence: '天干・地支・蔵干・月令補正 / 調候・用神',
       action: 'elements',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-elements' },
+      target: { page: 'insight', topic: 'element', anchor: 'insight-topic-main' },
     },
     {
       kind: 'god',
@@ -902,7 +902,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: god ? `人生課題は、命盤の中で重なりやすい通変星から見ます。この命盤で目立つ通変星は「${displayTenGod(god)}」です。${TEN_GOD_LIFE_TASKS[god] || TEN_GOD_LIFE_TASKS[displayTenGod(god)] || TEN_GOD_READING[god]?.text || '行動の癖や課題として表れやすいテーマです。'}` : '人生課題は、命盤で重なる通変星から見ます。どんな行動パターンが強く出やすく、それをどう成長課題に変えるかを読む項目です。',
       evidence: god ? `四柱の天干・蔵干に出る通変星 / 出現 ${tenGods[0]?.[1] || 0}` : '通変星',
       action: 'insight',
-      target: { page: 'insight', topic: 'personality', anchor: 'insight-ten-gods' },
+      target: { page: 'insight', topic: 'lifeTask', anchor: 'insight-topic-main' },
     },
     {
       kind: 'source',
@@ -929,7 +929,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: wealthFortuneSummary(calc),
       evidence: '正財・偏財 / 五行バランス / 用神',
       action: 'career',
-      target: { page: 'insight', topic: 'career', anchor: 'insight-topic-main' },
+      target: { page: 'insight', topic: 'money', anchor: 'insight-topic-main' },
     },
     {
       kind: 'relationship',
@@ -938,7 +938,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: relationshipFortuneSummary(calc, god),
       evidence: `通変星 / 日支 ${calc.pillars.day.branch}`,
       action: 'relationship',
-      target: { page: 'insight', topic: 'personality', anchor: 'insight-ten-gods' },
+      target: { page: 'insight', topic: 'relationship', anchor: 'insight-topic-main' },
     },
     {
       kind: 'health',
@@ -947,7 +947,7 @@ function buildUserReadingTags(calc, tenGods) {
       detail: healthFortuneSummary(calc),
       evidence: '五行バランス / 補う五行 / 用神',
       action: 'health',
-      target: { page: 'insight', topic: 'talent', anchor: 'insight-elements' },
+      target: { page: 'insight', topic: 'health', anchor: 'insight-topic-main' },
     },
     {
       kind: 'trend',
@@ -1562,9 +1562,32 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
             <UserTagIndex tags={readingTags} onNavigate={handleTagNavigate} />
           </div>
 
-          <div id="s3" className="result-wide next-actions" style={{ marginTop: 64 }}>
-            <button onClick={onShowInsight}>命式詳細を読む <span>詳解</span></button>
-            <button onClick={onShowFortune}>大運・流年を見る <span>運勢</span></button>
+          <div id="s3" className="result-wide result-next-panel" style={{ marginTop: 64 }}>
+            <div className="result-next-head">
+              <div>
+                <div className="summary-kicker">NEXT READING</div>
+                <h2>さらに深く読む</h2>
+              </div>
+              <p>命盤の要点を確認したあと、詳しい解説または大運の流れへ進めます。</p>
+            </div>
+            <div className="result-next-actions">
+              <button className="result-next-card is-primary" onClick={onShowInsight}>
+                <span className="result-next-icon">詳</span>
+                <span className="result-next-copy">
+                  <strong>命式詳細を読む</strong>
+                  <small>命主タイプ・人生格局・五行特質・婚姻運・仕事運などを詳しく確認</small>
+                </span>
+                <span className="result-next-meta">詳細解説</span>
+              </button>
+              <button className="result-next-card" onClick={onShowFortune}>
+                <span className="result-next-icon">運</span>
+                <span className="result-next-copy">
+                  <strong>大運・流年を見る</strong>
+                  <small>現在の十年大運と運勢の流れ。詳細ページは調整中です</small>
+                </span>
+                <span className="result-next-meta">開発中</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1573,21 +1596,79 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
 }
 
 function InsightView({ calculation, profile, onBack, onEditInput, routeTarget }) {
-  const [topic, setTopic] = React.useState(routeTarget?.topic || 'personality');
+  const [topic, setTopic] = React.useState(routeTarget?.topic || 'core');
   const handledRouteKey = React.useRef(null);
   const primaryGod = collectTenGods(calculation)[0]?.[0] || '比肩';
   const dayStem = calculation.dayMaster;
-  const synthesis = React.useMemo(() => analyzeSynthesis(calculation, profile), [calculation, profile]);
-  const TOPICS = [ { key: 'personality', ja: '性格傾向', icon: '👤', title: 'あなたの強みと本質' }, { key: 'talent', ja: '才能・天分', icon: '✨', title: '天から授かった才能' }, { key: 'career', ja: '仕事・金運', icon: '💰', title: '仕事と財の流れ' }, { key: 'marriage', ja: '恋愛・婚姻', icon: '❤️', title: '愛と絆の形' } ];
-  const currentTopic = TOPICS.find(t => t.key === topic);
+  const patternName = displayPatternName(calculation.pattern);
+  const strengthStatus = calculation.strength?.status || '身強弱未判定';
+  const dominantLabel = strongestElements(calculation).filter(Boolean).join('・') || '五行';
+  const supportLabel = supportElements(calculation).filter(Boolean).join('・') || '調整五行';
+  const yongLabel = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || supportLabel;
+  const TOPICS = [
+    { key: 'core', ja: '命主タイプ', icon: STEM_ICONS[dayStem] || '主', title: '命主のタイプ分類' },
+    { key: 'pattern', ja: '人生格局', icon: '型', title: '人生格局と特質' },
+    { key: 'element', ja: '五行特質', icon: '五', title: '五行バランスと調整点' },
+    { key: 'lifeTask', ja: '人生課題', icon: '神', title: '人生課題として出やすいテーマ' },
+    { key: 'marriage', ja: '婚姻運', icon: '縁', title: '婚姻運と関係の傾向' },
+    { key: 'career', ja: '仕事運', icon: '仕', title: '仕事運と適職の方向' },
+    { key: 'money', ja: '金運', icon: '財', title: '金運とお金の流れ' },
+    { key: 'relationship', ja: '対人運', icon: '人', title: '対人運と人間関係' },
+    { key: 'health', ja: '健康運', icon: '健', title: '健康運と生活リズム' },
+  ];
+  const currentTopic = TOPICS.find(t => t.key === topic) || TOPICS[0];
+  const topicNums = ['壹','貳','參','肆','伍','陸','柒','捌','玖'];
   const getInsightContent = (key) => {
+    const stemReading = STEM_READING[dayStem] || { title: 'その人の本質を表すタイプ', text: '日主は命式全体を読む起点になります。' };
+    const godLabel = displayTenGod(primaryGod);
     const contents = {
-      personality: { intro: `日主「${dayStem}」と「${displayTenGod(primaryGod)}」から解析します。`, p1: `【本質】${STEM_READING[dayStem]?.text}`, p2: `【行動】${TEN_GOD_READING[primaryGod]?.text}` },
-      talent: { intro: `あなたの才能の活かし所を特定します。`, p1: `あなたの命式の型は「${displayPatternName(calculation.pattern)}」です。${displayPatternText(calculation.pattern)}`, p2: `補助する要素があなたの独自性を高めています。` },
-      career: { intro: `最適なビジネススタイルを提案します。`, p1: `エネルギーは「${calculation.strength?.status}」です。${calculation.strength?.text}`, p2: `【分析】${synthesis.career}` },
-      marriage: { intro: `配偶者宮から理想のパートナーシップを導きます。`, p1: `配偶者の場所には「${calculation.pillars.day.branch}」が鎮座。${BRANCH_READING[calculation.pillars.day.branch]}`, p2: `【分析】${synthesis.marriage}` }
+      core: {
+        intro: `命主タイプは、日柱の天干である日主から見ます。`,
+        p1: `日主は ${dayStem}（${calculation.pillars.day.element.stem}）です。${stemReading.title}。${stemReading.text}`,
+        p2: `日主は性格だけでなく、五行バランス、仕事運、婚姻運、対人運を見るときの中心点になります。`,
+      },
+      pattern: {
+        intro: `人生格局は、命式の型と身強弱を合わせて見ます。`,
+        p1: `この命盤の型は「${patternName}」、身強弱は ${strengthStatus} です。${displayPatternText(calculation.pattern, '月令と天干から命式の大枠を見ます。')}`,
+        p2: calculation.strength?.text || '日主の勢いと五行の支えから、どんな環境で力を出しやすいかを読みます。',
+      },
+      element: {
+        intro: `五行特質は、強く出る五行・補いたい五行・用神をまとめて見ます。`,
+        p1: `この命盤では ${dominantLabel} が前に出やすく、${supportLabel} を補うと全体が整いやすい構成です。`,
+        p2: `用神・調候の候補は ${yongLabel} です。五行は性格、仕事、対人関係、健康運の生活リズムにも反映されます。`,
+      },
+      lifeTask: {
+        intro: `人生課題は、命盤の中で重なりやすい通変星から見ます。`,
+        p1: `この命盤で目立つ通変星は「${godLabel}」です。四柱の天干・蔵干に出る通変星を重ねて、行動パターンを読みます。`,
+        p2: TEN_GOD_LIFE_TASKS[primaryGod] || TEN_GOD_LIFE_TASKS[godLabel] || TEN_GOD_READING[primaryGod]?.text || '行動の癖や課題として表れやすいテーマです。',
+      },
+      marriage: {
+        intro: `婚姻運は、日支を婚姻宮として見ます。`,
+        p1: marriageFortuneSummary(calculation),
+        p2: `詳しくは日支 ${calculation.pillars.day.branch} と日主 ${dayStem} の関係、さらに命盤内の配偶者星や通変星を重ねて読みます。`,
+      },
+      career: {
+        intro: `仕事運は、月柱・命式の型・身強弱・通変星を合わせて見ます。`,
+        p1: careerFortuneSummary(calculation, patternName, strengthStatus, primaryGod),
+        p2: `月柱 ${calculation.pillars.month.text} は社会性や仕事環境を表す柱です。ここに命式全体の型を重ねて、仕事で力を出しやすい場を読みます。`,
+      },
+      money: {
+        intro: `金運は、財星だけでなく仕事運・五行バランス・用神を合わせて見ます。`,
+        p1: wealthFortuneSummary(calculation),
+        p2: `正財・偏財が強いかだけで判断せず、収入の入口、管理力、信用づくり、補う五行を重ねて見ます。`,
+      },
+      relationship: {
+        intro: `対人運は、通変星と日支から人間関係で出やすい振る舞いを見ます。`,
+        p1: relationshipFortuneSummary(calculation, primaryGod),
+        p2: `人との距離感、協力の仕方、言葉の出方は、日主・日支・目立つ通変星の組み合わせで読みます。`,
+      },
+      health: {
+        intro: `健康運は病気の診断ではなく、体調管理と生活リズムの傾向として見ます。`,
+        p1: healthFortuneSummary(calculation),
+        p2: `五行の偏りがある場合は、強い五行を使いすぎず、補う五行を生活・環境・休息の中で整えることを重視します。`,
+      },
     };
-    return contents[key] || contents.personality;
+    return contents[key] || contents.core;
   };
   const content = getInsightContent(topic);
   const scrollTo = (sid) => {
@@ -1613,7 +1694,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side">
         <div className="kanji">命式詳細</div><div className="label">PERSONAL INSIGHTS</div>
         <div className="seal-stack">
-          {TOPICS.map((t, i) => <div key={t.key} style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} onClick={() => setTopic(t.key)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{t.ja}</div>)}
+          {TOPICS.map((t, i) => <div key={t.key} style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} onClick={() => setTopic(t.key)}><span className="num">{topicNums[i] || i + 1}</span>　{t.ja}</div>)}
           <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
         </div>
       </aside>

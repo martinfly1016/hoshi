@@ -736,6 +736,7 @@ function buildUserReadingTags(calc, tenGods) {
       kind: 'core',
       label: '日主',
       value: `${calc.dayMaster}（${calc.pillars.day.element.stem}）`,
+      icon: STEM_ICONS[calc.dayMaster] || '主',
       detail: stem.text || '日主は日柱の天干で、命式全体を読む起点です。',
       evidence: `日柱天干 ${calc.dayMaster} / 五行 ${calc.pillars.day.element.stem}`,
       action: 'daymaster',
@@ -944,6 +945,10 @@ const USER_TAG_ICONS = {
   trend: '運',
 };
 
+function userTagIcon(tag) {
+  return tag?.icon || USER_TAG_ICONS[tag?.kind] || '要';
+}
+
 function UserTagIndex({ tags, onNavigate }) {
   const [activeTagIndex, setActiveTagIndex] = React.useState(null);
   const focusTagDetail = (index) => {
@@ -967,7 +972,7 @@ function UserTagIndex({ tags, onNavigate }) {
             className={`user-tag tag-${tag.kind} ${activeTagIndex === index ? 'is-active' : ''}`}
             onClick={() => focusTagDetail(index)}
           >
-            <span className="user-tag-mini-icon" aria-hidden="true">{USER_TAG_ICONS[tag.kind] || '要'}</span>
+            <span className="user-tag-mini-icon" aria-hidden="true">{userTagIcon(tag)}</span>
             <small>{tag.label}</small>
             <strong>{tag.value}</strong>
           </button>
@@ -980,7 +985,7 @@ function UserTagIndex({ tags, onNavigate }) {
             id={`tag-detail-${index}`}
             className={`user-tag-detail ${activeTagIndex === index ? 'is-active' : ''}`}
           >
-            <div className={`user-tag-detail-icon tag-${tag.kind}`} aria-hidden="true">{USER_TAG_ICONS[tag.kind] || '要'}</div>
+            <div className={`user-tag-detail-icon tag-${tag.kind}`} aria-hidden="true">{userTagIcon(tag)}</div>
             <div className="user-tag-detail-body">
               <div className="user-tag-detail-head">
               <span className={`user-tag tag-${tag.kind}`}>

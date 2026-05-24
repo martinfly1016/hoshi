@@ -834,6 +834,27 @@ function healthFortuneSummary(calc) {
   return `健康運は病気の診断ではなく、体調管理・生活リズムの傾向として見ます。命盤では ${dominantLabel} が出やすく、${supportLabel} を補うことがバランスの鍵です。${balanceText}`;
 }
 
+function decadeFlowSummary(calc, current) {
+  const luck = calc.luckCycles || {};
+  const items = luck.decadeFortunes?.items || [];
+  if (!current) return '性別を選ぶと大運の流れを定位できます。十年ごとの大運から、人生のどの時期に外へ動きやすいか、整える時期か、責任が増える時期かを見ます。';
+  const guide = fortuneGuideForGod(current.pillar?.heavenlyTenGod);
+  const currentGod = displayTenGod(current.pillar?.heavenlyTenGod);
+  const currentAge = `${current.startAge}-${current.endAge}歳`;
+  const enriched = items.map(item => enrichDecadeFortune(item, current));
+  const peak = enriched.reduce((best, item) => (!best || item.score > best.score ? item : best), null);
+  const firstHalf = enriched.slice(0, Math.ceil(enriched.length / 2));
+  const secondHalf = enriched.slice(Math.ceil(enriched.length / 2));
+  const avg = list => list.length ? list.reduce((sum, item) => sum + item.score, 0) / list.length : 0;
+  const lifeTone = avg(secondHalf) >= avg(firstHalf) + 3
+    ? '人生後半にかけて運の使い方が育ちやすい流れです。'
+    : avg(firstHalf) >= avg(secondHalf) + 3
+      ? '早い時期から動きが出やすく、若い時期の経験が後半の土台になります。'
+      : '大きく一方向に偏るより、十年ごとのテーマを切り替えながら進む流れです。';
+  const peakText = peak ? `全体の中では ${peak.startAge}-${peak.endAge}歳の ${peak.name} が比較的外へ動きやすい節目です。` : '';
+  return `現在は ${current.name}（${current.startYear}-${current.endYear}年 / ${currentAge}）の十年大運です。この大運では「${currentGod}」の働きが前に出やすく、テーマは「${guide.rhythm}」。${guide.advice} 人生全体の大運を見ると、${lifeTone}${peakText}`;
+}
+
 function buildUserReadingTags(calc, tenGods) {
   const stem = STEM_READING[calc.dayMaster] || { text: '', tags: [] };
   const dominant = strongestElements(calc);
@@ -931,9 +952,9 @@ function buildUserReadingTags(calc, tenGods) {
     {
       kind: 'trend',
       label: '運勢の流れ',
-      value: fortuneTrendTag(calc),
-      detail: current ? `現在は ${current.name}（${current.startYear}-${current.endYear}）の大運です。` : '性別を選ぶと大運の流れを定位できます。',
-      evidence: current ? `大運 ${current.name}` : '大運未判定',
+      value: current ? `${current.name} / ${fortuneTrendTag(calc)}` : fortuneTrendTag(calc),
+      detail: decadeFlowSummary(calc, current),
+      evidence: current ? `現在の十年大運 ${current.name} / ${current.startAge}-${current.endAge}歳 / ${current.startYear}-${current.endYear}年` : '大運未判定',
       action: 'fortune',
       target: { page: 'fortune', anchor: 'f0' },
     },

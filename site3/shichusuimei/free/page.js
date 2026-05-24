@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260516-accuracy-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260525-elements-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -1221,13 +1221,13 @@ function renderFiveElementAlgorithmPanel(result) {
         </div>
         <span class="balance-badge">平衡 ${escapeHtml(analysis.balanceScore ?? "—")}</span>
       </div>
-      <p class="summary-text">五行は天干、地支の藏干、月柱の季節補正を合わせて点数化しています。表示用の構成比は raw points から算出し、丸めた件数だけに依存しないようにしています。</p>
+      <p class="summary-text">五行の構成比は、四柱の天干と地支の藏干を重みづけして算出しています。月令による旺衰は構成比とは分け、身強弱や調候の参考として扱います。</p>
       <div class="algorithm-grid">
         ${ELEMENT_LABELS.map((name) => `
           <article class="algorithm-card">
             <span class="table-mark ${elementClass(name)}">${name}</span>
             <strong>${escapeHtml(`${percentages[name] || 0}%`)}</strong>
-            <p>${escapeHtml(`raw ${analysis.rawPoints?.[name] ?? "—"} / count ${analysis.counts?.[name] ?? 0}`)}</p>
+            <p>${escapeHtml(`構成 ${analysis.rawPoints?.[name] ?? "—"} / 季節補正 ${analysis.seasonalAdjustedPoints?.[name] ?? "—"}`)}</p>
           </article>
         `).join("")}
       </div>

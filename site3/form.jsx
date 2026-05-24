@@ -1333,13 +1333,13 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
         </div>
-        <p className="backend-copy">五行は天干、地支の蔵干、月柱の季節補正を合わせて点数化しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節から、五行の働きやすさも重ねて見ます。</p>
+        <p className="backend-copy">五行の構成比は、四柱の天干と地支の蔵干を重みづけして算出しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節による旺衰は、構成比とは分けて身強弱の参考にします。</p>
         <div className="backend-card-grid five">
           {ELEMENT_LABELS.map(el => (
             <article key={el}>
               <small>{el}</small>
               <strong className={elementClass(el)}>{percentages[el] || 0}% / {seasonal.states[el] || '休'}</strong>
-              <p>raw {calculation.fiveElements?.rawPoints?.[el] ?? '—'} / count {calculation.fiveElements?.counts?.[el] ?? 0}</p>
+              <p>構成 {calculation.fiveElements?.rawPoints?.[el] ?? '—'} / 季節補正 {calculation.fiveElements?.seasonalAdjustedPoints?.[el] ?? '—'}</p>
               <em>{SEASONAL_STATE_TEXT[seasonal.states[el]] || ''}</em>
             </article>
           ))}

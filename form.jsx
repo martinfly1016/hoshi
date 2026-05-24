@@ -946,7 +946,7 @@ function UserTagIndex({ tags, onNavigate }) {
   return (
     <section className="user-tag-index">
       <div className="summary-kicker">命盤要点解読</div>
-      <h2>命盤の要点をまとめて確認する</h2>
+      <h2>重要な読みをタグで確認</h2>
       <p>気になる要点を押すと、このページ下部の概要説明へ移動します。さらに詳しく読む場合は、各説明カードの「詳細説明」から深い鑑定へ進めます。</p>
       <div className="user-tag-row">
         {tags.map((tag, index) => (

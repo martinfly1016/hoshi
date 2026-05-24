@@ -524,6 +524,13 @@ input, select { font-family: inherit; color: inherit; }
 .rite-main {
   max-width: 720px;
 }
+.result-rite {
+  grid-template-columns: minmax(180px, 0.24fr) minmax(0, 1fr);
+}
+.result-main {
+  width: 100%;
+  max-width: min(1120px, 100%);
+}
 .rite-intro {
   border-top: 1px solid var(--rule-strong);
   padding-top: 28px;
@@ -1023,14 +1030,14 @@ input, select { font-family: inherit; color: inherit; }
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: auto;
+  overflow-x: visible;
   border: 1px solid var(--rule-strong);
   background: color-mix(in srgb, var(--ink) 4%, var(--bg-paper));
 }
 .bazi-pro-row {
   display: grid;
-  grid-template-columns: 148px repeat(4, minmax(112px, 1fr));
-  min-width: 680px;
+  grid-template-columns: minmax(126px, 0.68fr) repeat(4, minmax(0, 1fr));
+  min-width: 0;
   border-bottom: 1px solid var(--rule);
 }
 .bazi-pro-row:last-child {

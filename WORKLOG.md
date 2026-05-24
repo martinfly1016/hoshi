@@ -66,6 +66,7 @@
 | v0.3.36 | 2026-05-18 16:26 JST | 用户首页 | `/index.html` 日本出生地市区町村选择 | 在日本出生地输入中增加两级下拉框：先选都道府县，再选市区町村；市区町村可保持「都道府県のみ」，这样只选東京都时仍只显示東京都，明确选择渋谷区时则用 `JAPAN_MUNICIPALITIES` 的渋谷区坐标计算真太阳时，并在命式结果显示「東京都 渋谷区」 | `/latest.html` / `/index.html?v=20260518-user-jp-municipality-select-1` | `/archive/pre-user-jp-municipality-select-20260518/index.html?v=20260518-user-fortune-readable-1` | main `238d12c` / gh-pages `4dbc34f` |
 | v0.3.37 | 2026-05-24 21:15 JST | 用户首页 | `/index.html` 命式作成左侧步骤 | 将左侧「壹/貳/參/肆」步骤改为可点击快捷跳转；点击后平滑滚动到对应输入区，并将焦点放到该区第一个可输入控件，方便快速修改生年月日、出生时间和出生地 | `/latest.html` / `/index.html?v=20260524-user-form-jump-1` | - | main `e193551` / gh-pages `270eb9a` |
 | v0.3.38 | 2026-05-24 22:20 JST | 用户首页 | `/index.html` 命式页四柱表 | 放宽桌面端命式结果页主栏宽度，并将四柱命式结构表改为在电脑浏览器内完整自适应展示；手机/平板端继续使用紧凑表格布局 | `/latest.html` / `/index.html?v=20260524-user-chart-desktop-1` | - | main `3b1c177` / gh-pages `5055bf5` |
+| v0.3.39 | 2026-05-24 22:30 JST | 用户首页 | `/index.html` 命式页桌面宽屏 | 进一步针对桌面宽屏优化命式页：结果页减少左右留白和左侧栏占宽，主内容最大宽度提高到 1480px，四柱结构表左侧项目列收窄，让四柱列优先完整显示 | `/latest.html` / `/index.html?v=20260524-user-chart-desktop-2` | - | 待提交 |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

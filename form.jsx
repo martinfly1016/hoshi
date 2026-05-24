@@ -785,6 +785,31 @@ function marriageFortuneSummary(calc) {
   return `婚姻運は、日柱の地支である「日支」を婚姻宮として見ます。この命盤の日支は ${dayPillar.branch}（${palaceElement}）です。${branchProfile} 日主 ${calc.dayMaster}（${dayElement}）に対して日支がどう働くかを見ると、${relation}`;
 }
 
+function careerFortuneSummary(calc, patternName, strengthStatus, god) {
+  const monthPillar = calc.pillars.month;
+  const mainRole = god ? displayTenGod(god) : '通変星';
+  const strengthText = calc.strength?.status === '身強'
+    ? '自分で主導権を握り、判断や責任を引き受けるほど仕事運が動きやすいタイプです。'
+    : calc.strength?.status === '身弱'
+      ? '組織や専門環境の中で支えを受けながら、得意分野を磨くほど仕事運が安定しやすいタイプです。'
+      : '身強弱と五行バランスを重ねて、仕事で力を出しやすい環境を見ます。';
+  return `仕事運は、社会性を表す月柱と命式全体の型、身強弱、目立つ通変星を合わせて見ます。この命盤では月柱が ${monthPillar.text}、命式の型は「${patternName}」、身強弱は ${strengthStatus} です。仕事で表に出やすい役割は「${mainRole}」のテーマです。${strengthText}`;
+}
+
+function wealthFortuneSummary(calc) {
+  const stats = tenGodStats(calc);
+  const wealthStars = stats.filter(item => ['正财', '正財', '偏财', '偏財'].includes(item.name) || ['正財', '偏財'].includes(displayTenGod(item.name)));
+  const wealthLabel = wealthStars.length
+    ? wealthStars.map(item => displayTenGod(item.name)).filter(Boolean).join('・')
+    : '財星は控えめ';
+  const dominantLabel = strongestElements(calc).filter(Boolean).join('・') || '五行';
+  const supportLabel = supportElements(calc).filter(Boolean).join('・') || '調整五行';
+  const starText = wealthStars.length
+    ? `命盤の中に ${wealthLabel} が見えるため、お金は人との機会、管理力、現実的な成果づくりと結びつきやすいタイプです。`
+    : '財星が強く前面に出ない場合、金運は一攫千金よりも、仕事の型・信用・五行バランスを整えることで育てる読みになります。';
+  return `金運は、財星（正財・偏財）だけでなく、仕事運、五行バランス、用神を合わせて見ます。${starText} 五行では ${dominantLabel} が出やすく、${supportLabel} を補うほどお金の流れも整えやすくなります。`;
+}
+
 function buildUserReadingTags(calc, tenGods) {
   const stem = STEM_READING[calc.dayMaster] || { text: '', tags: [] };
   const dominant = strongestElements(calc);
@@ -842,6 +867,24 @@ function buildUserReadingTags(calc, tenGods) {
       evidence: `日柱 ${calc.pillars.day.text} / 日支 ${calc.pillars.day.branch} / 日主 ${calc.dayMaster}`,
       action: 'marriage',
       target: { page: 'insight', topic: 'marriage', anchor: 'insight-topic-main' },
+    },
+    {
+      kind: 'career',
+      label: '仕事運',
+      value: `${patternName} / ${displayTenGod(god) || '通変星'}`,
+      detail: careerFortuneSummary(calc, patternName, strengthStatus, god),
+      evidence: `月柱 ${calc.pillars.month.text} / 命式の型 / 身強弱 / 通変星`,
+      action: 'career',
+      target: { page: 'insight', topic: 'career', anchor: 'insight-topic-main' },
+    },
+    {
+      kind: 'money',
+      label: '金運',
+      value: tenGodStats(calc).some(item => ['正財', '偏財'].includes(displayTenGod(item.name))) ? '財星あり' : '育てる金運',
+      detail: wealthFortuneSummary(calc),
+      evidence: '正財・偏財 / 五行バランス / 用神',
+      action: 'career',
+      target: { page: 'insight', topic: 'career', anchor: 'insight-topic-main' },
     },
     {
       kind: 'trend',
@@ -980,6 +1023,8 @@ const USER_TAG_ICONS = {
   warning: '缺',
   god: '神',
   source: '縁',
+  career: '仕',
+  money: '財',
   trend: '運',
 };
 

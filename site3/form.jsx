@@ -1661,6 +1661,37 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side">
         <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
+          <div><span className="num">壹</span>　開発中</div>
+          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
+        </div>
+      </aside>
+      <div className="rite-main" style={{ paddingBottom: 120 }}>
+        <div className="return-action-row">
+          <button className="inline-return-btn" onClick={onBack}>← 現在の命式へ戻る</button>
+          <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
+        </div>
+        <div className="result-card" data-card-label="開発中" style={{ marginTop: 0 }}>
+          <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
+            <div className="summary-kicker">大運・流年</div>
+            <h2 style={{ margin: '6px 0 12px', fontSize: 26, letterSpacing: '0.04em' }}>この詳解ページは開発中です</h2>
+            <p style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 2 }}>
+              十年大運と流年の詳しい解説ページは現在調整中です。現時点では、命式ページの「命盤要点解読」にある「運勢の流れ」で、現在の十年大運と人生全体の大運リズムを先に確認できます。
+            </p>
+            <div className="visual-block" style={{ marginTop: 28, padding: '24px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}>
+              <h3 style={{ marginTop: 0 }}>現在できること</h3>
+              <p style={{ marginBottom: 16 }}>現在の命式へ戻って、要点解読・命式詳細を確認してください。大運・流年の詳細表と深い解説は、後続版で整えてから公開します。</p>
+              <button className="user-tag-detail-action" onClick={onBack}>現在の命式へ戻る</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+  return (
+    <section className="rite" data-screen-label="04 大運・流年">
+      <aside className="rite-side">
+        <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
+        <div className="seal-stack">
           {['十年運マップ','現在の大運','近い流年','明細表'].map((n, i) => (
             <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
           ))}

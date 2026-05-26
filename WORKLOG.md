@@ -84,7 +84,7 @@
 | v0.3.54 | 2026-05-25 00:35 JST | 用户首页 | `/index.html` 命式詳細主题同步 | 将「命式詳細」页从旧四分类同步为命式页的要点标签体系：命主类型、人生格局、五行特质、人生课题、婚姻运、事业运、财运、对人运、健康运，并同步标签详细说明跳转目标 | `/latest.html` / `/index.html?v=20260525-user-insight-tags-sync-1` | - | main `523679f` / gh-pages `1a12bc6` |
 | v0.3.55 | 2026-05-25 00:50 JST | 用户首页 | `/index.html` 命式底部导航入口 | 将命式页面底部的「命式詳細」「大運・流年」两个简易按钮升级为带说明、图标、状态标签的双卡片入口，并与已同步的详细解说主题一起发布 | `/latest.html` / `/index.html?v=20260525-user-result-next-1` | - | main `523679f` / gh-pages `1a12bc6` |
 | v0.3.56 | 2026-05-25 01:05 JST | 计算层 / 用户首页 / 后台验证页 | 五行比例算法 | 修正五行构成比算法：不再将月柱整体放大并把季节倍率混入比例；改为四柱天干各 1 点、地支藏干按主中余气权重合计 1 点计算五行比例，月令旺衰另作为身强弱参考；同步更新用户页和后台验证页说明 | `/latest.html` / `/index.html?v=20260525-user-elements-algo-1` | - | main `1d45127` / gh-pages `1186397` |
-| v0.3.57 | 2026-05-26 21:55 JST | 用户首页 | `/index.html` 命式詳細阅读体验 | 重构命式詳細页顶部详解区：九个主题改为可切换标签入口，正文拆成主解说与「読み取り根拠 / 読み方の注意」，补充婚姻运、金运、健康运等避免断定的说明，并优化手机/桌面视觉层级 | `/latest.html` / `/index.html?v=20260526-user-insight-reader-1` | `/archive/pre-user-insight-reader-20260526/index.html?v=20260525-user-elements-algo-1` | main `b783951` / gh-pages `pending` |
+| v0.3.57 | 2026-05-26 21:55 JST | 用户首页 | `/index.html` 命式詳細阅读体验 | 重构命式詳細页顶部详解区：九个主题改为可切换标签入口，正文拆成主解说与「読み取り根拠 / 読み方の注意」，补充婚姻运、金运、健康运等避免断定的说明，并优化手机/桌面视觉层级 | `/latest.html` / `/index.html?v=20260526-user-insight-reader-1` | `/archive/pre-user-insight-reader-20260526/index.html?v=20260525-user-elements-algo-1` | main `7dc204b` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

@@ -1474,17 +1474,14 @@ function BackendDetailSync({ calculation }) {
       <section id="insight-ten-gods" className="backend-panel">
         <div className="backend-panel-head">
           <div>
-            <div className="summary-kicker">十神 / 蔵干</div>
-            <h3>表に出る役割と内側のテーマ</h3>
+            <div className="summary-kicker">十神</div>
+            <h3>表に出る役割を整理する</h3>
           </div>
-          <span>構成分析</span>
+          <span>表層の役割</span>
         </div>
+        <p className="backend-copy">十神は、命盤の中で外へ出やすい役割や行動パターンを見ます。まずは出現回数が多い十神を見て、その役割が天干に出ているのか、蔵干の内側にあるのかを分けて確認します。</p>
         <div className="theme-analysis-list">
-          <article>
-            <div className="theme-analysis-head">
-              <span>壹</span>
-              <div><small>十神の割合</small><strong>表に出る役割</strong></div>
-            </div>
+          <article className="is-role">
             <div className="theme-analysis-rows">
               {gods.slice(0, 8).map(god => (
                 <div key={god.name} className="theme-analysis-row">
@@ -1496,11 +1493,20 @@ function BackendDetailSync({ calculation }) {
               ))}
             </div>
           </article>
-          <article>
-            <div className="theme-analysis-head">
-              <span>貳</span>
-              <div><small>蔵干の重なり</small><strong>内側に重なる気配</strong></div>
-            </div>
+        </div>
+      </section>
+
+      <section id="insight-hidden-stems" className="backend-panel">
+        <div className="backend-panel-head">
+          <div>
+            <div className="summary-kicker">蔵干</div>
+            <h3>内側に残る五行の気配を見る</h3>
+          </div>
+          <span>内側の構成</span>
+        </div>
+        <p className="backend-copy">蔵干は、地支の内側に含まれる天干です。表にすぐ出る役割というより、環境・本音・背景として命盤を支える気配を確認します。十神とは別の層として読むと、どの五行が内側で重なっているかが見えやすくなります。</p>
+        <div className="theme-analysis-list">
+          <article className="is-hidden">
             <div className="theme-analysis-rows">
               {hidden.slice(0, 8).map(item => (
                 <div key={`${item.stem}-${item.element}`} className="theme-analysis-row hidden-row">

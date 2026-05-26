@@ -1441,10 +1441,28 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>主要判定</span>
         </div>
-        <div className="backend-card-grid three">
-          <article><small>命式の型</small><strong>{displayPatternName(calculation.pattern)}</strong><p>{displayPatternText(calculation.pattern)}</p></article>
-          <article><small>身強身弱</small><strong>{calculation.strength?.status || '—'}</strong><p>{calculation.strength?.text || '日主の勢いを見ます。'}</p></article>
-          <article><small>用神</small><strong>{yong}</strong><p>{calculation.yongShen?.text || '命式を整える五行を見ます。'}</p></article>
+        <div className="judgement-topic-list">
+          <article>
+            <div className="judgement-topic-key"><span>壹</span><small>命式の型</small></div>
+            <div className="judgement-topic-copy">
+              <strong>{displayPatternName(calculation.pattern)}</strong>
+              <p>{displayPatternText(calculation.pattern)}</p>
+            </div>
+          </article>
+          <article>
+            <div className="judgement-topic-key"><span>貳</span><small>身強身弱</small></div>
+            <div className="judgement-topic-copy">
+              <strong>{calculation.strength?.status || '—'}</strong>
+              <p>{calculation.strength?.text || '日主の勢いを見ます。'}</p>
+            </div>
+          </article>
+          <article>
+            <div className="judgement-topic-key"><span>參</span><small>用神</small></div>
+            <div className="judgement-topic-copy">
+              <strong>{yong}</strong>
+              <p>{calculation.yongShen?.text || '命式を整える五行を見ます。'}</p>
+            </div>
+          </article>
         </div>
       </section>
 

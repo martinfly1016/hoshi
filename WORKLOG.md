@@ -91,7 +91,7 @@
 | v0.3.61 | 2026-05-26 22:32 JST | 用户首页 | `/index.html` 命式詳細内容去重 | 移除命式詳細下方重复的「日主 / あなたを表す星」模块，将日主/命主分类说明统一保留在顶部「命主タイプ」详解区，避免同一信息重复出现 | `/latest.html` / `/index.html?v=20260526-user-daymaster-dedupe-1` | - | main `68b1bdc` / gh-pages `d96fa58` |
 | v0.3.62 | 2026-05-26 22:40 JST | 用户首页 | `/index.html` 四柱说明卡可读性 | 根据截图反馈，将「四柱の意味」从四张过窄竖向卡改为两列阅读卡，并放大标题与正文，避免桌面端日文正文被挤成竖条 | `/latest.html` / `/index.html?v=20260526-user-pillars-readable-1` | - | main `c6bf95e` / gh-pages `8da9eda` |
 | v0.3.63 | 2026-05-26 22:35 JST | 用户首页 | `/index.html` 命式詳細构造表 | 在命式詳細页顶部、命主タイプ详解前复用命式页的八字要素表，并在左侧导航新增「零 命式構造表」快速跳转；移除詳細页中不易读的四柱说明卡 | `/latest.html` / `/index.html?v=20260526-user-insight-board-1` | - | main `5e9d80c` / gh-pages `7da36ad` |
-| v0.3.64 | 2026-05-26 22:44 JST | 用户首页 | `/index.html` 四柱位置说明列表 | 将命式詳細页「読み取り位置 / 四柱の坐」从年柱・月柱・日柱・時柱四列横排改为纵向阅读列表，避免说明文字被挤窄；手机端保持单列无横向溢出 | `/latest.html` / `/index.html?v=20260526-user-pillar-position-list-1` | - | main `pending` / gh-pages `pending` |
+| v0.3.64 | 2026-05-26 22:44 JST | 用户首页 | `/index.html` 四柱位置说明列表 | 将命式詳細页「読み取り位置 / 四柱の坐」从年柱・月柱・日柱・時柱四列横排改为纵向阅读列表，避免说明文字被挤窄；手机端保持单列无横向溢出 | `/latest.html` / `/index.html?v=20260526-user-pillar-position-list-1` | - | main `aeb16d2` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

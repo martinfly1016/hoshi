@@ -89,7 +89,7 @@
 | v0.3.59 | 2026-05-26 22:18 JST | 用户首页 | `/index.html` 全页面左侧导航 | 将左侧导航易浏览改造扩展到命式作成、命式、命式詳細和大運・流年：统一固定视窗高度、独立滚动、按钮式目录、返回按钮和缓存版本 | `/latest.html` / `/index.html?v=20260526-user-side-nav-1` | - | main `b208fce` / gh-pages `d637a7a` |
 | v0.3.60 | 2026-05-26 22:25 JST | 用户首页 | `/index.html` 左侧导航可见性 | 根据截图反馈进一步压缩左侧大字标题占位，让目录按钮在首屏更早出现，避免主题导航被标题挤到页面下方 | `/latest.html` / `/index.html?v=20260526-user-side-nav-2` | - | main `c88d1d4` / gh-pages `39ca433` |
 | v0.3.61 | 2026-05-26 22:32 JST | 用户首页 | `/index.html` 命式詳細内容去重 | 移除命式詳細下方重复的「日主 / あなたを表す星」模块，将日主/命主分类说明统一保留在顶部「命主タイプ」详解区，避免同一信息重复出现 | `/latest.html` / `/index.html?v=20260526-user-daymaster-dedupe-1` | - | main `68b1bdc` / gh-pages `d96fa58` |
-| v0.3.62 | 2026-05-26 22:40 JST | 用户首页 | `/index.html` 四柱说明卡可读性 | 根据截图反馈，将「四柱の意味」从四张过窄竖向卡改为两列阅读卡，并放大标题与正文，避免桌面端日文正文被挤成竖条 | `/latest.html` / `/index.html?v=20260526-user-pillars-readable-1` | - | main `c6bf95e` / gh-pages `pending` |
+| v0.3.62 | 2026-05-26 22:40 JST | 用户首页 | `/index.html` 四柱说明卡可读性 | 根据截图反馈，将「四柱の意味」从四张过窄竖向卡改为两列阅读卡，并放大标题与正文，避免桌面端日文正文被挤成竖条 | `/latest.html` / `/index.html?v=20260526-user-pillars-readable-1` | - | main `c6bf95e` / gh-pages `8da9eda` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

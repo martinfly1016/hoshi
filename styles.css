@@ -2511,11 +2511,6 @@ input, select { font-family: inherit; color: inherit; }
     linear-gradient(90deg, color-mix(in srgb, var(--gold) 6%, transparent), transparent 50%),
     color-mix(in srgb, var(--ink) 3%, transparent);
 }
-.theme-analysis-list article.is-hidden {
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--water) 6%, transparent), transparent 50%),
-    color-mix(in srgb, var(--ink) 3%, transparent);
-}
 .theme-analysis-head {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -2598,6 +2593,28 @@ input, select { font-family: inherit; color: inherit; }
   font-style: normal;
   line-height: 1.55;
   letter-spacing: 0.04em;
+}
+.ten-god-source-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.ten-god-source-split em {
+  border: 1px solid color-mix(in srgb, var(--rule) 80%, transparent);
+  background: color-mix(in srgb, var(--paper) 68%, transparent);
+  padding: 7px 9px;
+  color: var(--ink-3);
+  font-size: 11px;
+  line-height: 1.35;
+}
+.ten-god-source-split strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
 }
 .backend-luck-grid {
   display: grid;
@@ -3305,6 +3322,12 @@ input, select { font-family: inherit; color: inherit; }
   .theme-analysis-row em {
     grid-column: 2 / -1;
   }
+  .ten-god-source-split {
+    grid-column: 2 / -1;
+  }
+  .ten-god-source-split em {
+    grid-column: auto;
+  }
   .basic-info-head {
     flex-direction: column;
   }
@@ -3542,6 +3565,10 @@ input, select { font-family: inherit; color: inherit; }
   }
   .theme-analysis-row em {
     grid-column: auto;
+  }
+  .ten-god-source-split {
+    grid-column: auto;
+    grid-template-columns: 1fr;
   }
 
   .bazi-board-lite {

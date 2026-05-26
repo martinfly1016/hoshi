@@ -2265,6 +2265,12 @@ input, select { font-family: inherit; color: inherit; }
   font-size: 13px;
   line-height: 1.9;
 }
+.pillar-position-list .pillar-specific-copy {
+  border-top: 1px solid var(--rule);
+  margin-top: 10px;
+  padding-top: 12px;
+  color: var(--ink);
+}
 .pillar-position-list em,
 .pillar-position-list b {
   margin-top: 6px;

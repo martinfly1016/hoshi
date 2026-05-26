@@ -678,6 +678,13 @@ const TEN_GOD_DISPLAY = {
 function displayTenGod(name) {
   return TEN_GOD_DISPLAY[name] || name || '—';
 }
+function tenGodReading(name) {
+  const label = displayTenGod(name);
+  return TEN_GOD_READING[name]
+    || TEN_GOD_READING[label]
+    || TEN_GOD_READING[Object.keys(TEN_GOD_READING).find((key) => displayTenGod(key) === label)]
+    || null;
+}
 function hasTenGod(set, name) {
   return set.has(name) || Array.from(set).some((item) => displayTenGod(item) === name);
 }
@@ -777,6 +784,47 @@ function tenGodStats(calc) {
     });
   });
   return Array.from(map.values()).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+}
+
+function tenGodCompositionInsight(gods) {
+  if (!gods.length) {
+    return {
+      title: '十神の偏りは控えめです',
+      main: 'この命盤では、特定の十神だけが強く重なるというより、複数の役割を状況に応じて使い分ける読みになります。',
+      source: '天干と蔵干の分布を合わせて、外に見えやすい役割と内側に残りやすい役割を分けて確認します。',
+      balance: 'この場合は、ひとつの性質で断定せず、命式の型・身強身弱・五行バランスと合わせて読みます。',
+    };
+  }
+  const [primary, secondary] = gods;
+  const primaryLabel = displayTenGod(primary.name);
+  const secondaryLabel = secondary ? displayTenGod(secondary.name) : '';
+  const reading = tenGodReading(primary.name);
+  const topLabels = gods.slice(0, 3).map((god) => displayTenGod(god.name));
+  const groupText = [
+    topLabels.some((name) => ['比肩', '劫財'].includes(name)) ? '自分軸・競争心' : '',
+    topLabels.some((name) => ['食神', '傷官'].includes(name)) ? '表現力・感性' : '',
+    topLabels.some((name) => ['正財', '偏財'].includes(name)) ? '現実成果・人との機会' : '',
+    topLabels.some((name) => ['正官', '偏官'].includes(name)) ? '責任感・判断力' : '',
+    topLabels.some((name) => ['印綬', '偏印'].includes(name)) ? '学び・直感・保護' : '',
+  ].filter(Boolean).join('、');
+  const sourceText = primary.heavenly > primary.hidden
+    ? `「${primaryLabel}」は天干側に出やすいため、周囲から見える行動や第一印象に表れやすい配置です。`
+    : primary.hidden > primary.heavenly
+      ? `「${primaryLabel}」は蔵干側に多いため、表面の印象よりも内側の動機・背景・無意識の反応として働きやすい配置です。`
+      : `「${primaryLabel}」は天干と蔵干の両方に見えるため、外に出る行動と内側の動機がつながりやすい配置です。`;
+  const secondaryText = secondary
+    ? `次に「${secondaryLabel}」も重なるので、${primaryLabel}だけでなく${secondaryLabel}のテーマも一緒に出やすくなります。`
+    : 'ひとつの十神だけで断定せず、他の柱や五行バランスと合わせて読みます。';
+  return {
+    title: `中心テーマは「${primaryLabel}」です`,
+    main: reading
+      ? `この命盤でいちばん重なる十神は「${primaryLabel}」です。${reading.text}`
+      : `この命盤でいちばん重なる十神は「${primaryLabel}」です。この星を中心に、行動パターンや人生課題を読みます。`,
+    source: sourceText,
+    balance: groupText
+      ? `上位の十神をまとめると、${groupText} が出やすい構成です。${secondaryText}`
+      : secondaryText,
+  };
 }
 
 function currentDecadeFortune(decade, targetYear) {
@@ -1417,6 +1465,7 @@ function PillarMeaningSection({ calculation, profile }) {
 function BackendDetailSync({ calculation }) {
   const gods = tenGodStats(calculation);
   const maxGodTotal = Math.max(1, ...gods.map(god => god.total || 0));
+  const tenGodInsight = tenGodCompositionInsight(gods);
   const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
   return (
     <div className="backend-sync-stack">
@@ -1481,6 +1530,15 @@ function BackendDetailSync({ calculation }) {
               ))}
             </div>
           </article>
+        </div>
+        <div className="ten-god-interpretation">
+          <div>
+            <span>この構成の読み方</span>
+            <strong>{tenGodInsight.title}</strong>
+          </div>
+          <p>{tenGodInsight.main}</p>
+          <p>{tenGodInsight.source}</p>
+          <p>{tenGodInsight.balance}</p>
         </div>
       </section>
 

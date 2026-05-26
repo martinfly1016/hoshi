@@ -1450,7 +1450,6 @@ function BasicInfoPanel({ name, calculation, profile }) {
 
 function FoundationDetailSections({ calculation }) {
   const [activePillar, setActivePillar] = React.useState(null);
-  const stemReading = STEM_READING[calculation.dayMaster] || { title: '日主の説明', text: '' };
   const percentages = elementPercentages(calculation);
   const dominantElements = Object.entries(percentages).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([name]) => name).join('・');
   const support = supportElements(calculation).join('・');
@@ -1465,23 +1464,6 @@ function FoundationDetailSections({ calculation }) {
           <span>基礎読解</span>
         </div>
         <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
-      </section>
-
-      <section id="insight-daymaster" className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">日主</div>
-            <h3>あなたを表す星：{calculation.dayMaster}</h3>
-          </div>
-          <span>{stemReading.title}</span>
-        </div>
-        <div className="day-master-detail">
-          <div className="day-master-symbol">{STEM_ICONS[calculation.dayMaster]}</div>
-          <div>
-            <p>{stemReading.text}</p>
-            <div className="result-tags">{(STEM_READING[calculation.dayMaster]?.tags || []).map(t => <span key={t}># {t}</span>)}</div>
-          </div>
-        </div>
       </section>
 
       <section id="insight-elements" className="backend-panel">

@@ -1443,22 +1443,25 @@ function BackendDetailSync({ calculation }) {
         </div>
         <div className="judgement-topic-list">
           <article>
-            <div className="judgement-topic-key"><span>壹</span><small>命式の型</small></div>
+            <div className="judgement-topic-key"><span>壹</span><small>命式の型</small><em>命盤の大枠</em></div>
             <div className="judgement-topic-copy">
+              <b>判定</b>
               <strong>{displayPatternName(calculation.pattern)}</strong>
               <p>{displayPatternText(calculation.pattern)}</p>
             </div>
           </article>
           <article>
-            <div className="judgement-topic-key"><span>貳</span><small>身強身弱</small></div>
+            <div className="judgement-topic-key"><span>貳</span><small>身強身弱</small><em>日主の勢い</em></div>
             <div className="judgement-topic-copy">
+              <b>判定</b>
               <strong>{calculation.strength?.status || '—'}</strong>
               <p>{calculation.strength?.text || '日主の勢いを見ます。'}</p>
             </div>
           </article>
           <article>
-            <div className="judgement-topic-key"><span>參</span><small>用神</small></div>
+            <div className="judgement-topic-key"><span>參</span><small>用神</small><em>整える五行</em></div>
             <div className="judgement-topic-copy">
+              <b>候補</b>
               <strong>{yong}</strong>
               <p>{calculation.yongShen?.text || '命式を整える五行を見ます。'}</p>
             </div>

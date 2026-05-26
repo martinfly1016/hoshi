@@ -1709,11 +1709,21 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   }, [routeTarget, topic]);
   return (
     <section className="rite" data-screen-label="05 命式詳細">
-      <aside className="rite-side">
+      <aside className="rite-side insight-side">
         <div className="kanji">命式詳細</div><div className="label">PERSONAL INSIGHTS</div>
         <div className="seal-stack">
-          {TOPICS.map((t, i) => <div key={t.key} style={{ cursor: 'pointer', color: topic === t.key ? 'var(--gold)' : 'inherit' }} onClick={() => setTopic(t.key)}><span className="num">{topicNums[i] || i + 1}</span>　{t.ja}</div>)}
-          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
+          {TOPICS.map((t, i) => (
+            <button
+              key={t.key}
+              type="button"
+              className={`side-topic ${topic === t.key ? 'is-active' : ''}`}
+              onClick={() => setTopic(t.key)}
+            >
+              <span className="num">{topicNums[i] || i + 1}</span>
+              <span>{t.ja}</span>
+            </button>
+          ))}
+          <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>

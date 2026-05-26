@@ -520,6 +520,68 @@ input, select { font-family: inherit; color: inherit; }
   outline-offset: 4px;
 }
 .rite-side .seal-stack .num { font-family: var(--f-mono); color: var(--ink-3); }
+.rite-side.insight-side {
+  top: 96px;
+  max-height: calc(100vh - 118px);
+  overflow-y: auto;
+  padding-bottom: 22px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--gold) 44%, transparent) transparent;
+}
+.rite-side.insight-side::-webkit-scrollbar {
+  width: 5px;
+}
+.rite-side.insight-side::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--gold) 38%, transparent);
+  border-radius: 999px;
+}
+.rite-side.insight-side .kanji {
+  min-height: 230px;
+  font-size: 50px;
+}
+.rite-side.insight-side .label {
+  margin-top: 20px;
+}
+.rite-side.insight-side .seal-stack {
+  gap: 7px;
+  margin-top: 24px;
+  padding-right: 12px;
+}
+.rite-side.insight-side .side-topic {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0 10px;
+  background: transparent;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+}
+.rite-side.insight-side .side-topic span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rite-side.insight-side .side-topic.is-active {
+  border-color: color-mix(in srgb, var(--gold) 45%, var(--rule));
+  background: color-mix(in srgb, var(--gold) 9%, transparent);
+  color: var(--ink);
+}
+.rite-side.insight-side .side-topic.is-active .num {
+  color: var(--gold);
+}
+.rite-side.insight-side .side-back {
+  margin-top: 14px;
+  min-height: 34px;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+  color: var(--ink-3);
+  font-family: var(--f-mono);
+  letter-spacing: 0.14em;
+}
 
 .rite-main {
   max-width: 720px;

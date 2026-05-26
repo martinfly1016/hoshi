@@ -87,6 +87,7 @@
 | v0.3.57 | 2026-05-26 21:55 JST | 用户首页 | `/index.html` 命式詳細阅读体验 | 重构命式詳細页顶部详解区：九个主题改为可切换标签入口，正文拆成主解说与「読み取り根拠 / 読み方の注意」，补充婚姻运、金运、健康运等避免断定的说明，并优化手机/桌面视觉层级 | `/latest.html` / `/index.html?v=20260526-user-insight-reader-1` | `/archive/pre-user-insight-reader-20260526/index.html?v=20260525-user-elements-algo-1` | main `7dc204b` / gh-pages `43d7780` |
 | v0.3.58 | 2026-05-26 22:08 JST | 用户首页 | `/index.html` 命式詳細左侧导航 | 优化命式詳細页左侧主题导航：改为更大的按钮式目录、当前主题高亮、左栏固定在视窗内并支持独立滚动，移除小字链接不易浏览的问题 | `/latest.html` / `/index.html?v=20260526-user-insight-nav-1` | - | main `e1a99f2` / gh-pages `a8dac64` |
 | v0.3.59 | 2026-05-26 22:18 JST | 用户首页 | `/index.html` 全页面左侧导航 | 将左侧导航易浏览改造扩展到命式作成、命式、命式詳細和大運・流年：统一固定视窗高度、独立滚动、按钮式目录、返回按钮和缓存版本 | `/latest.html` / `/index.html?v=20260526-user-side-nav-1` | - | main `b208fce` / gh-pages `d637a7a` |
+| v0.3.60 | 2026-05-26 22:25 JST | 用户首页 | `/index.html` 左侧导航可见性 | 根据截图反馈进一步压缩左侧大字标题占位，让目录按钮在首屏更早出现，避免主题导航被标题挤到页面下方 | `/latest.html` / `/index.html?v=20260526-user-side-nav-2` | - | main `pending` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

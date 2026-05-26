@@ -1430,6 +1430,8 @@ function PillarMeaningSection({ calculation, profile }) {
 function BackendDetailSync({ calculation }) {
   const gods = tenGodStats(calculation);
   const hidden = hiddenStemStats(calculation);
+  const maxGodTotal = Math.max(1, ...gods.map(god => god.total || 0));
+  const maxHiddenTotal = Math.max(1, ...hidden.map(item => item.total || 0));
   const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
   return (
     <div className="backend-sync-stack">
@@ -1477,17 +1479,37 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>構成分析</span>
         </div>
-        <div className="backend-card-grid two">
+        <div className="theme-analysis-list">
           <article>
-            <small>十神の割合</small>
-            <div className="backend-token-list">
-              {gods.slice(0, 8).map(god => <span key={god.name}><strong>{displayTenGod(god.name)}</strong> ×{god.total} <em>干{god.heavenly}/支{god.hidden}</em></span>)}
+            <div className="theme-analysis-head">
+              <span>壹</span>
+              <div><small>十神の割合</small><strong>表に出る役割</strong></div>
+            </div>
+            <div className="theme-analysis-rows">
+              {gods.slice(0, 8).map(god => (
+                <div key={god.name} className="theme-analysis-row">
+                  <b>{displayTenGod(god.name)}</b>
+                  <div className="theme-analysis-meter"><i style={{ width: `${Math.max(8, Math.round(((god.total || 0) / maxGodTotal) * 100))}%` }} /></div>
+                  <span>×{god.total}</span>
+                  <em>天干 {god.heavenly} / 蔵干 {god.hidden}</em>
+                </div>
+              ))}
             </div>
           </article>
           <article>
-            <small>蔵干の重なり</small>
-            <div className="backend-token-list">
-              {hidden.slice(0, 8).map(item => <span key={`${item.stem}-${item.element}`}><strong className={elementClass(item.element)}>{item.stem}{item.element}</strong> ×{item.total}</span>)}
+            <div className="theme-analysis-head">
+              <span>貳</span>
+              <div><small>蔵干の重なり</small><strong>内側に重なる気配</strong></div>
+            </div>
+            <div className="theme-analysis-rows">
+              {hidden.slice(0, 8).map(item => (
+                <div key={`${item.stem}-${item.element}`} className="theme-analysis-row hidden-row">
+                  <b className={elementClass(item.element)}>{item.stem}{item.element}</b>
+                  <div className="theme-analysis-meter"><i style={{ width: `${Math.max(8, Math.round(((item.total || 0) / maxHiddenTotal) * 100))}%`, background: `var(--${elementClass(item.element)})` }} /></div>
+                  <span>×{item.total}</span>
+                  <em>蔵干に重なる要素</em>
+                </div>
+              ))}
             </div>
           </article>
         </div>

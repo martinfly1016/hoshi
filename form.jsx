@@ -1428,9 +1428,6 @@ function PillarMeaningSection({ calculation, profile }) {
 }
 
 function BackendDetailSync({ calculation }) {
-  const seasonal = seasonalElementState(calculation);
-  const percentages = elementPercentages(calculation);
-  const basis = calculation.fiveElements?.basis || {};
   const gods = tenGodStats(calculation);
   const hidden = hiddenStemStats(calculation);
   const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
@@ -1448,27 +1445,6 @@ function BackendDetailSync({ calculation }) {
           <article><small>命式の型</small><strong>{displayPatternName(calculation.pattern)}</strong><p>{displayPatternText(calculation.pattern)}</p></article>
           <article><small>身強身弱</small><strong>{calculation.strength?.status || '—'}</strong><p>{calculation.strength?.text || '日主の勢いを見ます。'}</p></article>
           <article><small>用神</small><strong>{yong}</strong><p>{calculation.yongShen?.text || '命式を整える五行を見ます。'}</p></article>
-        </div>
-      </section>
-
-      <section id="insight-element-basis" className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">五行計算の根拠</div>
-            <h3>構成比と旺相休囚死</h3>
-          </div>
-          <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
-        </div>
-        <p className="backend-copy">五行の構成比は、四柱の天干と地支の蔵干を重みづけして算出しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節による旺衰は、構成比とは分けて身強弱の参考にします。</p>
-        <div className="backend-card-grid five">
-          {ELEMENT_LABELS.map(el => (
-            <article key={el}>
-              <small>{el}</small>
-              <strong className={elementClass(el)}>{percentages[el] || 0}% / {seasonal.states[el] || '休'}</strong>
-              <p>構成 {calculation.fiveElements?.rawPoints?.[el] ?? '—'} / 季節補正 {calculation.fiveElements?.seasonalAdjustedPoints?.[el] ?? '—'}</p>
-              <em>{SEASONAL_STATE_TEXT[seasonal.states[el]] || ''}</em>
-            </article>
-          ))}
         </div>
       </section>
 
@@ -1497,6 +1473,34 @@ function BackendDetailSync({ calculation }) {
       </section>
 
     </div>
+  );
+}
+
+function ElementBasisPanel({ calculation }) {
+  const seasonal = seasonalElementState(calculation);
+  const percentages = elementPercentages(calculation);
+  const basis = calculation.fiveElements?.basis || {};
+  return (
+    <section id="insight-element-basis" className="backend-panel element-basis-panel">
+      <div className="backend-panel-head">
+        <div>
+          <div className="summary-kicker">五行計算の根拠</div>
+          <h3>構成比と旺相休囚死</h3>
+        </div>
+        <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
+      </div>
+      <p className="backend-copy">五行の構成比は、四柱の天干と地支の蔵干を重みづけして算出しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節による旺衰は、構成比とは分けて身強弱の参考にします。</p>
+      <div className="backend-card-grid five">
+        {ELEMENT_LABELS.map(el => (
+          <article key={el}>
+            <small>{el}</small>
+            <strong className={elementClass(el)}>{percentages[el] || 0}% / {seasonal.states[el] || '休'}</strong>
+            <p>構成 {calculation.fiveElements?.rawPoints?.[el] ?? '—'} / 季節補正 {calculation.fiveElements?.seasonalAdjustedPoints?.[el] ?? '—'}</p>
+            <em>{SEASONAL_STATE_TEXT[seasonal.states[el]] || ''}</em>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -1562,7 +1566,7 @@ function FoundationDetailSections({ calculation }) {
           </div>
           <span>補 {support || '—'}</span>
         </div>
-        <p className="backend-copy">五行の構成比と生剋図を確認します。細かな計算根拠と季節による強弱は下の五行計算の根拠で確認できます。</p>
+        <p className="backend-copy">五行の構成比と生剋図を確認します。続けて、どの要素が何%として計算され、季節による旺衰をどう別扱いしているかを確認できます。</p>
         <div className="foundation-element-bars">
           {ELEMENT_LABELS.map(el => (
             <div key={el} className="foundation-element-row">
@@ -1574,6 +1578,7 @@ function FoundationDetailSections({ calculation }) {
         </div>
         <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
       </section>
+      <ElementBasisPanel calculation={calculation} />
     </div>
   );
 }

@@ -2506,6 +2506,16 @@ input, select { font-family: inherit; color: inherit; }
   background: color-mix(in srgb, var(--ink) 3%, transparent);
   padding: 18px;
 }
+.theme-analysis-list article.is-role {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--gold) 6%, transparent), transparent 50%),
+    color-mix(in srgb, var(--ink) 3%, transparent);
+}
+.theme-analysis-list article.is-hidden {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--water) 6%, transparent), transparent 50%),
+    color-mix(in srgb, var(--ink) 3%, transparent);
+}
 .theme-analysis-head {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

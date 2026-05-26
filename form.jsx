@@ -1411,7 +1411,20 @@ function pillarSpecificReading(key, pillar, calculation, profile) {
   return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。天干は ${pillar.stem}${stemElement}、地支は ${pillar.branch}${branchElement} で読みます。${branchText} ${hiddenText}`;
 }
 
+function pillarOverallInsight(calculation) {
+  const year = calculation.pillars.year;
+  const month = calculation.pillars.month;
+  const day = calculation.pillars.day;
+  const hour = calculation.pillars.hour;
+  return {
+    title: `${year.text} → ${month.text} → ${day.text} → ${hour.text} の流れ`,
+    p1: 'この四柱は、年柱で家系・幼少期の土台を見て、月柱で社会に出る場を見て、日柱で本人と親密関係を見て、時柱で未来・晩年・子女後輩との関係を見ます。',
+    p2: `この命盤では、日主 ${calculation.dayMaster}${day.element?.stem || ''} を中心に、年柱 ${year.text}、月柱 ${month.text}、日柱 ${day.text}、時柱 ${hour.text} がそれぞれ別の人生領域を担当します。ひとつの柱だけで断定せず、どの柱に出た性質なのかを分けることで、家庭・社会・本人・未来のどこにそのテーマが出やすいかを読みます。`,
+  };
+}
+
 function PillarMeaningSection({ calculation, profile }) {
+  const pillarInsight = pillarOverallInsight(calculation);
   return (
     <section id="insight-pillars-meaning" className="backend-panel insight-pillars-meaning">
       <div className="backend-panel-head">
@@ -1457,6 +1470,12 @@ function PillarMeaningSection({ calculation, profile }) {
             </article>
           );
         })}
+      </div>
+      <div className="pillar-overall-meaning">
+        <span>四柱全体の読み方</span>
+        <strong>{pillarInsight.title}</strong>
+        <p>{pillarInsight.p1}</p>
+        <p>{pillarInsight.p2}</p>
       </div>
     </section>
   );
@@ -1550,6 +1569,17 @@ function ElementBasisPanel({ calculation }) {
   const seasonal = seasonalElementState(calculation);
   const percentages = elementPercentages(calculation);
   const basis = calculation.fiveElements?.basis || {};
+  const dominant = strongestElements(calculation).filter(Boolean).join('・') || '五行';
+  const support = supportElements(calculation).filter(Boolean).join('・') || '調整五行';
+  const balance = Number.isFinite(calculation.fiveElements?.balanceScore) ? Math.round(calculation.fiveElements.balanceScore) : null;
+  const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
+  const balanceText = balance === null
+    ? '平衡値は、五行の偏りを読むための目安です。数値だけで吉凶を断定せず、月令の旺衰や身強弱と合わせて読みます。'
+    : balance >= 75
+      ? `平衡 ${balance} は比較的まとまりのある状態です。ただし強い五行と補う五行の差は残るため、出やすい性質と整える方向を分けて確認します。`
+      : balance >= 55
+        ? `平衡 ${balance} は中程度のまとまりです。偏りは弱点ではなく、どの性質を活かし、どの性質を補うかを見る材料になります。`
+        : `平衡 ${balance} は偏りが出やすい状態です。強く出る五行を活かしつつ、不足しやすい五行を生活・環境・判断の中で補う読みになります。`;
   return (
     <div id="insight-element-basis" className="element-basis-block">
       <div className="element-basis-head">
@@ -1580,6 +1610,13 @@ function ElementBasisPanel({ calculation }) {
             </div>
           </article>
         ))}
+      </div>
+      <div className="element-basis-meaning">
+        <span>この五行構成の意味</span>
+        <strong>{dominant} が前に出て、{support} を補う構成</strong>
+        <p>この命盤では {dominant} が前に出やすく、性格や行動の癖にもその五行の性質が表れやすい構成です。</p>
+        <p>{support} は意識して補うと全体が整いやすい要素です。用神候補は {yong} で、強い五行をさらに増やすより、命式全体が流れやすくなる方向を見ます。</p>
+        <p>{balanceText}</p>
       </div>
     </div>
   );

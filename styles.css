@@ -1609,6 +1609,16 @@ input, select { font-family: inherit; color: inherit; }
   line-height: 1.8;
   letter-spacing: 0.06em;
 }
+.element-basis-meaning {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold) 26%, var(--rule));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--gold) 9%, transparent), transparent 60%),
+    color-mix(in srgb, var(--paper) 76%, transparent);
+  padding: 18px;
+}
 .result-tags {
   display: flex;
   flex-wrap: wrap;
@@ -2478,6 +2488,37 @@ input, select { font-family: inherit; color: inherit; }
 .pillar-position-list em,
 .pillar-position-list b {
   margin-top: 6px;
+}
+.pillar-overall-meaning {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold) 26%, var(--rule));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--gold) 9%, transparent), transparent 60%),
+    color-mix(in srgb, var(--paper) 76%, transparent);
+  padding: 18px;
+}
+.pillar-overall-meaning span,
+.element-basis-meaning span {
+  color: var(--gold-deep);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.pillar-overall-meaning strong,
+.element-basis-meaning strong {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.pillar-overall-meaning p,
+.element-basis-meaning p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.9;
 }
 .backend-token-list {
   display: flex;

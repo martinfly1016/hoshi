@@ -1335,6 +1335,25 @@ function ChartStateOverview({ calculation }) {
   );
 }
 
+function pillarSpecificReading(key, pillar, calculation) {
+  const guide = PILLAR_POSITION_READING[key];
+  const god = displayTenGod(calculation.tenGods?.[key]);
+  const stemElement = pillar.element?.stem || '五行';
+  const branchElement = pillar.element?.branch || '五行';
+  const branchText = BRANCH_READING[pillar.branch] || '地支の性質がその柱の背景として出ます。';
+  const hiddenMain = pillar.hiddenStemDetails?.[0];
+  const hiddenText = hiddenMain
+    ? `内側には ${hiddenMain.stem}${hiddenMain.element}（${displayTenGod(hiddenMain.tenGod)}）の気配が入りやすい配置です。`
+    : '内側の気配は蔵干を合わせて確認します。';
+  const domain = {
+    year: `家族・父母・育った環境、幼少期に受け取った空気として、${pillar.text} の性質が背景に出ます。`,
+    month: `仕事・上司・同僚・社会との関係、青年期から社会へ出る時期の使い方として、${pillar.text} の性質が出ます。`,
+    day: `日主本人と配偶者・近い関係、成年期や結婚後の生活領域として、${pillar.text} の性質を読みます。`,
+    hour: `子ども・後輩・晩年の人間関係、未来に向けて育つテーマとして、${pillar.text} の性質が出ます。`,
+  }[key];
+  return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。天干は ${pillar.stem}${stemElement}、地支は ${pillar.branch}${branchElement} で、表に出る役割は ${god || '通変星'}。${domain} ${branchText} ${hiddenText}`;
+}
+
 function PillarMeaningSection({ calculation }) {
   return (
     <section id="insight-pillars-meaning" className="backend-panel insight-pillars-meaning">
@@ -1371,6 +1390,7 @@ function PillarMeaningSection({ calculation }) {
               <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
               <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
               <p>{guide.detail}</p>
+              <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation)}</p>
               <em>見る対象: {guide.focus}</em>
               <em>関係: {guide.relation}</em>
               <em>時間帯: {guide.period}</em>

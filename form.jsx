@@ -1490,13 +1490,24 @@ function ElementBasisPanel({ calculation }) {
         <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
       </div>
       <p className="backend-copy">五行の構成比は、四柱の天干と地支の蔵干を重みづけして算出しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節による旺衰は、構成比とは分けて身強弱の参考にします。</p>
-      <div className="backend-card-grid element-basis-grid">
+      <div className="element-basis-list">
         {ELEMENT_LABELS.map(el => (
-          <article key={el}>
-            <small>{el}</small>
-            <strong className={elementClass(el)}>{percentages[el] || 0}% / {seasonal.states[el] || '休'}</strong>
-            <p>構成 {calculation.fiveElements?.rawPoints?.[el] ?? '—'} / 季節補正 {calculation.fiveElements?.seasonalAdjustedPoints?.[el] ?? '—'}</p>
-            <em>{SEASONAL_STATE_TEXT[seasonal.states[el]] || ''}</em>
+          <article key={el} className="element-basis-row">
+            <div className="element-basis-label">
+              <strong className={elementClass(el)}>{el}</strong>
+              <span>{percentages[el] || 0}%</span>
+            </div>
+            <div className="element-basis-meter" aria-label={`${el} ${percentages[el] || 0}%`}>
+              <i style={{ width: `${percentages[el] || 0}%`, background: `var(--${elementClass(el)})` }} />
+            </div>
+            <div className="element-basis-state">
+              <b>{seasonal.states[el] || '休'}</b>
+              <span>{SEASONAL_STATE_TEXT[seasonal.states[el]] || ''}</span>
+            </div>
+            <div className="element-basis-points">
+              <span>構成 {calculation.fiveElements?.rawPoints?.[el] ?? '—'}</span>
+              <span>季節補正 {calculation.fiveElements?.seasonalAdjustedPoints?.[el] ?? '—'}</span>
+            </div>
           </article>
         ))}
       </div>

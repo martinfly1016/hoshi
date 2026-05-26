@@ -2616,6 +2616,38 @@ input, select { font-family: inherit; color: inherit; }
   font-weight: 500;
   letter-spacing: 0.08em;
 }
+.ten-god-interpretation {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  border: 1px solid color-mix(in srgb, var(--gold) 28%, var(--rule));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--gold) 10%, transparent), transparent 58%),
+    color-mix(in srgb, var(--paper) 78%, transparent);
+  padding: 18px;
+}
+.ten-god-interpretation div {
+  display: grid;
+  gap: 4px;
+}
+.ten-god-interpretation span {
+  color: var(--gold-deep);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+.ten-god-interpretation strong {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.ten-god-interpretation p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.9;
+}
 .backend-luck-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

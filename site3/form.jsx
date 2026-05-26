@@ -1335,6 +1335,56 @@ function ChartStateOverview({ calculation }) {
   );
 }
 
+function PillarMeaningSection({ calculation }) {
+  return (
+    <section id="insight-pillars-meaning" className="backend-panel insight-pillars-meaning">
+      <div className="backend-panel-head">
+        <div>
+          <div className="summary-kicker">四柱の意味 / 読み取り位置</div>
+          <h3>四柱が表す関係・時間・人生領域</h3>
+        </div>
+        <span>四柱の位置</span>
+      </div>
+      <div className="pillar-position-overview" aria-label="四柱のキーワード">
+        {PILLAR_KEYS.map(key => {
+          const p = calculation.pillars[key];
+          const guide = PILLAR_POSITION_READING[key];
+          return (
+            <article key={`${key}-overview`} className={key === 'day' ? 'is-primary' : ''}>
+              <span>{PILLAR_LABELS[key]}</span>
+              <strong>{guide.keyword}</strong>
+              <em>{guide.title}</em>
+              <small>{guide.relation}</small>
+              <small>{guide.period}</small>
+              <b>{p.text}</b>
+            </article>
+          );
+        })}
+      </div>
+      <div className="backend-card-grid pillar-position-list">
+        {PILLAR_KEYS.map(key => {
+          const p = calculation.pillars[key];
+          const guide = PILLAR_POSITION_READING[key];
+          const hiddenText = (p.hiddenStemDetails || []).map(detail => `${detail.stem}${detail.element}（${displayTenGod(detail.tenGod)}）`).join('、') || '—';
+          return (
+            <article key={key} className={key === 'day' ? 'is-primary' : ''}>
+              <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
+              <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
+              <p>{guide.detail}</p>
+              <em>見る対象: {guide.focus}</em>
+              <em>関係: {guide.relation}</em>
+              <em>時間帯: {guide.period}</em>
+              <em>蔵干: {hiddenText}</em>
+              <em>地勢 {p.terrainByDay || '—'} / 自坐 {p.terrainSelf || '—'}</em>
+              {key === 'day' && <b>日支 {p.branch} は婚姻宮として詳解します</b>}
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function BackendDetailSync({ calculation }) {
   const seasonal = seasonalElementState(calculation);
   const percentages = elementPercentages(calculation);
@@ -1404,51 +1454,6 @@ function BackendDetailSync({ calculation }) {
         </div>
       </section>
 
-      <section id="insight-reading-position" className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">読み取り位置 / 四柱の坐</div>
-            <h3>四柱が表す関係・時間・人生領域</h3>
-          </div>
-          <span>四柱の位置</span>
-        </div>
-        <div className="pillar-position-overview" aria-label="四柱のキーワード">
-          {PILLAR_KEYS.map(key => {
-            const p = calculation.pillars[key];
-            const guide = PILLAR_POSITION_READING[key];
-            return (
-              <article key={`${key}-overview`} className={key === 'day' ? 'is-primary' : ''}>
-                <span>{PILLAR_LABELS[key]}</span>
-                <strong>{guide.keyword}</strong>
-                <em>{guide.title}</em>
-                <small>{guide.relation}</small>
-                <small>{guide.period}</small>
-                <b>{p.text}</b>
-              </article>
-            );
-          })}
-        </div>
-        <div className="backend-card-grid pillar-position-list">
-          {PILLAR_KEYS.map(key => {
-            const p = calculation.pillars[key];
-            const guide = PILLAR_POSITION_READING[key];
-            const hiddenText = (p.hiddenStemDetails || []).map(detail => `${detail.stem}${detail.element}（${displayTenGod(detail.tenGod)}）`).join('、') || '—';
-            return (
-              <article key={key} className={key === 'day' ? 'is-primary' : ''}>
-                <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
-                <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
-                <p>{guide.detail}</p>
-                <em>見る対象: {guide.focus}</em>
-                <em>関係: {guide.relation}</em>
-                <em>時間帯: {guide.period}</em>
-                <em>蔵干: {hiddenText}</em>
-                <em>地勢 {p.terrainByDay || '—'} / 自坐 {p.terrainSelf || '—'}</em>
-                {key === 'day' && <b>日支 {p.branch} は婚姻宮として詳解します</b>}
-              </article>
-            );
-          })}
-        </div>
-      </section>
     </div>
   );
 }
@@ -1641,7 +1646,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
     { key: 'health', ja: '健康運', icon: '健', title: '健康運と生活リズム' },
   ];
   const currentTopic = TOPICS.find(t => t.key === topic) || TOPICS[0];
-  const topicNums = ['壹','貳','參','肆','伍','陸','柒','捌','玖'];
+  const topicNums = ['貳','參','肆','伍','陸','柒','捌','玖','拾'];
   const getInsightContent = (key) => {
     const stemReading = STEM_READING[dayStem] || { title: 'その人の本質を表すタイプ', text: '日主は命式全体を読む起点になります。' };
     const godLabel = displayTenGod(primaryGod);
@@ -1744,6 +1749,14 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
             <span className="num">零</span>
             <span>命式構造表</span>
           </button>
+          <button
+            type="button"
+            className="side-topic"
+            onClick={() => scrollTo('insight-pillars-meaning')}
+          >
+            <span className="num">壹</span>
+            <span>四柱の意味</span>
+          </button>
           {TOPICS.map((t, i) => (
             <button
               key={t.key}
@@ -1767,6 +1780,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
           <div id="insight-structure-board" className="insight-structure-board">
             <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
           </div>
+          <PillarMeaningSection calculation={calculation} />
           <section id="insight-topic-main" className="insight-reader">
             <div className="insight-reader-head">
               <div className={`insight-reader-icon tag-${currentTopic.key}`}>{currentTopic.icon}</div>

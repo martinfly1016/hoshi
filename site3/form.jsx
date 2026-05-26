@@ -524,6 +524,13 @@ const MARRIAGE_ELEMENT_RELATION_READING = {
   wealth: '日主が日支を制する関係なので、現実的な責任、生活管理、相手との具体的な関わり方がテーマになりやすい配置です。',
   pressure: '日支が日主を制する関係なので、関係の中で責任感や緊張感が生まれやすく、約束や境界線を整えることが大切です。',
 };
+const ELEMENT_RELATION_READING = {
+  same: '日主と同じ五行なので、自分らしさや同じ目線で進む力として出やすい関係です。',
+  supported: 'その五行が日主を生じる関係なので、支え・学び・安心材料として働きやすい関係です。',
+  output: '日主がその五行を生じる関係なので、表現、創作、育てる力、外へ出す力として働きやすい関係です。',
+  wealth: '日主がその五行を制する関係なので、現実的な管理、責任、成果づくりとして扱いやすい関係です。',
+  pressure: 'その五行が日主を制する関係なので、役割、緊張感、約束、規律として意識されやすい関係です。',
+};
 const PILLAR_READING = {
   year: { icon: '根', title: '年柱はルーツと外側の環境', text: '家族、育った環境、社会から見えやすい雰囲気を見ます。' },
   month: { icon: '場', title: '月柱は社会性と仕事の土台', text: '季節の力が強く出る柱で、仕事や役割、社会での使い方を見ます。' },
@@ -1335,7 +1342,7 @@ function ChartStateOverview({ calculation }) {
   );
 }
 
-function pillarSpecificReading(key, pillar, calculation) {
+function pillarSpecificReading(key, pillar, calculation, profile) {
   const guide = PILLAR_POSITION_READING[key];
   const god = displayTenGod(calculation.tenGods?.[key]);
   const stemElement = pillar.element?.stem || '五行';
@@ -1358,10 +1365,20 @@ function pillarSpecificReading(key, pillar, calculation) {
     const branchProfile = BRANCH_RELATIONSHIP_PROFILES[pillar.branch] || branchText;
     return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。日主は ${pillar.stem}${stemElement} で、${stemReading.title}。${stemReading.text} 日支は ${pillar.branch}${branchElement} で、ここを婚姻宮として見ます。つまり ${pillar.text} は、「${pillar.stem}」の本人像と、「${pillar.branch}」の親密関係・生活感が重なる柱です。${branchProfile} 日主 ${pillar.stem}${stemElement} に対して日支 ${pillar.branch}${branchElement} がどう働くかを見ると、${relation} ${hiddenText}`;
   }
+  if (key === 'hour') {
+    const dayStem = calculation.dayMaster;
+    const dayElement = calculation.pillars.day.element.stem;
+    const stemRelation = ELEMENT_RELATION_READING[marriageElementRelationKey(dayElement, stemElement)] || '';
+    const branchRelation = ELEMENT_RELATION_READING[marriageElementRelationKey(dayElement, branchElement)] || '';
+    const genderNote = profile?.gender === 'yang'
+      ? '男性命の子女縁は時柱だけで断定せず、官殺や大運も重ねますが、時柱は子ども・後輩・晩年の関わりを見る入口になります。'
+      : '子女縁は時柱だけで断定せず、命式全体や大運も重ねて見ます。';
+    return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。時干の ${pillar.stem}${stemElement} は、未来に外へ出ていく表現や才能の芽を表します。日主 ${dayStem}${dayElement} に対して ${pillar.stem}${stemElement} は、${stemRelation} 時支の ${pillar.branch}${branchElement} は、晩年・子ども・後輩との関係の土台です。${branchText} 日主 ${dayStem}${dayElement} に対して ${pillar.branch}${branchElement} は、${branchRelation} つまり ${pillar.text} は、「${pillar.stem}」の表現力と「${pillar.branch}」の内側の支えが、未来・晩年・子女関係に重なる柱です。${genderNote} ${hiddenText}`;
+  }
   return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。天干は ${pillar.stem}${stemElement}、地支は ${pillar.branch}${branchElement} で、表に出る役割は ${god || '通変星'}。${domain} ${branchText} ${hiddenText}`;
 }
 
-function PillarMeaningSection({ calculation }) {
+function PillarMeaningSection({ calculation, profile }) {
   return (
     <section id="insight-pillars-meaning" className="backend-panel insight-pillars-meaning">
       <div className="backend-panel-head">
@@ -1397,7 +1414,7 @@ function PillarMeaningSection({ calculation }) {
               <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
               <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
               <p>{guide.detail}</p>
-              <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation)}</p>
+              <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation, profile)}</p>
               <em>見る対象: {guide.focus}</em>
               <em>関係: {guide.relation}</em>
               <em>時間帯: {guide.period}</em>
@@ -1807,7 +1824,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
           <div id="insight-structure-board" className="insight-structure-board">
             <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
           </div>
-          <PillarMeaningSection calculation={calculation} />
+          <PillarMeaningSection calculation={calculation} profile={profile} />
           <section id="insight-topic-main" className="insight-reader">
             <div className="insight-reader-head">
               <div className={`insight-reader-icon tag-${currentTopic.key}`}>{currentTopic.icon}</div>

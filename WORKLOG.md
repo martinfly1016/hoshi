@@ -100,6 +100,7 @@
 | v0.3.70 | 2026-05-26 23:44 JST | 用户首页 | `/index.html` 四柱完整组合解读 | 按「都详细解释一下」反馈，将年柱、月柱、日柱、時柱统一升级为同等深度：每柱拆解天干代表什么、地支代表什么、对应人生领域与关系对象，并结合日主五行解释该干支组合对命主的具体含义 | `/latest.html` / `/index.html?v=20260526-user-all-pillars-specific-1` | - | main `356f0d7` / gh-pages `acb28ab` |
 | v0.3.71 | 2026-05-27 00:00 JST | 用户首页 | `/index.html` 命式詳細五行主题连贯性 | 按页面连贯性反馈，将「五行計算の根拠」从后方主要判定模块中移出，合并到「五行バランス」主题下方，让用户先看五行比例/生剋图，再立即看到计算依据与旺相休囚死，之后再进入命式の型・身強身弱・用神 | `/latest.html` / `/index.html?v=20260527-user-element-basis-group-1` | - | main `5e3fe1e` / gh-pages `ff76afc` |
 | v0.3.72 | 2026-05-27 00:06 JST | 用户首页 | `/index.html` 五行主题视觉融合 | 进一步按「内容上跟五行是一个主题，最好合在一起」反馈，将「五行計算の根拠」从独立面板改为「五行バランス」面板内部小节；同一边框内先读比例和生剋图，再读计算依据与旺相休囚死，并将五行根拠卡改为更宽的自适应网格 | `/latest.html` / `/index.html?v=20260527-user-element-unified-1` | - | main `8975668` / gh-pages `85929ce` |
+| v0.3.73 | 2026-05-27 00:12 JST | 用户首页 | `/index.html` 五行根拠可视化 | 将「構成比と旺相休囚死」从五张窄卡改为纵向可视化列表：每个五行一行展示五行名、百分比、比例条、旺相休囚死状态、状态说明、构成点与季节补正点，横向空间不足时更容易阅读 | `/latest.html` / `/index.html?v=20260527-user-element-basis-visual-1` | - | main `-` / gh-pages `-` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -179,3 +180,4 @@
 - v0.3.70 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；源码确认四柱个别解读段包含「年干/年支」「月干/月支」「日主/日支」「時干/時支」和「日主に対して」等逐柱解释。
 - 用户首页 v0.3.71：按 Wreal 对「五行平衡」与「五行計算の根拠」之间被「命式の型 / 身強身弱」打断的反馈，调整命式詳細信息顺序。`FoundationDetailSections` 现在先显示五行バランス和生剋图，再紧接 `ElementBasisPanel` 展示构成比、raw points、季节补正和旺相休囚死；`BackendDetailSync` 保留命式の型、身強身弱、用神和十神/蔵干，作为五行主题之后的后续判定。
 - 用户首页 v0.3.72：继续按 Wreal 对五行主题连贯性的反馈，把 `ElementBasisPanel` 从独立 `backend-panel` 改为 `insight-elements` 面板内部的 `element-basis-block`。视觉上同属一个五行主题：上半部分为五行比例和生剋图，下半部分为「五行計算の根拠 / 構成比と旺相休囚死」。同时将五行根拠卡从固定五列改为 `auto-fit minmax(170px, 1fr)`，避免正文过窄。
+- 用户首页 v0.3.73：按 Wreal 对「五行构成比和旺相休囚死展示可视化效果不好，可考虑竖排」的反馈，将 `ElementBasisPanel` 的五行根拠从卡片网格改为纵向 `element-basis-list`。每行包含五行名、百分比、横向比例条、旺相休囚死状态 badge、状态说明、raw points 和 seasonal adjusted points，让用户先看强弱条，再看季节状态含义。

@@ -1536,8 +1536,78 @@ input, select { font-family: inherit; color: inherit; }
   font-size: 10px;
   letter-spacing: 0.12em;
 }
-.backend-card-grid.element-basis-grid {
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+.element-basis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.element-basis-row {
+  display: grid;
+  grid-template-columns: 86px minmax(150px, 1fr) minmax(180px, 0.78fr) minmax(132px, 0.44fr);
+  gap: 14px;
+  align-items: center;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+  padding: 14px;
+  min-width: 0;
+}
+.element-basis-label strong,
+.element-basis-label span,
+.element-basis-state b,
+.element-basis-state span,
+.element-basis-points span {
+  display: block;
+}
+.element-basis-label strong {
+  font-family: var(--f-display);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1;
+}
+.element-basis-label span {
+  margin-top: 8px;
+  color: var(--ink);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.element-basis-meter {
+  position: relative;
+  height: 12px;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 4%, transparent);
+  overflow: hidden;
+}
+.element-basis-meter i {
+  display: block;
+  height: 100%;
+}
+.element-basis-state b {
+  width: max-content;
+  min-width: 34px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+.element-basis-state span {
+  margin-top: 7px;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.65;
+  letter-spacing: 0.04em;
+}
+.element-basis-points {
+  color: var(--ink-3);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  line-height: 1.8;
+  letter-spacing: 0.06em;
 }
 .result-tags {
   display: flex;
@@ -3004,6 +3074,14 @@ input, select { font-family: inherit; color: inherit; }
   .result-next-head {
     grid-template-columns: 1fr;
   }
+  .element-basis-row {
+    grid-template-columns: 76px minmax(0, 1fr);
+    align-items: start;
+  }
+  .element-basis-state,
+  .element-basis-points {
+    grid-column: 2;
+  }
   .basic-info-head {
     flex-direction: column;
   }
@@ -3220,6 +3298,20 @@ input, select { font-family: inherit; color: inherit; }
   .divinations .row .v {
     text-align: right;
     overflow-wrap: anywhere;
+  }
+  .element-basis-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .element-basis-state,
+  .element-basis-points {
+    grid-column: auto;
+  }
+  .element-basis-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   .bazi-board-lite {

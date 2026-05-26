@@ -1449,23 +1449,11 @@ function BasicInfoPanel({ name, calculation, profile }) {
 }
 
 function FoundationDetailSections({ calculation }) {
-  const [activePillar, setActivePillar] = React.useState(null);
   const percentages = elementPercentages(calculation);
   const dominantElements = Object.entries(percentages).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([name]) => name).join('・');
   const support = supportElements(calculation).join('・');
   return (
     <div className="foundation-detail-stack">
-      <section id="insight-pillars" className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">四柱の意味</div>
-            <h3>年柱・月柱・日柱・時柱が表す領域</h3>
-          </div>
-          <span>基礎読解</span>
-        </div>
-        <PillarMeaningCards calculation={calculation} onFocus={setActivePillar} />
-      </section>
-
       <section id="insight-elements" className="backend-panel">
         <div className="backend-panel-head">
           <div>
@@ -1579,6 +1567,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
 
 function InsightView({ calculation, profile, onBack, onEditInput, routeTarget }) {
   const [topic, setTopic] = React.useState(routeTarget?.topic || 'core');
+  const [activePillar, setActivePillar] = React.useState(null);
   const handledRouteKey = React.useRef(null);
   const primaryGod = collectTenGods(calculation)[0]?.[0] || '比肩';
   const dayStem = calculation.dayMaster;
@@ -1694,6 +1683,14 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side insight-side">
         <div className="kanji">命式詳細</div><div className="label">PERSONAL INSIGHTS</div>
         <div className="seal-stack">
+          <button
+            type="button"
+            className="side-topic"
+            onClick={() => scrollTo('insight-structure-board')}
+          >
+            <span className="num">零</span>
+            <span>命式構造表</span>
+          </button>
           {TOPICS.map((t, i) => (
             <button
               key={t.key}
@@ -1714,6 +1711,9 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
         </div>
         <div className="result-card" data-card-label="命式詳細" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
+          <div id="insight-structure-board" className="insight-structure-board">
+            <BaziStructureBoard calculation={calculation} activePillar={activePillar} onFocus={setActivePillar} />
+          </div>
           <section id="insight-topic-main" className="insight-reader">
             <div className="insight-reader-head">
               <div className={`insight-reader-icon tag-${currentTopic.key}`}>{currentTopic.icon}</div>

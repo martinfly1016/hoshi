@@ -779,20 +779,6 @@ function tenGodStats(calc) {
   return Array.from(map.values()).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
 }
 
-function hiddenStemStats(calc) {
-  const map = new Map();
-  PILLAR_KEYS.forEach(key => {
-    (calc.pillars[key].hiddenStemDetails || []).forEach(detail => {
-      const id = `${detail.stem}-${detail.element}`;
-      const item = map.get(id) || { stem: detail.stem, element: detail.element, tenGod: detail.tenGod, total: 0 };
-      if (!item.tenGod && detail.tenGod) item.tenGod = detail.tenGod;
-      item.total += 1;
-      map.set(id, item);
-    });
-  });
-  return Array.from(map.values()).sort((a, b) => b.total - a.total);
-}
-
 function currentDecadeFortune(decade, targetYear) {
   if (!decade || decade.status !== 'ok') return null;
   const items = decade.items || [];
@@ -1430,9 +1416,7 @@ function PillarMeaningSection({ calculation, profile }) {
 
 function BackendDetailSync({ calculation }) {
   const gods = tenGodStats(calculation);
-  const hidden = hiddenStemStats(calculation);
   const maxGodTotal = Math.max(1, ...gods.map(god => god.total || 0));
-  const maxHiddenTotal = Math.max(1, ...hidden.map(item => item.total || 0));
   const yong = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || '—';
   return (
     <div className="backend-sync-stack">
@@ -1475,46 +1459,24 @@ function BackendDetailSync({ calculation }) {
       <section id="insight-ten-gods" className="backend-panel">
         <div className="backend-panel-head">
           <div>
-            <div className="summary-kicker">十神</div>
-            <h3>表に出る役割を整理する</h3>
+            <div className="summary-kicker">十神構成</div>
+            <h3>通変星がどこに出ているかを見る</h3>
           </div>
-          <span>表層の役割</span>
+          <span>天干 / 蔵干</span>
         </div>
-        <p className="backend-copy">十神は、命盤の中で外へ出やすい役割や行動パターンを見ます。まずは出現回数が多い十神を見て、その役割が天干に出ているのか、蔵干の内側にあるのかを分けて確認します。</p>
+        <p className="backend-copy">五行の構成は前のテーマで確認済みなので、ここでは偏官・傷官などの十神だけを集計します。同じ十神でも、天干に出ているものは表に出やすい役割、蔵干にあるものは内側や背景に残りやすい役割として分けて読みます。</p>
         <div className="theme-analysis-list">
           <article className="is-role">
             <div className="theme-analysis-rows">
               {gods.slice(0, 8).map(god => (
-                <div key={god.name} className="theme-analysis-row">
+                <div key={god.name} className="theme-analysis-row ten-god-row">
                   <b>{displayTenGod(god.name)}</b>
                   <div className="theme-analysis-meter"><i style={{ width: `${Math.max(8, Math.round(((god.total || 0) / maxGodTotal) * 100))}%` }} /></div>
                   <span>×{god.total}</span>
-                  <em>天干 {god.heavenly} / 蔵干 {god.hidden}</em>
-                </div>
-              ))}
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section id="insight-hidden-stems" className="backend-panel">
-        <div className="backend-panel-head">
-          <div>
-            <div className="summary-kicker">蔵干</div>
-            <h3>地支の内側にある天干を見る</h3>
-          </div>
-          <span>隠れた天干</span>
-        </div>
-        <p className="backend-copy">蔵干そのものは、地支の内側に含まれる甲・乙・丙などの天干です。五行はその天干の属性、蔵干通変は日主から見た役割です。ここでは「どの天干が内側にあるか」を先に見て、そのうえで五行属性と通変星を分けて確認します。</p>
-        <div className="theme-analysis-list">
-          <article className="is-hidden">
-            <div className="theme-analysis-rows">
-              {hidden.slice(0, 8).map(item => (
-                <div key={`${item.stem}-${item.element}`} className="theme-analysis-row hidden-row">
-                  <b className={elementClass(item.element)}>{item.stem}</b>
-                  <div className="theme-analysis-meter"><i style={{ width: `${Math.max(8, Math.round(((item.total || 0) / maxHiddenTotal) * 100))}%`, background: `var(--${elementClass(item.element)})` }} /></div>
-                  <span>×{item.total}</span>
-                  <em>五行 {item.element || '—'} / 蔵干通変 {displayTenGod(item.tenGod)}</em>
+                  <div className="ten-god-source-split">
+                    <em>天干 <strong>{god.heavenly}</strong></em>
+                    <em>蔵干 <strong>{god.hidden}</strong></em>
+                  </div>
                 </div>
               ))}
             </div>

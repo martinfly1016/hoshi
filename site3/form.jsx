@@ -1378,7 +1378,7 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>四柱の位置</span>
         </div>
-        <div className="backend-card-grid four">
+        <div className="backend-card-grid pillar-position-list">
           {PILLAR_KEYS.map(key => {
             const p = calculation.pillars[key];
             const guide = PILLAR_READING[key];

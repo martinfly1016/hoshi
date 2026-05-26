@@ -300,10 +300,10 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <div className="kanji">命式作成</div>
         <div className="label">MEISHIKI CREATION</div>
         <div className="seal-stack">
-          <button type="button" onClick={() => jumpToStep('profile')}><span className="num">壹</span>　お名前と性別</button>
-          <button type="button" onClick={() => jumpToStep('birthday')}><span className="num">貳</span>　生年月日</button>
-          <button type="button" onClick={() => jumpToStep('birthtime')}><span className="num">參</span>　出生時間</button>
-          <button type="button" onClick={() => jumpToStep('birthplace')}><span className="num">肆</span>　出生地</button>
+          <button type="button" className="side-topic" onClick={() => jumpToStep('profile')}><span className="num">壹</span><span>お名前と性別</span></button>
+          <button type="button" className="side-topic" onClick={() => jumpToStep('birthday')}><span className="num">貳</span><span>生年月日</span></button>
+          <button type="button" className="side-topic" onClick={() => jumpToStep('birthtime')}><span className="num">參</span><span>出生時間</span></button>
+          <button type="button" className="side-topic" onClick={() => jumpToStep('birthplace')}><span className="num">肆</span><span>出生地</span></button>
         </div>
       </aside>
 
@@ -1533,9 +1533,9 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
           {['基本情報','四柱命式','要点解読','詳しい解説'].map((n, i) => (
-            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
+            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span><span>{n}</span></button>
           ))}
-          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 入力へ戻る</button></div>
+          <button type="button" className="side-back" onClick={onBack}>← 入力へ戻る</button>
         </div>
       </aside>
       <div className="rite-main result-main" style={{ paddingBottom: 120 }}>
@@ -1795,8 +1795,8 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side">
         <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
-          <div><span className="num">壹</span>　開発中</div>
-          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
+          <button type="button" className="side-topic is-active"><span className="num">壹</span><span>開発中</span></button>
+          <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>
@@ -1827,9 +1827,9 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
         <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
           {['十年運マップ','現在の大運','近い流年','明細表'].map((n, i) => (
-            <div key={n} style={{ cursor: 'pointer' }} onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span>　{n}</div>
+            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span><span>{n}</span></button>
           ))}
-          <div style={{ marginTop: 24 }}><button onClick={onBack} style={{ background: 'transparent', border: 0, color: 'var(--ink-3)', cursor: 'pointer', fontFamily: 'var(--f-mono)', letterSpacing: '0.2em' }}>← 命式へ戻る</button></div>
+          <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
       </aside>
       <div className="rite-main" style={{ paddingBottom: 120 }}>

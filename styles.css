@@ -475,40 +475,53 @@ input, select { font-family: inherit; color: inherit; }
 }
 
 .rite-side {
-  position: sticky; top: 140px; align-self: start;
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  max-height: calc(100vh - 118px);
+  overflow-y: auto;
   border-right: 1px solid var(--rule);
   padding-right: 32px;
+  padding-bottom: 22px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--gold) 44%, transparent) transparent;
+}
+.rite-side::-webkit-scrollbar {
+  width: 5px;
+}
+.rite-side::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--gold) 38%, transparent);
+  border-radius: 999px;
 }
 .rite-side .kanji {
   font-family: 'Yuji Syuku', var(--f-seal);
   writing-mode: vertical-rl;
-  font-size: 56px;
+  font-size: 50px;
   letter-spacing: 0.3em;
   line-height: 1.2;
   color: var(--ink);
   height: auto;
-  min-height: 280px;
+  min-height: 230px;
 }
 .rite-side .label {
-  margin-top: 28px;
+  margin-top: 20px;
   font-size: 11px; letter-spacing: 0.4em;
   color: var(--ink-3);
   font-family: var(--f-mono);
 }
 .rite-side .seal-stack {
-  margin-top: 36px;
-  display: flex; flex-direction: column; gap: 12px;
-  font-size: 11px; letter-spacing: 0.3em; color: var(--ink-2);
+  margin-top: 24px;
+  padding-right: 12px;
+  display: flex; flex-direction: column; gap: 7px;
+  font-size: 11px; letter-spacing: 0.12em; color: var(--ink-2);
 }
 .rite-side .seal-stack button {
   width: 100%;
-  padding: 0;
   text-align: left;
   font: inherit;
-  letter-spacing: inherit;
   color: inherit;
   cursor: pointer;
-  transition: color 0.25s ease, transform 0.25s ease;
+  transition: color 0.25s ease, transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 .rite-side .seal-stack button:hover,
 .rite-side .seal-stack button:focus-visible {
@@ -520,60 +533,33 @@ input, select { font-family: inherit; color: inherit; }
   outline-offset: 4px;
 }
 .rite-side .seal-stack .num { font-family: var(--f-mono); color: var(--ink-3); }
-.rite-side.insight-side {
-  top: 96px;
-  max-height: calc(100vh - 118px);
-  overflow-y: auto;
-  padding-bottom: 22px;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--gold) 44%, transparent) transparent;
-}
-.rite-side.insight-side::-webkit-scrollbar {
-  width: 5px;
-}
-.rite-side.insight-side::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--gold) 38%, transparent);
-  border-radius: 999px;
-}
-.rite-side.insight-side .kanji {
-  min-height: 230px;
-  font-size: 50px;
-}
-.rite-side.insight-side .label {
-  margin-top: 20px;
-}
-.rite-side.insight-side .seal-stack {
-  gap: 7px;
-  margin-top: 24px;
-  padding-right: 12px;
-}
-.rite-side.insight-side .side-topic {
+.rite-side .side-topic {
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
   min-height: 34px;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   border-radius: 999px;
   padding: 0 10px;
-  background: transparent;
+  background: color-mix(in srgb, var(--ink) 2%, transparent);
   letter-spacing: 0.12em;
   line-height: 1.3;
 }
-.rite-side.insight-side .side-topic span:last-child {
+.rite-side .side-topic span:last-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.rite-side.insight-side .side-topic.is-active {
+.rite-side .side-topic.is-active {
   border-color: color-mix(in srgb, var(--gold) 45%, var(--rule));
   background: color-mix(in srgb, var(--gold) 9%, transparent);
   color: var(--ink);
 }
-.rite-side.insight-side .side-topic.is-active .num {
+.rite-side .side-topic.is-active .num {
   color: var(--gold);
 }
-.rite-side.insight-side .side-back {
+.rite-side .side-back {
   margin-top: 14px;
   min-height: 34px;
   border-top: 1px solid var(--rule);

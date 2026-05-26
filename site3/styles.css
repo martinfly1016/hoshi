@@ -2140,6 +2140,67 @@ input, select { font-family: inherit; color: inherit; }
 .backend-card-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .backend-card-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .backend-card-grid.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.pillar-position-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.pillar-position-overview article {
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+  padding: 14px;
+  min-width: 0;
+}
+.pillar-position-overview article.is-primary {
+  border-color: color-mix(in srgb, var(--gold) 45%, var(--rule));
+  background: color-mix(in srgb, var(--gold) 7%, transparent);
+}
+.pillar-position-overview span,
+.pillar-position-overview small,
+.pillar-position-overview b {
+  display: block;
+}
+.pillar-position-overview span {
+  color: var(--ink-3);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+}
+.pillar-position-overview strong {
+  display: block;
+  margin: 8px 0 6px;
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+}
+.pillar-position-overview em {
+  display: block;
+  min-height: 38px;
+  color: var(--ink);
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+}
+.pillar-position-overview small {
+  margin-top: 8px;
+  color: var(--ink-2);
+  font-size: 11px;
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+}
+.pillar-position-overview b {
+  margin-top: 10px;
+  color: var(--ink-3);
+  font-family: var(--f-display);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
 .backend-card-grid.pillar-position-list {
   grid-template-columns: 1fr;
   gap: 14px;
@@ -2928,6 +2989,9 @@ input, select { font-family: inherit; color: inherit; }
   .result-wide { overflow-x: visible; }
   .result-wide { scroll-margin-top: 132px; }
   .backend-panel-head { align-items: flex-start; flex-direction: column; }
+  .pillar-position-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .pillar-position-list article {
     grid-template-columns: 1fr;
   }
@@ -3054,6 +3118,9 @@ input, select { font-family: inherit; color: inherit; }
 
   .gender-row { flex-direction: column; }
   .gender-btn { flex-direction: row; }
+  .pillar-position-overview {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 520px) {

@@ -92,6 +92,7 @@
 | v0.3.62 | 2026-05-26 22:40 JST | 用户首页 | `/index.html` 四柱说明卡可读性 | 根据截图反馈，将「四柱の意味」从四张过窄竖向卡改为两列阅读卡，并放大标题与正文，避免桌面端日文正文被挤成竖条 | `/latest.html` / `/index.html?v=20260526-user-pillars-readable-1` | - | main `c6bf95e` / gh-pages `8da9eda` |
 | v0.3.63 | 2026-05-26 22:35 JST | 用户首页 | `/index.html` 命式詳細构造表 | 在命式詳細页顶部、命主タイプ详解前复用命式页的八字要素表，并在左侧导航新增「零 命式構造表」快速跳转；移除詳細页中不易读的四柱说明卡 | `/latest.html` / `/index.html?v=20260526-user-insight-board-1` | - | main `5e9d80c` / gh-pages `7da36ad` |
 | v0.3.64 | 2026-05-26 22:44 JST | 用户首页 | `/index.html` 四柱位置说明列表 | 将命式詳細页「読み取り位置 / 四柱の坐」从年柱・月柱・日柱・時柱四列横排改为纵向阅读列表，避免说明文字被挤窄；手机端保持单列无横向溢出 | `/latest.html` / `/index.html?v=20260526-user-pillar-position-list-1` | - | main `aeb16d2` / gh-pages `c152f5e` |
+| v0.3.65 | 2026-05-26 22:53 JST | 用户首页 | `/index.html` 四柱关键词与详细解说 | 将「読み取り位置 / 四柱の坐」改为上方横向关键词概览、下方纵向详细解说：补充年柱=根、月柱=場、日柱=我、時柱=芽，以及关系对象、人生阶段、外部/自我/婚姻/子女等含义 | `/latest.html` / `/index.html?v=20260526-user-pillar-keywords-1` | - | main `pending` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -157,3 +158,5 @@
 - v0.3.63 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；本地 Chrome/capture-website 桌面与 390px 手机截图确认结构表在命式詳細顶部、左侧第一个入口为「零 命式構造表」、旧四柱说明卡数量为 0，页面无横向溢出。
 - 用户首页 v0.3.64：按 Wreal 对「年柱・月柱・日柱・時柱」解说横排过挤的反馈，命式詳細页下方「読み取り位置 / 四柱の坐」改为纵向阅读列表。每柱独立成一张横向信息卡，左侧放柱名与干支，右侧放说明、藏干、地势与自坐，手机端自动单列。
 - v0.3.64 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；本地 Chrome/capture-website 桌面截图确认四柱说明列表为 1 列，手机 390px 截图确认无横向溢出。
+- 用户首页 v0.3.65：按 Wreal 对四柱说明信息结构的反馈，命式詳細页「読み取り位置 / 四柱の坐」新增横向关键词概览：年柱=根/ルーツ・外部環境，月柱=場/社会性・仕事，日柱=我/本人・婚姻関係，時柱=芽/未来・子女関係。下方继续按年柱、月柱、日柱、時柱纵向详细说明，并补充该柱代表外部还是自我、代表谁的关系、对应哪个人生阶段。
+- v0.3.65 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；本地 Chrome/capture-website 桌面截图确认上方 4 张关键词卡横排、下方 4 张详细卡纵排，390px 手机截图确认无横向溢出。

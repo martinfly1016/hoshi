@@ -530,6 +530,40 @@ const PILLAR_READING = {
   day: { icon: '我', title: '日柱は本人と大切な関係', text: '日主を含む中心の柱です。本人の核と、近い関係性の傾向を見ます。' },
   hour: { icon: '芽', title: '時柱は未来と内側の可能性', text: '内面、晩年、これから育つテーマを見ます。' },
 };
+const PILLAR_POSITION_READING = {
+  year: {
+    keyword: '根',
+    title: 'ルーツ・外部環境',
+    focus: '外から見える印象',
+    relation: '家族・父母・育った環境',
+    period: '幼少期・祖先から受け継ぐ土台',
+    detail: '年柱は、その人が生まれ育った背景や、外側から見られやすい雰囲気を表します。本人の内面そのものというより、家系、親族、幼少期の環境、社会から最初に受ける印象を読む位置です。',
+  },
+  month: {
+    keyword: '場',
+    title: '社会性・仕事の土台',
+    focus: '社会で使う力',
+    relation: '仕事・上司・同僚・社会との関係',
+    period: '青年期から社会へ出る時期',
+    detail: '月柱は、社会の中でどう力を使うかを見る柱です。仕事環境、役割、才能の出し方、社会的な評価に関わりやすく、命式全体の季節感や格局を見るうえでも重要な位置です。',
+  },
+  day: {
+    keyword: '我',
+    title: '本人・婚姻関係',
+    focus: '日主本人の核',
+    relation: '自分自身・配偶者・近い関係',
+    period: '成年期・結婚後の生活領域',
+    detail: '日柱は日主を含む中心の柱で、本人の核となる性質を読みます。日支は婚姻宮として、配偶者や近い関係性、安心できる距離感、生活の中で出やすい関係パターンを見る位置です。',
+  },
+  hour: {
+    keyword: '芽',
+    title: '未来・子女関係',
+    focus: '内面とこれから育つテーマ',
+    relation: '子ども・後輩・晩年の人間関係',
+    period: '中年以降・晩年・未来の可能性',
+    detail: '時柱は、内側に残る可能性や、これから育つテーマを見ます。子女、後輩、晩年の過ごし方、未来に向けて伸びていく力を読む位置で、表にすぐ出る性格よりも後から育つ芽として扱います。',
+  },
+};
 const BAZI_ROW_GUIDES = {
   通変星: { icon: '神', hint: '表に出る役割' },
   天干: { icon: '天', hint: '外に見える性質' },
@@ -1374,20 +1408,39 @@ function BackendDetailSync({ calculation }) {
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">読み取り位置 / 四柱の坐</div>
-            <h3>どの柱・どの要素から読んでいるか</h3>
+            <h3>四柱が表す関係・時間・人生領域</h3>
           </div>
           <span>四柱の位置</span>
+        </div>
+        <div className="pillar-position-overview" aria-label="四柱のキーワード">
+          {PILLAR_KEYS.map(key => {
+            const p = calculation.pillars[key];
+            const guide = PILLAR_POSITION_READING[key];
+            return (
+              <article key={`${key}-overview`} className={key === 'day' ? 'is-primary' : ''}>
+                <span>{PILLAR_LABELS[key]}</span>
+                <strong>{guide.keyword}</strong>
+                <em>{guide.title}</em>
+                <small>{guide.relation}</small>
+                <small>{guide.period}</small>
+                <b>{p.text}</b>
+              </article>
+            );
+          })}
         </div>
         <div className="backend-card-grid pillar-position-list">
           {PILLAR_KEYS.map(key => {
             const p = calculation.pillars[key];
-            const guide = PILLAR_READING[key];
+            const guide = PILLAR_POSITION_READING[key];
             const hiddenText = (p.hiddenStemDetails || []).map(detail => `${detail.stem}${detail.element}（${displayTenGod(detail.tenGod)}）`).join('、') || '—';
             return (
               <article key={key} className={key === 'day' ? 'is-primary' : ''}>
-                <small>{PILLAR_LABELS[key]} / {guide.title}</small>
+                <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
                 <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
-                <p>{guide.text}</p>
+                <p>{guide.detail}</p>
+                <em>見る対象: {guide.focus}</em>
+                <em>関係: {guide.relation}</em>
+                <em>時間帯: {guide.period}</em>
                 <em>蔵干: {hiddenText}</em>
                 <em>地勢 {p.terrainByDay || '—'} / 自坐 {p.terrainSelf || '—'}</em>
                 {key === 'day' && <b>日支 {p.branch} は婚姻宮として詳解します</b>}

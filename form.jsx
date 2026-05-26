@@ -784,7 +784,8 @@ function hiddenStemStats(calc) {
   PILLAR_KEYS.forEach(key => {
     (calc.pillars[key].hiddenStemDetails || []).forEach(detail => {
       const id = `${detail.stem}-${detail.element}`;
-      const item = map.get(id) || { stem: detail.stem, element: detail.element, total: 0 };
+      const item = map.get(id) || { stem: detail.stem, element: detail.element, tenGod: detail.tenGod, total: 0 };
+      if (!item.tenGod && detail.tenGod) item.tenGod = detail.tenGod;
       item.total += 1;
       map.set(id, item);
     });
@@ -1500,20 +1501,20 @@ function BackendDetailSync({ calculation }) {
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">蔵干</div>
-            <h3>内側に残る五行の気配を見る</h3>
+            <h3>地支の内側にある天干を見る</h3>
           </div>
-          <span>内側の構成</span>
+          <span>隠れた天干</span>
         </div>
-        <p className="backend-copy">蔵干は、地支の内側に含まれる天干です。表にすぐ出る役割というより、環境・本音・背景として命盤を支える気配を確認します。十神とは別の層として読むと、どの五行が内側で重なっているかが見えやすくなります。</p>
+        <p className="backend-copy">蔵干そのものは、地支の内側に含まれる甲・乙・丙などの天干です。五行はその天干の属性、蔵干通変は日主から見た役割です。ここでは「どの天干が内側にあるか」を先に見て、そのうえで五行属性と通変星を分けて確認します。</p>
         <div className="theme-analysis-list">
           <article className="is-hidden">
             <div className="theme-analysis-rows">
               {hidden.slice(0, 8).map(item => (
                 <div key={`${item.stem}-${item.element}`} className="theme-analysis-row hidden-row">
-                  <b className={elementClass(item.element)}>{item.stem}{item.element}</b>
+                  <b className={elementClass(item.element)}>{item.stem}</b>
                   <div className="theme-analysis-meter"><i style={{ width: `${Math.max(8, Math.round(((item.total || 0) / maxHiddenTotal) * 100))}%`, background: `var(--${elementClass(item.element)})` }} /></div>
                   <span>×{item.total}</span>
-                  <em>蔵干に重なる要素</em>
+                  <em>五行 {item.element || '—'} / 蔵干通変 {displayTenGod(item.tenGod)}</em>
                 </div>
               ))}
             </div>

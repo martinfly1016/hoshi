@@ -1341,6 +1341,7 @@ function pillarSpecificReading(key, pillar, calculation) {
   const stemElement = pillar.element?.stem || '五行';
   const branchElement = pillar.element?.branch || '五行';
   const branchText = BRANCH_READING[pillar.branch] || '地支の性質がその柱の背景として出ます。';
+  const stemReading = STEM_READING[pillar.stem] || { title: `${pillar.stem}の性質`, text: '天干の性質が表に出ます。' };
   const hiddenMain = pillar.hiddenStemDetails?.[0];
   const hiddenText = hiddenMain
     ? `内側には ${hiddenMain.stem}${hiddenMain.element}（${displayTenGod(hiddenMain.tenGod)}）の気配が入りやすい配置です。`
@@ -1351,6 +1352,12 @@ function pillarSpecificReading(key, pillar, calculation) {
     day: `日主本人と配偶者・近い関係、成年期や結婚後の生活領域として、${pillar.text} の性質を読みます。`,
     hour: `子ども・後輩・晩年の人間関係、未来に向けて育つテーマとして、${pillar.text} の性質が出ます。`,
   }[key];
+  if (key === 'day') {
+    const relationKey = marriageElementRelationKey(stemElement, branchElement);
+    const relation = MARRIAGE_ELEMENT_RELATION_READING[relationKey] || '';
+    const branchProfile = BRANCH_RELATIONSHIP_PROFILES[pillar.branch] || branchText;
+    return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。日主は ${pillar.stem}${stemElement} で、${stemReading.title}。${stemReading.text} 日支は ${pillar.branch}${branchElement} で、ここを婚姻宮として見ます。つまり ${pillar.text} は、「${pillar.stem}」の本人像と、「${pillar.branch}」の親密関係・生活感が重なる柱です。${branchProfile} 日主 ${pillar.stem}${stemElement} に対して日支 ${pillar.branch}${branchElement} がどう働くかを見ると、${relation} ${hiddenText}`;
+  }
   return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。天干は ${pillar.stem}${stemElement}、地支は ${pillar.branch}${branchElement} で、表に出る役割は ${god || '通変星'}。${domain} ${branchText} ${hiddenText}`;
 }
 

@@ -95,6 +95,7 @@
 | v0.3.65 | 2026-05-26 22:53 JST | 用户首页 | `/index.html` 四柱关键词与详细解说 | 将「読み取り位置 / 四柱の坐」改为上方横向关键词概览、下方纵向详细解说：补充年柱=根、月柱=場、日柱=我、時柱=芽，以及关系对象、人生阶段、外部/自我/婚姻/子女等含义 | `/latest.html` / `/index.html?v=20260526-user-pillar-keywords-1` | - | main `c0269af` / gh-pages `0cf10cc` |
 | v0.3.66 | 2026-05-26 23:04 JST | 用户首页 | `/index.html` 四柱主题融合 | 将四柱代表意义与「読み取り位置 / 四柱の坐」融合为命式詳細顶部的一个「四柱の意味」主题，放在命式構造表之后、命主タイプ之前；左侧导航新增「壹 四柱の意味」，后方移除重复模块 | `/latest.html` / `/index.html?v=20260526-user-pillar-theme-1` | - | main `33edbae` / gh-pages `11ceaba` |
 | v0.3.67 | 2026-05-26 23:13 JST | 用户首页 | `/index.html` 四柱个别解读 | 在「四柱の意味」主题中，通用意义后直接追加「この命盤では」逐柱个别解读，结合实际年柱・月柱・日柱・時柱干支、天干地支五行、通変星、关系对象和人生阶段说明 | `/latest.html` / `/index.html?v=20260526-user-pillar-specific-1` | - | main `c2d95b8` / gh-pages `615c51c` |
+| v0.3.68 | 2026-05-26 23:23 JST | 用户首页 | `/index.html` 日柱组合解读 | 强化四柱主题里的日柱个别解读：将日主天干与日支婚姻宮分开说明，再合并解释如「乙亥」这类组合代表的本人气质、亲密关系/生活感，以及日支对日主的五行作用 | `/latest.html` / `/index.html?v=20260526-user-day-pillar-relation-1` | - | main `pending` / gh-pages `pending` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 
@@ -166,3 +167,5 @@
 - v0.3.66 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；本地 Chrome/capture-website 桌面与 390px 手机截图确认左侧导航顺序正确，四柱主题位于命主タイプ前，后方重复 `insight-reading-position` 数量为 0，页面无横向溢出。
 - 用户首页 v0.3.67：按 Wreal 对「解释完四柱具体意义后，直接解释命盘中各柱情况」的反馈，在四柱详细卡中新增 `pillarSpecificReading()`。每柱通用意义后追加「この命盤の年柱/月柱/日柱/時柱は...」个别解读，结合实际干支、天干/地支五行、通変星、该柱对应的人际关系与人生阶段，并保留藏干、地勢、自坐依据。
 - v0.3.67 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；本地 Chrome/capture-website 桌面与 390px 手机截图确认 4 条 `pillar-specific-copy` 均出现、包含实际四柱干支，页面无横向溢出。
+- 用户首页 v0.3.68：按 Wreal 对「日主代表本人和婚姻关系，那么乙亥代表什么」的反馈，强化日柱组合说明。日柱解读现在先说明日主天干（本人像），再说明日支（婚姻宫/亲密关系/生活感），最后根据日主五行与日支五行关系生成支撑、表达、责任、压力等关系说明，避免只列出干支而不解释组合含义。
+- v0.3.68 验证记录：`git diff --check` 与 `node --check site3/shichusuimei/free/page.js` 通过；本地 Chrome/capture-website 样例确认日柱段包含「日主は...」「日支は...婚姻宮」「本人像と親密関係・生活感が重なる」「日主に対して日支がどう働くか」等说明，页面无横向溢出。

@@ -1669,6 +1669,16 @@ input, select { font-family: inherit; color: inherit; }
   padding: 28px;
   border-radius: 8px;
 }
+.insight-structure-board {
+  margin-bottom: 28px;
+  scroll-margin-top: 96px;
+}
+.insight-structure-board .bazi-structure-section {
+  border-color: var(--rule-strong);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ink) 5%, transparent), transparent 42%),
+    color-mix(in srgb, var(--bg-paper) 88%, transparent);
+}
 .insight-reader-head {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -2866,6 +2876,9 @@ input, select { font-family: inherit; color: inherit; }
   }
   .insight-reader {
     padding: 20px;
+  }
+  .insight-structure-board {
+    scroll-margin-top: 132px;
   }
   .insight-reader-icon {
     width: 48px;

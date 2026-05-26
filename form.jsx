@@ -1481,8 +1481,8 @@ function ElementBasisPanel({ calculation }) {
   const percentages = elementPercentages(calculation);
   const basis = calculation.fiveElements?.basis || {};
   return (
-    <section id="insight-element-basis" className="backend-panel element-basis-panel">
-      <div className="backend-panel-head">
+    <div id="insight-element-basis" className="element-basis-block">
+      <div className="element-basis-head">
         <div>
           <div className="summary-kicker">五行計算の根拠</div>
           <h3>構成比と旺相休囚死</h3>
@@ -1490,7 +1490,7 @@ function ElementBasisPanel({ calculation }) {
         <span>平衡 {calculation.fiveElements?.balanceScore ?? '—'}</span>
       </div>
       <p className="backend-copy">五行の構成比は、四柱の天干と地支の蔵干を重みづけして算出しています。月支 {basis.monthBranch || calculation.pillars.month.branch} の季節による旺衰は、構成比とは分けて身強弱の参考にします。</p>
-      <div className="backend-card-grid five">
+      <div className="backend-card-grid element-basis-grid">
         {ELEMENT_LABELS.map(el => (
           <article key={el}>
             <small>{el}</small>
@@ -1500,7 +1500,7 @@ function ElementBasisPanel({ calculation }) {
           </article>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -1577,8 +1577,8 @@ function FoundationDetailSections({ calculation }) {
           ))}
         </div>
         <WuxingDiagram dayElement={calculation.pillars.day.element.stem} elementCounts={calculation.fiveElements.counts} />
+        <ElementBasisPanel calculation={calculation} />
       </section>
-      <ElementBasisPanel calculation={calculation} />
     </div>
   );
 }

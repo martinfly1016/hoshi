@@ -1314,7 +1314,7 @@ function BackendDetailSync({ calculation }) {
         <div className="backend-panel-head">
           <div>
             <div className="summary-kicker">命式の型 / 身強身弱 / 用神</div>
-            <h3>命式全体の判定を読みやすく整理する</h3>
+            <h3>検証ページの判定をユーザー向けに整理する</h3>
           </div>
           <span>主要判定</span>
         </div>
@@ -1626,64 +1626,46 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
         intro: `命主タイプは、日柱の天干である日主から見ます。`,
         p1: `日主は ${dayStem}（${calculation.pillars.day.element.stem}）です。${stemReading.title}。${stemReading.text}`,
         p2: `日主は性格だけでなく、五行バランス、仕事運、婚姻運、対人運を見るときの中心点になります。`,
-        source: `日柱天干 ${dayStem} / 日主五行 ${calculation.pillars.day.element.stem}`,
-        note: '日主は鑑定の起点です。ここだけで断定せず、月柱・五行・通変星と重ねて読みます。',
       },
       pattern: {
         intro: `人生格局は、命式の型と身強弱を合わせて見ます。`,
         p1: `この命盤の型は「${patternName}」、身強弱は ${strengthStatus} です。${displayPatternText(calculation.pattern, '月令と天干から命式の大枠を見ます。')}`,
         p2: calculation.strength?.text || '日主の勢いと五行の支えから、どんな環境で力を出しやすいかを読みます。',
-        source: `月支 ${calculation.pillars.month.branch} / 月柱 ${calculation.pillars.month.text} / 身強弱 ${strengthStatus}`,
-        note: '格局は人生全体の型を読むための整理です。吉凶を一語で決めるものではありません。',
       },
       element: {
         intro: `五行特質は、強く出る五行・補いたい五行・用神をまとめて見ます。`,
         p1: `この命盤では ${dominantLabel} が前に出やすく、${supportLabel} を補うと全体が整いやすい構成です。`,
         p2: `用神・調候の候補は ${yongLabel} です。五行は性格、仕事、対人関係、健康運の生活リズムにも反映されます。`,
-        source: `天干・地支・蔵干の構成比 / 補う五行 ${supportLabel} / 用神候補 ${yongLabel}`,
-        note: '五行構成比と季節の旺衰は分けて扱います。割合だけで身強弱を決めない設計です。',
       },
       lifeTask: {
         intro: `人生課題は、命盤の中で重なりやすい通変星から見ます。`,
         p1: `この命盤で目立つ通変星は「${godLabel}」です。四柱の天干・蔵干に出る通変星を重ねて、行動パターンを読みます。`,
         p2: TEN_GOD_LIFE_TASKS[primaryGod] || TEN_GOD_LIFE_TASKS[godLabel] || TEN_GOD_READING[primaryGod]?.text || '行動の癖や課題として表れやすいテーマです。',
-        source: `四柱天干・蔵干の通変星 / 主要テーマ ${godLabel}`,
-        note: '課題は弱点の決めつけではなく、強く出やすい癖をどう育てるかを見る項目です。',
       },
       marriage: {
         intro: `婚姻運は、日支を婚姻宮として見ます。`,
         p1: marriageFortuneSummary(calculation),
         p2: `詳しくは日支 ${calculation.pillars.day.branch} と日主 ${dayStem} の関係、さらに命盤内の配偶者星や通変星を重ねて読みます。`,
-        source: `日柱 ${calculation.pillars.day.text} / 日支 ${calculation.pillars.day.branch} / 日主 ${dayStem}`,
-        note: '婚姻運は関係性の傾向を見る項目です。結婚の有無や時期を断定しません。',
       },
       career: {
         intro: `仕事運は、月柱・命式の型・身強弱・通変星を合わせて見ます。`,
         p1: careerFortuneSummary(calculation, patternName, strengthStatus, primaryGod),
         p2: `月柱 ${calculation.pillars.month.text} は社会性や仕事環境を表す柱です。ここに命式全体の型を重ねて、仕事で力を出しやすい場を読みます。`,
-        source: `月柱 ${calculation.pillars.month.text} / 命式の型 ${patternName} / 通変星 ${godLabel}`,
-        note: '適職名を固定するより、力を出しやすい環境・役割・働き方の方向を重視します。',
       },
       money: {
         intro: `金運は、財星だけでなく仕事運・五行バランス・用神を合わせて見ます。`,
         p1: wealthFortuneSummary(calculation),
         p2: `正財・偏財が強いかだけで判断せず、収入の入口、管理力、信用づくり、補う五行を重ねて見ます。`,
-        source: `財星（正財・偏財）/ 仕事運 / 五行バランス / 用神候補 ${yongLabel}`,
-        note: '金額や収入を保証する読みではなく、お金との関わり方と整え方の傾向を示します。',
       },
       relationship: {
         intro: `対人運は、通変星と日支から人間関係で出やすい振る舞いを見ます。`,
         p1: relationshipFortuneSummary(calculation, primaryGod),
         p2: `人との距離感、協力の仕方、言葉の出方は、日主・日支・目立つ通変星の組み合わせで読みます。`,
-        source: `主要通変星 ${godLabel} / 日支 ${calculation.pillars.day.branch} / 日主 ${dayStem}`,
-        note: '相性そのものではなく、この命式側に出やすい対人姿勢を読むページです。',
       },
       health: {
         intro: `健康運は病気の診断ではなく、体調管理と生活リズムの傾向として見ます。`,
         p1: healthFortuneSummary(calculation),
         p2: `五行の偏りがある場合は、強い五行を使いすぎず、補う五行を生活・環境・休息の中で整えることを重視します。`,
-        source: `五行バランス / 強い五行 ${dominantLabel} / 補う五行 ${supportLabel}`,
-        note: '医療判断ではありません。体調不良や不安がある場合は専門家に相談してください。',
       },
     };
     return contents[key] || contents.core;
@@ -1722,35 +1704,10 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
         </div>
         <div className="result-card" data-card-label="命式詳細" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
-          <section id="insight-topic-main" className="insight-reader">
-            <div className="insight-reader-head">
-              <div className={`insight-reader-icon tag-${currentTopic.key}`}>{currentTopic.icon}</div>
-              <div>
-                <div className="summary-kicker">{currentTopic.ja}の詳解</div>
-                <h2>{currentTopic.title}</h2>
-                <p>{content.intro}</p>
-              </div>
-            </div>
-            <div className="insight-topic-tabs" aria-label="詳解テーマ">
-              {TOPICS.map((t, i) => (
-                <button key={t.key} type="button" className={t.key === topic ? 'is-active' : ''} onClick={() => setTopic(t.key)}>
-                  <span>{topicNums[i]}</span>{t.ja}
-                </button>
-              ))}
-            </div>
-            <div className="insight-reader-body">
-              <article className="insight-main-copy">
-                <p>{content.p1}</p>
-                <p>{content.p2}</p>
-              </article>
-              <aside className="insight-evidence">
-                <strong>読み取り根拠</strong>
-                <p>{content.source}</p>
-                <strong>読み方の注意</strong>
-                <p>{content.note}</p>
-              </aside>
-            </div>
-          </section>
+          <div className="summary-kicker">{currentTopic.ja}の詳解</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}><div style={{ width: 56, height: 56, borderRadius: '50%', background: 'color-mix(in srgb, var(--gold) 10%, transparent)', border: '1px solid var(--gold)', display: 'grid', placeItems: 'center', fontSize: 24 }}>{currentTopic.icon}</div><h2 style={{ margin: 0, fontSize: 24 }}>{currentTopic.title}</h2></div>
+          <div id="insight-topic-main" className="visual-block" style={{ padding: '32px', background: 'var(--bg-paper)', borderRadius: '8px', border: '1px solid var(--rule-strong)' }}><p>{content.intro}</p><div style={{ fontSize: 15, lineHeight: 2, marginBottom: 24 }}>{content.p1}</div><div style={{ fontSize: 15, lineHeight: 2 }}>{content.p2}</div></div>
+          <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>{TOPICS.filter(t => t.key !== topic).map(t => <button key={t.key} onClick={() => setTopic(t.key)} style={{ padding: '16px', background: 'transparent', border: '1px solid var(--rule)', borderRadius: 6, color: 'var(--ink-2)', cursor: 'pointer', textAlign: 'left', fontSize: 13 }}>次：{t.ja} →</button>)}</div>
           <FoundationDetailSections calculation={calculation} />
           <BackendDetailSync calculation={calculation} />
         </div></div>

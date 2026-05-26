@@ -1343,22 +1343,24 @@ function ChartStateOverview({ calculation }) {
 }
 
 function pillarSpecificReading(key, pillar, calculation, profile) {
-  const guide = PILLAR_POSITION_READING[key];
-  const god = displayTenGod(calculation.tenGods?.[key]);
   const stemElement = pillar.element?.stem || '五行';
   const branchElement = pillar.element?.branch || '五行';
+  const dayStem = calculation.dayMaster;
+  const dayElement = calculation.pillars.day.element?.stem || stemElement;
   const branchText = BRANCH_READING[pillar.branch] || '地支の性質がその柱の背景として出ます。';
   const stemReading = STEM_READING[pillar.stem] || { title: `${pillar.stem}の性質`, text: '天干の性質が表に出ます。' };
+  const stemRelation = ELEMENT_RELATION_READING[marriageElementRelationKey(dayElement, stemElement)] || '';
+  const branchRelation = ELEMENT_RELATION_READING[marriageElementRelationKey(dayElement, branchElement)] || '';
   const hiddenMain = pillar.hiddenStemDetails?.[0];
   const hiddenText = hiddenMain
     ? `内側には ${hiddenMain.stem}${hiddenMain.element}（${displayTenGod(hiddenMain.tenGod)}）の気配が入りやすい配置です。`
     : '内側の気配は蔵干を合わせて確認します。';
-  const domain = {
-    year: `家族・父母・育った環境、幼少期に受け取った空気として、${pillar.text} の性質が背景に出ます。`,
-    month: `仕事・上司・同僚・社会との関係、青年期から社会へ出る時期の使い方として、${pillar.text} の性質が出ます。`,
-    day: `日主本人と配偶者・近い関係、成年期や結婚後の生活領域として、${pillar.text} の性質を読みます。`,
-    hour: `子ども・後輩・晩年の人間関係、未来に向けて育つテーマとして、${pillar.text} の性質が出ます。`,
-  }[key];
+  if (key === 'year') {
+    return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。年干の ${pillar.stem}${stemElement} は、家系や幼少期に外へ見えやすい雰囲気として出ます。${stemReading.title}。${stemReading.text} 日主 ${dayStem}${dayElement} に対して ${pillar.stem}${stemElement} は、${stemRelation} 年支の ${pillar.branch}${branchElement} は、育った環境や親族から受け取る空気の土台です。${branchText} 日主 ${dayStem}${dayElement} に対して ${pillar.branch}${branchElement} は、${branchRelation} つまり ${pillar.text} は、外側に見える「${pillar.stem}」の気配と、幼少期・家族環境の「${pillar.branch}」が重なる柱です。${hiddenText}`;
+  }
+  if (key === 'month') {
+    return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。月干の ${pillar.stem}${stemElement} は、社会で表に出る役割や仕事上の見え方として出ます。${stemReading.title}。${stemReading.text} 日主 ${dayStem}${dayElement} に対して ${pillar.stem}${stemElement} は、${stemRelation} 月支の ${pillar.branch}${branchElement} は、仕事環境、上司・同僚、社会評価の土台です。${branchText} 日主 ${dayStem}${dayElement} に対して ${pillar.branch}${branchElement} は、${branchRelation} つまり ${pillar.text} は、「${pillar.stem}」の社会的な表れ方と、「${pillar.branch}」の仕事環境・青年期の場が重なる柱です。${hiddenText}`;
+  }
   if (key === 'day') {
     const relationKey = marriageElementRelationKey(stemElement, branchElement);
     const relation = MARRIAGE_ELEMENT_RELATION_READING[relationKey] || '';
@@ -1366,16 +1368,12 @@ function pillarSpecificReading(key, pillar, calculation, profile) {
     return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。日主は ${pillar.stem}${stemElement} で、${stemReading.title}。${stemReading.text} 日支は ${pillar.branch}${branchElement} で、ここを婚姻宮として見ます。つまり ${pillar.text} は、「${pillar.stem}」の本人像と、「${pillar.branch}」の親密関係・生活感が重なる柱です。${branchProfile} 日主 ${pillar.stem}${stemElement} に対して日支 ${pillar.branch}${branchElement} がどう働くかを見ると、${relation} ${hiddenText}`;
   }
   if (key === 'hour') {
-    const dayStem = calculation.dayMaster;
-    const dayElement = calculation.pillars.day.element.stem;
-    const stemRelation = ELEMENT_RELATION_READING[marriageElementRelationKey(dayElement, stemElement)] || '';
-    const branchRelation = ELEMENT_RELATION_READING[marriageElementRelationKey(dayElement, branchElement)] || '';
     const genderNote = profile?.gender === 'yang'
       ? '男性命の子女縁は時柱だけで断定せず、官殺や大運も重ねますが、時柱は子ども・後輩・晩年の関わりを見る入口になります。'
       : '子女縁は時柱だけで断定せず、命式全体や大運も重ねて見ます。';
     return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。時干の ${pillar.stem}${stemElement} は、未来に外へ出ていく表現や才能の芽を表します。日主 ${dayStem}${dayElement} に対して ${pillar.stem}${stemElement} は、${stemRelation} 時支の ${pillar.branch}${branchElement} は、晩年・子ども・後輩との関係の土台です。${branchText} 日主 ${dayStem}${dayElement} に対して ${pillar.branch}${branchElement} は、${branchRelation} つまり ${pillar.text} は、「${pillar.stem}」の表現力と「${pillar.branch}」の内側の支えが、未来・晩年・子女関係に重なる柱です。${genderNote} ${hiddenText}`;
   }
-  return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。天干は ${pillar.stem}${stemElement}、地支は ${pillar.branch}${branchElement} で、表に出る役割は ${god || '通変星'}。${domain} ${branchText} ${hiddenText}`;
+  return `この命盤の${PILLAR_LABELS[key]}は ${pillar.text} です。天干は ${pillar.stem}${stemElement}、地支は ${pillar.branch}${branchElement} で読みます。${branchText} ${hiddenText}`;
 }
 
 function PillarMeaningSection({ calculation, profile }) {

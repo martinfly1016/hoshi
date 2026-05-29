@@ -14,7 +14,8 @@
         "locationId": "tokyo"
       },
       "expected": {
-        "pillars": "庚午 / 壬午 / 辛亥 / 癸巳"
+        "pillars": "庚午 / 壬午 / 辛亥 / 癸巳",
+        "strengthStatus": "身弱"
       }
     },
     {
@@ -29,7 +30,8 @@
         "locationId": "tokyo"
       },
       "expected": {
-        "pillars": "癸卯 / 乙丑 / 戊戌 / 庚申"
+        "pillars": "癸卯 / 乙丑 / 戊戌 / 庚申",
+        "strengthStatus": "身弱"
       }
     },
     {
@@ -44,7 +46,8 @@
         "locationId": "tokyo"
       },
       "expected": {
-        "pillars": "甲辰 / 丙寅 / 戊戌 / 庚申"
+        "pillars": "甲辰 / 丙寅 / 戊戌 / 庚申",
+        "strengthStatus": "中和"
       }
     },
     {
@@ -59,7 +62,8 @@
         "locationId": "tokyo"
       },
       "expected": {
-        "pillars": "戊辰 / 甲寅 / 庚子 / 丁亥"
+        "pillars": "戊辰 / 甲寅 / 庚子 / 丁亥",
+        "strengthStatus": "身弱"
       }
     },
     {
@@ -75,6 +79,7 @@
       },
       "expected": {
         "pillars": "戊辰 / 甲寅 / 庚子 / 戊子",
+        "strengthStatus": "中和",
         "warnings": [
           "LATE_ZI_HOUR_MODE_USER_SELECTABLE"
         ]
@@ -93,6 +98,7 @@
       },
       "expected": {
         "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+        "strengthStatus": "中和",
         "warnings": [
           "LATE_ZI_HOUR_MODE_USER_SELECTABLE"
         ]
@@ -111,6 +117,7 @@
       },
       "expected": {
         "pillars": "戊辰 / 甲寅 / 庚子 / 丁亥",
+        "strengthStatus": "身弱",
         "trueSolarTime": "1988-02-15 22:31"
       }
     },
@@ -127,6 +134,7 @@
       },
       "expected": {
         "pillars": "戊辰 / 甲寅 / 辛丑 / 戊子",
+        "strengthStatus": "中和",
         "trueSolarTime": "1988-02-15 23:01",
         "warnings": [
           "LATE_ZI_HOUR_MODE_USER_SELECTABLE"
@@ -146,6 +154,7 @@
       },
       "expected": {
         "pillars": "庚午 / 壬午 / 辛亥 / 甲午",
+        "strengthStatus": "身弱",
         "warnings": [
           "BIRTH_TIME_DEFAULTED_TO_NOON"
         ]

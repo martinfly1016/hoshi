@@ -463,6 +463,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "庚午 / 壬午 / 辛亥 / 癸巳",
+      strengthStatus: "身弱",
       source: "tyme4ts / lunar 系列 / 测测截图",
     },
   },
@@ -480,6 +481,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "癸卯 / 乙丑 / 戊戌 / 庚申",
+      strengthStatus: "身弱",
       source: "tyme4ts / lunar 系列 / 测测截图",
     },
   },
@@ -497,6 +499,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "甲辰 / 丙寅 / 戊戌 / 庚申",
+      strengthStatus: "中和",
       source: "tyme4ts / lunar 系列 / 测测截图",
     },
   },
@@ -514,6 +517,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "戊辰 / 甲寅 / 庚子 / 丁亥",
+      strengthStatus: "身弱",
       source: "tyme4ts / lunar 系列 / 测测截图",
     },
   },
@@ -531,6 +535,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "戊辰 / 甲寅 / 庚子 / 戊子",
+      strengthStatus: "中和",
       warnings: ["LATE_ZI_HOUR_MODE_USER_SELECTABLE"],
       source: "问真早晚子时开 / 产品默认规则",
     },
@@ -549,6 +554,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "戊辰 / 甲寅 / 辛丑 / 戊子",
+      strengthStatus: "中和",
       warnings: ["LATE_ZI_HOUR_MODE_USER_SELECTABLE"],
       source: "问真早晚子时关 / 测测在真太阳时进入子时后的口径",
     },
@@ -567,6 +573,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "戊辰 / 甲寅 / 庚子 / 丁亥",
+      strengthStatus: "身弱",
       trueSolarTime: "1988-02-15 22:31",
       source: "八字测测专业版截图",
     },
@@ -585,6 +592,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "戊辰 / 甲寅 / 辛丑 / 戊子",
+      strengthStatus: "中和",
       trueSolarTime: "1988-02-15 23:01",
       warnings: ["LATE_ZI_HOUR_MODE_USER_SELECTABLE"],
       source: "八字测测专业版 F003B 截图",
@@ -604,6 +612,7 @@ const FIXTURES = [
     },
     expected: {
       pillars: "庚午 / 壬午 / 辛亥 / 甲午",
+      strengthStatus: "身弱",
       warnings: ["BIRTH_TIME_DEFAULTED_TO_NOON"],
       source: "业务规则：时辰不详默认午时",
     },
@@ -1365,15 +1374,16 @@ function buildInputParts(input) {
   return parts;
 }
 
-function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
+function analyzeDayMasterStrength(dayMaster, monthBranch, elementCounts) {
   const wuxingCycle = ['木', '火', '土', '金', '水'];
-  const idx = wuxingCycle.indexOf(dayStem);
+  const dayElement = STEM_ELEMENTS[dayMaster] || dayMaster;
+  const idx = wuxingCycle.indexOf(dayElement);
   const motherElement = wuxingCycle[(idx - 1 + 5) % 5];
-  const supportElements = [motherElement, dayStem]; // Mother + Same
+  const supportElements = [motherElement, dayElement]; // Mother + Same
   
   const totalPoints = Object.values(elementCounts).reduce((a, b) => a + b, 0);
   const supportPoints = supportElements.reduce((sum, el) => sum + (elementCounts[el] || 0), 0);
-  const ratio = supportPoints / totalPoints;
+  const ratio = totalPoints > 0 ? supportPoints / totalPoints : 0;
 
   let status = '中和';
   let text = '中和：五行のバランスが取れた命局です。極端な偏りがなく、環境の変化に柔軟に対応できる安定感を持っています。';
@@ -1392,7 +1402,17 @@ function analyzeDayMasterStrength(dayStem, monthBranch, elementCounts) {
     text = '身弱：周囲の支援や環境を活かすことで本領を発揮する命局です。協調性を大切にし、チームや組織の中で成果を上げるのに適しています。';
   }
   
-  return { status, text, ratio };
+  return {
+    status,
+    text,
+    ratio: Number(ratio.toFixed(3)),
+    dayElement,
+    motherElement,
+    supportElements,
+    supportPoints: Number(supportPoints.toFixed(2)),
+    totalPoints: Number(totalPoints.toFixed(2)),
+    monthBranch,
+  };
 }
 
 
@@ -1633,7 +1653,7 @@ function calculateShichusuimei(input) {
     tenGods,
     hiddenStems: Object.fromEntries(PILLAR_KEYS.map((key) => [key, pillars[key].hiddenStems])),
     fiveElements: fiveElementAnalysis,
-    strength: analyzeDayMasterStrength(dayStem.toString(), pillars.month.branch, fiveElementAnalysis.seasonalAdjustedPoints || fiveElementAnalysis.counts),
+    strength: analyzeDayMasterStrength(pillars.day.element.stem, pillars.month.branch, fiveElementAnalysis.seasonalAdjustedPoints || fiveElementAnalysis.counts),
     pattern: analyzePattern(dayStem.toString(), pillars.month.branch, [pillars.year.stem, pillars.month.stem, pillars.hour.stem]),
     yongShen: getYongShen(dayStem.toString(), pillars.month.branch),
     luckCycles: buildLuckCycles(input, solarTime, dayStem, effectiveParts, pillars),
@@ -1820,15 +1840,19 @@ function runFixture(fixture) {
   try {
     const result = calculateShichusuimei(fixture.input);
     const pillarMatched = fixture.expected.pillars === result.pillarLine;
+    const strengthMatched = fixture.expected.strengthStatus
+      ? fixture.expected.strengthStatus === result.strength?.status
+      : true;
     const expectedWarnings = fixture.expected.warnings || [];
     const warningsMatched = expectedWarnings.every((warning) => result.calculationMeta.warnings.includes(warning));
     const trueSolarMatched = fixture.expected.trueSolarTime
       ? fixture.expected.trueSolarTime === result.calculationMeta.effectiveBirthDateTime
       : true;
     return {
-      ok: pillarMatched && warningsMatched && trueSolarMatched,
+      ok: pillarMatched && strengthMatched && warningsMatched && trueSolarMatched,
       result,
       pillarMatched,
+      strengthMatched,
       warningsMatched,
       trueSolarMatched,
     };
@@ -1841,6 +1865,7 @@ function renderFixtureTable() {
   const runs = FIXTURES.map((fixture) => ({ fixture, run: runFixture(fixture) }));
   const rows = runs.map(({ fixture, run }) => {
     const actual = run.result?.pillarLine || run.error?.message || "ERROR";
+    const strength = run.result?.strength?.status || "-";
     const effective = run.result?.calculationMeta.effectiveBirthDateTime || "-";
     return `
       <tr>
@@ -1849,6 +1874,8 @@ function renderFixtureTable() {
         <td>${escapeHtml(fixture.note)}</td>
         <td>${escapeHtml(fixture.expected.pillars)}</td>
         <td>${escapeHtml(actual)}</td>
+        <td>${escapeHtml(fixture.expected.strengthStatus || "-")}</td>
+        <td>${escapeHtml(strength)}</td>
         <td>${escapeHtml(effective)}</td>
         <td>${escapeHtml(fixture.expected.source)}</td>
         <td><span class="status ${run.ok ? "pass" : "fail"}">${run.ok ? "通过" : "失败"}</span></td>
@@ -1865,6 +1892,8 @@ function renderFixtureTable() {
           <th>目的</th>
           <th>期望四柱</th>
           <th>实际四柱</th>
+          <th>期望身強弱</th>
+          <th>实际身強弱</th>
           <th>有效时间</th>
           <th>来源</th>
           <th>状态</th>

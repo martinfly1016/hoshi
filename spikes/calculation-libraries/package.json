@@ -6,7 +6,8 @@
     "inspect": "node scripts/inspect-apis.mjs",
     "compare": "node scripts/compare-samples.mjs",
     "compare:rules": "node scripts/compare-rules.mjs",
-    "adapter:preview": "node scripts/adapter-preview.mjs"
+    "adapter:preview": "node scripts/adapter-preview.mjs",
+    "test:strength": "node scripts/strength-regression.mjs"
   },
   "dependencies": {
     "lunar-javascript": "^1.7.7",

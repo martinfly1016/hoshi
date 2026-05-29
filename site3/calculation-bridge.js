@@ -1,4 +1,4 @@
-import { calculateShichusuimei, LOCATIONS } from "./calculation-lab.js?v=20260525-elements-1";
+import { calculateShichusuimei, LOCATIONS } from "./calculation-lab.js?v=20260529-strength-fortune-1";
 import { JAPAN_MUNICIPALITIES } from "./japan-municipalities.js?v=20260518-user-global-location-1";
 
 window.HOSHI_CALC = {

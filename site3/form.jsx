@@ -945,7 +945,7 @@ function buildUserReadingTags(calc, tenGods) {
   return [
     {
       kind: 'core',
-      label: '命主タイプ',
+      label: '日主タイプ',
       value: `${calc.dayMaster}（${calc.pillars.day.element.stem}）`,
       icon: STEM_ICONS[calc.dayMaster] || '主',
       detail: `この命盤の人物タイプは、日柱の天干「日主」から見ます。日主は ${calc.dayMaster}（${calc.pillars.day.element.stem}）で、${stem.title || 'その人の本質を表すタイプ'}。${stem.text || '命式全体を読む起点になります。'}`,
@@ -955,7 +955,7 @@ function buildUserReadingTags(calc, tenGods) {
     },
     {
       kind: 'pattern',
-      label: '人生格局と特質',
+      label: '命式の型と特質',
       value: `${patternName} / ${strengthStatus}`,
       detail: `人生全体の格局は「${patternName}」を中心に見ます。身強弱は ${strengthStatus}。${displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。')} ${calc.strength?.text || '日主の勢いも合わせて、どんな環境で力を出しやすいかを読みます。'}`,
       evidence: `月令・天干 / 日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
@@ -1768,7 +1768,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
                 <span className="result-next-icon">詳</span>
                 <span className="result-next-copy">
                   <strong>命式詳細を読む</strong>
-                  <small>命主タイプ・人生格局・五行特質・婚姻運・仕事運などを詳しく確認</small>
+                  <small>日主タイプ・命式の型・五行特質・婚姻運・仕事運などを詳しく確認</small>
                 </span>
                 <span className="result-next-meta">詳細解説</span>
               </button>
@@ -1776,9 +1776,9 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
                 <span className="result-next-icon">運</span>
                 <span className="result-next-copy">
                   <strong>大運・流年を見る</strong>
-                  <small>現在の十年大運と運勢の流れ。詳細ページは調整中です</small>
+                  <small>十年運マップ・現在の大運・近い流年・明細表を確認</small>
                 </span>
-                <span className="result-next-meta">開発中</span>
+                <span className="result-next-meta">初版公開</span>
               </button>
             </div>
           </div>
@@ -1800,8 +1800,8 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   const supportLabel = supportElements(calculation).filter(Boolean).join('・') || '調整五行';
   const yongLabel = [calculation.yongShen?.primary, calculation.yongShen?.secondary].filter(Boolean).join('・') || supportLabel;
   const TOPICS = [
-    { key: 'core', ja: '命主タイプ', icon: STEM_ICONS[dayStem] || '主', title: '命主のタイプ分類' },
-    { key: 'pattern', ja: '人生格局', icon: '型', title: '人生格局と特質' },
+    { key: 'core', ja: '日主タイプ', icon: STEM_ICONS[dayStem] || '主', title: '日主のタイプ分類' },
+    { key: 'pattern', ja: '命式の型', icon: '型', title: '命式の型と特質' },
     { key: 'element', ja: '五行特質', icon: '五', title: '五行バランスと調整点' },
     { key: 'lifeTask', ja: '人生課題', icon: '神', title: '人生課題として出やすいテーマ' },
     { key: 'marriage', ja: '婚姻運', icon: '縁', title: '婚姻運と関係の傾向' },
@@ -1817,14 +1817,14 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
     const godLabel = displayTenGod(primaryGod);
     const contents = {
       core: {
-        intro: `命主タイプは、日柱の天干である日主から見ます。`,
+        intro: `日主タイプは、日柱の天干である日主から見ます。`,
         p1: `日主は ${dayStem}（${calculation.pillars.day.element.stem}）です。${stemReading.title}。${stemReading.text}`,
         p2: `日主は性格だけでなく、五行バランス、仕事運、婚姻運、対人運を見るときの中心点になります。`,
         source: `日柱天干 ${dayStem} / 日主五行 ${calculation.pillars.day.element.stem}`,
         note: '日主は鑑定の起点です。ここだけで断定せず、月柱・五行・通変星と重ねて読みます。',
       },
       pattern: {
-        intro: `人生格局は、命式の型と身強弱を合わせて見ます。`,
+        intro: `命式の型は、命式全体の構造と身強弱を合わせて見ます。`,
         p1: `この命盤の型は「${patternName}」、身強弱は ${strengthStatus} です。${displayPatternText(calculation.pattern, '月令と天干から命式の大枠を見ます。')}`,
         p2: calculation.strength?.text || '日主の勢いと五行の支えから、どんな環境で力を出しやすいかを読みます。',
         source: `月支 ${calculation.pillars.month.branch} / 月柱 ${calculation.pillars.month.text} / 身強弱 ${strengthStatus}`,
@@ -2004,37 +2004,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
     window.requestAnimationFrame(() => scrollTo(routeTarget.anchor));
     handledRouteKey.current = routeTarget.key;
   }, [routeTarget]);
-  return (
-    <section className="rite" data-screen-label="04 大運・流年">
-      <aside className="rite-side">
-        <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
-        <div className="seal-stack">
-          <button type="button" className="side-topic is-active"><span className="num">壹</span><span>開発中</span></button>
-          <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
-        </div>
-      </aside>
-      <div className="rite-main" style={{ paddingBottom: 120 }}>
-        <div className="return-action-row">
-          <button className="inline-return-btn" onClick={onBack}>← 現在の命式へ戻る</button>
-          <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
-        </div>
-        <div className="result-card" data-card-label="開発中" style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide" id="f0" style={{ paddingTop: 20 }}>
-            <div className="summary-kicker">大運・流年</div>
-            <h2 style={{ margin: '6px 0 12px', fontSize: 26, letterSpacing: '0.04em' }}>この詳解ページは開発中です</h2>
-            <p style={{ fontSize: 14, color: 'var(--ink-2)', lineHeight: 2 }}>
-              十年大運と流年の詳しい解説ページは現在調整中です。現時点では、命式ページの「命盤要点解読」にある「運勢の流れ」で、現在の十年大運と人生全体の大運リズムを先に確認できます。
-            </p>
-            <div className="visual-block" style={{ marginTop: 28, padding: '24px', background: 'var(--bg-paper)', border: '1px solid var(--rule)', borderRadius: 8 }}>
-              <h3 style={{ marginTop: 0 }}>現在できること</h3>
-              <p style={{ marginBottom: 16 }}>現在の命式へ戻って、要点解読・命式詳細を確認してください。大運・流年の詳細表と深い解説は、後続版で整えてから公開します。</p>
-              <button className="user-tag-detail-action" onClick={onBack}>現在の命式へ戻る</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
   return (
     <section className="rite" data-screen-label="04 大運・流年">
       <aside className="rite-side">

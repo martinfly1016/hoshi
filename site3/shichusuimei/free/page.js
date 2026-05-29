@@ -175,13 +175,13 @@ const ROW_GUIDES = {
     icon: "地",
     hint: "季節や土台となる性質",
   },
-  藏干: {
-    icon: "藏",
+  蔵干: {
+    icon: "蔵",
     hint: "地支の内側にある要素",
   },
   支神: {
     icon: "支",
-    hint: "藏干を通変星で見た働き",
+    hint: "蔵干を通変星で見た働き",
   },
   纳音: {
     icon: "音",
@@ -401,6 +401,36 @@ const TEN_GOD_PROFILES = {
     text: "知識や型を吸収し、守られながら安定して伸びやすい星です。",
   },
 };
+const TEN_GOD_DISPLAY = {
+  比肩: "比肩",
+  劫财: "劫財",
+  劫財: "劫財",
+  食神: "食神",
+  伤官: "傷官",
+  傷官: "傷官",
+  偏财: "偏財",
+  偏財: "偏財",
+  正财: "正財",
+  正財: "正財",
+  七杀: "偏官",
+  七殺: "偏官",
+  偏官: "偏官",
+  正官: "正官",
+  偏印: "偏印",
+  正印: "印綬",
+  印綬: "印綬",
+  日主: "日主",
+};
+function displayTenGod(name) {
+  return TEN_GOD_DISPLAY[name] || name || "—";
+}
+function tenGodProfile(name) {
+  const displayName = displayTenGod(name);
+  return TEN_GOD_PROFILES[name]
+    || TEN_GOD_PROFILES[displayName]
+    || TEN_GOD_PROFILES[Object.keys(TEN_GOD_PROFILES).find((key) => displayTenGod(key) === displayName)]
+    || null;
+}
 const STRUCTURE_GUIDES = {
   干神: {
     icon: "干",
@@ -410,11 +440,11 @@ const STRUCTURE_GUIDES = {
   支神: {
     icon: "支",
     title: "支神",
-    text: "地支の中にある藏干を十神に置き換えたものです。内側で動くテーマを見ます。",
+    text: "地支の中にある蔵干を十神に置き換えたものです。内側で動くテーマを見ます。",
   },
-  藏干: {
-    icon: "藏",
-    title: "藏干",
+  蔵干: {
+    icon: "蔵",
+    title: "蔵干",
     text: "地支の内側に潜む要素です。潜在的な資質や土台の流れを見ます。",
   },
 };
@@ -593,7 +623,7 @@ function buildStructuredTags(result) {
       target: "page-detail",
       anchor: "anchor-five-elements",
       description: `${dominant.join("・")} が命式全体で前に出やすい五行です。`,
-      evidence: "天干・地支藏干・月令補正",
+      evidence: "天干・地支蔵干・月令補正",
     },
     {
       tone: result.fiveElements.missing?.length ? "warning" : "support",
@@ -606,7 +636,7 @@ function buildStructuredTags(result) {
     },
     {
       tone: "support",
-      label: "好运来源",
+      label: "開運の手がかり",
       value: [result.yongShen?.primary, result.yongShen?.secondary].filter(Boolean).join("・") || "用神",
       target: "page-detail",
       anchor: "anchor-pattern-strength",
@@ -615,11 +645,11 @@ function buildStructuredTags(result) {
     },
     ...tenGods.map((item) => ({
       tone: "god",
-      label: "主要课题",
-      value: item.name,
+      label: "主な課題",
+      value: displayTenGod(item.name),
       target: "page-detail",
       anchor: "anchor-life-themes",
-      description: TEN_GOD_PROFILES[item.name]?.text || "命式で重なる十神テーマです。",
+      description: tenGodProfile(item.name)?.text || "命式で重なる十神テーマです。",
       evidence: `出現${item.total} / 干神${item.heavenly}・支神${item.hidden}`,
     })),
     {
@@ -780,7 +810,7 @@ function topHighlights(items, formatter, limit = 3) {
 }
 
 function tenGodKeywords(name) {
-  const profile = TEN_GOD_PROFILES[name];
+  const profile = tenGodProfile(name);
   return profile ? profile.tags.join("・") : "";
 }
 
@@ -982,8 +1012,8 @@ function renderPillarCards(result) {
             <div class="pillar-chars">${escapeHtml(pillar.text)}</div>
             <div class="pillar-meta">
               <div>天干 ${pillar.stem} / 地支 ${pillar.branch}</div>
-              <div>通変星 ${escapeHtml(result.tenGods[key])}</div>
-              <div>藏干 ${pillar.hiddenStems.map(escapeHtml).join("・")}</div>
+              <div>通変星 ${escapeHtml(displayTenGod(result.tenGods[key]))}</div>
+              <div>蔵干 ${pillar.hiddenStems.map(escapeHtml).join("・")}</div>
             </div>
           </article>
         `;
@@ -1003,7 +1033,7 @@ function renderHiddenGodCell(pillar) {
   const details = pillar.hiddenStemDetails || [];
   if (!details.length) return `<span class="muted">—</span>`;
   return details.map((detail) => `
-    <span class="mini-line ${elementClass(detail.element)}">${escapeHtml(detail.tenGod)}</span>
+    <span class="mini-line ${elementClass(detail.element)}">${escapeHtml(displayTenGod(detail.tenGod))}</span>
   `).join("");
 }
 
@@ -1066,10 +1096,10 @@ function renderTraditionalChart(result) {
           </div>
         `).join("")}
       </div>
-      ${renderTraditionalRow(result, "干神", "bazi-god", (_pillar, key) => escapeHtml(result.tenGods[key]))}
+      ${renderTraditionalRow(result, "干神", "bazi-god", (_pillar, key) => escapeHtml(displayTenGod(result.tenGods[key])))}
       ${renderTraditionalRow(result, "天干", "bazi-stem", (pillar) => `<span class="${elementClass(pillar.element.stem)}">${escapeHtml(pillar.stem)}</span>`)}
       ${renderTraditionalRow(result, "地支", "bazi-branch", (pillar) => `<span class="${elementClass(pillar.element.branch)}">${escapeHtml(pillar.branch)}</span>`)}
-      ${renderTraditionalRow(result, "藏干", "bazi-detail", (pillar) => renderHiddenStemCell(pillar))}
+      ${renderTraditionalRow(result, "蔵干", "bazi-detail", (pillar) => renderHiddenStemCell(pillar))}
       ${renderTraditionalRow(result, "支神", "bazi-detail", (pillar) => renderHiddenGodCell(pillar))}
       ${renderTraditionalRow(result, "纳音", "bazi-flat", (pillar) => `<span class="${elementClass((pillar.naYin || "").slice(-1))}">${escapeHtml(pillar.naYin || "—")}</span>`)}
       ${renderTraditionalRow(result, "空亡", "bazi-flat", (pillar) => escapeHtml((pillar.voidBranches || []).join("") || "—"))}
@@ -1221,7 +1251,7 @@ function renderFiveElementAlgorithmPanel(result) {
         </div>
         <span class="balance-badge">平衡 ${escapeHtml(analysis.balanceScore ?? "—")}</span>
       </div>
-      <p class="summary-text">五行の構成比は、四柱の天干と地支の藏干を重みづけして算出しています。月令による旺衰は構成比とは分け、身強弱や調候の参考として扱います。</p>
+      <p class="summary-text">五行の構成比は、四柱の天干と地支の蔵干を重みづけして算出しています。月令による旺衰は構成比とは分け、身強弱や調候の参考として扱います。</p>
       <div class="algorithm-grid">
         ${ELEMENT_LABELS.map((name) => `
           <article class="algorithm-card">
@@ -1235,7 +1265,7 @@ function renderFiveElementAlgorithmPanel(result) {
         <span><strong>月支</strong>${escapeHtml(basis.monthBranch || "—")}</span>
         <span><strong>月柱倍率</strong>${escapeHtml(basis.monthPillarMultiplier || "—")}</span>
         <span><strong>天干基礎点</strong>${escapeHtml(basis.stemBasePoint || "—")}</span>
-        <span><strong>藏干基礎点</strong>${escapeHtml(basis.branchHiddenQiBasePoint || "—")}</span>
+        <span><strong>蔵干基礎点</strong>${escapeHtml(basis.branchHiddenQiBasePoint || "—")}</span>
       </div>
     </div>
   `;
@@ -1319,7 +1349,7 @@ function renderPatternStrengthSection(result) {
         </div>
         <span class="balance-badge">核心判定</span>
       </div>
-      <p class="summary-text">ここでは、命式タグで表示した「格局」「身強身弱」「好运来源」がどの判定から来ているかをまとめます。詳細文に入る前の判定根拠です。</p>
+      <p class="summary-text">ここでは、命式タグで表示した「命式の型」「身強身弱」「開運の手がかり」がどの判定から来ているかをまとめます。詳細文に入る前の判定根拠です。</p>
       <div class="tag-explain-grid">
         <article class="mini-reading-card">
           <span class="metric-label">格局タグ</span>
@@ -1334,7 +1364,7 @@ function renderPatternStrengthSection(result) {
           <span class="tag-evidence">${escapeHtml(`日主 ${result.dayMaster} / 比率 ${result.strength?.ratio ?? "—"}`)}</span>
         </article>
         <article class="mini-reading-card">
-          <span class="metric-label">好运来源タグ</span>
+          <span class="metric-label">開運の手がかりタグ</span>
           <strong class="metric-value">${escapeHtml(yongValue)}</strong>
           <p>${escapeHtml(yong.text || "命式を整える候補を用神・調候として扱います。")}</p>
           <span class="tag-evidence">用神・調候</span>
@@ -1372,7 +1402,7 @@ function renderTenGodChart(result) {
     <div class="god-chart-card">
       <div class="card-subhead">
         <h3>十神占比</h3>
-        <p>天干と藏干に現れる十神の出現率です。</p>
+        <p>天干と蔵干に現れる十神の出現率です。</p>
       </div>
       <div class="god-chart">
         ${orderedEntries.map(({ name, item, percent, toneClass }) => `
@@ -1380,8 +1410,8 @@ function renderTenGodChart(result) {
               <div class="god-track">
                 <span class="god-fill ${toneClass}" style="height:${item.total === 0 ? 6 : Math.max(18, percent)}%"></span>
               </div>
-              <span class="god-icon ${toneClass}">${escapeHtml(TEN_GOD_PROFILES[name]?.icon || name.slice(0, 1))}</span>
-              <strong class="god-name">${escapeHtml(name)}</strong>
+              <span class="god-icon ${toneClass}">${escapeHtml(tenGodProfile(name)?.icon || displayTenGod(name).slice(0, 1))}</span>
+              <strong class="god-name">${escapeHtml(displayTenGod(name))}</strong>
               <span class="god-percent">${percent}%</span>
             </article>
         `).join("")}
@@ -1390,8 +1420,8 @@ function renderTenGodChart(result) {
         ${orderedEntries.map(({ name, item, percent, toneClass }) => `
           <article class="god-mobile-item ${item.total === 0 ? "is-empty" : ""}">
             <div class="god-mobile-head">
-              <span class="god-icon ${toneClass}">${escapeHtml(TEN_GOD_PROFILES[name]?.icon || name.slice(0, 1))}</span>
-              <strong>${escapeHtml(name)}</strong>
+              <span class="god-icon ${toneClass}">${escapeHtml(tenGodProfile(name)?.icon || displayTenGod(name).slice(0, 1))}</span>
+              <strong>${escapeHtml(displayTenGod(name))}</strong>
               <span>${percent}%</span>
             </div>
             <div class="god-mobile-track">
@@ -1410,7 +1440,7 @@ function renderStructureCards(result) {
   const hiddenStems = aggregateHiddenStemCounts(result);
   const hiddenGodHighlight = topHighlights(hiddenGods, (item) => {
     const keywords = tenGodKeywords(item.name);
-    return `${item.name}${keywords ? `（${keywords}）` : ""}`;
+    return `${displayTenGod(item.name)}${keywords ? `（${keywords}）` : ""}`;
   });
   const hiddenStemHighlight = topHighlights(hiddenStems, (item) => (
     `${item.stem}${item.element}（${ELEMENT_DESCRIPTIONS[item.element] || item.element}）`
@@ -1426,10 +1456,10 @@ function renderStructureCards(result) {
         ${renderTokenList(heavenlyGods, (item) => `
           <span class="token">
             <span class="token-subtle">${escapeHtml(item.pillarLabel)}</span>
-            <strong>${escapeHtml(item.name)}</strong>
+            <strong>${escapeHtml(displayTenGod(item.name))}</strong>
           </span>
         `)}
-        <p>${escapeHtml(`四柱では ${heavenlyGods.map((item) => item.name).join("、")} が見えています。`)}</p>
+        <p>${escapeHtml(`四柱では ${heavenlyGods.map((item) => displayTenGod(item.name)).join("、")} が見えています。`)}</p>
       </article>
       <article class="detail-card">
         <div class="card-subhead">
@@ -1438,7 +1468,7 @@ function renderStructureCards(result) {
         </div>
         ${renderTokenList(hiddenGods, (item) => `
           <span class="token">
-            <strong>${escapeHtml(item.name)}</strong>
+            <strong>${escapeHtml(displayTenGod(item.name))}</strong>
             <span class="token-subtle">×${item.total}</span>
           </span>
         `)}
@@ -1446,7 +1476,7 @@ function renderStructureCards(result) {
       </article>
       <article class="detail-card">
         <div class="card-subhead">
-          <h3>藏干</h3>
+          <h3>蔵干</h3>
           <p>潜在的な土台要素</p>
         </div>
         ${renderTokenList(hiddenStems, (item) => `
@@ -1466,13 +1496,13 @@ function renderTenGodThemeCards(result) {
   return `
     <div class="theme-grid">
       ${primaryThemes.map((item) => {
-        const profile = TEN_GOD_PROFILES[item.name] || { icon: item.name.slice(0, 1), tags: [], text: "" };
+        const profile = tenGodProfile(item.name) || { icon: displayTenGod(item.name).slice(0, 1), tags: [], text: "" };
         return `
           <article class="theme-card">
             <div class="theme-head">
               <span class="guide-icon">${escapeHtml(profile.icon)}</span>
               <div>
-                <h3>${escapeHtml(item.name)}</h3>
+                <h3>${escapeHtml(displayTenGod(item.name))}</h3>
                 <p class="theme-meta">出現 ${item.total} · 干神 ${item.heavenly} / 支神 ${item.hidden}</p>
               </div>
             </div>
@@ -1490,7 +1520,7 @@ function renderStructureSection(result) {
     <div class="card-head" id="anchor-ten-gods">
       <div>
         <p class="card-kicker">STEP 3</p>
-        <h2>干神・支神・藏干の構成を見る</h2>
+        <h2>干神・支神・蔵干の構成を見る</h2>
       </div>
     </div>
     <p class="section-copy">命式の中に何が出ているかを並べ、そこから主要テーマを整理します。</p>
@@ -1530,7 +1560,7 @@ function renderInterpretationSummary(result) {
   const mainThemes = aggregateTenGodThemes(result).filter((item) => item.name !== "日主").slice(0, 3);
   const themeText = mainThemes.map((item) => {
     const tags = tenGodKeywords(item.name);
-    return `${item.name}${tags ? `（${tags}）` : ""}`;
+    return `${displayTenGod(item.name)}${tags ? `（${tags}）` : ""}`;
   }).join("、");
   return `
     <div class="reading-lead" id="anchor-interpretation-summary">
@@ -1564,25 +1594,25 @@ function renderLifeThemeCards(result) {
   const primary = themes[0]?.name || "日主";
   const secondary = themes[1]?.name || primary;
   const hidden = aggregateHiddenGodCounts(result)[0]?.name || secondary;
-  const primaryProfile = TEN_GOD_PROFILES[primary] || TEN_GOD_PROFILES["日主"];
-  const secondaryProfile = TEN_GOD_PROFILES[secondary] || TEN_GOD_PROFILES["日主"];
-  const hiddenProfile = TEN_GOD_PROFILES[hidden] || TEN_GOD_PROFILES["日主"];
+  const primaryProfile = tenGodProfile(primary) || TEN_GOD_PROFILES["日主"];
+  const secondaryProfile = tenGodProfile(secondary) || TEN_GOD_PROFILES["日主"];
+  const hiddenProfile = tenGodProfile(hidden) || TEN_GOD_PROFILES["日主"];
   const cards = [
     {
       title: "性格の核",
-      text: `${primary} が主題として出ています。${primaryProfile.text} 日主の性質と合わせると、無意識に選びやすい判断基準が見えてきます。`,
+      text: `${displayTenGod(primary)} が主題として出ています。${primaryProfile.text} 日主の性質と合わせると、無意識に選びやすい判断基準が見えてきます。`,
     },
     {
       title: "仕事・役割",
-      text: `${secondary} の働きから、仕事では ${secondaryProfile.tags.join("・")} の場面で力を使いやすいと読みます。向いている職種断定ではなく、力を出しやすい役割の仮説です。`,
+      text: `${displayTenGod(secondary)} の働きから、仕事では ${secondaryProfile.tags.join("・")} の場面で力を使いやすいと読みます。向いている職種断定ではなく、力を出しやすい役割の仮説です。`,
     },
     {
       title: "恋愛・対人",
-      text: `${hidden} は内側で動くテーマとして見ます。${hiddenProfile.text} 関係性では、表に出る態度と本音のズレを確認すると読みが深まります。`,
+      text: `${displayTenGod(hidden)} は内側で動くテーマとして見ます。${hiddenProfile.text} 関係性では、表に出る態度と本音のズレを確認すると読みが深まります。`,
     },
     {
       title: "財運・現実面",
-      text: `財星（偏财・正财）や官星（七杀・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
+      text: `財星（偏財・正財）や官星（偏官・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
     },
   ];
   return `
@@ -1614,13 +1644,13 @@ function dayMarriagePalaceReading(result) {
   const mainHidden = hiddenDetails[0];
   const relationKey = elementRelationKey(dayElement, palaceElement);
   const hiddenText = hiddenDetails
-    .map((detail) => `${detail.stem}${detail.element}${detail.tenGod ? `（${detail.tenGod}）` : ""}`)
+    .map((detail) => `${detail.stem}${detail.element}${detail.tenGod ? `（${displayTenGod(detail.tenGod)}）` : ""}`)
     .join("、") || "—";
   return {
     branch: dayPillar.branch,
     branchElement: palaceElement,
     hiddenText,
-    mainHiddenTenGod: mainHidden?.tenGod || "—",
+    mainHiddenTenGod: displayTenGod(mainHidden?.tenGod) || "—",
     profile: BRANCH_RELATIONSHIP_PROFILES[dayPillar.branch] || "日支は親密な関係で出やすい距離感や生活感を読む入口です。",
     relation: ELEMENT_RELATION_READING[relationKey],
     terrain: dayPillar.terrainByDay || dayPillar.terrainSelf || "—",
@@ -1646,7 +1676,7 @@ function renderMarriagePalaceDetail(result) {
           <p>${escapeHtml(reading.profile)}</p>
         </article>
         <article class="mini-reading-card">
-          <span class="metric-label">藏干・支神</span>
+          <span class="metric-label">蔵干・支神</span>
           <strong class="metric-value">${escapeHtml(reading.mainHiddenTenGod)}</strong>
           <p>${escapeHtml(`内側には ${reading.hiddenText} があり、表の態度だけでなく本音や生活感として現れやすい要素を見ます。`)}</p>
         </article>
@@ -1669,7 +1699,7 @@ function renderReadingSourceMap(result) {
           <p class="card-kicker">読み取り位置</p>
           <h3>どの柱・どの要素から読んでいるか</h3>
         </div>
-        <span class="balance-badge">四柱定位</span>
+        <span class="balance-badge">四柱の位置づけ</span>
       </div>
       <p class="summary-text">詳解では、命式のどの場所を根拠にしているかを先に示します。たとえば婚姻や親密な関係は、日柱の地支、つまり「日支」を配偶者宮・婚姻宮として読んでいます。</p>
       <div class="source-map-grid">
@@ -1696,7 +1726,7 @@ function renderReadingSourceMap(result) {
                   ${isDay ? `<b class="source-badge">婚姻宮</b>` : ""}
                 </div>
               </div>
-              ${isDay ? `<p class="source-note">この「日柱の地支」が婚姻宮です。下の婚姻宮詳解は、ここを中心に藏干・支神・五行関係を重ねて読んでいます。</p>` : `<p class="source-note">${escapeHtml(PILLAR_SEAT_GUIDES[key].scope)}を読む入口です。</p>`}
+              ${isDay ? `<p class="source-note">この「日柱の地支」が婚姻宮です。下の婚姻宮詳解は、ここを中心に蔵干・支神・五行関係を重ねて読んでいます。</p>` : `<p class="source-note">${escapeHtml(PILLAR_SEAT_GUIDES[key].scope)}を読む入口です。</p>`}
             </article>
           `;
         }).join("")}
@@ -1714,7 +1744,7 @@ function pillarSeatReading(result, key) {
   const mainHidden = hiddenDetails[0];
   const relationKey = elementRelationKey(stemElement, branchElement);
   const hiddenText = hiddenDetails
-    .map((detail) => `${detail.stem}${detail.element}${detail.tenGod ? `（${detail.tenGod}）` : ""}`)
+    .map((detail) => `${detail.stem}${detail.element}${detail.tenGod ? `（${displayTenGod(detail.tenGod)}）` : ""}`)
     .join("、") || "—";
   const selfTerrain = pillar.terrainSelf || "—";
   return {
@@ -1726,7 +1756,7 @@ function pillarSeatReading(result, key) {
     stemElement,
     branchElement,
     hiddenText,
-    mainHiddenTenGod: mainHidden?.tenGod || "—",
+    mainHiddenTenGod: displayTenGod(mainHidden?.tenGod) || "—",
     relation: ELEMENT_RELATION_READING[relationKey],
     selfTerrain,
     selfTerrainText: TERRAIN_SELF_READING[selfTerrain] || "この柱の天干が地支に坐る時の勢いを見ます。",
@@ -1744,7 +1774,7 @@ function renderPillarSeatDetails(result) {
         </div>
         <span class="balance-badge">年・月・日・時</span>
       </div>
-      <p class="summary-text">「坐」は、それぞれの柱の天干がどの地支の上に乗っているかを見る読み方です。表に出る天干と、足元にある地支・藏干・十二運を合わせることで、その柱の力が安定しやすいか、揺れやすいか、どこで発揮されやすいかを読みます。</p>
+      <p class="summary-text">「坐」は、それぞれの柱の天干がどの地支の上に乗っているかを見る読み方です。表に出る天干と、足元にある地支・蔵干・十二運を合わせることで、その柱の力が安定しやすいか、揺れやすいか、どこで発揮されやすいかを読みます。</p>
       <div class="pillar-seat-grid">
         ${readings.map((reading) => `
           <article class="pillar-seat-card">
@@ -1761,7 +1791,7 @@ function renderPillarSeatDetails(result) {
               <span><strong>主な支神</strong>${escapeHtml(reading.mainHiddenTenGod)}</span>
             </div>
             <p>${escapeHtml(reading.guide.text)}</p>
-            <p>${escapeHtml(`藏干は ${reading.hiddenText}。${reading.relation}`)}</p>
+            <p>${escapeHtml(`蔵干は ${reading.hiddenText}。${reading.relation}`)}</p>
             <p>${escapeHtml(`十二運の自坐は ${reading.selfTerrain}。${reading.selfTerrainText}`)}</p>
           </article>
         `).join("")}
@@ -1855,7 +1885,7 @@ function renderMeishikiBasicInfo(result) {
     { label: "出生時間", value: birthTime },
     { label: "性別", value: genderLabel(input.gender) },
     { label: "出生地", value: location || "—" },
-    { label: "時区", value: meta.timezone || "—" },
+    { label: "時間帯", value: meta.timezone || "—" },
     { label: "真太陽時", value: trueSolar },
     { label: "四柱", value: result.pillarLine || PILLAR_KEYS.map((key) => result.pillars[key].text).join(" / ") },
     { label: "日主", value: result.dayMaster || "—" },
@@ -2000,7 +2030,7 @@ function renderLuckOverviewCards(result) {
       label: "現在の大運",
       value: currentDecade?.name || "未判定",
       body: currentDecade
-        ? `${currentDecade.startYear}-${currentDecade.endYear} / ${currentDecade.pillar?.heavenlyTenGod || "十神未判定"}`
+        ? `${currentDecade.startYear}-${currentDecade.endYear} / ${displayTenGod(currentDecade.pillar?.heavenlyTenGod || "十神未判定")}`
         : "性別を選ぶと十年運を定位します。",
       element: currentDecade?.pillar?.element?.stem,
     },
@@ -2060,7 +2090,7 @@ function renderDecadeFortunes(result) {
         { label: "大運", value: (item) => item.name },
         { label: "年齢", value: (item) => `${item.startAge}-${item.endAge}歳` },
         { label: "期間", value: (item) => `${item.startYear}-${item.endYear}` },
-        { label: "十神", value: (item) => item.pillar.heavenlyTenGod || "—" },
+        { label: "十神", value: (item) => displayTenGod(item.pillar.heavenlyTenGod) || "—" },
       ])}
     </div>
   `;
@@ -2155,7 +2185,7 @@ function renderMeta(result) {
           <tr><th>有効計算時間</th><td>${escapeHtml(meta.effectiveBirthDateTime)}</td></tr>
           <tr><th>出生地</th><td>${escapeHtml(displayLocationLabel(meta.location))}</td></tr>
           <tr><th>時間補正</th><td>${escapeHtml(trueSolar)}</td></tr>
-          <tr><th>23:00 子時</th><td>${meta.lateZiHourMode === "same_day" ? "晚子時として当日扱い" : "23:00 で翌日扱い"}</td></tr>
+          <tr><th>23:00 子時</th><td>${meta.lateZiHourMode === "same_day" ? "夜子時として当日扱い" : "23:00 で翌日扱い"}</td></tr>
         </tbody>
       </table>
     </div>

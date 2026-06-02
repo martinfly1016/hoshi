@@ -4703,8 +4703,10 @@ select:focus-visible {
   }
 
   .hero-lead {
-    width: calc(100% - 32px);
-    max-width: calc(100% - 32px);
+    width: min(330px, calc(100vw - 48px));
+    max-width: min(330px, calc(100vw - 48px));
+    word-break: break-all;
+    line-break: anywhere;
     overflow-wrap: anywhere;
   }
 

@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>星の命式 UI Concepts A-I</title>
+<meta name="description" content="星の命式 new-ux 分支视觉与交互方案参考图。" />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f5ef;
+    --panel: #ffffff;
+    --ink: #181817;
+    --muted: #6c6a63;
+    --line: rgba(24, 24, 23, 0.12);
+    --accent: #b33a2d;
+    --accent-soft: #f4dfda;
+    --shadow: 0 18px 46px rgba(24, 24, 23, 0.10);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.7 -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .shell {
+    width: min(1180px, calc(100vw - 28px));
+    margin: 0 auto;
+    padding: 22px 0 52px;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 0;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .seal {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    flex: 0 0 auto;
+  }
+
+  .back {
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .hero {
+    padding: 38px 0 24px;
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 820px;
+    font-size: clamp(32px, 7vw, 68px);
+    line-height: 1.06;
+    letter-spacing: 0;
+  }
+
+  .lead {
+    max-width: 780px;
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  .nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 0 22px;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--panel) 88%, transparent);
+    white-space: nowrap;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .nav strong {
+    color: var(--ink);
+  }
+
+  .concepts {
+    display: grid;
+    gap: 24px;
+  }
+
+  .concept {
+    scroll-margin-top: 78px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .concept-head {
+    display: grid;
+    gap: 10px;
+    padding: 18px 18px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .concept-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: clamp(20px, 4.8vw, 30px);
+    letter-spacing: 0;
+  }
+
+  .tag {
+    flex: 0 0 auto;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .summary {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .meta span {
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  .shot-link {
+    display: block;
+    background: #edeae2;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .note {
+    margin: 0;
+    padding: 13px 18px 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .footer {
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  @media (min-width: 840px) {
+    .concepts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .concept:first-child,
+    .concept:nth-child(5) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="../latest.html">
+        <span class="seal">命</span>
+        <span>星の命式 UI Concepts</span>
+      </a>
+      <a class="back" href="../latest.html">返回预览页</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">new-ux / visual direction</p>
+        <h1>A-I 视觉与交互方向参考</h1>
+        <p class="lead">
+          这组图用于讨论新分支的视觉和交互方向。文字不是最终文案，重点看工具效率、移动端使用、多语言扩展、结果页阅读方式和品牌气质。
+        </p>
+      </section>
+
+      <nav class="nav" aria-label="Concept navigation">
+        <a href="#concept-a"><strong>A</strong> 工具工作台</a>
+        <a href="#concept-b"><strong>B</strong> 结果阅读</a>
+        <a href="#concept-c"><strong>C</strong> 高频 App</a>
+        <a href="#concept-d"><strong>D</strong> 多语言</a>
+        <a href="#concept-e"><strong>E</strong> Apple 原生</a>
+        <a href="#concept-f"><strong>F</strong> 年轻多彩</a>
+        <a href="#concept-g"><strong>G</strong> 深色专业</a>
+        <a href="#concept-h"><strong>H</strong> 日系生活</a>
+        <a href="#concept-i"><strong>I</strong> 卡牌收藏</a>
+      </nav>
+
+      <section class="concepts">
+        <article class="concept" id="concept-a">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>A. 工具优先的命式工作台</h2>
+              <span class="tag">主线候选</span>
+            </div>
+            <p class="summary">把入口直接变成创建命式与结果预览，减少仪式感，提高填写和复算效率。</p>
+            <div class="meta"><span>移动端优先</span><span>表单效率</span><span>桌面分栏</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-a.png"><img src="concept-a.png" alt="方案 A 工具优先的命式工作台" loading="lazy"></a>
+          </figure>
+          <p class="note">适合作为新 UX 的基础信息架构：左输入、右结果，手机上用 sticky CTA 和最近命式提高效率。</p>
+        </article>
+
+        <article class="concept" id="concept-b">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>B. 结果阅读工作台</h2>
+              <span class="tag">结果页</span>
+            </div>
+            <p class="summary">面向命式详细页的信息密度，强调导航、折叠、依据 inspector 和快速跳转。</p>
+            <div class="meta"><span>可扫描</span><span>依据层</span><span>长内容阅读</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-b.png"><img src="concept-b.png" alt="方案 B 结果阅读工作台" loading="lazy"></a>
+          </figure>
+          <p class="note">适合吸收到结果页：摘要先行，传统依据后置，避免用户被整页专业表格压住。</p>
+        </article>
+
+        <article class="concept" id="concept-c">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>C. 高频移动 App 化</h2>
+              <span class="tag">移动长期</span>
+            </div>
+            <p class="summary">围绕保存命式、快速复算、今日运势和相性比较，做成可以反复打开的手机工具。</p>
+            <div class="meta"><span>保存档案</span><span>今日运势</span><span>重复使用</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-c.png"><img src="concept-c.png" alt="方案 C 高频移动 App 化" loading="lazy"></a>
+          </figure>
+          <p class="note">如果未来移动端占比很高，这个方向很有价值，但需要配套历史记录和账号/本地存储策略。</p>
+        </article>
+
+        <article class="concept" id="concept-d">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>D. 多语言渐进式阅读器</h2>
+              <span class="tag">国际化</span>
+            </div>
+            <p class="summary">Simple / Traditional 双层阅读，兼容 JP、EN、繁中等语言切换与术语解释。</p>
+            <div class="meta"><span>多语言</span><span>术语层</span><span>渐进展开</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-d.png"><img src="concept-d.png" alt="方案 D 多语言渐进式阅读器" loading="lazy"></a>
+          </figure>
+          <p class="note">适合作为内容结构，而不是单独视觉风格：先讲人话，再展示传统命理依据。</p>
+        </article>
+
+        <article class="concept" id="concept-e">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>E. Apple 原生工具风</h2>
+              <span class="tag">效率最强</span>
+            </div>
+            <p class="summary">像 iOS / macOS 原生工具：熟悉、克制、可访问，神秘感只作为细节。</p>
+            <div class="meta"><span>原生控件</span><span>学习成本低</span><span>多语言稳</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-e.png"><img src="concept-e.png" alt="方案 E Apple 原生工具风" loading="lazy"></a>
+          </figure>
+          <p class="note">很适合解决“工具效率优先”的问题，但需要额外设计品牌细节，避免变得太普通。</p>
+        </article>
+
+        <article class="concept" id="concept-f">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>F. 年轻多彩社交风</h2>
+              <span class="tag">年轻用户</span>
+            </div>
+            <p class="summary">明亮、多彩、适合分享与相性结果，让四柱推命更容易接近年轻用户。</p>
+            <div class="meta"><span>社交分享</span><span>轻松亲和</span><span>相性场景</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-f.png"><img src="concept-f.png" alt="方案 F 年轻多彩社交风" loading="lazy"></a>
+          </figure>
+          <p class="note">可以局部用于分享卡、相性页、结果摘要卡；不建议整站都这么活泼。</p>
+        </article>
+
+        <article class="concept" id="concept-g">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>G. 深色专业命理工作台</h2>
+              <span class="tag">专家向</span>
+            </div>
+            <p class="summary">深色数据仪表盘，偏专家和高频用户，强调计算证据与命式对比。</p>
+            <div class="meta"><span>高信息密度</span><span>专业感</span><span>对比分析</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-g.png"><img src="concept-g.png" alt="方案 G 深色专业命理工作台" loading="lazy"></a>
+          </figure>
+          <p class="note">适合后台/专家模式。作为普通用户主界面会偏重，容易回到“氛围压过工具”的问题。</p>
+        </article>
+
+        <article class="concept" id="concept-h">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>H. 日系生活杂志风</h2>
+              <span class="tag">大众阅读</span>
+            </div>
+            <p class="summary">清爽、温和、生活方式感强，适合 SEO 内容页与普通用户的结果解读。</p>
+            <div class="meta"><span>日本大众</span><span>长文阅读</span><span>温和品牌</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-h.png"><img src="concept-h.png" alt="方案 H 日系生活杂志风" loading="lazy"></a>
+          </figure>
+          <p class="note">可以和 Apple 工具风融合：操作区更原生，解释区更生活杂志化。</p>
+        </article>
+
+        <article class="concept" id="concept-i">
+          <div class="concept-head">
+            <div class="concept-title">
+              <h2>I. 卡牌 / 收藏游戏化风</h2>
+              <span class="tag">传播记忆</span>
+            </div>
+            <p class="summary">把命式做成可保存、可分享、可比较的卡片，强化记忆点和互动感。</p>
+            <div class="meta"><span>命式卡</span><span>收藏</span><span>比较分享</span></div>
+          </div>
+          <figure>
+            <a class="shot-link" href="concept-i.png"><img src="concept-i.png" alt="方案 I 卡牌收藏游戏化风" loading="lazy"></a>
+          </figure>
+          <p class="note">适合分享图和相性玩法，不建议作为基础工具主界面，否则会削弱专业可信感。</p>
+        </article>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>建议讨论方向：主 UI 选 E/A 的工具效率，阅读体验吸收 B/H，年轻传播和相性玩法再局部吸收 F/I。</p>
+    </footer>
+  </div>
+</body>
+</html>

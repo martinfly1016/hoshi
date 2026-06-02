@@ -2,6 +2,16 @@
 
 用于记录项目开发过程中的关键进展、需求决策、Case study、问题排查和经验教训。
 
+## 2026-06-02 HOSHI v0.3.83 local QA cleanup / 继续 5/29 后续
+
+- 按群聊要求读取 workspace/session memory 后继续 HOSHI 之前工作；因当前是 Discord 群聊环境，遵循安全约束未读取长期私人 `MEMORY.md`。
+- 当前状态确认：`main` 已包含 5/29 的 `20260529-strength-fortune-1` / v0.3.82 提交，`gh-pages` 仍停在较早版本；本轮只做本地清理，不发布外部 Pages。
+- 清理非归档页面可见中文/中文式术语：旧 `calculator.html/js`、`calculation-lab.html/js`、后台验证页 `page.js`、用户页 `form.jsx`、移动预览页 `mobile-preview.html`。
+- 用户页和后台验证页将可见 `格局` 改为 `命式の型`，将 `藏干`、`可信度`、`样例`、`计算`、`晚子时` 等验证/工具页面词汇日语化；保留 `form.jsx` 中 `藏干 -> 蔵干` 的内部兼容转换。
+- 验证通过：`node --check site3/calculation-lab.js`、`node --check site3/shichusuimei/free/page.js`、`npm --prefix spikes/calculation-libraries run test:strength`、`git diff --check`。
+- 残留扫描结果：非归档页面只剩 `site3/form.jsx` 的内部兼容映射 `.replaceAll('藏干', '蔵干')`，不是用户可见残留。
+- 未完成/待确认：如需上线，需要另起发布步骤，更新 cache key / `latest.html`，归档上一版，并同步推送 `gh-pages`。
+
 ## 2026-05-29 Reset Handoff / 下一阶段需求备份
 
 - 已按 Wreal 要求整理重置对话用交接文档：`RESET_HANDOFF_2026-05-29.md`。

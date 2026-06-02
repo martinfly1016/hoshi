@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="ja">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>命式计算验收台</title>
+<title>命式計算検証台</title>
 <style>
   :root {
     color-scheme: light;
@@ -29,7 +29,7 @@
     margin: 0;
     background: #fff;
     color: var(--text);
-    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
   }
 
   main {
@@ -351,41 +351,41 @@
 <main>
   <header class="header">
     <div>
-      <h1>命式计算验收台</h1>
-      <p>内部测试工具：用于验证四柱计算、真太阳时、晚子时规则和时辰不详处理。此页不套用线上视觉规范。</p>
+      <h1>命式計算検証台</h1>
+      <p>内部テスト用：四柱計算、真太陽時、夜子時ルール、出生時刻不明の扱いを検証します。このページは本番のビジュアル規約を適用していません。</p>
     </div>
-    <nav class="links" aria-label="页面链接">
-      <a href="./calculator.html">用户工具</a>
-      <a href="./calculation-evaluation.html">评测记录</a>
-      <a href="https://github.com/martinfly1016/hoshi/blob/main/CALCULATION_SPEC.md">计算规格</a>
+    <nav class="links" aria-label="ページリンク">
+      <a href="./calculator.html">ユーザー向けツール</a>
+      <a href="./calculation-evaluation.html">評価記録</a>
+      <a href="https://github.com/martinfly1016/hoshi/blob/main/CALCULATION_SPEC.md">計算仕様</a>
     </nav>
   </header>
 
   <section class="workspace">
     <aside class="panel">
       <div class="panel-body">
-        <h2>输入</h2>
+        <h2>入力</h2>
         <div class="form-grid">
           <div>
-            <label for="fixture">样例</label>
+            <label for="fixture">サンプル</label>
             <select id="fixture"></select>
           </div>
 
           <div>
-            <label for="birth-date">出生日期</label>
+            <label for="birth-date">生年月日</label>
             <input id="birth-date" type="date" />
           </div>
 
           <div class="row">
             <div>
-              <label for="birth-time">出生时间</label>
+              <label for="birth-time">出生時間</label>
               <input id="birth-time" type="time" step="60" />
             </div>
             <div>
               <label>&nbsp;</label>
               <div class="check-row">
                 <input id="time-known" type="checkbox" />
-                <label for="time-known">出生时间已知</label>
+                <label for="time-known">出生時間がわかる</label>
               </div>
             </div>
           </div>
@@ -396,23 +396,23 @@
           </div>
 
           <div>
-            <label for="time-mode">时间计算模式</label>
+            <label for="time-mode">時間計算モード</label>
             <select id="time-mode">
-              <option value="standard_time">标准时间：按输入时间直接计算</option>
-              <option value="true_solar_time">真太阳时：按出生地经纬度换算</option>
+              <option value="standard_time">標準時間：入力時刻でそのまま計算</option>
+              <option value="true_solar_time">真太陽時：出生地の経緯度で換算</option>
             </select>
           </div>
 
           <div>
-            <label for="late-zi-mode">23:00 子时规则</label>
+            <label for="late-zi-mode">23:00 子時ルール</label>
             <select id="late-zi-mode">
-              <option value="same_day">产品默认：晚子时不换日</option>
-              <option value="next_day">专家选项：23:00 子初换日</option>
+              <option value="same_day">プロダクト既定：夜子時は当日扱い</option>
+              <option value="next_day">専門設定：23:00 子初で翌日扱い</option>
             </select>
           </div>
 
-          <button id="calculate" type="button">重新计算</button>
-          <div id="calculation-status" class="calc-status" aria-live="polite">等待计算</div>
+          <button id="calculate" type="button">再計算</button>
+          <div id="calculation-status" class="calc-status" aria-live="polite">計算待ち</div>
         </div>
       </div>
     </aside>
@@ -425,12 +425,12 @@
   <section class="fixtures">
     <div class="fixtures-head">
       <div>
-        <h2>固定回归测试集</h2>
-        <p>这里验证的是已冻结样例，不随上方表单输入变化。它的状态只有在重新运行测试、修改算法或修改样例后才会变化。</p>
+        <h2>固定回帰テストセット</h2>
+        <p>ここでは固定済みサンプルを検証します。上のフォーム入力には連動せず、再実行、アルゴリズム変更、またはサンプル変更時だけ状態が変わります。</p>
       </div>
       <div class="fixtures-actions">
-        <button id="run-fixtures" class="secondary-button" type="button">重新运行回归测试</button>
-        <div id="fixture-run-status" class="fixture-run-status" aria-live="polite">等待运行</div>
+        <button id="run-fixtures" class="secondary-button" type="button">回帰テストを再実行</button>
+        <div id="fixture-run-status" class="fixture-run-status" aria-live="polite">実行待ち</div>
       </div>
     </div>
     <div id="fixtures" class="table-scroll"></div>

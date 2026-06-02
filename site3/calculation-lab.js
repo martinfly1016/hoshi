@@ -43,14 +43,14 @@ const PILLAR_LABELS = {
   year: "年柱",
   month: "月柱",
   day: "日柱",
-  hour: "时柱",
+  hour: "時柱",
 };
 
 const WARNING_LABELS = {
-  BIRTH_TIME_DEFAULTED_TO_NOON: "出生时间不详，时柱按 12:00 午时假设计算。",
-  TRUE_SOLAR_TIME_APPLIED: "已按出生地经纬度换算真太阳时。",
-  TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: "真太阳时模式需要城市级出生地经纬度。",
-  LATE_ZI_HOUR_MODE_USER_SELECTABLE: "23:00-23:59 存在晚子时/子初换日流派差异。",
+  BIRTH_TIME_DEFAULTED_TO_NOON: "出生時間が不明のため、時柱は 12:00 午時として仮計算しています。",
+  TRUE_SOLAR_TIME_APPLIED: "出生地の経緯度にもとづき真太陽時へ換算しました。",
+  TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: "真太陽時モードには市区町村レベルの出生地経緯度が必要です。",
+  LATE_ZI_HOUR_MODE_USER_SELECTABLE: "23:00-23:59 は夜子時／子初換日で流派差があります。",
 };
 
 const LOCATIONS = [
@@ -451,8 +451,8 @@ const LOCATIONS = [
 const FIXTURES = [
   {
     id: "F001",
-    title: "普通日期",
-    note: "基础四柱样例，三库与外部截图一致。",
+    title: "通常日付",
+    note: "基本四柱サンプル。三つのライブラリと外部スクリーンショットが一致。",
     input: {
       date: "1990-06-15",
       timeKnown: true,
@@ -464,7 +464,7 @@ const FIXTURES = [
     expected: {
       pillars: "庚午 / 壬午 / 辛亥 / 癸巳",
       strengthStatus: "身弱",
-      source: "tyme4ts / lunar 系列 / 测测截图",
+      source: "tyme4ts / lunar 系列 / 測測スクリーンショット",
     },
   },
   {
@@ -482,7 +482,7 @@ const FIXTURES = [
     expected: {
       pillars: "癸卯 / 乙丑 / 戊戌 / 庚申",
       strengthStatus: "身弱",
-      source: "tyme4ts / lunar 系列 / 测测截图",
+      source: "tyme4ts / lunar 系列 / 測測スクリーンショット",
     },
   },
   {
@@ -500,7 +500,7 @@ const FIXTURES = [
     expected: {
       pillars: "甲辰 / 丙寅 / 戊戌 / 庚申",
       strengthStatus: "中和",
-      source: "tyme4ts / lunar 系列 / 测测截图",
+      source: "tyme4ts / lunar 系列 / 測測スクリーンショット",
     },
   },
   {
@@ -518,13 +518,13 @@ const FIXTURES = [
     expected: {
       pillars: "戊辰 / 甲寅 / 庚子 / 丁亥",
       strengthStatus: "身弱",
-      source: "tyme4ts / lunar 系列 / 测测截图",
+      source: "tyme4ts / lunar 系列 / 測測スクリーンショット",
     },
   },
   {
     id: "F003B-SAME",
-    title: "子时后 / 产品默认",
-    note: "23:30，默认晚子时不换日。",
+    title: "子時後 / プロダクト既定",
+    note: "23:30。既定では夜子時を当日扱いにします。",
     input: {
       date: "1988-02-15",
       timeKnown: true,
@@ -537,13 +537,13 @@ const FIXTURES = [
       pillars: "戊辰 / 甲寅 / 庚子 / 戊子",
       strengthStatus: "中和",
       warnings: ["LATE_ZI_HOUR_MODE_USER_SELECTABLE"],
-      source: "问真早晚子时开 / 产品默认规则",
+      source: "問真の早晩子時オン / プロダクト既定ルール",
     },
   },
   {
     id: "F003B-NEXT",
-    title: "子时后 / 专家选项",
-    note: "23:30，子初换日。",
+    title: "子時後 / 専門設定",
+    note: "23:30。子初で翌日扱いにします。",
     input: {
       date: "1988-02-15",
       timeKnown: true,
@@ -556,13 +556,13 @@ const FIXTURES = [
       pillars: "戊辰 / 甲寅 / 辛丑 / 戊子",
       strengthStatus: "中和",
       warnings: ["LATE_ZI_HOUR_MODE_USER_SELECTABLE"],
-      source: "问真早晚子时关 / 测测在真太阳时进入子时后的口径",
+      source: "問真の早晩子時オフ / 真太陽時で子時に入った後の比較口径",
     },
   },
   {
     id: "BZ-Z002",
     title: "北京真太阳时 23:00",
-    note: "测测要求地点；23:00 标准时间换算为约 22:31 真太阳时，不进入子时。",
+    note: "測測は地点指定が必要。23:00 標準時間は約 22:31 真太陽時となり、子時に入りません。",
     input: {
       date: "1988-02-15",
       timeKnown: true,
@@ -575,13 +575,13 @@ const FIXTURES = [
       pillars: "戊辰 / 甲寅 / 庚子 / 丁亥",
       strengthStatus: "身弱",
       trueSolarTime: "1988-02-15 22:31",
-      source: "八字测测专业版截图",
+      source: "八字測測プロ版スクリーンショット",
     },
   },
   {
     id: "BZ-Z003",
     title: "北京真太阳时 23:30",
-    note: "23:30 标准时间换算为约 23:01 真太阳时，测测显示子时换日。",
+    note: "23:30 標準時間は約 23:01 真太陽時となり、測測では子時換日として表示されます。",
     input: {
       date: "1988-02-15",
       timeKnown: true,
@@ -595,13 +595,13 @@ const FIXTURES = [
       strengthStatus: "中和",
       trueSolarTime: "1988-02-15 23:01",
       warnings: ["LATE_ZI_HOUR_MODE_USER_SELECTABLE"],
-      source: "八字测测专业版 F003B 截图",
+      source: "八字測測プロ版 F003B スクリーンショット",
     },
   },
   {
     id: "F005",
     title: "时辰不详",
-    note: "业务层默认 12:00 午时，时柱必须降级标记。",
+    note: "業務ルールでは 12:00 午時を既定値とし、時柱には降級マークが必要です。",
     input: {
       date: "1990-06-15",
       timeKnown: false,
@@ -614,7 +614,7 @@ const FIXTURES = [
       pillars: "庚午 / 壬午 / 辛亥 / 甲午",
       strengthStatus: "身弱",
       warnings: ["BIRTH_TIME_DEFAULTED_TO_NOON"],
-      source: "业务规则：时辰不详默认午时",
+      source: "業務ルール：出生時刻不明時は午時を既定値にする",
     },
   },
 ];
@@ -1453,16 +1453,16 @@ function analyzePattern(dayStem, monthBranch, revealedStems) {
   const isRevealed = revealedStems.includes(mainStem);
   
   const DESCS = {
-    '正官': '正官格：品格と規律を重んじ、社会的な信頼を得て発展する王道の格局です。',
-    '七殺': '七殺格：困難を突破する力と果敢な決断力を持ち、カリスマ性を発揮する格局です。',
-    '正財': '正財格：着実な努力と誠実な管理能力で、安定した富と地位を築く格局です。',
-    '偏財': '偏財格：機転が利き、変化する流れやチャンスを捉えて大きく飛躍する格局です。',
-    '食神': '食神格：衣食住や感性に恵まれ、ゆとりある表現や才能で人を惹きつける格局です。',
-    '傷官': '傷官格：卓越した知性と美意識を持ち、既存の枠を超えた創造性を発揮する格局です。',
-    '正印': '正印格：学習能力と慈愛に溢れ、知識や名誉を通じて周囲に守られ発展する格局です。',
-    '偏印': '偏印格：鋭い直感と独自の視点を持ち、専門的な技術や神秘的な分野で輝く格局です。',
-    '建禄': '建禄格：自立心が非常に強く、自らの実力で道を切り拓くバイタリティ溢れる格局です。',
-    '月刃': '月刃格：不屈の精神と強い意志を持ち、逆境であればあるほど力を発揮する格局です。'
+    '正官': '正官格：品格と規律を重んじ、社会的な信頼を得て発展する王道の命式の型です。',
+    '七殺': '七殺格：困難を突破する力と果敢な決断力を持ち、カリスマ性を発揮する命式の型です。',
+    '正財': '正財格：着実な努力と誠実な管理能力で、安定した富と地位を築く命式の型です。',
+    '偏財': '偏財格：機転が利き、変化する流れやチャンスを捉えて大きく飛躍する命式の型です。',
+    '食神': '食神格：衣食住や感性に恵まれ、ゆとりある表現や才能で人を惹きつける命式の型です。',
+    '傷官': '傷官格：卓越した知性と美意識を持ち、既存の枠を超えた創造性を発揮する命式の型です。',
+    '正印': '正印格：学習能力と慈愛に溢れ、知識や名誉を通じて周囲に守られ発展する命式の型です。',
+    '偏印': '偏印格：鋭い直感と独自の視点を持ち、専門的な技術や神秘的な分野で輝く命式の型です。',
+    '建禄': '建禄格：自立心が非常に強く、自らの実力で道を切り拓くバイタリティ溢れる命式の型です。',
+    '月刃': '月刃格：不屈の精神と強い意志を持ち、逆境であればあるほど力を発揮する命式の型です。'
   };
 
   let finalName = god === '比肩' ? '建禄' : (god === '劫財' ? '月刃' : god);
@@ -1718,9 +1718,9 @@ function renderPillarTable(result) {
           <th>天干</th>
           <th>地支</th>
           <th>五行</th>
-          <th>藏干</th>
-          <th>十神</th>
-          <th>可信度</th>
+          <th>蔵干</th>
+          <th>通変星</th>
+          <th>信頼度</th>
         </tr>
       </thead>
       <tbody>
@@ -1746,7 +1746,7 @@ function renderPillarTable(result) {
 
 function formatMinutes(value) {
   const sign = value > 0 ? "+" : "";
-  return `${sign}${value.toFixed(1)} 分钟`;
+  return `${sign}${value.toFixed(1)} 分`;
 }
 
 function renderMetaTable(result) {
@@ -1754,12 +1754,12 @@ function renderMetaTable(result) {
   return `
     <table>
       <tbody>
-        <tr><th>原始输入时间</th><td>${meta.inputDateTime}（${meta.timezone}）</td></tr>
-        <tr><th>有效计算时间</th><td>${meta.effectiveBirthDateTime}</td></tr>
-        <tr><th>地点</th><td>${meta.location.label}</td></tr>
-        <tr><th>计算模式</th><td>${meta.timeCalculationMode === "true_solar_time" ? "真太阳时" : "标准时间"}</td></tr>
-        <tr><th>子时规则</th><td>${meta.lateZiHourMode === "same_day" ? "晚子时不换日（产品默认）" : "23:00 子初换日（专家选项）"}</td></tr>
-        <tr><th>真太阳时偏移</th><td>${meta.trueSolarTime === "applied" ? `${formatMinutes(meta.trueSolar.offsetMinutes)}（经度 ${formatMinutes(meta.trueSolar.longitudeCorrection)}；均时差 ${formatMinutes(meta.trueSolar.equationOfTime)}）` : "未应用"}</td></tr>
+        <tr><th>入力時刻</th><td>${meta.inputDateTime}（${meta.timezone}）</td></tr>
+        <tr><th>有効計算時刻</th><td>${meta.effectiveBirthDateTime}</td></tr>
+        <tr><th>出生地</th><td>${meta.location.label}</td></tr>
+        <tr><th>計算モード</th><td>${meta.timeCalculationMode === "true_solar_time" ? "真太陽時" : "標準時間"}</td></tr>
+        <tr><th>子時ルール</th><td>${meta.lateZiHourMode === "same_day" ? "夜子時は当日扱い（プロダクト既定）" : "23:00 子初で翌日扱い（専門設定）"}</td></tr>
+        <tr><th>真太陽時の補正</th><td>${meta.trueSolarTime === "applied" ? `${formatMinutes(meta.trueSolar.offsetMinutes)}（経度 ${formatMinutes(meta.trueSolar.longitudeCorrection)}；均時差 ${formatMinutes(meta.trueSolar.equationOfTime)}）` : "未適用"}</td></tr>
         <tr><th>提示</th><td>${renderWarningList(meta.warnings)}</td></tr>
       </tbody>
     </table>
@@ -1772,15 +1772,15 @@ function renderResult(result, fixture) {
   element("result").innerHTML = `
     <div class="result-head">
       <div>
-        <h2>计算结果</h2>
+        <h2>計算結果</h2>
         <p>${escapeHtml(result.pillarLine)}</p>
       </div>
-      ${match === null ? "" : `<span class="status ${match ? "pass" : "fail"}">${match ? "与样例一致" : "与样例不一致"}</span>`}
+      ${match === null ? "" : `<span class="status ${match ? "pass" : "fail"}">${match ? "サンプルと一致" : "サンプルと不一致"}</span>`}
     </div>
     ${renderPillarTable(result)}
-    <h3>计算元信息</h3>
+    <h3>計算メタ情報</h3>
     ${renderMetaTable(result)}
-    <h3>结构化 JSON</h3>
+    <h3>構造化 JSON</h3>
     <pre>${escapeHtml(JSON.stringify(result, null, 2))}</pre>
   `;
 }
@@ -1789,8 +1789,8 @@ function renderError(error) {
   const code = error.message || "UNKNOWN_ERROR";
   element("result").innerHTML = `
     <div class="error">
-      <strong>计算失败：${escapeHtml(code)}</strong>
-      <p>${escapeHtml(WARNING_LABELS[code] || "请检查日期、时间、地点和计算模式。")}</p>
+      <strong>計算失敗：${escapeHtml(code)}</strong>
+      <p>${escapeHtml(WARNING_LABELS[code] || "日付、時刻、出生地、計算モードを確認してください。")}</p>
     </div>
   `;
 }
@@ -1821,10 +1821,10 @@ function calculateCurrent() {
   try {
     const result = calculateShichusuimei(readFormInput());
     renderResult(result, fixture);
-    renderCalculationStatus(`已重新计算 ${currentClockTime()}`);
+    renderCalculationStatus(`再計算済み ${currentClockTime()}`);
   } catch (error) {
     renderError(error);
-    renderCalculationStatus(`计算失败 ${currentClockTime()}`, "fail");
+    renderCalculationStatus(`計算失敗 ${currentClockTime()}`, "fail");
   }
 }
 
@@ -1888,15 +1888,15 @@ function renderFixtureTable() {
       <thead>
         <tr>
           <th>ID</th>
-          <th>样例</th>
+          <th>サンプル</th>
           <th>目的</th>
-          <th>期望四柱</th>
-          <th>实际四柱</th>
+          <th>期待四柱</th>
+          <th>実際の四柱</th>
           <th>期望身強弱</th>
-          <th>实际身強弱</th>
-          <th>有效时间</th>
-          <th>来源</th>
-          <th>状态</th>
+          <th>実際の身強弱</th>
+          <th>有効時刻</th>
+          <th>ソース</th>
+          <th>状態</th>
         </tr>
       </thead>
       <tbody>${rows}</tbody>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>四柱命式计算工具</title>
+<title>四柱命式計算ツール</title>
 <style>
   * {
     box-sizing: border-box;
@@ -207,18 +207,18 @@
 </head>
 <body>
 <main>
-  <h1>四柱命式计算工具</h1>
-  <p>基于已固定的 tyme4ts 计算库。当前页面只做基础命式计算，不包含解释文案和视觉设计。</p>
+  <h1>四柱命式計算ツール</h1>
+  <p>固定済みの tyme4ts 計算ライブラリを使う内部確認用ページです。基礎命式の計算だけを扱い、解説文や本番ビジュアルは含みません。</p>
 
   <form id="birth-form">
     <div class="grid">
       <div>
-        <label for="birth-date">出生日期</label>
+        <label for="birth-date">生年月日</label>
         <input id="birth-date" type="date" required value="1990-06-15" />
       </div>
 
       <div>
-        <label for="birth-time">出生时间</label>
+        <label for="birth-time">出生時間</label>
         <input id="birth-time" type="time" step="60" value="10:30" />
       </div>
 
@@ -226,7 +226,7 @@
         <label>&nbsp;</label>
         <div class="checkbox-row">
           <input id="time-known" type="checkbox" checked />
-          <label for="time-known">出生时间已知</label>
+          <label for="time-known">出生時間がわかる</label>
         </div>
       </div>
 
@@ -236,24 +236,24 @@
       </div>
 
       <div>
-        <label for="time-mode">时间计算模式</label>
+        <label for="time-mode">時間計算モード</label>
         <select id="time-mode">
-          <option value="standard_time">标准时间：按输入时间直接计算</option>
-          <option value="true_solar_time">真太阳时：按出生地经纬度换算</option>
+          <option value="standard_time">標準時間：入力時刻でそのまま計算</option>
+          <option value="true_solar_time">真太陽時：出生地の経緯度で換算</option>
         </select>
       </div>
 
       <div>
-        <label for="late-zi-mode">23:00 子时规则</label>
+        <label for="late-zi-mode">23:00 子時ルール</label>
         <select id="late-zi-mode">
-          <option value="same_day">产品默认：晚子时不换日</option>
-          <option value="next_day">专家选项：23:00 子初换日</option>
+          <option value="same_day">プロダクト既定：夜子時は当日扱い</option>
+          <option value="next_day">専門設定：23:00 子初で翌日扱い</option>
         </select>
       </div>
 
       <div class="full actions">
-        <button id="calculate" type="submit">计算命式</button>
-        <button id="copy-json" class="secondary" type="button">复制 JSON</button>
+        <button id="calculate" type="submit">命式を計算</button>
+        <button id="copy-json" class="secondary" type="button">JSON をコピー</button>
         <span id="status" class="status" aria-live="polite"></span>
       </div>
     </div>

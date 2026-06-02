@@ -1344,7 +1344,7 @@ function renderPatternStrengthSection(result) {
     <div class="soft-panel reading-panel pattern-strength-panel" id="anchor-pattern-strength">
       <div class="card-subhead">
         <div>
-          <p class="card-kicker">格局 / 身強身弱 / 用神</p>
+          <p class="card-kicker">命式の型 / 身強身弱 / 用神</p>
           <h3>命式タグの主要根拠</h3>
         </div>
         <span class="balance-badge">核心判定</span>
@@ -1352,7 +1352,7 @@ function renderPatternStrengthSection(result) {
       <p class="summary-text">ここでは、命式タグで表示した「命式の型」「身強身弱」「開運の手がかり」がどの判定から来ているかをまとめます。詳細文に入る前の判定根拠です。</p>
       <div class="tag-explain-grid">
         <article class="mini-reading-card">
-          <span class="metric-label">格局タグ</span>
+          <span class="metric-label">命式の型タグ</span>
           <strong class="metric-value">${escapeHtml(result.pattern?.name || "—")}</strong>
           <p>${escapeHtml(result.pattern?.text || "月令と天干の出方から命式の大枠を読みます。")}</p>
           <span class="tag-evidence">${escapeHtml(result.pattern?.revealed ? "天干に透出あり" : "月令中心の判定")}</span>

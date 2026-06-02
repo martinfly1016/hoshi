@@ -5,14 +5,14 @@ const PILLAR_LABELS = {
   year: "年柱",
   month: "月柱",
   day: "日柱",
-  hour: "时柱",
+  hour: "時柱",
 };
 
 const WARNING_LABELS = {
-  BIRTH_TIME_DEFAULTED_TO_NOON: "出生时间不详，时柱按 12:00 午时假设计算。",
-  TRUE_SOLAR_TIME_APPLIED: "已按出生地经纬度换算真太阳时。",
-  TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: "真太阳时模式需要城市级出生地经纬度。",
-  LATE_ZI_HOUR_MODE_USER_SELECTABLE: "23:00-23:59 存在晚子时/子初换日流派差异。",
+  BIRTH_TIME_DEFAULTED_TO_NOON: "出生時間が不明のため、時柱は 12:00 午時として仮計算しています。",
+  TRUE_SOLAR_TIME_APPLIED: "出生地の経緯度にもとづき真太陽時へ換算しました。",
+  TRUE_SOLAR_TIME_REQUIRES_BIRTHPLACE: "真太陽時モードには市区町村レベルの出生地経緯度が必要です。",
+  LATE_ZI_HOUR_MODE_USER_SELECTABLE: "23:00-23:59 は夜子時／子初換日で流派差があります。",
 };
 
 let lastResult = null;
@@ -55,7 +55,7 @@ function readInput() {
 
 function renderWarnings(warnings) {
   if (!warnings.length) {
-    return `<span class="muted">无</span>`;
+    return `<span class="muted">なし</span>`;
   }
 
   return warnings
@@ -73,15 +73,15 @@ function renderPillars(result) {
           <th>天干</th>
           <th>地支</th>
           <th>五行</th>
-          <th>藏干</th>
-          <th>十神</th>
-          <th>说明</th>
+          <th>蔵干</th>
+          <th>通変星</th>
+          <th>説明</th>
         </tr>
       </thead>
       <tbody>
         ${PILLAR_KEYS.map((key) => {
           const pillar = result.pillars[key];
-          const confidence = pillar.source === "default_noon" ? "12:00 午时假设值" : "按输入计算";
+          const confidence = pillar.source === "default_noon" ? "12:00 午時の仮計算" : "入力にもとづく計算";
           return `
             <tr>
               <td>${PILLAR_LABELS[key]}</td>
@@ -102,12 +102,12 @@ function renderPillars(result) {
 
 function formatTrueSolarMeta(meta) {
   if (meta.trueSolarTime !== "applied") {
-    return "未应用";
+    return "未適用";
   }
 
   const offset = meta.trueSolar.offsetMinutes;
   const sign = offset > 0 ? "+" : "";
-  return `${sign}${offset.toFixed(1)} 分钟`;
+  return `${sign}${offset.toFixed(1)} 分`;
 }
 
 function renderMeta(result) {
@@ -115,12 +115,12 @@ function renderMeta(result) {
   return `
     <table>
       <tbody>
-        <tr><th>原始输入时间</th><td>${escapeHtml(meta.inputDateTime)}（${escapeHtml(meta.timezone)}）</td></tr>
-        <tr><th>有效计算时间</th><td>${escapeHtml(meta.effectiveBirthDateTime)}</td></tr>
+        <tr><th>入力時刻</th><td>${escapeHtml(meta.inputDateTime)}（${escapeHtml(meta.timezone)}）</td></tr>
+        <tr><th>有効計算時刻</th><td>${escapeHtml(meta.effectiveBirthDateTime)}</td></tr>
         <tr><th>出生地</th><td>${escapeHtml(meta.location.label)}</td></tr>
-        <tr><th>时间模式</th><td>${meta.timeCalculationMode === "true_solar_time" ? "真太阳时" : "标准时间"}</td></tr>
-        <tr><th>真太阳时偏移</th><td>${escapeHtml(formatTrueSolarMeta(meta))}</td></tr>
-        <tr><th>子时规则</th><td>${meta.lateZiHourMode === "same_day" ? "晚子时不换日" : "23:00 子初换日"}</td></tr>
+        <tr><th>時間モード</th><td>${meta.timeCalculationMode === "true_solar_time" ? "真太陽時" : "標準時間"}</td></tr>
+        <tr><th>真太陽時の補正</th><td>${escapeHtml(formatTrueSolarMeta(meta))}</td></tr>
+        <tr><th>子時ルール</th><td>${meta.lateZiHourMode === "same_day" ? "夜子時は当日扱い" : "23:00 子初で翌日扱い"}</td></tr>
         <tr><th>提示</th><td>${renderWarnings(meta.warnings)}</td></tr>
       </tbody>
     </table>
@@ -132,23 +132,23 @@ function renderResult(result) {
     <div class="result-summary">
       <p>四柱</p>
       <div class="pillar-line">${escapeHtml(result.pillarLine)}</div>
-      <p>日主：${escapeHtml(result.dayMaster)}；计算库：${escapeHtml(result.engine)}</p>
+      <p>日主：${escapeHtml(result.dayMaster)}；計算ライブラリ：${escapeHtml(result.engine)}</p>
     </div>
 
     <h2>命式</h2>
     ${renderPillars(result)}
 
-    <h2>计算信息</h2>
+    <h2>計算情報</h2>
     ${renderMeta(result)}
   `;
 }
 
 function renderError(error) {
-  const message = error.message || "计算失败";
+  const message = error.message || "計算に失敗しました";
   element("result").innerHTML = `
     <div class="error">
       <strong>${escapeHtml(message)}</strong>
-      <p>${escapeHtml(WARNING_LABELS[message] || "请检查日期、时间、出生地和计算模式。")}</p>
+      <p>${escapeHtml(WARNING_LABELS[message] || "日付、時刻、出生地、計算モードを確認してください。")}</p>
     </div>
   `;
 }
@@ -158,26 +158,26 @@ function calculate() {
     const result = calculateShichusuimei(readInput());
     lastResult = result;
     renderResult(result);
-    setStatus(`已计算 ${currentClockTime()}`);
+    setStatus(`計算済み ${currentClockTime()}`);
   } catch (error) {
     lastResult = null;
     renderError(error);
-    setStatus(`计算失败 ${currentClockTime()}`);
+    setStatus(`計算失敗 ${currentClockTime()}`);
   }
 }
 
 async function copyJson() {
   if (!lastResult) {
-    setStatus("没有可复制的结果");
+    setStatus("コピーできる結果がありません");
     return;
   }
 
   const json = JSON.stringify(lastResult, null, 2);
   try {
     await navigator.clipboard.writeText(json);
-    setStatus(`已复制 JSON ${currentClockTime()}`);
+    setStatus(`JSON をコピーしました ${currentClockTime()}`);
   } catch {
-    setStatus("复制失败，请手动复制页面结果");
+    setStatus("コピーに失敗しました。ページ上の結果を手動でコピーしてください");
   }
 }
 

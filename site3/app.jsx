@@ -1,9 +1,9 @@
 /* App root — routing + theme + tweaks */
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "theme": "tsukiyo",
+  "theme": "kamishiro",
   "type": "mincho",
-  "motion": "full",
+  "motion": "soft",
   "hero": "centered"
 }/*EDITMODE-END*/;
 
@@ -58,8 +58,7 @@ function App() {
     try {
       const saved = localStorage.getItem('hoshi-user-theme');
       if (saved) return saved;
-      const isLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      return isLight ? 'kamishiro' : 'tsukiyo';
+      return 'kamishiro';
     } catch (e) {
       return tweaks.theme;
     }

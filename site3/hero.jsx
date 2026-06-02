@@ -4,15 +4,15 @@ function Hero({ onEnter }) {
   return (
     <section className="hero" data-screen-label="01 トップ">
       <div className="hero-poem">
-        <div className="line">陰陽五行の運び、命式に映る</div>
-        <div className="line">天に十干、地に十二支あり</div>
+        <div className="line">生年月日・出生時刻・出生地から、命式をすばやく作成</div>
+        <div className="line dim">四柱推命 / 五行バランス / 大運・流年</div>
       </div>
 
       <div className="hero-title-block">
         <div className="hero-meta">
-          <span className="index">壹 / 始</span>
+          <span className="index">FREE TOOL</span>
           <span className="div"></span>
-          <span>SHO·SHŌ</span>
+          <span>SHICHI SUIMEI</span>
         </div>
 
         <h1 className="hero-title">
@@ -28,7 +28,7 @@ function Hero({ onEnter }) {
         </button>
 
         <div className="hero-lead">
-          生年月日・出生時刻・出生地から、命式をひらきます。
+          入力はこの端末上で計算します。保存やログインなしで、命式・五行・運勢の流れを確認できます。
         </div>
       </div>
 

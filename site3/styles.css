@@ -4744,3 +4744,326 @@ select:focus-visible {
     padding: 16px;
   }
 }
+
+/* ============================================================
+   Structure + readability layer
+   ============================================================ */
+
+.topic-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  font-family: var(--f-display);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.topic-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.topic-copy .num {
+  color: var(--ink-3);
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+}
+
+.topic-copy span:last-child {
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rite-side .side-topic.is-active .topic-icon,
+.rite-side .side-topic:hover .topic-icon,
+.rite-side .side-topic:focus-visible .topic-icon {
+  background: var(--accent);
+  color: #fff;
+}
+
+.page-context-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.page-context-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.page-context-bar small,
+.page-context-bar strong {
+  display: block;
+}
+
+.page-context-bar small {
+  color: var(--ink-3);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+.page-context-bar strong {
+  margin-top: 2px;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.reading-point-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.reading-point-card {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  padding: 14px;
+}
+
+.reading-point-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--surface-solid);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.reading-point-card strong {
+  display: block;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.reading-point-card p {
+  display: -webkit-box;
+  margin: 5px 0 0;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.65;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.insight-main-copy p {
+  max-width: 68ch;
+}
+
+.pillar-position-list article {
+  position: relative;
+  overflow: hidden;
+}
+
+.pillar-position-list article::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.pillar-position-list article small {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.pillar-position-list article strong {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.pillar-position-list article p {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.pillar-position-list .pillar-specific-copy {
+  border-top: 0;
+  border-left: 1px solid var(--rule);
+  margin-top: 0;
+  padding: 0 0 0 14px;
+  color: var(--ink-2);
+}
+
+@media (max-width: 860px) {
+  .rite-side {
+    position: sticky;
+    top: 88px;
+    z-index: 12;
+    margin: -2px -2px 12px;
+    padding: 10px;
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    backdrop-filter: saturate(180%) blur(18px);
+  }
+
+  .rite-side .kanji,
+  .rite-side .label {
+    display: none;
+  }
+
+  .rite-side .seal-stack {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .rite-side .seal-stack::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rite-side .seal-stack .side-topic {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 86px;
+    min-height: 44px;
+    grid-template-columns: 28px minmax(0, 1fr);
+    justify-items: stretch;
+    text-align: left;
+    padding: 7px 9px;
+  }
+
+  .rite-side .side-topic span:last-child {
+    white-space: nowrap;
+  }
+
+  .rite-side .seal-stack .side-back {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 44px;
+    margin-top: 0;
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+    padding: 0 0 0 12px;
+    white-space: nowrap;
+  }
+
+  .page-context-bar {
+    margin: 0 0 12px;
+  }
+
+  .reading-point-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-point-card p {
+    -webkit-line-clamp: 3;
+  }
+
+  .pillar-position-list article {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 8px 12px;
+  }
+
+  .pillar-position-list article small,
+  .pillar-position-list article strong {
+    grid-column: 1;
+  }
+
+  .pillar-position-list article p,
+  .pillar-position-list article em,
+  .pillar-position-list article b {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .rite-side {
+    top: 88px;
+    margin-left: -14px;
+    margin-right: -14px;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  .rite-side .seal-stack {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    grid-template-columns: none;
+  }
+
+  .rite-side .seal-stack .side-topic {
+    min-width: 78px;
+    max-width: 132px;
+  }
+
+  .topic-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .topic-copy .num {
+    display: none;
+  }
+
+  .topic-copy span:last-child {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .reading-point-card {
+    grid-template-columns: 30px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .pillar-position-list article {
+    grid-template-columns: 1fr;
+  }
+
+  .pillar-position-list article small,
+  .pillar-position-list article strong,
+  .pillar-position-list article p,
+  .pillar-position-list article em,
+  .pillar-position-list article b {
+    grid-column: 1;
+  }
+
+  .pillar-position-list .pillar-specific-copy {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: 12px 0 0;
+  }
+}

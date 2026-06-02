@@ -20,6 +20,60 @@ const REGION_OPTIONS = [
   { key: 'world', label: 'その他海外' },
 ];
 
+const RITE_NAV_ITEMS = [
+  { key: 'profile', num: '壹', icon: '人', label: 'お名前と性別' },
+  { key: 'birthday', num: '貳', icon: '日', label: '生年月日' },
+  { key: 'birthtime', num: '參', icon: '時', label: '出生時間' },
+  { key: 'birthplace', num: '肆', icon: '地', label: '出生地' },
+];
+
+const RESULT_NAV_ITEMS = [
+  { id: 's0', num: '壹', icon: '基', label: '基本情報' },
+  { id: 's1', num: '貳', icon: '盤', label: '四柱命式' },
+  { id: 's2', num: '參', icon: '要', label: '要点解読' },
+  { id: 's3', num: '肆', icon: '詳', label: '詳しい解説' },
+];
+
+const FORTUNE_NAV_ITEMS = [
+  { id: 'f0', num: '壹', icon: '図', label: '十年運マップ' },
+  { id: 'f1', num: '貳', icon: '今', label: '現在の大運' },
+  { id: 'f2', num: '參', icon: '巡', label: '近い流年' },
+  { id: 'f3', num: '肆', icon: '表', label: '明細表' },
+];
+
+function TopicButton({ num, icon, label, active, onClick }) {
+  return (
+    <button type="button" className={`side-topic ${active ? 'is-active' : ''}`} onClick={onClick}>
+      <span className="topic-icon" aria-hidden="true">{icon || num}</span>
+      <span className="topic-copy">
+        <span className="num">{num}</span>
+        <span>{label}</span>
+      </span>
+    </button>
+  );
+}
+
+function ReadingPointCards({ topic, content }) {
+  const items = [
+    { icon: '要', label: '要点', text: content.intro },
+    { icon: '読', label: '読み方', text: content.p1 },
+    { icon: '注', label: '注意', text: content.note },
+  ];
+  return (
+    <div className="reading-point-grid" aria-label={`${topic}の要点`}>
+      {items.map((item) => (
+        <article key={item.label} className="reading-point-card">
+          <span className="reading-point-icon" aria-hidden="true">{item.icon}</span>
+          <div>
+            <strong>{item.label}</strong>
+            <p>{item.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 const WORLD_LOCATIONS = [
   { id: 'cn-beijing', country: 'cn', label: '中国 / 北京市', city: '北京市', region: '北京市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.9042, longitude: 116.4074, keywords: '北京 beijing' },
   { id: 'cn-shanghai', country: 'cn', label: '中国 / 上海市', city: '上海市', region: '上海市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 31.2304, longitude: 121.4737, keywords: '上海 shanghai' },
@@ -300,10 +354,9 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <div className="kanji">命式作成</div>
         <div className="label">MEISHIKI CREATION</div>
         <div className="seal-stack">
-          <button type="button" className="side-topic" onClick={() => jumpToStep('profile')}><span className="num">壹</span><span>お名前と性別</span></button>
-          <button type="button" className="side-topic" onClick={() => jumpToStep('birthday')}><span className="num">貳</span><span>生年月日</span></button>
-          <button type="button" className="side-topic" onClick={() => jumpToStep('birthtime')}><span className="num">參</span><span>出生時間</span></button>
-          <button type="button" className="side-topic" onClick={() => jumpToStep('birthplace')}><span className="num">肆</span><span>出生地</span></button>
+          {RITE_NAV_ITEMS.map((item) => (
+            <TopicButton key={item.key} {...item} onClick={() => jumpToStep(item.key)} />
+          ))}
         </div>
       </aside>
 
@@ -1725,8 +1778,8 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
         <div className="seal-stack">
-          {['基本情報','四柱命式','要点解読','詳しい解説'].map((n, i) => (
-            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span><span>{n}</span></button>
+          {RESULT_NAV_ITEMS.map((item) => (
+            <TopicButton key={item.id} {...item} onClick={() => scrollTo(item.id)} />
           ))}
           <button type="button" className="side-back" onClick={onBack}>← 入力へ戻る</button>
         </div>
@@ -1736,7 +1789,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <button className="inline-return-btn edit" onClick={onBack}>入力内容を修正する</button>
         </div>
         <div className="result-card" data-card-label="命式の確認" style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
+          <div id="s0" className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>まずは命盤そのものを素早く確認できます。詳しい読み解きは「命式詳細」と「大運・流年」に分けています。</p>
@@ -1911,27 +1964,26 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
             className="side-topic"
             onClick={() => scrollTo('insight-structure-board')}
           >
-            <span className="num">零</span>
-            <span>命式構造表</span>
+            <span className="topic-icon" aria-hidden="true">盤</span>
+            <span className="topic-copy"><span className="num">零</span><span>命式構造表</span></span>
           </button>
           <button
             type="button"
             className="side-topic"
             onClick={() => scrollTo('insight-pillars-meaning')}
           >
-            <span className="num">壹</span>
-            <span>四柱の意味</span>
+            <span className="topic-icon" aria-hidden="true">柱</span>
+            <span className="topic-copy"><span className="num">壹</span><span>四柱の意味</span></span>
           </button>
           {TOPICS.map((t, i) => (
-            <button
+            <TopicButton
               key={t.key}
-              type="button"
-              className={`side-topic ${topic === t.key ? 'is-active' : ''}`}
+              num={topicNums[i] || i + 1}
+              icon={t.icon}
+              label={t.ja}
+              active={topic === t.key}
               onClick={() => setTopic(t.key)}
-            >
-              <span className="num">{topicNums[i] || i + 1}</span>
-              <span>{t.ja}</span>
-            </button>
+            />
           ))}
           <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
@@ -1940,6 +1992,13 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
         <div className="return-action-row">
           <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
+        </div>
+        <div className="page-context-bar">
+          <span className="page-context-icon" aria-hidden="true">{currentTopic.icon}</span>
+          <div>
+            <small>現在位置 / 命式詳細</small>
+            <strong>{currentTopic.ja}</strong>
+          </div>
         </div>
         <div className="result-card" data-card-label="命式詳細" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div id="insight-structure-board" className="insight-structure-board">
@@ -1962,6 +2021,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
                 </button>
               ))}
             </div>
+            <ReadingPointCards topic={currentTopic.ja} content={content} />
             <div className="insight-reader-body">
               <article className="insight-main-copy">
                 <p>{content.p1}</p>
@@ -2009,8 +2069,8 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side">
         <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
-          {['十年運マップ','現在の大運','近い流年','明細表'].map((n, i) => (
-            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span><span>{n}</span></button>
+          {FORTUNE_NAV_ITEMS.map((item) => (
+            <TopicButton key={item.id} {...item} onClick={() => scrollTo(item.id)} />
           ))}
           <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>

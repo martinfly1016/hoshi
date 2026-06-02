@@ -957,7 +957,7 @@ function buildUserReadingTags(calc, tenGods) {
       kind: 'pattern',
       label: '命式の型と特質',
       value: `${patternName} / ${strengthStatus}`,
-      detail: `人生全体の命式の型は「${patternName}」を中心に見ます。身強弱は ${strengthStatus}。${displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。')} ${calc.strength?.text || '日主の勢いも合わせて、どんな環境で力を出しやすいかを読みます。'}`,
+      detail: `人生全体の格局は「${patternName}」を中心に見ます。身強弱は ${strengthStatus}。${displayPatternText(calc.pattern, '月令と天干から命式の大枠を見ます。')} ${calc.strength?.text || '日主の勢いも合わせて、どんな環境で力を出しやすいかを読みます。'}`,
       evidence: `月令・天干 / 日主 ${calc.dayMaster} / 月支 ${calc.pillars.month.branch}`,
       action: 'insight',
       target: { page: 'insight', topic: 'pattern', anchor: 'insight-topic-main' },
@@ -1828,7 +1828,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
         p1: `この命盤の型は「${patternName}」、身強弱は ${strengthStatus} です。${displayPatternText(calculation.pattern, '月令と天干から命式の大枠を見ます。')}`,
         p2: calculation.strength?.text || '日主の勢いと五行の支えから、どんな環境で力を出しやすいかを読みます。',
         source: `月支 ${calculation.pillars.month.branch} / 月柱 ${calculation.pillars.month.text} / 身強弱 ${strengthStatus}`,
-        note: '命式の型は人生全体の構造を読むための整理です。吉凶を一語で決めるものではありません。',
+        note: '格局は人生全体の型を読むための整理です。吉凶を一語で決めるものではありません。',
       },
       element: {
         intro: `五行特質は、強く出る五行・補いたい五行・用神をまとめて見ます。`,

@@ -74,6 +74,62 @@ function ReadingPointCards({ topic, content }) {
   );
 }
 
+function DetailDisclosure({ title = '詳しい説明', children }) {
+  return (
+    <details className="read-more-panel">
+      <summary>
+        <span>{title}</span>
+        <em>開く</em>
+      </summary>
+      <div className="read-more-body">{children}</div>
+    </details>
+  );
+}
+
+const RELATION_VISUAL_LABELS = {
+  same: { label: '同じ五行', direction: 'same', text: '同じ性質が重なり、自分らしさや同じ目線が出やすい関係です。' },
+  supported: { label: '日支が日主を生む', direction: 'branch-to-stem', text: '親密関係や生活の場から、本人が支えられやすい関係です。' },
+  output: { label: '日主が日支を生む', direction: 'stem-to-branch', text: '本人が関係や生活の場へ力を注ぎやすい関係です。' },
+  wealth: { label: '日主が日支を制する', direction: 'stem-to-branch', text: '本人が関係や生活の場を管理し、責任を持ちやすい関係です。' },
+  pressure: { label: '日支が日主を制する', direction: 'branch-to-stem', text: '親密関係や生活の場から、本人に役割や緊張感が生まれやすい関係です。' },
+};
+
+function DayBranchRelationVisual({ calculation }) {
+  const day = calculation.pillars.day;
+  const stemElement = day.element?.stem || '五行';
+  const branchElement = day.element?.branch || '五行';
+  const relationKey = marriageElementRelationKey(stemElement, branchElement);
+  const visual = RELATION_VISUAL_LABELS[relationKey] || RELATION_VISUAL_LABELS.same;
+  const hiddenMain = day.hiddenStemDetails?.[0];
+  const arrow = visual.direction === 'branch-to-stem' ? '←' : visual.direction === 'same' ? '＝' : '→';
+  return (
+    <section className="day-relation-card" aria-label="日主と日支の関係">
+      <div className="relation-node">
+        <span>日主</span>
+        <strong className={elementClass(stemElement)}>{day.stem}</strong>
+        <small>{stemElement} / 本人像</small>
+      </div>
+      <div className="relation-flow">
+        <b>{arrow}</b>
+        <span>{visual.label}</span>
+      </div>
+      <div className="relation-node">
+        <span>日支</span>
+        <strong className={elementClass(branchElement)}>{day.branch}</strong>
+        <small>{branchElement} / 婚姻宮</small>
+      </div>
+      <p>{visual.text}</p>
+      {hiddenMain && (
+        <div className="relation-hidden">
+          <span>内側の気配</span>
+          <strong>{hiddenMain.stem}{hiddenMain.element}</strong>
+          <small>{displayTenGod(hiddenMain.tenGod)}</small>
+        </div>
+      )}
+    </section>
+  );
+}
+
 const WORLD_LOCATIONS = [
   { id: 'cn-beijing', country: 'cn', label: '中国 / 北京市', city: '北京市', region: '北京市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.9042, longitude: 116.4074, keywords: '北京 beijing' },
   { id: 'cn-shanghai', country: 'cn', label: '中国 / 上海市', city: '上海市', region: '上海市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 31.2304, longitude: 121.4737, keywords: '上海 shanghai' },
@@ -1513,7 +1569,10 @@ function PillarMeaningSection({ calculation, profile }) {
               <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
               <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
               <p>{guide.detail}</p>
-              <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation, profile)}</p>
+              {key === 'day' && <DayBranchRelationVisual calculation={calculation} />}
+              <DetailDisclosure title={`${PILLAR_LABELS[key]}の詳しい読み`}>
+                <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation, profile)}</p>
+              </DetailDisclosure>
               <em>見る対象: {guide.focus}</em>
               <em>関係: {guide.relation}</em>
               <em>時間帯: {guide.period}</em>
@@ -2024,8 +2083,11 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
             <ReadingPointCards topic={currentTopic.ja} content={content} />
             <div className="insight-reader-body">
               <article className="insight-main-copy">
-                <p>{content.p1}</p>
-                <p>{content.p2}</p>
+                {topic === 'core' || topic === 'marriage' ? <DayBranchRelationVisual calculation={calculation} /> : null}
+                <DetailDisclosure title="補足の読み解きを開く">
+                  <p>{content.p1}</p>
+                  <p>{content.p2}</p>
+                </DetailDisclosure>
               </article>
               <aside className="insight-evidence">
                 <strong>読み取り根拠</strong>

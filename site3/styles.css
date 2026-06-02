@@ -4885,6 +4885,151 @@ select:focus-visible {
   max-width: 68ch;
 }
 
+.read-more-panel {
+  margin-top: 12px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-solid);
+  overflow: hidden;
+}
+
+.read-more-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 800;
+  list-style: none;
+}
+
+.read-more-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.read-more-panel summary em {
+  color: var(--accent);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.read-more-panel[open] summary {
+  border-bottom: 1px solid var(--rule);
+}
+
+.read-more-panel[open] summary em {
+  visibility: hidden;
+  position: relative;
+}
+
+.read-more-panel[open] summary em::after {
+  content: '閉じる';
+  visibility: visible;
+  position: absolute;
+  right: 0;
+}
+
+.read-more-body {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.read-more-body p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.day-relation-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--rule));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface-solid));
+  padding: 14px;
+}
+
+.relation-node {
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-solid);
+  padding: 12px;
+  text-align: center;
+}
+
+.relation-node span,
+.relation-node small,
+.relation-hidden span,
+.relation-hidden small {
+  display: block;
+  color: var(--ink-3);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.relation-node strong {
+  display: block;
+  margin: 5px 0;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.relation-flow {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 70px;
+  color: var(--accent);
+}
+
+.relation-flow b {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.relation-flow span {
+  max-width: 86px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.day-relation-card > p {
+  grid-column: 1 / -1;
+  margin: 0;
+  border-top: 1px solid var(--rule);
+  padding-top: 12px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.relation-hidden {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 7px;
+  background: var(--surface-solid);
+  padding: 9px 10px;
+}
+
+.relation-hidden strong {
+  color: var(--ink);
+}
+
 .pillar-position-list article {
   position: relative;
   overflow: hidden;
@@ -4915,9 +5060,9 @@ select:focus-visible {
 
 .pillar-position-list .pillar-specific-copy {
   border-top: 0;
-  border-left: 1px solid var(--rule);
+  border-left: 0;
   margin-top: 0;
-  padding: 0 0 0 14px;
+  padding: 0;
   color: var(--ink-2);
 }
 
@@ -5047,6 +5192,50 @@ select:focus-visible {
   .reading-point-card {
     grid-template-columns: 30px minmax(0, 1fr);
     padding: 12px;
+  }
+
+  .day-relation-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .relation-flow {
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: start;
+    min-width: 0;
+    border-radius: 7px;
+    background: var(--surface-solid);
+    padding: 8px 10px;
+  }
+
+  .relation-flow span {
+    max-width: none;
+    text-align: left;
+  }
+
+  .relation-node {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px 10px;
+    text-align: left;
+  }
+
+  .relation-node span {
+    grid-column: 2;
+  }
+
+  .relation-node strong {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    margin: 0;
+    font-size: 30px;
+    text-align: center;
+  }
+
+  .relation-node small {
+    grid-column: 2;
   }
 
   .pillar-position-list article {

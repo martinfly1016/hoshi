@@ -8722,7 +8722,7 @@ select {
     margin: 0 !important;
     padding: 10px 0 12px !important;
     border-radius: 0 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     display: grid !important;
     gap: 10px !important;
     border-bottom: 1px solid color-mix(in srgb, var(--ink-3) 13%, transparent) !important;
@@ -8767,6 +8767,10 @@ select {
     width: 100% !important;
     overflow: visible !important;
     padding: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   .result-rite .rite-side .side-topic {
@@ -8782,21 +8786,26 @@ select {
     text-align: left !important;
     white-space: normal !important;
     gap: 6px !important;
+    overflow: hidden !important;
   }
 
   .result-rite .rite-side {
     border: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--ink-3) 13%, transparent) !important;
-    background: color-mix(in srgb, var(--page) 86%, #fff) !important;
+    background: var(--bg) !important;
     box-shadow: none !important;
-    -webkit-backdrop-filter: blur(14px) !important;
-    backdrop-filter: blur(14px) !important;
+    filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   .result-rite .rite-side .side-topic {
     border: 1px solid color-mix(in srgb, var(--ink-3) 10%, transparent) !important;
     background: color-mix(in srgb, var(--ink-3) 5%, #fff) !important;
     box-shadow: none !important;
+    filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
     color: var(--ink-2) !important;
   }
 
@@ -8845,6 +8854,10 @@ select {
     border-radius: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
+  }
+
+  .result-rite .result-main {
+    padding-top: 28px !important;
   }
 
   .result-rite .result-card {

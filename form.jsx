@@ -144,20 +144,20 @@ const WORLD_LOCATIONS = [
   { id: 'cn-tianjin', country: 'cn', label: '中国 / 天津市', city: '天津市', region: '天津市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.3434, longitude: 117.3616, keywords: '天津 tianjin' },
   { id: 'cn-hong-kong', country: 'cn', label: '中国 / 香港', city: '香港', region: '香港', timezone: 'Asia/Hong_Kong', utcOffset: 8, latitude: 22.3193, longitude: 114.1694, keywords: '香港 hong kong hk' },
   { id: 'cn-taipei', country: 'cn', label: '台湾 / 台北市', city: '台北市', region: '台湾', timezone: 'Asia/Taipei', utcOffset: 8, latitude: 25.033, longitude: 121.5654, keywords: '台湾 臺灣 台北 taipei' },
-  { id: 'us-new-york', country: 'us', label: '米国 / New York, NY', city: 'New York', region: 'NY', timezone: 'America/New_York', utcOffset: -5, latitude: 40.7128, longitude: -74.006, keywords: 'new york ny ニューヨーク' },
-  { id: 'us-los-angeles', country: 'us', label: '米国 / Los Angeles, CA', city: 'Los Angeles', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 34.0522, longitude: -118.2437, keywords: 'los angeles california ca ロサンゼルス' },
-  { id: 'us-san-francisco', country: 'us', label: '米国 / San Francisco, CA', city: 'San Francisco', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 37.7749, longitude: -122.4194, keywords: 'san francisco california ca サンフランシスコ' },
-  { id: 'us-chicago', country: 'us', label: '米国 / Chicago, IL', city: 'Chicago', region: 'IL', timezone: 'America/Chicago', utcOffset: -6, latitude: 41.8781, longitude: -87.6298, keywords: 'chicago illinois il シカゴ' },
-  { id: 'us-houston', country: 'us', label: '米国 / Houston, TX', city: 'Houston', region: 'TX', timezone: 'America/Chicago', utcOffset: -6, latitude: 29.7604, longitude: -95.3698, keywords: 'houston texas tx ヒューストン' },
-  { id: 'us-seattle', country: 'us', label: '米国 / Seattle, WA', city: 'Seattle', region: 'WA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 47.6062, longitude: -122.3321, keywords: 'seattle washington wa シアトル' },
-  { id: 'us-boston', country: 'us', label: '米国 / Boston, MA', city: 'Boston', region: 'MA', timezone: 'America/New_York', utcOffset: -5, latitude: 42.3601, longitude: -71.0589, keywords: 'boston massachusetts ma ボストン' },
-  { id: 'us-honolulu', country: 'us', label: '米国 / Honolulu, HI', city: 'Honolulu', region: 'HI', timezone: 'Pacific/Honolulu', utcOffset: -10, latitude: 21.3069, longitude: -157.8583, keywords: 'honolulu hawaii hi ハワイ ホノルル' },
-  { id: 'world-london', country: 'world', label: '英国 / London', city: 'London', region: 'England', timezone: 'Europe/London', utcOffset: 0, latitude: 51.5074, longitude: -0.1278, keywords: 'london uk england ロンドン' },
-  { id: 'world-paris', country: 'world', label: 'フランス / Paris', city: 'Paris', region: 'Ile-de-France', timezone: 'Europe/Paris', utcOffset: 1, latitude: 48.8566, longitude: 2.3522, keywords: 'paris france パリ' },
-  { id: 'world-sydney', country: 'world', label: 'オーストラリア / Sydney', city: 'Sydney', region: 'NSW', timezone: 'Australia/Sydney', utcOffset: 10, latitude: -33.8688, longitude: 151.2093, keywords: 'sydney australia シドニー' },
-  { id: 'world-singapore', country: 'world', label: 'シンガポール / Singapore', city: 'Singapore', region: 'Singapore', timezone: 'Asia/Singapore', utcOffset: 8, latitude: 1.3521, longitude: 103.8198, keywords: 'singapore シンガポール' },
-  { id: 'world-bangkok', country: 'world', label: 'タイ / Bangkok', city: 'Bangkok', region: 'Bangkok', timezone: 'Asia/Bangkok', utcOffset: 7, latitude: 13.7563, longitude: 100.5018, keywords: 'bangkok thailand バンコク' },
-  { id: 'world-seoul', country: 'world', label: '韓国 / Seoul', city: 'Seoul', region: 'Seoul', timezone: 'Asia/Seoul', utcOffset: 9, latitude: 37.5665, longitude: 126.978, keywords: 'seoul korea ソウル 韓国' },
+  { id: 'us-new-york', country: 'us', label: '米国 / ニューヨーク州 ニューヨーク市', city: 'New York', region: 'NY', timezone: 'America/New_York', utcOffset: -5, latitude: 40.7128, longitude: -74.006, keywords: 'new york ny ニューヨーク' },
+  { id: 'us-los-angeles', country: 'us', label: '米国 / カリフォルニア州 ロサンゼルス', city: 'Los Angeles', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 34.0522, longitude: -118.2437, keywords: 'los angeles california ca ロサンゼルス' },
+  { id: 'us-san-francisco', country: 'us', label: '米国 / カリフォルニア州 サンフランシスコ', city: 'San Francisco', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 37.7749, longitude: -122.4194, keywords: 'san francisco california ca サンフランシスコ' },
+  { id: 'us-chicago', country: 'us', label: '米国 / イリノイ州 シカゴ', city: 'Chicago', region: 'IL', timezone: 'America/Chicago', utcOffset: -6, latitude: 41.8781, longitude: -87.6298, keywords: 'chicago illinois il シカゴ' },
+  { id: 'us-houston', country: 'us', label: '米国 / テキサス州 ヒューストン', city: 'Houston', region: 'TX', timezone: 'America/Chicago', utcOffset: -6, latitude: 29.7604, longitude: -95.3698, keywords: 'houston texas tx ヒューストン' },
+  { id: 'us-seattle', country: 'us', label: '米国 / ワシントン州 シアトル', city: 'Seattle', region: 'WA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 47.6062, longitude: -122.3321, keywords: 'seattle washington wa シアトル' },
+  { id: 'us-boston', country: 'us', label: '米国 / マサチューセッツ州 ボストン', city: 'Boston', region: 'MA', timezone: 'America/New_York', utcOffset: -5, latitude: 42.3601, longitude: -71.0589, keywords: 'boston massachusetts ma ボストン' },
+  { id: 'us-honolulu', country: 'us', label: '米国 / ハワイ州 ホノルル', city: 'Honolulu', region: 'HI', timezone: 'Pacific/Honolulu', utcOffset: -10, latitude: 21.3069, longitude: -157.8583, keywords: 'honolulu hawaii hi ハワイ ホノルル' },
+  { id: 'world-london', country: 'world', label: '英国 / ロンドン', city: 'London', region: 'England', timezone: 'Europe/London', utcOffset: 0, latitude: 51.5074, longitude: -0.1278, keywords: 'london uk england ロンドン' },
+  { id: 'world-paris', country: 'world', label: 'フランス / パリ', city: 'Paris', region: 'Ile-de-France', timezone: 'Europe/Paris', utcOffset: 1, latitude: 48.8566, longitude: 2.3522, keywords: 'paris france パリ' },
+  { id: 'world-sydney', country: 'world', label: 'オーストラリア / シドニー', city: 'Sydney', region: 'NSW', timezone: 'Australia/Sydney', utcOffset: 10, latitude: -33.8688, longitude: 151.2093, keywords: 'sydney australia シドニー' },
+  { id: 'world-singapore', country: 'world', label: 'シンガポール / シンガポール', city: 'Singapore', region: 'Singapore', timezone: 'Asia/Singapore', utcOffset: 8, latitude: 1.3521, longitude: 103.8198, keywords: 'singapore シンガポール' },
+  { id: 'world-bangkok', country: 'world', label: 'タイ / バンコク', city: 'Bangkok', region: 'Bangkok', timezone: 'Asia/Bangkok', utcOffset: 7, latitude: 13.7563, longitude: 100.5018, keywords: 'bangkok thailand バンコク' },
+  { id: 'world-seoul', country: 'world', label: '韓国 / ソウル', city: 'Seoul', region: 'Seoul', timezone: 'Asia/Seoul', utcOffset: 9, latitude: 37.5665, longitude: 126.978, keywords: 'seoul korea ソウル 韓国' },
 ];
 
 function calcApi() {
@@ -260,6 +260,26 @@ function searchableText(location) {
 
 function displayRegisteredLocation(location) {
   return stripJapan(location?.label || '');
+}
+
+function displayTimezoneLabel(timezone) {
+  const labels = {
+    'Asia/Tokyo': '日本標準時',
+    'Asia/Shanghai': '中国標準時',
+    'Asia/Hong_Kong': '香港時間',
+    'Asia/Taipei': '台湾時間',
+    'America/New_York': '米国東部時間',
+    'America/Los_Angeles': '米国太平洋時間',
+    'America/Chicago': '米国中部時間',
+    'Pacific/Honolulu': 'ハワイ時間',
+    'Europe/London': '英国時間',
+    'Europe/Paris': '中央ヨーロッパ時間',
+    'Australia/Sydney': 'シドニー時間',
+    'Asia/Singapore': 'シンガポール時間',
+    'Asia/Bangkok': 'バンコク時間',
+    'Asia/Seoul': '韓国標準時',
+  };
+  return labels[timezone] || timezone || '—';
 }
 
 function parseBirthTime(value) {
@@ -450,7 +470,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           ))}
         </nav>
 
-        <FormField num="日" ja="生年月日" romaji="DATE"
+        <FormField num="日" ja="生年月日" romaji="日付"
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}
           hint="生まれた日付">
           <div className="toggle-row">
@@ -461,7 +481,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
             ))}
           </div>
           <div className="input-row date-row">
-            <div className="input-line with-mark" data-mark="年 / Y">
+            <div className="input-line with-mark" data-mark="年">
               <select value={year} onChange={e => setYear(e.target.value)}>
                 <option value="" disabled>--</option>
                 {calendar === 'seireki' && Array.from({length: 107}, (_, i) => 2026 - i).map(y => <option key={y} value={y}>{y}</option>)}
@@ -470,13 +490,13 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
                 {calendar === 'reiwa' && Array.from({length: 8}, (_, i) => 8 - i).map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
-            <div className="input-line with-mark" data-mark="月 / M">
+            <div className="input-line with-mark" data-mark="月">
               <select value={month} onChange={e => setMonth(e.target.value)}>
                 <option value="" disabled>--</option>
                 {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
-            <div className="input-line with-mark" data-mark="日 / D">
+            <div className="input-line with-mark" data-mark="日">
               <select value={day} onChange={e => setDay(e.target.value)}>
                 <option value="" disabled>--</option>
                 {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
@@ -485,7 +505,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="時" ja="出生時刻" romaji="TIME"
+        <FormField num="時" ja="出生時刻" romaji="時刻"
           fieldRef={(node) => { fieldRefs.current.birthtime = node; }}
           hint="時刻がわかる場合は入力">
           <div className="toggle-row compact">
@@ -493,7 +513,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
             <button className={unsure ? 'on' : ''} onClick={() => setUnsure(true)}>時間不明</button>
           </div>
           <div className={`input-row time-row ${unsure ? 'is-disabled' : ''}`}>
-            <div className="input-line with-mark" data-mark="時 / H">
+            <div className="input-line with-mark" data-mark="時">
               <select value={birthHour} disabled={unsure} aria-disabled={unsure ? 'true' : 'false'} onChange={e => {
                 setUnsure(false);
                 setBirthHour(e.target.value);
@@ -501,7 +521,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
                 {Array.from({length: 24}, (_, i) => String(i).padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}
               </select>
             </div>
-            <div className="input-line with-mark" data-mark="分 / M">
+            <div className="input-line with-mark" data-mark="分">
               <select value={birthMinute} disabled={unsure} aria-disabled={unsure ? 'true' : 'false'} onChange={e => {
                 setUnsure(false);
                 setBirthMinute(e.target.value);
@@ -512,7 +532,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="地" ja="出生地" romaji="PLACE"
+        <FormField num="地" ja="出生地" romaji="場所"
           fieldRef={(node) => { fieldRefs.current.birthplace = node; }}
           hint="都道府県・市区町村">
           <div className="toggle-row compact location-region-row">
@@ -564,7 +584,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
                   type="text"
                   value={locationQuery}
                   onChange={e => setLocationQuery(e.target.value)}
-                  placeholder={locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）California / New York' : '例 ）London / Seoul / Singapore'}
+                  placeholder={locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）カリフォルニア / ニューヨーク' : '例 ）ロンドン / ソウル / シンガポール'}
                 />
               </div>
               <div className="input-line with-mark" data-mark="候補">
@@ -578,11 +598,11 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           )}
           <div className="location-note">
             選択中: {displayRegisteredLocation(selectedLocation)}
-            {selectedLocation?.timezone ? ` / ${selectedLocation.timezone}` : ''}
+            {selectedLocation?.timezone ? ` / ${displayTimezoneLabel(selectedLocation.timezone)}` : ''}
           </div>
         </FormField>
 
-        <FormField num="性" ja="性別" romaji="GENDER"
+        <FormField num="性" ja="性別" romaji="性別"
           fieldRef={(node) => { fieldRefs.current.profile = node; }}
           hint="大運の順逆計算に使用">
           <div className="gender-row">
@@ -599,7 +619,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="名" ja="お名前" romaji="OPTION"
+        <FormField num="名" ja="お名前" romaji="任意"
           hint="省略可。結果画面での呼び名">
           <div className="input-line">
             <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
@@ -1820,7 +1840,7 @@ function BasicInfoPanel({ name, calculation, profile }) {
     { label: '生年月日', value: input.date || meta.inputDateTime?.slice(0, 10) || '—' },
     { label: '出生時間', value: timeDisplay(calculation, profile) },
     { label: '出生地', value: stripJapan(location.label || meta.location?.label || '—') },
-    { label: 'タイムゾーン', value: meta.timezone || location.timezone || '—' },
+    { label: '標準時', value: displayTimezoneLabel(meta.timezone || location.timezone) },
     { label: '真太陽時', value: meta.trueSolarTime === 'applied' ? meta.effectiveBirthDateTime : '未補正' },
     { label: '四柱', value: calculation.pillarLine || PILLAR_KEYS.map(key => calculation.pillars[key].text).join(' / ') },
   ];
@@ -1898,7 +1918,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
   return (
     <section className="rite result-rite" data-screen-label="03 命式">
       <aside className="rite-side">
-        <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
+        <div className="kanji">命式</div><div className="label">命式確認</div>
         <div className="seal-stack">
           {RESULT_NAV_ITEMS.map((item) => (
             <TopicButton key={item.id} {...item} onClick={() => scrollTo(item.id)} />
@@ -1933,7 +1953,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <div id="s3" className="result-wide result-next-panel" style={{ marginTop: 64 }}>
             <div className="result-next-head">
               <div>
-                <div className="summary-kicker">NEXT READING</div>
+                <div className="summary-kicker">次の読み解き</div>
                 <h2>さらに深く読む</h2>
               </div>
               <p>命盤の要点を確認したあと、詳しい解説または大運の流れへ進めます。</p>
@@ -2079,7 +2099,7 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   return (
     <section className="rite" data-screen-label="05 命式詳細">
       <aside className="rite-side insight-side">
-        <div className="kanji">命式詳細</div><div className="label">PERSONAL INSIGHTS</div>
+        <div className="kanji">命式詳細</div><div className="label">詳しい読み解き</div>
         <div className="seal-stack">
           <button
             type="button"
@@ -2192,7 +2212,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
   return (
     <section className="rite" data-screen-label="04 大運・流年">
       <aside className="rite-side">
-        <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
+        <div className="kanji">大運・流年</div><div className="label">運勢の流れ</div>
         <div className="seal-stack">
           {FORTUNE_NAV_ITEMS.map((item) => (
             <TopicButton key={item.id} {...item} onClick={() => scrollTo(item.id)} />

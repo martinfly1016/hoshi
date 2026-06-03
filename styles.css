@@ -8326,3 +8326,71 @@ select {
     font-size: 28px !important;
   }
 }
+
+/* Concept C alignment fix: keep the create workflow on one content axis. */
+@media (min-width: 981px) {
+  .creation-rite {
+    width: min(1120px, 100%) !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-content: stretch !important;
+    align-items: start !important;
+    gap: 18px !important;
+  }
+
+  .creation-rite .rite-main,
+  .creation-preview {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .creation-rite .rite-submit {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px) !important;
+  }
+
+  .creation-preview {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+
+  .creation-preview-card:first-child {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .creation-rite,
+  .creation-rite .rite-main,
+  .creation-rite .field,
+  .creation-rite .field-input,
+  .creation-rite .input-row,
+  .creation-rite .toggle-row {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+
+  .creation-rite .toggle-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+  }
+
+  .creation-rite .toggle-row button {
+    min-width: 0 !important;
+    width: 100% !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .creation-rite .date-row,
+  .creation-rite .time-row,
+  .creation-rite .japan-location-grid,
+  .creation-rite .gender-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

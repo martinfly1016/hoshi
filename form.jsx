@@ -1897,6 +1897,7 @@ function FoundationDetailSections({ calculation }) {
 }
 
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
+  const [activeSection, setActiveSection] = React.useState('s0');
   const [activePillar, setActivePillar] = React.useState(null);
   const readingTags = React.useMemo(() => buildUserReadingTags(calculation, collectTenGods(calculation)), [calculation]);
   const scrollTo = (sid) => {
@@ -1914,16 +1915,34 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
     }
     onShowInsight(target);
   };
+  React.useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const targets = RESULT_NAV_ITEMS
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean);
+    if (!targets.length) return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target?.id) setActiveSection(visible.target.id);
+    }, { rootMargin: '-28% 0px -55% 0px', threshold: [0.05, 0.2, 0.45] });
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section className="rite result-rite" data-screen-label="03 命式">
       <aside className="rite-side">
         <div className="kanji">命式</div><div className="label">命式確認</div>
+        <div className="result-nav-head">
+          <span>読み解きナビ</span>
+          <button type="button" onClick={onBack}>入力へ戻る</button>
+        </div>
         <div className="seal-stack">
           {RESULT_NAV_ITEMS.map((item) => (
-            <TopicButton key={item.id} {...item} onClick={() => scrollTo(item.id)} />
+            <TopicButton key={item.id} {...item} active={activeSection === item.id} onClick={() => scrollTo(item.id)} />
           ))}
-          <button type="button" className="side-back" onClick={onBack}>← 入力へ戻る</button>
         </div>
       </aside>
       <div className="rite-main result-main" style={{ paddingBottom: 120 }}>

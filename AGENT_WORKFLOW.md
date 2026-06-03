@@ -40,6 +40,7 @@ Scope:
 - Reproduce reported issues with screenshots or concrete steps.
 - Check that user-facing pages still load and calculate.
 - Compare new page versions against archived versions when relevant.
+- Act as the release acceptance tester after every GitHub Pages publish.
 
 Expected evidence:
 
@@ -47,6 +48,19 @@ Expected evidence:
 - Input case used.
 - Result observed.
 - Screenshot path or concise findings.
+
+Release acceptance checklist:
+
+- Confirm GitHub Pages status is `built`.
+- Confirm the live HTML references the expected cache-busted asset version.
+- Test the live URL, not only localhost.
+- Test mobile widths at minimum `375px`, `390px`, and one wider small-phone/tablet width when UI changed.
+- Check `document.documentElement.scrollWidth` and `document.body.scrollWidth` equal the viewport width.
+- Scroll through every create-form field, including birthday, birth time, birthplace, gender, and name.
+- Check sticky/fixed elements against visible inputs and cards; report any rectangle overlap.
+- Check text clipping in segmented controls, tab bars, buttons, field titles, and bottom navigation.
+- Capture screenshots for top, middle, and bottom of the create flow after publish.
+- Report PASS/FAIL with concrete viewport, URL, asset version, and screenshot paths.
 
 ### UI/UE Agent
 

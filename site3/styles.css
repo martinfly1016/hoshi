@@ -8744,4 +8744,47 @@ select {
   .result-rite .rite-side .side-back {
     grid-column: 1 / -1 !important;
   }
+
+  .result-rite .rite-side {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .result-rite .rite-side .side-topic,
+  .result-rite .rite-side .side-back {
+    border: 0 !important;
+    background: color-mix(in srgb, var(--ink-3) 7%, #fff) !important;
+    box-shadow: none !important;
+    color: var(--ink-2) !important;
+  }
+
+  .result-rite .rite-side .side-topic.is-active {
+    background: color-mix(in srgb, var(--seal) 10%, #fff) !important;
+    color: var(--seal) !important;
+  }
+
+  .result-rite .result-main,
+  .result-rite .result-card {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .result-rite .result-card {
+    padding: 0 14px 24px !important;
+  }
+
+  .result-rite .result-card::before {
+    display: none !important;
+  }
+
+  .result-rite .basic-info-panel {
+    border: 0 !important;
+    background: color-mix(in srgb, var(--ink-3) 5%, #fff) !important;
+    box-shadow: none !important;
+  }
 }

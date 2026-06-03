@@ -455,7 +455,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <div className="rite-intro">
           <h2>命式を作成</h2>
           <p>
-            生年月日・出生時刻・出生地を入力してください。
+            お名前・性別・生年月日・出生時刻・出生地を入力してください。
           </p>
         </div>
 
@@ -469,6 +469,30 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
             />
           ))}
         </nav>
+
+        <FormField num="名" ja="お名前" romaji="任意"
+          fieldRef={(node) => { fieldRefs.current.profile = node; }}
+          hint="省略可。結果画面での呼び名">
+          <div className="input-line">
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
+          </div>
+        </FormField>
+
+        <FormField num="性" ja="性別" romaji="性別"
+          hint="大運の順逆計算に使用">
+          <div className="gender-row">
+            {[
+              { key: 'yang', ja: '男性', sym: '☰' },
+              { key: 'yin',  ja: '女性', sym: '☷' },
+              { key: 'gen',  ja: '未選択', sym: '○' },
+            ].map(g => (
+              <button key={g.key} className={`gender-btn ${gender === g.key ? 'on' : ''}`} onClick={() => setGender(g.key)}>
+                <span className="glyph">{g.sym}</span>
+                <span>{g.ja}</span>
+              </button>
+            ))}
+          </div>
+        </FormField>
 
         <FormField num="日" ja="生年月日" romaji="日付"
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}
@@ -599,30 +623,6 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           <div className="location-note">
             選択中: {displayRegisteredLocation(selectedLocation)}
             {selectedLocation?.timezone ? ` / ${displayTimezoneLabel(selectedLocation.timezone)}` : ''}
-          </div>
-        </FormField>
-
-        <FormField num="性" ja="性別" romaji="性別"
-          fieldRef={(node) => { fieldRefs.current.profile = node; }}
-          hint="大運の順逆計算に使用">
-          <div className="gender-row">
-            {[
-              { key: 'yang', ja: '男性', sym: '☰' },
-              { key: 'yin',  ja: '女性', sym: '☷' },
-              { key: 'gen',  ja: '未選択', sym: '○' },
-            ].map(g => (
-              <button key={g.key} className={`gender-btn ${gender === g.key ? 'on' : ''}`} onClick={() => setGender(g.key)}>
-                <span className="glyph">{g.sym}</span>
-                <span>{g.ja}</span>
-              </button>
-            ))}
-          </div>
-        </FormField>
-
-        <FormField num="名" ja="お名前" romaji="任意"
-          hint="省略可。結果画面での呼び名">
-          <div className="input-line">
-            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
           </div>
         </FormField>
 

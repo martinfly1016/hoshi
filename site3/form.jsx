@@ -431,10 +431,15 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
 
   return (
     <section className="rite creation-rite" data-screen-label="02 命式作成">
-      <aside className="rite-side">
-        <div className="kanji">命式作成</div>
-        <div className="label">MEISHIKI CREATION</div>
-        <div className="seal-stack">
+      <div className="rite-main">
+        <div className="rite-intro">
+          <h2>命式を作成</h2>
+          <p>
+            生年月日・出生時刻・出生地を入力してください。
+          </p>
+        </div>
+
+        <nav className="rite-stepper" aria-label="作成ステップ">
           {RITE_NAV_ITEMS.map((item) => (
             <TopicButton
               key={item.key}
@@ -443,16 +448,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
               onClick={() => jumpToStep(item.key)}
             />
           ))}
-        </div>
-      </aside>
-
-      <div className="rite-main">
-        <div className="rite-intro">
-          <h2>命式を作成</h2>
-          <p>
-            生年月日・出生時刻・出生地を入力してください。
-          </p>
-        </div>
+        </nav>
 
         <FormField num="日" ja="生年月日" romaji="DATE"
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}

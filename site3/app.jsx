@@ -14,12 +14,201 @@ const THEMES = [
   { key: 'shuboku',   ja: '朱墨',   romaji: 'SHUBOKU',   palette: ['#ece2cd', '#181208', '#8a2818', '#8a2818'] },
 ];
 
+const APP_LANGUAGES = [
+  { key: 'ja', label: 'JP' },
+  { key: 'zh', label: 'ZH' },
+  { key: 'en', label: 'EN' },
+];
+
+function AppIcon({ name }) {
+  const glyphs = {
+    home: '⌂',
+    create: '+',
+    result: '▦',
+    library: '☰',
+    settings: '⚙',
+    copy: '⧉',
+    share: '↗',
+    export: '⇩',
+  };
+  return <span className="app-icon" aria-hidden="true">{glyphs[name] || '•'}</span>;
+}
+
+function CompactElementBars({ chart }) {
+  if (!chart?.fiveElements?.counts) return null;
+  const labels = ['木', '火', '土', '金', '水'];
+  const percentages = typeof elementPercentages === 'function' ? elementPercentages(chart) : null;
+  const counts = chart.fiveElements.counts || {};
+  const max = Math.max(1, ...Object.values(counts));
+  return (
+    <div className="pwa-element-bars" aria-label="五行バランス">
+      {labels.map((label) => {
+        const width = percentages ? percentages[label] : Math.round(((counts[label] || 0) / max) * 100);
+        return (
+          <div key={label} className={`pwa-element-row ${elementClass ? elementClass(label) : ''}`}>
+            <span>{label}</span>
+            <i><b style={{ width: `${Math.max(6, width || 0)}%` }}></b></i>
+            <em>{percentages ? `${width}%` : counts[label] || 0}</em>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function PillarMiniMatrix({ chart }) {
+  const keys = ['year', 'month', 'day', 'hour'];
+  const labels = { year: 'Year', month: 'Month', day: 'Day', hour: 'Hour' };
+  return (
+    <div className="pwa-pillar-mini" aria-label="四柱">
+      {keys.map((key) => (
+        <div key={key} className={key === 'day' ? 'is-day' : ''}>
+          <span>{labels[key]}</span>
+          <strong>{chart?.pillars?.[key]?.text || '—'}</strong>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
+  const chart = calcResult?.chart;
+  const recentName = calcResult?.profile?.name || 'Last chart';
+  const currentAnnual = chart && typeof currentAnnualFortune === 'function' ? currentAnnualFortune(chart) : null;
+  return (
+    <section className="pwa-screen home-screen" aria-label="Today">
+      <div className="pwa-screen-head">
+        <div>
+          <span className="pwa-kicker">Today</span>
+          <h1>星の命式</h1>
+        </div>
+        <button type="button" className="pwa-primary-icon" onClick={onCreate} aria-label="命式を作成">
+          <AppIcon name="create" />
+        </button>
+      </div>
+
+      <section className="pwa-today-panel">
+        <div>
+          <span className="pwa-kicker">Current Cycle</span>
+          <h2>{yearInfo.ganzhi} / {yearInfo.reiwa}</h2>
+          <p>命式を作成すると、四柱・五行・大運の要点をこの画面からすぐ確認できます。</p>
+        </div>
+        <div className="pwa-cycle-chip">{yearInfo.roman}</div>
+      </section>
+
+      <div className="pwa-action-grid">
+        <button type="button" className="pwa-action-card is-primary" onClick={onCreate}>
+          <span>New Chart</span>
+          <strong>命式を作成</strong>
+          <small>生年月日、時刻、出生地から計算</small>
+        </button>
+        <button type="button" className="pwa-action-card" onClick={calcResult ? onResult : onCreate}>
+          <span>Overview</span>
+          <strong>{calcResult ? '結果を見る' : '入力から開始'}</strong>
+          <small>{calcResult ? `${recentName} の命式を開く` : '結果は作成後に表示'}</small>
+        </button>
+      </div>
+
+      <section className="pwa-section">
+        <div className="pwa-section-title">
+          <h2>Recent Chart</h2>
+          <button type="button" onClick={onLibrary}>View all</button>
+        </div>
+        {calcResult ? (
+          <button type="button" className="pwa-recent-card" onClick={onResult}>
+            <div>
+              <strong>{recentName}</strong>
+              <small>{chart?.pillars?.day?.text || '—'} / {chart?.strength?.status || 'status'}</small>
+            </div>
+            <PillarMiniMatrix chart={chart} />
+          </button>
+        ) : (
+          <div className="pwa-empty-state">
+            <strong>No charts yet</strong>
+            <p>最初の命式を作成すると、ここに最近の結果が表示されます。</p>
+          </div>
+        )}
+      </section>
+
+      <section className="pwa-section pwa-two-col">
+        <article>
+          <span className="pwa-kicker">Transit</span>
+          <h3>{currentAnnual?.name || '流年サマリー'}</h3>
+          <p>{currentAnnual ? `${currentAnnual.year}年のテーマを結果画面で確認できます。` : '命式作成後に現在の流れを表示します。'}</p>
+        </article>
+        <article>
+          <span className="pwa-kicker">Notes</span>
+          <h3>Saved insights</h3>
+          <p>ブックマーク、比較、メモ機能を追加できる構造にしています。</p>
+        </article>
+      </section>
+    </section>
+  );
+}
+
+function LibraryScreen({ calcResult, onCreate, onResult }) {
+  const chart = calcResult?.chart;
+  const name = calcResult?.profile?.name || 'Current chart';
+  return (
+    <section className="pwa-screen library-screen" aria-label="Library">
+      <div className="pwa-screen-head">
+        <div>
+          <span className="pwa-kicker">Library</span>
+          <h1>命式ライブラリ</h1>
+        </div>
+        <button type="button" className="pwa-primary-icon" onClick={onCreate} aria-label="追加">
+          <AppIcon name="create" />
+        </button>
+      </div>
+      <div className="pwa-search-row">
+        <input type="search" placeholder="Search charts, tags, notes" />
+        <button type="button" aria-label="設定"><AppIcon name="settings" /></button>
+      </div>
+      <div className="pwa-filter-row" aria-label="filters">
+        <button className="is-active" type="button">All</button>
+        <button type="button">Recent</button>
+        <button type="button">Compare</button>
+        <button type="button">Tagged</button>
+      </div>
+      {calcResult ? (
+        <button type="button" className="pwa-library-item" onClick={onResult}>
+          <div className="pwa-library-main">
+            <strong>{name}</strong>
+            <small>{chart?.pillars?.day?.text || '—'} / {chart?.pattern?.name || '命式'}</small>
+            <div className="pwa-tag-row">
+              <span>{chart?.strength?.status || 'status'}</span>
+              <span>{chart?.dayMaster || '日主'}</span>
+              <span>Current</span>
+            </div>
+          </div>
+          <PillarMiniMatrix chart={chart} />
+        </button>
+      ) : (
+        <div className="pwa-empty-state">
+          <strong>No saved charts</strong>
+          <p>まずは命式を作成してください。保存・比較の UI はこの画面に集約します。</p>
+          <button type="button" onClick={onCreate}>Create chart</button>
+        </div>
+      )}
+      <div className="pwa-compare-tray">
+        <span>0 selected</span>
+        <button type="button" disabled>Compare</button>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [page, setPage] = React.useState('rite');   // hero | rite | result | fortune | insight
+  const [page, setPage] = React.useState(() => {
+    const allowed = new Set(['home', 'rite', 'result', 'fortune', 'insight', 'library']);
+    const hash = typeof window !== 'undefined' ? window.location.hash.replace(/^#\/?/, '') : '';
+    return allowed.has(hash) ? hash : 'home';
+  });   // home | rite | result | fortune | insight | library
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
   const [routeTarget, setRouteTarget] = React.useState(null);
+  const [language, setLanguage] = React.useState('ja');
 
   // Auto-calculated current year info
   const yearInfo = React.useMemo(() => {
@@ -104,6 +293,9 @@ function App() {
 
   const goto = (target, detailTarget = null) => {
     setRouteTarget(detailTarget ? { ...detailTarget, key: `${Date.now()}-${Math.random()}` } : null);
+    if (typeof window !== 'undefined' && ['home', 'rite', 'result', 'library'].includes(target)) {
+      window.history.replaceState(null, '', `#${target}`);
+    }
     if (target === page) return;
     setWashing(true);
     window.setTimeout(() => {
@@ -114,11 +306,12 @@ function App() {
   };
 
   const navItems = [
-    { key: 'rite', label: '作成', icon: '✧' },
-    { key: 'result', label: '履歴', icon: '◷', disabled: !calcResult },
-    { key: 'insight', label: '一覧', icon: '☷', disabled: !calcResult },
-    { key: 'fortune', label: '設定', icon: '⚙', disabled: !calcResult },
+    { key: 'home', label: 'Today', icon: 'home' },
+    { key: 'rite', label: 'Create', icon: 'create' },
+    { key: 'result', label: 'Results', icon: 'result', disabled: !calcResult },
+    { key: 'library', label: 'Library', icon: 'library' },
   ];
+  const visiblePage = ['insight', 'fortune'].includes(page) ? 'result' : page;
 
   return (
     <React.Fragment>
@@ -127,44 +320,55 @@ function App() {
       <header className="chrome">
         <div className="mark">
           <span className="seal">命</span>
-          <span>星 の 命 式</span>
+          <span>Hoshi</span>
         </div>
-        <nav className="app-actions" role="navigation" aria-label="アプリ操作">
-          <button type="button" title="ヘルプ" className="icon-action" onClick={() => goto('rite')}>?</button>
+        <nav className="app-actions" role="navigation" aria-label="App actions">
+          <div className="language-switch" aria-label="Language">
+            {APP_LANGUAGES.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                className={language === item.key ? 'is-active' : ''}
+                onClick={() => setLanguage(item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
             {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
           </button>
-          <button type="button" title="その他" className="icon-action">•••</button>
+          <button type="button" title="Export" className="icon-action"><AppIcon name="export" /></button>
         </nav>
       </header>
 
       <aside className="app-sidebar" aria-label="メインナビゲーション">
-        <div className="sidebar-search">検索</div>
+        <div className="sidebar-search">Search charts</div>
         <div className="sidebar-group">
-          <span>命式</span>
-          {navItems.slice(0, 3).map((item) => (
+          <span>Workspace</span>
+          {navItems.map((item) => (
             <button
               key={item.key}
               type="button"
-              className={page === item.key ? 'is-active' : ''}
+              className={visiblePage === item.key ? 'is-active' : ''}
               disabled={item.disabled}
               onClick={() => goto(item.key)}
             >
-              <span>{item.icon}</span>{item.label}
+              <AppIcon name={item.icon} />{item.label}
             </button>
           ))}
         </div>
         <div className="sidebar-group">
-          <span>その他</span>
-          <button type="button" className={page === 'fortune' ? 'is-active' : ''} disabled={!calcResult} onClick={() => goto('fortune')}>
-            <span>⚙</span>設定
-          </button>
+          <span>Actions</span>
+          <button type="button" disabled={!calcResult}><AppIcon name="copy" />Copy</button>
+          <button type="button" disabled={!calcResult}><AppIcon name="share" />Share</button>
         </div>
-        <small>● iCloud 同期</small>
+        <small>Device local</small>
       </aside>
 
       <main className="page app-main">
-        {page === 'hero' && <Hero onEnter={() => goto('rite')} />}
+        {page === 'home' && <HomeScreen calcResult={calcResult} yearInfo={yearInfo} onCreate={() => goto('rite')} onResult={() => goto('result')} onLibrary={() => goto('library')} />}
+        {page === 'library' && <LibraryScreen calcResult={calcResult} onCreate={() => goto('rite')} onResult={() => goto('result')} />}
         {page === 'rite' && <Rite onBack={() => goto('rite')}
           initialResult={calcResult}
           onSubmitDone={(res) => {
@@ -207,12 +411,12 @@ function App() {
           <button
             key={item.key}
             type="button"
-            className={page === item.key ? 'is-active' : ''}
-            aria-current={page === item.key ? 'page' : undefined}
+            className={visiblePage === item.key ? 'is-active' : ''}
+            aria-current={visiblePage === item.key ? 'page' : undefined}
             disabled={item.disabled}
             onClick={() => goto(item.key)}
           >
-            <span>{item.icon}</span>
+            <AppIcon name={item.icon} />
             {item.label}
           </button>
         ))}

@@ -314,6 +314,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [result, setResult] = React.useState(null);
   const [error, setError] = React.useState('');
   const [showStamp, setShowStamp] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState('profile');
   const fieldRefs = React.useRef({});
 
   const registeredLocations = allRegisteredLocations();
@@ -335,12 +336,36 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const jumpToStep = (step) => {
     const target = fieldRefs.current[step];
     if (!target) return;
+    setActiveStep(step);
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     window.setTimeout(() => {
       const focusable = target.querySelector('input:not([disabled]), select:not([disabled]), button:not([disabled])');
       if (focusable) focusable.focus({ preventScroll: true });
     }, 420);
   };
+
+  React.useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const targets = RITE_NAV_ITEMS
+      .map((item) => [item.key, fieldRefs.current[item.key]])
+      .filter((entry) => entry[1]);
+    if (!targets.length) return undefined;
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const match = targets.find((entry) => entry[1] === visible.target);
+      if (match) setActiveStep(match[0]);
+    }, {
+      rootMargin: '-28% 0px -48% 0px',
+      threshold: [0.15, 0.35, 0.6],
+    });
+
+    targets.forEach((entry) => observer.observe(entry[1]));
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     if (locationRegion === 'jp') return;
@@ -411,7 +436,12 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <div className="label">MEISHIKI CREATION</div>
         <div className="seal-stack">
           {RITE_NAV_ITEMS.map((item) => (
-            <TopicButton key={item.key} {...item} onClick={() => jumpToStep(item.key)} />
+            <TopicButton
+              key={item.key}
+              {...item}
+              active={activeStep === item.key}
+              onClick={() => jumpToStep(item.key)}
+            />
           ))}
         </div>
       </aside>
@@ -598,9 +628,18 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           <button onClick={onBack} style={{ fontSize: 11, letterSpacing: '0.4em', color: 'var(--ink-3)', fontFamily: 'var(--f-mono)' }}>← 序章へ戻る</button>
         </div>
       </div>
-      <div className={`seal-overlay ${showStamp ? 'show' : ''}`}>
-        <div className="stamp">命</div>
-        <div className="caption">命式を作成しています</div>
+      <div className="mobile-command-bar" aria-live="polite">
+        <span>{valid ? '入力完了' : '必須項目を入力'}</span>
+        <button className={busy ? 'busy' : ''} disabled={!valid || busy} onClick={submit}>
+          {busy ? '作成中' : '命式を見る'}
+        </button>
+      </div>
+      <div className={`seal-overlay native-progress-overlay ${showStamp ? 'show' : ''}`} role="status" aria-live="polite">
+        <div className="progress-hud">
+          <span className="progress-spinner" aria-hidden="true"></span>
+          <strong>命式を作成中</strong>
+          <small>入力内容をこの端末で計算しています</small>
+        </div>
       </div>
     </section>
   );

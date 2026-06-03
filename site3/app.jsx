@@ -109,9 +109,17 @@ function App() {
     window.setTimeout(() => {
       setPage(target);
       if (!detailTarget?.anchor) window.scrollTo({ top: 0 });
-      window.setTimeout(() => setWashing(false), 80);
-    }, 520);
+      window.setTimeout(() => setWashing(false), 70);
+    }, 180);
   };
+
+  const navItems = [
+    { key: 'hero', label: 'トップ' },
+    { key: 'rite', label: '命式作成' },
+    { key: 'result', label: '命　式', disabled: !calcResult },
+    { key: 'insight', label: '命式詳細', disabled: !calcResult },
+    { key: 'fortune', label: '大運・流年', disabled: !calcResult },
+  ];
 
   return (
     <React.Fragment>
@@ -122,20 +130,19 @@ function App() {
           <span className="seal">命</span>
           <span>星 の 命 式</span>
         </div>
-        <nav>
-          <button className={page === 'hero' ? 'is-active' : ''}
-            onClick={() => goto('hero')}>トップ</button>
-          <button className={page === 'rite' ? 'is-active' : ''}
-            onClick={() => goto('rite')}>命式作成</button>
-          <button className={page === 'result' ? 'is-active' : ''}
-            onClick={() => { if (calcResult) goto('result'); }}
-            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命　式</button>
-          <button className={page === 'insight' ? 'is-active' : ''}
-            onClick={() => { if (calcResult) goto('insight'); }}
-            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>命式詳細</button>
-          <button className={page === 'fortune' ? 'is-active' : ''}
-            onClick={() => { if (calcResult) goto('fortune'); }}
-            style={{ opacity: calcResult ? 1 : 0.4, cursor: calcResult ? 'pointer' : 'not-allowed' }}>大運・流年</button>
+        <nav className="app-segmented-nav" role="navigation" aria-label="主要ページ">
+          {navItems.map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              className={page === item.key ? 'is-active' : ''}
+              aria-current={page === item.key ? 'page' : undefined}
+              disabled={item.disabled}
+              onClick={() => goto(item.key)}
+            >
+              {item.label}
+            </button>
+          ))}
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
             {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
           </button>

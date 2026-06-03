@@ -6151,6 +6151,22 @@ body {
     font-size: 24px;
   }
 
+  .creation-rite .rite-submit {
+    display: grid;
+    margin-top: 14px;
+    padding-bottom: 18px;
+  }
+
+  .creation-rite .rite-submit .legal {
+    display: none;
+  }
+
+  .creation-rite .rite-submit .submit-btn {
+    display: inline-flex !important;
+    min-height: 48px;
+    border-radius: 11px;
+  }
+
   .mobile-tabbar {
     position: fixed;
     z-index: 75;

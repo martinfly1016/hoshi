@@ -15,9 +15,9 @@ const THEMES = [
 ];
 
 const APP_LANGUAGES = [
-  { key: 'ja', label: 'JP' },
-  { key: 'zh', label: 'ZH' },
-  { key: 'en', label: 'EN' },
+  { key: 'ja', label: '日本語', available: true },
+  { key: 'zh', label: '中国語', available: false },
+  { key: 'en', label: '英語', available: false },
 ];
 
 function AppIcon({ name }) {
@@ -58,7 +58,7 @@ function CompactElementBars({ chart }) {
 
 function PillarMiniMatrix({ chart }) {
   const keys = ['year', 'month', 'day', 'hour'];
-  const labels = { year: 'Year', month: 'Month', day: 'Day', hour: 'Hour' };
+  const labels = { year: '年柱', month: '月柱', day: '日柱', hour: '時柱' };
   return (
     <div className="pwa-pillar-mini" aria-label="四柱">
       {keys.map((key) => (
@@ -73,13 +73,13 @@ function PillarMiniMatrix({ chart }) {
 
 function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
   const chart = calcResult?.chart;
-  const recentName = calcResult?.profile?.name || 'Last chart';
+  const recentName = calcResult?.profile?.name || '直近の命式';
   const currentAnnual = chart && typeof currentAnnualFortune === 'function' ? currentAnnualFortune(chart) : null;
   return (
-    <section className="pwa-screen home-screen" aria-label="Today">
+    <section className="pwa-screen home-screen" aria-label="今日の概要">
       <div className="pwa-screen-head">
         <div>
-          <span className="pwa-kicker">Today</span>
+          <span className="pwa-kicker">今日の概要</span>
           <h1>星の命式</h1>
         </div>
         <button type="button" className="pwa-primary-icon" onClick={onCreate} aria-label="命式を作成">
@@ -89,21 +89,21 @@ function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
 
       <section className="pwa-today-panel">
         <div>
-          <span className="pwa-kicker">Current Cycle</span>
+          <span className="pwa-kicker">現在の暦</span>
           <h2>{yearInfo.ganzhi} / {yearInfo.reiwa}</h2>
           <p>命式を作成すると、四柱・五行・大運の要点をこの画面からすぐ確認できます。</p>
         </div>
-        <div className="pwa-cycle-chip">{yearInfo.roman}</div>
+        <div className="pwa-cycle-chip">{yearInfo.gregorian}</div>
       </section>
 
       <div className="pwa-action-grid">
         <button type="button" className="pwa-action-card is-primary" onClick={onCreate}>
-          <span>New Chart</span>
+          <span>新規作成</span>
           <strong>命式を作成</strong>
           <small>生年月日、時刻、出生地から計算</small>
         </button>
         <button type="button" className="pwa-action-card" onClick={calcResult ? onResult : onCreate}>
-          <span>Overview</span>
+          <span>命式概要</span>
           <strong>{calcResult ? '結果を見る' : '入力から開始'}</strong>
           <small>{calcResult ? `${recentName} の命式を開く` : '結果は作成後に表示'}</small>
         </button>
@@ -111,20 +111,20 @@ function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
 
       <section className="pwa-section">
         <div className="pwa-section-title">
-          <h2>Recent Chart</h2>
-          <button type="button" onClick={onLibrary}>View all</button>
+          <h2>最近の命式</h2>
+          <button type="button" onClick={onLibrary}>すべて見る</button>
         </div>
         {calcResult ? (
           <button type="button" className="pwa-recent-card" onClick={onResult}>
             <div>
               <strong>{recentName}</strong>
-              <small>{chart?.pillars?.day?.text || '—'} / {chart?.strength?.status || 'status'}</small>
+              <small>{chart?.pillars?.day?.text || '—'} / {chart?.strength?.status || '判定中'}</small>
             </div>
             <PillarMiniMatrix chart={chart} />
           </button>
         ) : (
           <div className="pwa-empty-state">
-            <strong>No charts yet</strong>
+            <strong>まだ命式がありません</strong>
             <p>最初の命式を作成すると、ここに最近の結果が表示されます。</p>
           </div>
         )}
@@ -132,13 +132,13 @@ function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
 
       <section className="pwa-section pwa-two-col">
         <article>
-          <span className="pwa-kicker">Transit</span>
+          <span className="pwa-kicker">流年</span>
           <h3>{currentAnnual?.name || '流年サマリー'}</h3>
           <p>{currentAnnual ? `${currentAnnual.year}年のテーマを結果画面で確認できます。` : '命式作成後に現在の流れを表示します。'}</p>
         </article>
         <article>
-          <span className="pwa-kicker">Notes</span>
-          <h3>Saved insights</h3>
+          <span className="pwa-kicker">記録</span>
+          <h3>保存した読み解き</h3>
           <p>ブックマーク、比較、メモ機能を追加できる構造にしています。</p>
         </article>
       </section>
@@ -148,12 +148,12 @@ function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
 
 function LibraryScreen({ calcResult, onCreate, onResult }) {
   const chart = calcResult?.chart;
-  const name = calcResult?.profile?.name || 'Current chart';
+  const name = calcResult?.profile?.name || '現在の命式';
   return (
-    <section className="pwa-screen library-screen" aria-label="Library">
+    <section className="pwa-screen library-screen" aria-label="命式ライブラリ">
       <div className="pwa-screen-head">
         <div>
-          <span className="pwa-kicker">Library</span>
+          <span className="pwa-kicker">命式一覧</span>
           <h1>命式ライブラリ</h1>
         </div>
         <button type="button" className="pwa-primary-icon" onClick={onCreate} aria-label="追加">
@@ -161,14 +161,14 @@ function LibraryScreen({ calcResult, onCreate, onResult }) {
         </button>
       </div>
       <div className="pwa-search-row">
-        <input type="search" placeholder="Search charts, tags, notes" />
+        <input type="search" placeholder="命式・タグ・メモを検索" />
         <button type="button" aria-label="設定"><AppIcon name="settings" /></button>
       </div>
-      <div className="pwa-filter-row" aria-label="filters">
-        <button className="is-active" type="button">All</button>
-        <button type="button">Recent</button>
-        <button type="button">Compare</button>
-        <button type="button">Tagged</button>
+      <div className="pwa-filter-row" aria-label="絞り込み">
+        <button className="is-active" type="button">すべて</button>
+        <button type="button">最近</button>
+        <button type="button">比較</button>
+        <button type="button">タグ付き</button>
       </div>
       {calcResult ? (
         <button type="button" className="pwa-library-item" onClick={onResult}>
@@ -176,23 +176,23 @@ function LibraryScreen({ calcResult, onCreate, onResult }) {
             <strong>{name}</strong>
             <small>{chart?.pillars?.day?.text || '—'} / {chart?.pattern?.name || '命式'}</small>
             <div className="pwa-tag-row">
-              <span>{chart?.strength?.status || 'status'}</span>
+              <span>{chart?.strength?.status || '判定中'}</span>
               <span>{chart?.dayMaster || '日主'}</span>
-              <span>Current</span>
+              <span>現在</span>
             </div>
           </div>
           <PillarMiniMatrix chart={chart} />
         </button>
       ) : (
         <div className="pwa-empty-state">
-          <strong>No saved charts</strong>
-          <p>まずは命式を作成してください。保存・比較の UI はこの画面に集約します。</p>
-          <button type="button" onClick={onCreate}>Create chart</button>
+          <strong>保存された命式はありません</strong>
+          <p>まずは命式を作成してください。保存・比較の画面はここに集約します。</p>
+          <button type="button" onClick={onCreate}>命式を作成</button>
         </div>
       )}
       <div className="pwa-compare-tray">
-        <span>0 selected</span>
-        <button type="button" disabled>Compare</button>
+        <span>選択中 0件</span>
+        <button type="button" disabled>比較</button>
       </div>
     </section>
   );
@@ -227,14 +227,10 @@ function App() {
     const stem = stems[(y - 4) % 10];
     const branch = branches[(y - 4) % 12];
 
-    const tens = ['', 'X', 'XX', 'XXX', 'XL', 'L'];
-    const units = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
-    const roman = 'MM' + tens[Math.floor((y % 100) / 10)] + units[y % 10];
-
     return {
       reiwa: `令和${reiwaStr}年`,
       ganzhi: `${stem}${branch}`,
-      roman: roman
+      gregorian: `西暦${y}年`
     };
   }, []);
   
@@ -306,10 +302,10 @@ function App() {
   };
 
   const navItems = [
-    { key: 'home', label: 'Today', icon: 'home' },
-    { key: 'rite', label: 'Create', icon: 'create' },
-    { key: 'result', label: 'Results', icon: 'result', disabled: !calcResult },
-    { key: 'library', label: 'Library', icon: 'library' },
+    { key: 'home', label: '今日', icon: 'home' },
+    { key: 'rite', label: '作成', icon: 'create' },
+    { key: 'result', label: '結果', icon: 'result', disabled: !calcResult },
+    { key: 'library', label: '一覧', icon: 'library' },
   ];
   const visiblePage = ['insight', 'fortune'].includes(page) ? 'result' : page;
 
@@ -320,11 +316,11 @@ function App() {
       <header className="chrome">
         <div className="mark">
           <span className="seal">命</span>
-          <span>Hoshi</span>
+          <span>星の命式</span>
         </div>
-        <nav className="app-actions" role="navigation" aria-label="App actions">
-          <div className="language-switch" aria-label="Language">
-            {APP_LANGUAGES.map((item) => (
+        <nav className="app-actions" role="navigation" aria-label="アプリ操作">
+          <div className="language-switch" aria-label="表示言語">
+            {APP_LANGUAGES.filter((item) => item.available).map((item) => (
               <button
                 key={item.key}
                 type="button"
@@ -338,14 +334,14 @@ function App() {
           <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
             {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
           </button>
-          <button type="button" title="Export" className="icon-action"><AppIcon name="export" /></button>
+          <button type="button" title="書き出し" className="icon-action"><AppIcon name="export" /></button>
         </nav>
       </header>
 
       <aside className="app-sidebar" aria-label="メインナビゲーション">
-        <div className="sidebar-search">Search charts</div>
+        <div className="sidebar-search">命式を検索</div>
         <div className="sidebar-group">
-          <span>Workspace</span>
+          <span>作業領域</span>
           {navItems.map((item) => (
             <button
               key={item.key}
@@ -359,11 +355,11 @@ function App() {
           ))}
         </div>
         <div className="sidebar-group">
-          <span>Actions</span>
-          <button type="button" disabled={!calcResult}><AppIcon name="copy" />Copy</button>
-          <button type="button" disabled={!calcResult}><AppIcon name="share" />Share</button>
+          <span>操作</span>
+          <button type="button" disabled={!calcResult}><AppIcon name="copy" />複製</button>
+          <button type="button" disabled={!calcResult}><AppIcon name="share" />共有</button>
         </div>
-        <small>Device local</small>
+        <small>端末内で処理</small>
       </aside>
 
       <main className="page app-main">
@@ -424,8 +420,8 @@ function App() {
 
       <div className={`ink-wash ${washing ? 'show' : ''}`}></div>
 
-      <TweaksPanel title="Tweaks">
-        <TweakSection title="主題 — Theme">
+      <TweaksPanel title="調整">
+        <TweakSection title="主題">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {THEMES.map(t => (
               <button key={t.key}
@@ -446,21 +442,21 @@ function App() {
                 </div>
                 <div style={{ fontSize: 13, letterSpacing: '0.2em' }}>
                   {t.ja}
-                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginLeft: 8, letterSpacing: '0.3em' }}>{t.romaji}</span>
+                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginLeft: 8, letterSpacing: '0.12em' }}>配色</span>
                 </div>
               </button>
             ))}
           </div>
         </TweakSection>
-        <TweakSection title="書体 — Type">
+        <TweakSection title="書体">
           <TweakRadio value={tweaks.type} onChange={(v) => setTweak('type', v)}
-            options={[{ value: 'mincho', label: '明朝体' }, { value: 'song', label: '宋朝風 Yuji' }, { value: 'kaisho', label: '楷書体 Syuku' }]} />
+            options={[{ value: 'mincho', label: '明朝体' }, { value: 'song', label: '宋朝風' }, { value: 'kaisho', label: '楷書体' }]} />
         </TweakSection>
-        <TweakSection title="動き — Motion">
+        <TweakSection title="動き">
           <TweakRadio value={tweaks.motion} onChange={(v) => setTweak('motion', v)}
             options={[{ value: 'off', label: 'なし' }, { value: 'soft', label: '控えめ' }, { value: 'full', label: 'しっかり' }]} />
         </TweakSection>
-        <TweakSection title="Hero レイアウト">
+        <TweakSection title="最初の画面">
           <TweakRadio value={tweaks.hero} onChange={(v) => setTweak('hero', v)}
             options={[{ value: 'centered', label: '中央配置' }, { value: 'offset', label: '余白を活かす' }]} />
         </TweakSection>

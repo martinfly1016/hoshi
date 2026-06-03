@@ -8394,3 +8394,27 @@ select {
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+@media (max-width: 980px) {
+  .chrome .app-actions {
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .language-switch {
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .language-switch button:only-child {
+    min-width: 58px !important;
+    padding: 0 8px !important;
+  }
+
+  .mobile-tabbar {
+    width: 100vw !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+}

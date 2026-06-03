@@ -21,9 +21,9 @@ const REGION_OPTIONS = [
 ];
 
 const RITE_NAV_ITEMS = [
-  { key: 'profile', num: '壹', icon: '人', label: 'お名前と性別' },
+  { key: 'profile', num: '壹', icon: '人', label: '名前・性別' },
   { key: 'birthday', num: '貳', icon: '日', label: '生年月日' },
-  { key: 'birthtime', num: '參', icon: '時', label: '出生時間' },
+  { key: 'birthtime', num: '參', icon: '時', label: '出生時刻' },
   { key: 'birthplace', num: '肆', icon: '地', label: '出生地' },
 ];
 

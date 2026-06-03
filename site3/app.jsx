@@ -16,7 +16,7 @@ const THEMES = [
 
 function App() {
   const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [page, setPage] = React.useState('hero');   // hero | rite | result | fortune | insight
+  const [page, setPage] = React.useState('rite');   // hero | rite | result | fortune | insight
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
   const [routeTarget, setRouteTarget] = React.useState(null);
@@ -114,11 +114,10 @@ function App() {
   };
 
   const navItems = [
-    { key: 'hero', label: 'トップ' },
-    { key: 'rite', label: '命式作成' },
-    { key: 'result', label: '命　式', disabled: !calcResult },
-    { key: 'insight', label: '命式詳細', disabled: !calcResult },
-    { key: 'fortune', label: '大運・流年', disabled: !calcResult },
+    { key: 'rite', label: '作成', icon: '✧' },
+    { key: 'result', label: '履歴', icon: '◷', disabled: !calcResult },
+    { key: 'insight', label: '一覧', icon: '☷', disabled: !calcResult },
+    { key: 'fortune', label: '設定', icon: '⚙', disabled: !calcResult },
   ];
 
   return (
@@ -130,33 +129,43 @@ function App() {
           <span className="seal">命</span>
           <span>星 の 命 式</span>
         </div>
-        <nav className="app-segmented-nav" role="navigation" aria-label="主要ページ">
-          {navItems.map((item) => (
+        <nav className="app-actions" role="navigation" aria-label="アプリ操作">
+          <button type="button" title="ヘルプ" className="icon-action" onClick={() => goto('rite')}>?</button>
+          <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
+            {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
+          </button>
+          <button type="button" title="その他" className="icon-action">•••</button>
+        </nav>
+      </header>
+
+      <aside className="app-sidebar" aria-label="メインナビゲーション">
+        <div className="sidebar-search">検索</div>
+        <div className="sidebar-group">
+          <span>命式</span>
+          {navItems.slice(0, 3).map((item) => (
             <button
               key={item.key}
               type="button"
               className={page === item.key ? 'is-active' : ''}
-              aria-current={page === item.key ? 'page' : undefined}
               disabled={item.disabled}
               onClick={() => goto(item.key)}
             >
-              {item.label}
+              <span>{item.icon}</span>{item.label}
             </button>
           ))}
-          <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
-            {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
-          </button>
-        </nav>
-        <div style={{
-          fontFamily: 'var(--f-mono)', color: 'var(--ink-3)', letterSpacing: '0.3em', fontSize: 10,
-        }}>
-          {yearInfo.reiwa} {yearInfo.ganzhi}
         </div>
-      </header>
+        <div className="sidebar-group">
+          <span>その他</span>
+          <button type="button" className={page === 'fortune' ? 'is-active' : ''} disabled={!calcResult} onClick={() => goto('fortune')}>
+            <span>⚙</span>設定
+          </button>
+        </div>
+        <small>● iCloud 同期</small>
+      </aside>
 
-      <main className="page">
+      <main className="page app-main">
         {page === 'hero' && <Hero onEnter={() => goto('rite')} />}
-        {page === 'rite' && <Rite onBack={() => goto('hero')}
+        {page === 'rite' && <Rite onBack={() => goto('rite')}
           initialResult={calcResult}
           onSubmitDone={(res) => {
             setCalcResult(res);
@@ -192,6 +201,22 @@ function App() {
           />
         )}
       </main>
+
+      <nav className="mobile-tabbar" aria-label="主要機能">
+        {navItems.map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            className={page === item.key ? 'is-active' : ''}
+            aria-current={page === item.key ? 'page' : undefined}
+            disabled={item.disabled}
+            onClick={() => goto(item.key)}
+          >
+            <span>{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
+      </nav>
 
       <div className={`ink-wash ${washing ? 'show' : ''}`}></div>
 

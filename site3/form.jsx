@@ -430,7 +430,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   };
 
   return (
-    <section className="rite" data-screen-label="02 命式作成">
+    <section className="rite creation-rite" data-screen-label="02 命式作成">
       <aside className="rite-side">
         <div className="kanji">命式作成</div>
         <div className="label">MEISHIKI CREATION</div>
@@ -448,39 +448,15 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
 
       <div className="rite-main">
         <div className="rite-intro">
-          <h2>生年月日から、あなたの命式を作成します</h2>
+          <h2>命式を作成</h2>
           <p>
-            四柱推命では、生年月日・出生時間・出生地から命式を作ります。
+            生年月日・出生時刻・出生地を入力してください。
           </p>
         </div>
 
-        <FormField num="壹 / 一" ja="お名前" romaji="ONAMAE"
-          fieldRef={(node) => { fieldRefs.current.profile = node; }}
-          hint="※ 省略可。結果画面での呼び名として使用します">
-          <div className="input-line">
-            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
-          </div>
-        </FormField>
-
-        <FormField num="壹 / 二" ja="性 別" romaji="SEIBETSU"
-          hint="※ 大運（10年ごとの運勢）の順逆計算に影響します">
-          <div className="gender-row">
-            {[
-              { key: 'yang', ja: '男性 (陽)', sym: '☰' },
-              { key: 'yin',  ja: '女性 (陰)', sym: '☷' },
-              { key: 'gen',  ja: '選択しない', sym: '☯' },
-            ].map(g => (
-              <button key={g.key} className={`gender-btn ${gender === g.key ? 'on' : ''}`} onClick={() => setGender(g.key)}>
-                <span className="glyph">{g.sym}</span>
-                <span>{g.ja}</span>
-              </button>
-            ))}
-          </div>
-        </FormField>
-
-        <FormField num="貳 / 一" ja="生年月日" romaji="SEINENGAPPI"
+        <FormField num="日" ja="生年月日" romaji="DATE"
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}
-          hint="誕生日の暦（西暦または和暦）を選択し、入力してください">
+          hint="生まれた日付">
           <div className="toggle-row">
             {['seireki','showa','heisei','reiwa'].map(c => (
                <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
@@ -513,9 +489,9 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEIJIKAN"
+        <FormField num="時" ja="出生時刻" romaji="TIME"
           fieldRef={(node) => { fieldRefs.current.birthtime = node; }}
-          hint="出生時刻をできるだけ正確に入力してください。真太陽時の補正に使用します">
+          hint="時刻がわかる場合は入力">
           <div className="toggle-row compact">
             <button className={!unsure ? 'on' : ''} onClick={() => setUnsure(false)}>時刻を入力</button>
             <button className={unsure ? 'on' : ''} onClick={() => setUnsure(true)}>時間不明</button>
@@ -540,9 +516,9 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEICHI"
+        <FormField num="地" ja="出生地" romaji="PLACE"
           fieldRef={(node) => { fieldRefs.current.birthplace = node; }}
-          hint="県・省・州・都市名で検索し、候補から出生地を選択してください">
+          hint="都道府県・市区町村">
           <div className="toggle-row compact location-region-row">
             {REGION_OPTIONS.map(region => (
               <button key={region.key} className={locationRegion === region.key ? 'on' : ''} onClick={() => {
@@ -610,6 +586,30 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
+        <FormField num="性" ja="性別" romaji="GENDER"
+          fieldRef={(node) => { fieldRefs.current.profile = node; }}
+          hint="大運の順逆計算に使用">
+          <div className="gender-row">
+            {[
+              { key: 'yang', ja: '男性', sym: '☰' },
+              { key: 'yin',  ja: '女性', sym: '☷' },
+              { key: 'gen',  ja: '未選択', sym: '○' },
+            ].map(g => (
+              <button key={g.key} className={`gender-btn ${gender === g.key ? 'on' : ''}`} onClick={() => setGender(g.key)}>
+                <span className="glyph">{g.sym}</span>
+                <span>{g.ja}</span>
+              </button>
+            ))}
+          </div>
+        </FormField>
+
+        <FormField num="名" ja="お名前" romaji="OPTION"
+          hint="省略可。結果画面での呼び名">
+          <div className="input-line">
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
+          </div>
+        </FormField>
+
         <div className="rite-submit">
           <div className="legal">
             出生時間が不明でも鑑定できます。その場合、時柱は12:00の仮計算として表示します。<br/>
@@ -624,10 +624,38 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </button>
         </div>
         {error && <div className="notice result-error">{error}</div>}
-        <div style={{ marginTop: 56, textAlign: 'center' }}>
-          <button onClick={onBack} style={{ fontSize: 11, letterSpacing: '0.4em', color: 'var(--ink-3)', fontFamily: 'var(--f-mono)' }}>← 序章へ戻る</button>
-        </div>
       </div>
+      <aside className="creation-preview" aria-label="命式プレビュー">
+        <div className="creation-preview-card">
+          <button type="button" className="preview-link" disabled={!initialResult}>四柱の並び <span>›</span></button>
+          <div className="preview-pillars">
+            {[
+              ['年柱', initialResult?.chart?.pillars?.year?.text || '—'],
+              ['月柱', initialResult?.chart?.pillars?.month?.text || '—'],
+              ['日柱', initialResult?.chart?.pillars?.day?.text || '—'],
+              ['時柱', initialResult?.chart?.pillars?.hour?.text || '—'],
+            ].map((item) => (
+              <div key={item[0]} className={item[0] === '日柱' ? 'is-day' : ''}>
+                <span>{item[0]}</span>
+                <strong>{item[1]}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="creation-preview-card">
+          <h3>五行バランス</h3>
+          {['木', '火', '土', '金', '水'].map((item, index) => (
+            <div key={item} className="preview-balance-row">
+              <span>{item}</span>
+              <i style={{ width: `${[28, 54, 42, 68, 76][index]}%` }}></i>
+            </div>
+          ))}
+        </div>
+        <div className="creation-preview-card">
+          <h3>日主の強さ</h3>
+          <p>{initialResult ? (initialResult.chart?.strength?.label || '確認済み') : '入力後にプレビューを表示します'}</p>
+        </div>
+      </aside>
       <div className="mobile-command-bar" aria-live="polite">
         <span>{valid ? '入力完了' : '必須項目を入力'}</span>
         <button className={busy ? 'busy' : ''} disabled={!valid || busy} onClick={submit}>

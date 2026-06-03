@@ -473,7 +473,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <FormField num="日" ja="生年月日" romaji="日付"
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}
           hint="生まれた日付">
-          <div className="toggle-row">
+          <div className="toggle-row era-row">
             {['seireki','showa','heisei','reiwa'].map(c => (
                <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
                  {c === 'seireki' ? '西暦' : (c === 'showa' ? '昭和' : (c === 'heisei' ? '平成' : '令和'))}
@@ -508,7 +508,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         <FormField num="時" ja="出生時刻" romaji="時刻"
           fieldRef={(node) => { fieldRefs.current.birthtime = node; }}
           hint="時刻がわかる場合は入力">
-          <div className="toggle-row compact">
+          <div className="toggle-row compact time-mode-row">
             <button className={!unsure ? 'on' : ''} onClick={() => setUnsure(false)}>時刻を入力</button>
             <button className={unsure ? 'on' : ''} onClick={() => setUnsure(true)}>時間不明</button>
           </div>

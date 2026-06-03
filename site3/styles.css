@@ -8569,3 +8569,99 @@ select {
     text-align: center !important;
   }
 }
+
+/* Mobile density pass: keep touch targets, reduce stacked control waste. */
+@media (max-width: 560px) {
+  .creation-rite {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .creation-rite .rite-main {
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  .creation-rite .field {
+    gap: 12px !important;
+    padding: 14px 14px 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .creation-rite .field-key {
+    grid-template-columns: 26px minmax(0, 1fr) !important;
+    column-gap: 9px !important;
+    row-gap: 1px !important;
+  }
+
+  .creation-rite .field-key .num:first-child {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+  }
+
+  .creation-rite .field-key .ja {
+    font-size: 18px !important;
+  }
+
+  .creation-rite .field-key .hint {
+    font-size: 12px !important;
+  }
+
+  .creation-rite .field-input {
+    display: grid !important;
+    gap: 8px !important;
+  }
+
+  .creation-rite .toggle-row {
+    gap: 4px !important;
+    padding: 3px !important;
+    border-radius: 12px !important;
+  }
+
+  .creation-rite .era-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  .creation-rite .time-mode-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .creation-rite .toggle-row button,
+  .creation-rite .gender-btn {
+    min-height: 40px !important;
+    border-radius: 10px !important;
+    padding: 0 6px !important;
+    font-size: 13px !important;
+  }
+
+  .creation-rite .date-row {
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.9fr) minmax(0, 0.9fr) !important;
+    gap: 7px !important;
+  }
+
+  .creation-rite .time-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .creation-rite .input-line {
+    min-height: 44px !important;
+    border-radius: 12px !important;
+  }
+
+  .creation-rite .input-line input,
+  .creation-rite .input-line select {
+    min-height: 44px !important;
+    padding: 0 24px 0 10px !important;
+    font-size: 18px !important;
+  }
+
+  .creation-rite .input-line.with-mark::after {
+    right: 8px !important;
+    bottom: 6px !important;
+    font-size: 9px !important;
+  }
+}

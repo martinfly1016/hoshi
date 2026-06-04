@@ -1992,15 +1992,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
   const currentDecadeTheme = decadeTheme(currentDecade, profile?.gender);
   const monthly = luck.monthlyFortunes || [];
   const daily = luck.dailyFortunes || [];
-  const [selectedDecadeIndex, setSelectedDecadeIndex] = React.useState(currentDecade?.index || decade[0]?.index || '');
-  const [selectedYear, setSelectedYear] = React.useState(currentAnnual?.year || luck.annualFortunes?.[0]?.year || '');
-  React.useEffect(() => {
-    setSelectedDecadeIndex(currentDecade?.index || decade[0]?.index || '');
-    setSelectedYear(currentAnnual?.year || luck.annualFortunes?.[0]?.year || '');
-  }, [calculation]);
-  const selectedDecade = decade.find((item) => String(item.index) === String(selectedDecadeIndex)) || currentDecade || decade[0];
-  const selectedAnnual = (luck.annualFortunes || []).find((item) => String(item.year) === String(selectedYear)) || currentAnnual || luck.annualFortunes?.[0];
-  const selectedReading = selectedDecadeYearReading(selectedDecade, selectedAnnual);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) {
@@ -2018,8 +2009,8 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
       <aside className="rite-side">
         <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
         <div className="seal-stack">
-          {['十年運マップ','現在の大運','選んで読む','近い流年','明細表'].map((n, i) => (
-            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆','伍'][i]}</span><span>{n}</span></button>
+          {['十年運マップ','現在の大運','近い流年','明細表'].map((n, i) => (
+            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span><span>{n}</span></button>
           ))}
           <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
@@ -2042,56 +2033,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
             </div>
           </div>
           <div id="f2" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-            <section className="fortune-selector-panel">
-              <div className="fortune-selector-head">
-                <div>
-                  <div className="summary-kicker">大運と流年を選んで読む</div>
-                  <h3>見たい十年と一年を重ねる</h3>
-                  <p>大運は人生の大きな流れ、流年はその年に表に出る動きです。選んだ組み合わせに応じて、仕事・財・対人の読みを自動で切り替えます。</p>
-                </div>
-                <div className="fortune-selector-controls">
-                  <label>
-                    <span>大運</span>
-                    <select value={selectedDecadeIndex} onChange={(event) => setSelectedDecadeIndex(event.target.value)}>
-                      {decade.map((item) => (
-                        <option key={item.index} value={item.index}>{item.startAge}-{item.endAge}歳 / {item.name}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    <span>流年</span>
-                    <select value={selectedYear} onChange={(event) => setSelectedYear(event.target.value)}>
-                      {(luck.annualFortunes || []).map((item) => (
-                        <option key={item.year} value={item.year}>{item.year}年 / {item.name}</option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-              </div>
-              {selectedReading ? (
-                <article className="fortune-combo-reading">
-                  <div className="fortune-combo-title">
-                    <span>{selectedReading.scoreLabel}</span>
-                    <h4>{selectedReading.title}</h4>
-                    <div className="fortune-score"><i style={{ width: `${selectedReading.score}%` }} /><em>{selectedReading.score}</em></div>
-                  </div>
-                  <p>{selectedReading.summary}</p>
-                  <div className="fortune-keywords">
-                    {selectedReading.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
-                  </div>
-                  <div className="fortune-combo-grid">
-                    <article><strong>仕事</strong><p>{selectedReading.work}</p></article>
-                    <article><strong>財</strong><p>{selectedReading.money}</p></article>
-                    <article><strong>対人</strong><p>{selectedReading.relation}</p></article>
-                  </div>
-                  <small>{selectedReading.caution}</small>
-                </article>
-              ) : (
-                <p className="backend-copy">大運と流年を計算できる入力にすると、組み合わせ解説を表示できます。</p>
-              )}
-            </section>
-          </div>
-          <div id="f3" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}><h3>今日の巡り（流年・流月・流日）</h3></div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
               {[ { label: '今年の運気', item: currentAnnual, color: 'var(--accent)' }, { label: '今月の運気', item: monthly[0], color: 'var(--gold)' }, { label: '今日の運気', item: daily[0], color: 'var(--seal)' } ].map(l => (
@@ -2105,7 +2046,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
             </div>
             <AnnualFortuneGuide annual={luck.annualFortunes || []} />
           </div>
-          <div id="f4" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+          <div id="f3" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
              <div style={{ textAlign: 'center' }}><h3>明細表</h3><p className="backend-copy">上の見取り図で大きな流れを確認したあと、必要に応じて干支・十神の明細を見ます。</p></div>
              <LuckItemTable
                title="大運"
@@ -2181,35 +2122,6 @@ const TEN_GOD_FORTUNE_GUIDE = {
 
 function fortuneGuideForGod(god) {
   return TEN_GOD_FORTUNE_GUIDE[god] || { keywords: ['確認', '調整'], rhythm: '流れを確認する時期', score: 60, tone: 'steady', advice: '大きな断定はせず、命式本体と流年を重ねて運の出方を確認します。' };
-}
-
-function impactSummary(item) {
-  const impact = item?.impacts?.[0];
-  if (!impact) return '命式との大きな冲・合・刑害は強く出ていないため、十神テーマを中心に読みます。';
-  return `${impact.label}：${impact.text}`;
-}
-
-function selectedDecadeYearReading(decade, annual) {
-  if (!decade || !annual) return null;
-  const decadeGuide = fortuneGuideForGod(decade.pillar?.heavenlyTenGod);
-  const annualGuide = fortuneGuideForGod(annual.pillar?.heavenlyTenGod);
-  const score = Math.round((decadeGuide.score * 0.62) + (annualGuide.score * 0.38));
-  const scoreLabel = score >= 75 ? '上昇' : score >= 68 ? '活動' : score >= 62 ? '安定' : '整える';
-  const decadeLabel = displayTenGod(decade.pillar?.heavenlyTenGod);
-  const annualLabel = displayTenGod(annual.pillar?.heavenlyTenGod);
-  return {
-    title: `${decade.name}大運 × ${annual.name}流年`,
-    score,
-    scoreLabel,
-    keywords: [...new Set([...(decadeGuide.keywords || []), ...(annualGuide.keywords || [])])].slice(0, 5),
-    summary: decade?.reading?.summary
-      ? `${decade.reading.summary} その十年の中で${annual.year}年は、${annualLabel}のテーマが一年の入口になります。`
-      : `${decade.startYear}-${decade.endYear}年の${decadeLabel}大運に、${annual.year}年の${annualLabel}流年が重なります。十年単位の課題を一年単位で具体化して読む組み合わせです。`,
-    work: annual?.reading?.work || `仕事面では、大運の${decadeLabel}を土台に、流年の${annualLabel}を具体的な動きとして使います。`,
-    money: annual?.reading?.money || '財運は収入断定ではなく、管理・機会・支出の出方として見ます。',
-    relation: annual?.reading?.relation || '対人面は日支と命式全体に、この年の干支がどう触れるかを重ねます。',
-    caution: annual?.reading?.impact || impactSummary(annual),
-  };
 }
 
 function decadeStageLabel(item) {

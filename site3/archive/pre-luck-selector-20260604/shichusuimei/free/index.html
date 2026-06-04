@@ -2503,93 +2503,6 @@
     font-size: 13px;
   }
 
-  .luck-reading-list,
-  .luck-combo-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 14px;
-  }
-
-  .luck-reading-card,
-  .luck-combo-card {
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--paper) 84%, #fff 16%);
-    padding: 16px;
-  }
-
-  .luck-reading-head {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .luck-reading-head span,
-  .luck-reading-head em {
-    color: var(--muted);
-    font-size: 12px;
-    font-style: normal;
-    white-space: nowrap;
-  }
-
-  .luck-reading-head strong {
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-
-  .luck-reading-card p,
-  .luck-combo-card p,
-  .luck-reading-points dd,
-  .luck-reading-card small,
-  .luck-combo-card small {
-    color: var(--ink-2);
-    font-size: 13px;
-    line-height: 1.75;
-  }
-
-  .luck-reading-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 10px 0;
-  }
-
-  .luck-reading-tags span {
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    padding: 4px 8px;
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  .luck-reading-points {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    margin: 12px 0;
-  }
-
-  .luck-reading-points div {
-    border: 1px solid var(--rule);
-    padding: 10px;
-  }
-
-  .luck-reading-points dt {
-    color: var(--ink);
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .luck-reading-points dd {
-    margin: 0;
-  }
-
   .chart-shell {
     padding: 16px;
     overflow-x: auto;
@@ -2760,7 +2673,6 @@
     .tag-detail-grid,
     .tag-explain-grid,
     .luck-grid,
-    .luck-reading-points,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2878,7 +2790,6 @@
     .tag-detail-grid,
     .tag-explain-grid,
     .luck-grid,
-    .luck-reading-points,
     .auxiliary-grid {
       grid-template-columns: 1fr;
     }
@@ -3036,6 +2947,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260604-luck-selector-1"></script>
+<script type="module" src="./page.js?v=free-20260602-label-cleanup-1"></script>
 </body>
 </html>

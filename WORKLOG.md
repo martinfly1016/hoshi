@@ -128,6 +128,7 @@
 | v0.3.81 | 2026-05-27 01:03 JST | 用户首页 | `/index.html` 詳細解説含义补齐 | 按「详细解说页展示统计值后都要解释具体含义」反馈，为四柱主题追加四柱整体读法，为五行计算根拠追加五行构成含义解释，并保留十神构成解释，使四柱・五行・十神都形成“结构/统计 → 含义解说”的阅读节奏 | `/latest.html` / `/index.html?v=20260527-user-detail-meaning-1` | - | main `32e6ece` / gh-pages `3f206a5` |
 | v0.3.82 | 2026-05-29 22:23 JST | 算法 / 用户首页 / 验证页 | `/index.html`、`calculation-lab.js`、`/shichusuimei/free/index.html` | 修正身強身弱判定把日主天干误当五行的问题，补充强弱判定解释字段和回归脚本；启用初版 `大運・流年` 页面，移除用户页占位状态；清理验证页导航和部分中文术语 | `/latest.html` / `/index.html?v=20260529-strength-fortune-1` | - | local pending |
 | v0.3.83 | 2026-06-02 09:05 JST | 用户首页 / 验证页 / 发布 | `/index.html`、`/shichusuimei/free/index.html`、内部验证工具 | 发布 5/29 算法与大運・流年初版，并追加日语 QA 清理：用户页与后台验证页可见 `格局` 统一为 `命式の型`，旧计算工具、算法验证台、移动预览页等内部可见页面去除中文/中文式标签 | `/latest.html` / `/index.html?v=20260602-qa-label-cleanup-1`；后台 `/shichusuimei/free/index.html?v=free-20260602-label-cleanup-1` | `/archive/pre-qa-label-cleanup-20260602/index.html?v=20260529-strength-fortune-1` | main `806107b` / gh-pages `b374e62` |
+| v0.3.84 | 2026-06-04 22:55 JST | 算法 / 用户首页 / 验证页 | `calculation-lab.js`、`/index.html`、`/shichusuimei/free/index.html` | 大運・流年算法结果新增十神主题、十年阶段、命式冲合刑害影响摘要、每个十年大运解说、每个流年解说和当前大运 × 近十年流年的组合解说；用户页新增「大運と流年を選んで読む」选择器，可手动选择十年大运和流年并自动切换仕事・財・対人解说；后台验证页同步显示十年大运解说与组合解说 | `/latest.html` / `/index.html?v=20260604-luck-selector-1`；后台 `/shichusuimei/free/index.html?v=free-20260604-luck-selector-1` | `/archive/pre-luck-selector-20260604/index.html?v=20260602-qa-label-cleanup-1` | local pending |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

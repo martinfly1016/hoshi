@@ -1010,206 +1010,6 @@ function getFortuneTheme(tenGod) {
   return themes[tenGod] || '変化と運勢の交差点。';
 }
 
-const LUCK_TEN_GOD_GUIDE = {
-  比肩: {
-    label: '比肩',
-    keywords: ['自立', '基礎固め'],
-    rhythm: '自分の軸を整える',
-    score: 62,
-    advice: '自分で決める力が強まります。人に合わせすぎず、仕事の型、生活の基準、判断軸を整えるほど後半が安定します。',
-    work: '独立性、専門性、個人の責任範囲を明確にすると評価につながります。',
-    money: '大きく広げるより、固定費や貯蓄の仕組みを整える時期です。',
-    relation: '距離感を保ち、自分の考えを丁寧に伝えることが関係を安定させます。',
-  },
-  劫财: {
-    label: '劫財',
-    keywords: ['競争', '共同', '突破'],
-    rhythm: '人と競いながら突破する',
-    score: 72,
-    advice: '人脈、仲間、競争相手から刺激を受ける時期です。勢いはありますが、契約、分担、お金の境界を曖昧にしないことが大切です。',
-    work: 'チーム、交渉、共同事業で力が出ます。主導権争いには注意します。',
-    money: '入る力も使う力も強くなります。投資や支出は上限を決めると安定します。',
-    relation: '仲間意識が強まる一方、近すぎる関係では摩擦も出やすくなります。',
-  },
-  食神: {
-    label: '食神',
-    keywords: ['表現', '楽しみ', '育成'],
-    rhythm: '才能と余裕を外へ出す',
-    score: 70,
-    advice: '表現、発信、育成、生活の楽しみが運を開きます。無理な勝負より、続けられる形で才能を出すと流れが整います。',
-    work: '企画、制作、教える仕事、発信活動に向きます。',
-    money: '楽しみや生活品質への支出が増えやすいので、継続できる規模に整えます。',
-    relation: '柔らかい雰囲気が出やすく、人を安心させる関係を作れます。',
-  },
-  伤官: {
-    label: '傷官',
-    keywords: ['才能', '改革', '言葉'],
-    rhythm: '才能を磨き、古い型を変える',
-    score: 68,
-    advice: '鋭さ、専門性、表現力が前に出ます。批判だけで終わらせず、改善案や作品に変えるほど評価につながります。',
-    work: '改善、専門技術、デザイン、分析で強みが出ます。上司や制度との衝突には注意します。',
-    money: '才能収入の入口が出やすい反面、衝動的な判断は避けたい時期です。',
-    relation: '言葉が強くなりやすいので、正しさより伝え方を整えると関係が守られます。',
-  },
-  偏财: {
-    label: '偏財',
-    keywords: ['人脈', '商機', '移動'],
-    rhythm: '外へ広がり、機会をつかむ',
-    score: 78,
-    advice: '人脈、商機、移動、交渉で運が動きます。入口が増えるほど散漫にもなりやすいので、優先順位を決めることが開運になります。',
-    work: '営業、企画、事業展開、外部連携に向きます。',
-    money: '流動的な収入機会が増えますが、短期利益だけを追わないことが大切です。',
-    relation: '人付き合いが広がり、紹介や偶然の縁が増えやすい時期です。',
-  },
-  正财: {
-    label: '正財',
-    keywords: ['安定', '管理', '信用'],
-    rhythm: '現実を積み上げる',
-    score: 66,
-    advice: 'お金、生活、仕事の管理力が問われます。派手な変化より、実務、信用、継続収入の土台を作るほど実りにつながります。',
-    work: '管理、実務、継続契約、堅実な成果に向きます。',
-    money: '貯蓄、固定収入、家計管理を整えるほど安定します。',
-    relation: '誠実さや約束を守る姿勢が信頼を育てます。',
-  },
-  七杀: {
-    label: '偏官',
-    keywords: ['挑戦', '責任', '突破'],
-    rhythm: '強い責任と挑戦を受ける',
-    score: 74,
-    advice: 'プレッシャー、大きな役割、急な変化が来やすい時期です。勢いだけで進まず、ルールと健康管理を整えるほど飛躍に変わります。',
-    work: '新規開拓、責任ある役割、困難な案件で力が試されます。',
-    money: '勝負運はありますが、リスク管理を先に置くほど成果が残ります。',
-    relation: '強引さが出やすいため、相手の事情を確認してから動くと安定します。',
-  },
-  正官: {
-    label: '正官',
-    keywords: ['信用', '昇進', '秩序'],
-    rhythm: '社会的評価を育てる',
-    score: 76,
-    advice: '肩書き、責任、組織内の評価が育ちます。誠実さと継続力が運を押し上げるため、約束を守ることが最大の開運行動になります。',
-    work: '昇進、資格、組織内評価、公式な役割に向きます。',
-    money: '安定収入や制度に沿った成果が出やすい時期です。',
-    relation: '礼儀、信頼、長期的な約束が関係を強めます。',
-  },
-  偏印: {
-    label: '偏印',
-    keywords: ['学び', '転換', '直感'],
-    rhythm: '視点を変え、次の材料を集める',
-    score: 58,
-    advice: '学び直し、専門分野、環境の切り替えに向きます。外へ強く攻めるより、次の展開に必要な知識や感性を蓄えると流れが良くなります。',
-    work: '研究、学習、専門技能、企画の種まきに向きます。',
-    money: 'すぐ収益化するより、学びや準備への投資が後で効きます。',
-    relation: '一人の時間が必要になりやすいので、距離を取る理由を丁寧に伝えると安定します。',
-  },
-  正印: {
-    label: '印綬',
-    keywords: ['保護', '資格', '休養'],
-    rhythm: '整えて受け取る',
-    score: 60,
-    advice: '学び、保護、休養、資格や知識の吸収に向きます。成果を急がず、体調や心の余白を整えることが次の上昇につながります。',
-    work: '資格取得、学術、支援を受ける仕事、基礎固めに向きます。',
-    money: '守りを固める時期です。無理な拡大より、制度や保険の確認が役立ちます。',
-    relation: '支えてくれる人との縁が強まります。受け取ることを遠慮しすぎないのが鍵です。',
-  },
-};
-
-function luckGuideForGod(tenGod) {
-  return LUCK_TEN_GOD_GUIDE[tenGod] || {
-    label: tenGod || '十神',
-    keywords: ['確認', '調整'],
-    rhythm: '流れを確認する',
-    score: 60,
-    advice: '命式本体と大運・流年の重なりを確認しながら、無理に断定せず運の出方を見ます。',
-    work: '仕事では、命式本体の強みをどの場面で使うかを確認します。',
-    money: '財運は収入断定ではなく、管理と機会の出方として見ます。',
-    relation: '対人運は日支や命式全体との関係を重ねて読みます。',
-  };
-}
-
-function luckScoreLabel(score) {
-  if (score >= 75) return '上昇';
-  if (score >= 68) return '活動';
-  if (score >= 62) return '安定';
-  return '整える';
-}
-
-function decadeStageLabel(item) {
-  const age = Number(item?.startAge ?? 0);
-  if (age < 20) return '早年';
-  if (age < 40) return '成長期';
-  if (age < 60) return '充実期';
-  return '成熟期';
-}
-
-function summarizeImpacts(impacts = []) {
-  const first = impacts[0];
-  if (!first) {
-    return '命式との大きな冲・合・刑害は強く出ていないため、十神テーマを中心に穏やかに読みます。';
-  }
-  return `${first.label} が出ます。${first.text}`;
-}
-
-function buildDecadeReading(item) {
-  const guide = luckGuideForGod(item?.pillar?.heavenlyTenGod);
-  const score = guide.score;
-  const stage = decadeStageLabel(item);
-  return {
-    title: `${item.name}の大運：${guide.rhythm}`,
-    label: guide.label,
-    stage,
-    rhythm: guide.rhythm,
-    keywords: guide.keywords,
-    score,
-    scoreLabel: luckScoreLabel(score),
-    summary: `${item.startYear}-${item.endYear}年（${item.startAge}-${item.endAge}歳）は、${guide.label}の働きが前に出る${stage}の十年です。${guide.advice}`,
-    work: guide.work,
-    money: guide.money,
-    relation: guide.relation,
-    impact: summarizeImpacts(item.impacts),
-    climate: item.climate?.text || '',
-  };
-}
-
-function buildAnnualReading(item) {
-  const guide = luckGuideForGod(item?.pillar?.heavenlyTenGod);
-  return {
-    title: `${item.year}年 ${item.name}：${guide.label}`,
-    label: guide.label,
-    rhythm: guide.rhythm,
-    keywords: guide.keywords,
-    score: guide.score,
-    scoreLabel: luckScoreLabel(guide.score),
-    summary: `${item.year}年は${item.name}の流年で、${guide.label}のテーマが一年の入口になります。${guide.advice}`,
-    work: guide.work,
-    money: guide.money,
-    relation: guide.relation,
-    impact: summarizeImpacts(item.impacts),
-    climate: item.climate?.text || '',
-  };
-}
-
-function buildDecadeYearReading(decade, annual) {
-  if (!decade || !annual) return null;
-  const decadeGuide = luckGuideForGod(decade.pillar?.heavenlyTenGod);
-  const annualGuide = luckGuideForGod(annual.pillar?.heavenlyTenGod);
-  const score = Math.round((decadeGuide.score * 0.62) + (annualGuide.score * 0.38));
-  const decadeLabel = `${decade.startYear}-${decade.endYear}年`;
-  const annualImpact = summarizeImpacts(annual.impacts);
-  return {
-    decadeIndex: decade.index,
-    year: annual.year,
-    title: `${decade.name}大運 × ${annual.name}流年`,
-    score,
-    scoreLabel: luckScoreLabel(score),
-    keywords: [...new Set([...decadeGuide.keywords, ...annualGuide.keywords])].slice(0, 5),
-    summary: `${decadeLabel}の大きな流れは「${decadeGuide.rhythm}」。その中で${annual.year}年は「${annualGuide.rhythm}」が重なるため、十年単位の課題を一年単位で具体化する年です。`,
-    work: `仕事面では、大運の${decadeGuide.label}が土台になり、流年の${annualGuide.label}が実際の動き方を決めます。${annualGuide.work}`,
-    money: `財運は、大運で続く${decadeGuide.label}の使い方に、${annual.year}年の${annualGuide.label}が重なります。${annualGuide.money}`,
-    relation: `対人面では、十年の${decadeGuide.label}に一年の${annualGuide.label}が乗ります。${annualGuide.relation}`,
-    caution: annualImpact,
-  };
-}
-
 const BRANCH_XING = [
   { branches: ['子', '卯'], label: '無礼の刑', text: '礼節を欠きやすく、身近な人間関係での摩擦に注意が必要な時期。' },
   { branches: ['寅', '巳', '申'], label: '恩なき刑', text: '信頼関係の揺らぎや、親切が裏目に出やすい傾向。冷静な距離感が吉。' },
@@ -1539,47 +1339,29 @@ function buildLuckCycles(input, solarTime, dayStem, effectiveParts, natalPillars
   
   const enrich = (item) => {
     if (!item?.pillar) return item;
-    const enriched = {
+    return {
       ...item,
       impacts: analyzeLuckImpact(item.pillar, natalPillars),
       climate: analyzeClimateBalance(item.pillar, birthMonthBranch)
     };
-    return enriched;
   };
 
   const decades = buildDecadeFortunes(solarTime, input.gender, dayStem);
   if (decades.status === 'ok') {
-    decades.items = decades.items.map((item) => {
-      const enriched = enrich(item);
-      return { ...enriched, reading: buildDecadeReading(enriched) };
-    });
+    decades.items = decades.items.map(enrich);
   }
-  const annualFortunes = buildAnnualFortunes(target.year, dayStem).map((item) => {
-    const enriched = enrich(item);
-    return { ...enriched, reading: buildAnnualReading(enriched) };
-  });
-  const monthlyFortunes = buildMonthlyFortunes(target.year, dayStem).map(enrich);
-  const dailyFortunes = buildDailyFortunes(target.year, target.month, target.day, dayStem).map(enrich);
-  const currentDecade = decades.status === 'ok'
-    ? decades.items.find((item) => item.startYear <= target.year && target.year <= item.endYear)
-    : null;
-  const decadeYearReadings = currentDecade
-    ? annualFortunes.map((annual) => buildDecadeYearReading(currentDecade, annual))
-    : [];
 
   return {
     target,
     natalInteractions,
     decadeFortunes: decades,
-    annualFortunes,
-    monthlyFortunes,
-    dailyFortunes,
-    decadeYearReadings,
+    annualFortunes: buildAnnualFortunes(target.year, dayStem).map(enrich),
+    monthlyFortunes: buildMonthlyFortunes(target.year, dayStem).map(enrich),
+    dailyFortunes: buildDailyFortunes(target.year, target.month, target.day, dayStem).map(enrich),
 
     notes: [
       "大運は tyme4ts の DefaultChildLimitProvider による初版検証値です。",
       "流年・流月・流日は干支暦の周期表示で、吉凶断定ではありません。",
-      "大運・流年の解説は十神、五行、命式との冲合刑害を合わせた自動生成の初版です。",
     ],
   };
 }

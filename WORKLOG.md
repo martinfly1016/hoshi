@@ -2,6 +2,16 @@
 
 用于记录项目开发过程中的关键进展、需求决策、Case study、问题排查和经验教训。
 
+## 2026-06-04 Reset Handoff / Concept C new-UX 发布备份
+
+- 已按 Wreal 重置会话前要求整理交接文档：`RESET_HANDOFF_2026-06-04.md`。
+- 交接内容覆盖：`new-ux` 当前状态、Concept C 移动端 UX 方向、最新 GitHub Pages 发布、线上验收结果、重要提交、QA/发布流程、当前脏工作区注意事项。
+- 最新线上版本：`https://martinfly1016.github.io/hoshi/`，缓存键 `20260603-concept-c-pwa-12`。
+- 最新 source commit：`new-ux eb9d81d`（Remove result nav gradient artifact）。
+- 最新 Pages commit：`gh-pages adb5720`（Remove result nav gradient artifact）。
+- 线上 390px 移动端验收已通过：无横向溢出，结果页导航无灰色渐变/blur 残留，sticky 导航不再遮住标题。
+- 当前工作区仍有 `.gitignore` 未提交变更；这是用户/既有变更，不属于本次备份，不要随意 revert。
+
 ## 2026-05-29 Reset Handoff / 下一阶段需求备份
 
 - 已按 Wreal 要求整理重置对话用交接文档：`RESET_HANDOFF_2026-05-29.md`。

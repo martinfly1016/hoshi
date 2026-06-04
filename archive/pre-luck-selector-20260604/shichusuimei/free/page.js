@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260604-luck-selector-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260602-label-cleanup-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -2092,67 +2092,6 @@ function renderDecadeFortunes(result) {
         { label: "期間", value: (item) => `${item.startYear}-${item.endYear}` },
         { label: "十神", value: (item) => displayTenGod(item.pillar.heavenlyTenGod) || "—" },
       ])}
-      <div class="luck-reading-list">
-        ${decade.items.map((item) => renderDecadeReadingCard(item)).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderDecadeReadingCard(item) {
-  const reading = item.reading;
-  if (!reading) return "";
-  return `
-    <article class="luck-reading-card">
-      <div class="luck-reading-head">
-        <span>${escapeHtml(reading.stage || "")}</span>
-        <strong>${escapeHtml(reading.title || item.name)}</strong>
-        <em>${escapeHtml(reading.scoreLabel || "")} ${escapeHtml(String(reading.score || ""))}</em>
-      </div>
-      <p>${escapeHtml(reading.summary || "")}</p>
-      <div class="luck-reading-tags">
-        ${(reading.keywords || []).map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("")}
-      </div>
-      <dl class="luck-reading-points">
-        <div><dt>仕事</dt><dd>${escapeHtml(reading.work || "")}</dd></div>
-        <div><dt>財</dt><dd>${escapeHtml(reading.money || "")}</dd></div>
-        <div><dt>対人</dt><dd>${escapeHtml(reading.relation || "")}</dd></div>
-      </dl>
-      ${reading.impact ? `<small>${escapeHtml(reading.impact)}</small>` : ""}
-    </article>
-  `;
-}
-
-function renderDecadeYearReadingList(result) {
-  const readings = result.luckCycles?.decadeYearReadings || [];
-  if (!readings.length) return "";
-  return `
-    <div class="soft-panel reading-panel">
-      <div class="card-subhead">
-        <h3>現在の大運 × 近い流年</h3>
-        <p>現在の十年大運に、各年の流年を重ねた自動解説です。</p>
-      </div>
-      <div class="luck-combo-list">
-        ${readings.map((reading) => `
-          <article class="luck-combo-card">
-            <div class="luck-reading-head">
-              <span>${escapeHtml(String(reading.year))}年</span>
-              <strong>${escapeHtml(reading.title)}</strong>
-              <em>${escapeHtml(reading.scoreLabel)} ${escapeHtml(String(reading.score))}</em>
-            </div>
-            <p>${escapeHtml(reading.summary)}</p>
-            <div class="luck-reading-tags">
-              ${(reading.keywords || []).map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("")}
-            </div>
-            <dl class="luck-reading-points">
-              <div><dt>仕事</dt><dd>${escapeHtml(reading.work)}</dd></div>
-              <div><dt>財</dt><dd>${escapeHtml(reading.money)}</dd></div>
-              <div><dt>対人</dt><dd>${escapeHtml(reading.relation)}</dd></div>
-            </dl>
-            <small>${escapeHtml(reading.caution || "")}</small>
-          </article>
-        `).join("")}
-      </div>
     </div>
   `;
 }
@@ -2168,9 +2107,8 @@ function renderLuckCyclesSection(result) {
       </div>
       <span class="balance-badge">${escapeHtml(`${target.year || "—"}年`)}</span>
     </div>
-    <p class="section-copy">ここでは運勢周期の干支と、十神・五行・命式との冲合刑害を重ねた自動解説を検証します。</p>
+    <p class="section-copy">ここでは運勢周期の干支を検証用に並べます。解釈文への反映は、計算結果の確認後に段階的に進めます。</p>
     ${renderDecadeFortunes(result)}
-    ${renderDecadeYearReadingList(result)}
     <div class="luck-grid">
       <article class="detail-card">
         <div class="card-subhead">
@@ -2180,8 +2118,7 @@ function renderLuckCyclesSection(result) {
         ${renderLuckTable(luck.annualFortunes || [], [
           { label: "年", value: (item) => item.year },
           { label: "干支", value: (item) => item.name },
-          { label: "十神", value: (item) => displayTenGod(item.pillar.heavenlyTenGod) || "—" },
-          { label: "テーマ", value: (item) => item.reading?.rhythm || item.pillar.fortuneTheme || "—" },
+          { label: "五行", value: (item) => `${item.pillar.element.stem}/${item.pillar.element.branch}` },
         ])}
       </article>
       <article class="detail-card">

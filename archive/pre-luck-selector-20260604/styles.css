@@ -2875,108 +2875,6 @@ input, select { font-family: inherit; color: inherit; }
   display: inline-block;
   margin: 0 0 8px;
 }
-.fortune-selector-panel {
-  text-align: left;
-}
-.fortune-selector-head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.55fr);
-  gap: 20px;
-  align-items: start;
-  margin-bottom: 18px;
-}
-.fortune-selector-head h3 {
-  margin: 6px 0 8px;
-  font-size: 22px;
-}
-.fortune-selector-head p {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: 13px;
-  line-height: 1.8;
-}
-.fortune-selector-controls {
-  display: grid;
-  gap: 10px;
-}
-.fortune-selector-controls label {
-  display: grid;
-  gap: 6px;
-}
-.fortune-selector-controls span {
-  color: var(--ink-3);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-}
-.fortune-selector-controls select {
-  width: 100%;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  background: var(--bg-paper);
-  color: var(--ink);
-  padding: 10px 12px;
-  font: inherit;
-  font-size: 13px;
-}
-.fortune-combo-reading {
-  border: 1px solid var(--rule);
-  background: var(--bg-paper);
-  padding: 18px;
-}
-.fortune-combo-title {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(120px, 0.34fr);
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.fortune-combo-title span {
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  color: var(--seal);
-  padding: 5px 8px;
-  font-size: 11px;
-}
-.fortune-combo-title h4 {
-  margin: 0;
-  color: var(--ink);
-  font-size: 18px;
-  line-height: 1.45;
-}
-.fortune-combo-reading > p,
-.fortune-combo-reading small,
-.fortune-combo-grid p {
-  color: var(--ink-2);
-  font-size: 13px;
-  line-height: 1.85;
-}
-.fortune-combo-reading > p {
-  margin: 0 0 12px;
-}
-.fortune-combo-reading small {
-  display: block;
-  margin-top: 14px;
-  color: var(--ink-3);
-}
-.fortune-combo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-.fortune-combo-grid article {
-  border: 1px solid var(--rule);
-  padding: 12px;
-  min-width: 0;
-}
-.fortune-combo-grid strong {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--ink);
-  font-size: 13px;
-}
-.fortune-combo-grid p {
-  margin: 0;
-}
 .user-luck-table-wrap {
   max-width: 100%;
   overflow-x: auto;
@@ -3457,8 +3355,6 @@ input, select { font-family: inherit; color: inherit; }
   .backend-luck-grid,
   .decade-readable-grid,
   .annual-readable-grid,
-  .fortune-selector-head,
-  .fortune-combo-grid,
   .pillar-guide-grid,
   .element-guide-grid,
   .ten-god-map,

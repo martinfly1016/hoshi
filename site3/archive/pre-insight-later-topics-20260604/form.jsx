@@ -1883,14 +1883,6 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
     return contents[key] || contents.core;
   };
   const content = getInsightContent(topic);
-  const laterTopicKeys = ['lifeTask', 'marriage', 'career', 'money', 'relationship', 'health'];
-  const laterTopicSections = laterTopicKeys.map((key) => {
-    const item = TOPICS.find((candidate) => candidate.key === key);
-    return {
-      ...item,
-      content: getInsightContent(key),
-    };
-  }).filter((item) => item.key);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) {
@@ -1984,47 +1976,8 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
             </div>
           </section>
           <FoundationDetailSections calculation={calculation} />
-          <LaterInsightSections topics={laterTopicSections} onSelectTopic={setTopic} />
           <BackendDetailSync calculation={calculation} />
         </div></div>
-      </div>
-    </section>
-  );
-}
-
-function LaterInsightSections({ topics, onSelectTopic }) {
-  const nums = ['伍', '陸', '柒', '捌', '玖', '拾'];
-  return (
-    <section className="later-insight-sections">
-      <div className="later-insight-head">
-        <div>
-          <div className="summary-kicker">後半テーマの詳解</div>
-          <h3>人生課題から健康運まで、続けて読む</h3>
-          <p>五行特質のあとに、命盤を現実のテーマへ翻訳します。各項目は上部のテーマ切り替えと同じ読みを、ページ本文として続けて確認できます。</p>
-        </div>
-      </div>
-      <div className="later-insight-list">
-        {topics.map((topic, index) => (
-          <article key={topic.key} id={`insight-later-${topic.key}`} className={`later-insight-card tag-${topic.key}`}>
-            <div className="later-insight-marker">
-              <span>{nums[index]}</span>
-              <b>{topic.icon}</b>
-            </div>
-            <div className="later-insight-copy">
-              <div className="summary-kicker">{topic.ja}</div>
-              <h4>{topic.title}</h4>
-              <p>{topic.content.intro}</p>
-              <p>{topic.content.p1}</p>
-              <p>{topic.content.p2}</p>
-              <div className="later-insight-evidence">
-                <strong>読み取り根拠</strong>
-                <span>{topic.content.source}</span>
-              </div>
-              <small>{topic.content.note}</small>
-              <button type="button" onClick={() => onSelectTopic(topic.key)}>このテーマを上部で詳しく見る</button>
-            </div>
-          </article>
-        ))}
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260604-insight-later-topics-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260604-luck-selector-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;

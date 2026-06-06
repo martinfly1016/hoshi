@@ -456,6 +456,8 @@ const RESULT_SECTION_TABS = [
 const DEFAULT_RESULT_SECTION_ID = RESULT_SECTION_TABS[0].id;
 const MOBILE_RESULTS_MEDIA = window.matchMedia("(max-width: 760px)");
 const URL_PARAMS = new URLSearchParams(window.location.search);
+const LOCATION_REGION_OPTIONS = window.HOSHI_REGION_OPTIONS || [{ key: "jp", label: "日本" }];
+const WORLD_LOCATIONS = window.HOSHI_WORLD_LOCATIONS || [];
 
 let lastResult = null;
 let lastResultInputSignature = "";
@@ -501,7 +503,18 @@ function selectedMunicipality() {
     || JAPAN_MUNICIPALITIES[0];
 }
 
-function locationOverrideFromMunicipality(location) {
+function selectedWorldLocation() {
+  return WORLD_LOCATIONS.find((location) => location.id === element("world-location").value)
+    || WORLD_LOCATIONS.find((location) => location.country === element("location-region").value)
+    || WORLD_LOCATIONS[0]
+    || selectedMunicipality();
+}
+
+function selectedBirthLocation() {
+  return element("location-region").value === "jp" ? selectedMunicipality() : selectedWorldLocation();
+}
+
+function locationOverrideFromSelection(location) {
   return {
     id: location.id,
     label: location.label,
@@ -523,14 +536,14 @@ function delay(milliseconds) {
 }
 
 function readInput() {
-  const location = selectedMunicipality();
+  const location = selectedBirthLocation();
   return {
     date: element("birth-date").value,
     timeKnown: element("time-known").checked,
     time: element("birth-time").value || "12:00",
     gender: element("gender").value,
     locationId: location.id,
-    locationOverride: locationOverrideFromMunicipality(location),
+    locationOverride: locationOverrideFromSelection(location),
     timeCalculationMode: element("time-mode").value,
     lateZiHourMode: element("late-zi-mode").value,
   };
@@ -542,6 +555,22 @@ function inputSignature(input = readInput()) {
 
 function displayLocationLabel(location) {
   return (location?.label || "").replace(/^日本\s*\/\s*/, "");
+}
+
+function searchableLocationText(location) {
+  return [location.label, location.region, location.city, location.keywords]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function worldLocationsForCurrentFilters() {
+  const region = element("location-region").value;
+  const query = element("world-location-query").value.trim().toLowerCase();
+  return WORLD_LOCATIONS
+    .filter((location) => location.country === region)
+    .filter((location) => !query || searchableLocationText(location).includes(query))
+    .slice(0, 80);
 }
 
 function setBusy(isBusy) {
@@ -2519,7 +2548,45 @@ function populateMunicipalities(prefecture, preferredId = "") {
   element("municipality").value = nextId;
 }
 
+function populateWorldLocations(preferredId = "") {
+  const locations = worldLocationsForCurrentFilters();
+  element("world-location").innerHTML = locations.map(
+    (location) => `<option value="${location.id}">${escapeHtml(displayLocationLabel(location))}</option>`,
+  ).join("");
+
+  const nextId = locations.some((location) => location.id === preferredId)
+    ? preferredId
+    : (locations[0]?.id || "");
+  element("world-location").value = nextId;
+}
+
+function updateLocationStatus() {
+  const location = selectedBirthLocation();
+  const status = element("location-status");
+  if (!status) return;
+  status.textContent = location
+    ? `選択中: ${displayLocationLabel(location)} / ${location.timezone || "timezone未設定"}`
+    : "選択できる都市がありません。検索条件を変更してください。";
+}
+
+function syncLocationControls(preferredWorldId = "") {
+  const isJapan = element("location-region").value === "jp";
+  element("prefecture-field").classList.toggle("is-hidden", !isJapan);
+  element("municipality-field").classList.toggle("is-hidden", !isJapan);
+  element("world-search-field").classList.toggle("is-hidden", isJapan);
+  element("world-location-field").classList.toggle("is-hidden", isJapan);
+  if (!isJapan) {
+    populateWorldLocations(preferredWorldId);
+  }
+  updateLocationStatus();
+}
+
 function populateLocationControls() {
+  element("location-region").innerHTML = LOCATION_REGION_OPTIONS.map(
+    (region) => `<option value="${region.key}">${escapeHtml(region.label)}</option>`,
+  ).join("");
+  element("location-region").value = "jp";
+
   const availablePrefectures = new Set(JAPAN_MUNICIPALITIES.map((location) => location.prefecture));
   const prefectures = PREFECTURE_ORDER.filter((prefecture) => availablePrefectures.has(prefecture));
   element("prefecture").innerHTML = prefectures.map(
@@ -2527,6 +2594,7 @@ function populateLocationControls() {
   ).join("");
   element("prefecture").value = DEFAULT_PREFECTURE;
   populateMunicipalities(DEFAULT_PREFECTURE, DEFAULT_MUNICIPALITY_ID);
+  syncLocationControls();
 }
 
 function syncBirthTimeField() {
@@ -2539,6 +2607,7 @@ function syncBirthTimeField() {
 
 function markInputChanged() {
   syncBirthTimeField();
+  updateLocationStatus();
   if (!lastResult) {
     setStatus("未作成");
     return;
@@ -2557,11 +2626,20 @@ function bindEvents() {
   });
   element("copy-json").addEventListener("click", copyJson);
   element("time-known").addEventListener("change", markInputChanged);
+  element("location-region").addEventListener("change", () => {
+    element("world-location-query").value = "";
+    syncLocationControls();
+    markInputChanged();
+  });
   element("prefecture").addEventListener("change", () => {
     populateMunicipalities(element("prefecture").value);
     markInputChanged();
   });
-  ["birth-date", "birth-time", "gender", "municipality", "time-mode", "late-zi-mode"].forEach((id) => {
+  element("world-location-query").addEventListener("input", () => {
+    populateWorldLocations(element("world-location").value);
+    markInputChanged();
+  });
+  ["birth-date", "birth-time", "gender", "municipality", "world-location", "time-mode", "late-zi-mode"].forEach((id) => {
     element(id).addEventListener("change", markInputChanged);
   });
 }

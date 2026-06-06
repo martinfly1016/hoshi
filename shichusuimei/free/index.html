@@ -295,6 +295,17 @@
     color: var(--warn);
   }
 
+  .field.is-hidden {
+    display: none;
+  }
+
+  .location-status {
+    color: var(--ink-3);
+    font-size: 12px;
+    line-height: 1.6;
+    margin-top: 8px;
+  }
+
   .checkline {
     display: flex;
     align-items: center;
@@ -3034,18 +3045,43 @@
 
         <div class="field">
           <div class="field-heading">
+            <label for="location-region">出生地エリア</label>
+            <span class="field-note">海外対応</span>
+          </div>
+          <select id="location-region"></select>
+        </div>
+
+        <div class="field" id="prefecture-field">
+          <div class="field-heading">
             <label for="prefecture">都道府県</label>
-            <span class="field-note">日本のみ</span>
+            <span class="field-note">日本</span>
           </div>
           <select id="prefecture"></select>
         </div>
 
-        <div class="field">
+        <div class="field" id="municipality-field">
           <div class="field-heading">
             <label for="municipality">市区町村</label>
             <span class="field-note">真太陽時に使用</span>
           </div>
           <select id="municipality"></select>
+        </div>
+
+        <div class="field is-hidden" id="world-search-field">
+          <div class="field-heading">
+            <label for="world-location-query">海外都市検索</label>
+            <span class="field-note">都市名・地域名</span>
+          </div>
+          <input id="world-location-query" type="text" placeholder="例 ）上海 / New York / London" />
+        </div>
+
+        <div class="field is-hidden" id="world-location-field">
+          <div class="field-heading">
+            <label for="world-location">海外都市</label>
+            <span class="field-note">真太陽時に使用</span>
+          </div>
+          <select id="world-location"></select>
+          <div id="location-status" class="location-status"></div>
         </div>
 
         <div class="field">
@@ -3084,6 +3120,7 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260606-luck-page-1"></script>
+<script src="../../world-locations.js?v=20260606-backend-world-locations-1"></script>
+<script type="module" src="./page.js?v=free-20260606-backend-world-locations-1"></script>
 </body>
 </html>

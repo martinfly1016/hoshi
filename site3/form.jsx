@@ -637,8 +637,8 @@ const TEN_GOD_DISPLAY = {
   偏官: '七殺',
   正官: '正官',
   偏印: '偏印',
-  正印: '印綬',
-  印綬: '印綬',
+  正印: '正印',
+  印綬: '正印',
   日主: '日主',
 };
 function displayTenGod(name) {
@@ -661,8 +661,6 @@ function localizeReadingTerm(text) {
     .replaceAll('伤官', '傷官')
     .replaceAll('偏财', '偏財')
     .replaceAll('正财', '正財')
-    .replaceAll('正印格', '印綬格')
-    .replaceAll('正印', '印綬')
     .replaceAll('藏干', '蔵干')
     .replaceAll('纳音', '納音')
     .replaceAll('格局', '命式の型');
@@ -770,7 +768,7 @@ function tenGodCompositionInsight(gods) {
     topLabels.some((name) => ['食神', '傷官'].includes(name)) ? '表現力・感性' : '',
     topLabels.some((name) => ['正財', '偏財'].includes(name)) ? '現実成果・人との機会' : '',
     topLabels.some((name) => ['正官', '七殺'].includes(name)) ? '責任感・判断力' : '',
-    topLabels.some((name) => ['印綬', '偏印'].includes(name)) ? '学び・直感・保護' : '',
+    topLabels.some((name) => ['正印', '偏印'].includes(name)) ? '学び・直感・保護' : '',
   ].filter(Boolean).join('、');
   const sourceText = primary.heavenly > primary.hidden
     ? `「${primaryLabel}」は天干側に出やすいため、周囲から見える行動や第一印象に表れやすい配置です。`
@@ -1091,7 +1089,7 @@ function WuxingDiagram({ dayElement, elementCounts }) {
     const idxDay = wuxingCycle.indexOf(dayElement);
     const idxTarget = wuxingCycle.indexOf(targetElement);
     const diff = (idxTarget - idxDay + 5) % 5;
-    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・七殺', '印綬・偏印'];
+    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・七殺', '正印・偏印'];
     return families[diff] || '';
   };
   return (

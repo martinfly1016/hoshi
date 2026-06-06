@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260606-ten-god-qa-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260606-ten-god-audit-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -417,8 +417,8 @@ const TEN_GOD_DISPLAY = {
   偏官: "七殺",
   正官: "正官",
   偏印: "偏印",
-  正印: "印綬",
-  印綬: "印綬",
+  正印: "正印",
+  印綬: "正印",
   日主: "日主",
 };
 function displayTenGod(name) {

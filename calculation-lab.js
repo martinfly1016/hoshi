@@ -1102,7 +1102,7 @@ const LUCK_TEN_GOD_GUIDE = {
     relation: '一人の時間が必要になりやすいので、距離を取る理由を丁寧に伝えると安定します。',
   },
   正印: {
-    label: '印綬',
+    label: '正印',
     keywords: ['保護', '資格', '休養'],
     rhythm: '整えて受け取る',
     score: 60,

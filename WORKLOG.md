@@ -134,6 +134,7 @@
 | v0.3.87 | 2026-06-06 20:24 JST | 验证页 / 用户页共通データ | `/shichusuimei/free/index.html` 出生地入力 | 后台验证页出生地选择从日本限定扩展为日本/中国・香港・台湾/米国/その他海外；日本保持都道府県+市区町村，海外支持搜索并选择主要城市；新增共通 `world-locations.js`，用户页也读取同一海外城市清单 | 后台 `/shichusuimei/free/index.html?v=free-20260606-backend-world-locations-1` | - | main `c019168` / gh-pages `ef5772c` |
 | v0.3.88 | 2026-06-06 20:32 JST | 算法 / 验证页 | 大運×流年组合解说 | 修正未来流年跨越大运边界时仍套用当前大运的问题；现在每个流年年份都会重新匹配其所属十年大运，再生成「大運 × 流年」标题和解说。截图样例中 2026/2027 保持甲寅大運，2028 起切换为乙卯大運 | 后台 `/shichusuimei/free/index.html?v=free-20260606-backend-world-locations-1&section=luck` | - | main `df56ca0` / gh-pages `cefcd6d` |
 | v0.3.89 | 2026-06-06 20:43 JST | 算法 QA / 十神显示 | 大運流年・十神 | 确认底层算法对戊日主遇甲天干返回 `七杀`；修正展示层和大運流年 guide 将 `七杀/七殺` 显示为 `偏官` 的问题，统一显示 `七殺`；新增十神回归脚本，固定验证截图样例 `戊日主 + 甲寅大運 = 七杀/七殺`，并保留跨大运边界回归 | 后台 `/shichusuimei/free/index.html?v=free-20260606-ten-god-qa-1&section=luck`；用户 `/latest.html` | - | main `d15b53f` / gh-pages `9713742` |
+| v0.3.90 | 2026-06-06 20:54 JST | 算法 QA / 十神显示 | 全十神矩阵 | 自查 10 日主 × 10 天干共 100 组十神矩阵，底层 `tyme4ts` 计算与独立五行生克/阴阳规则一致；修正同类别名显示问题，将 `正印/印綬` 统一显示为 `正印`，并把十神回归脚本扩展为完整矩阵 + 截图样例 + 跨大运边界验证 | 后台 `/shichusuimei/free/index.html?v=free-20260606-ten-god-audit-1&section=luck`；用户 `/latest.html` | - | main `78e65a3` / gh-pages `7fc24f2` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

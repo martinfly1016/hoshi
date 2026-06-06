@@ -132,6 +132,7 @@
 | v0.3.85 | 2026-06-04 23:40 JST | 用户首页 | `/index.html` 命式詳細后半主题 | 在「命式詳細」五行特质之后新增连续正文「後半テーマの詳解」，补齐人生課題、婚姻運、仕事運、金運、対人運、健康運六个主题的完整解说、读取根拠和注意事项；保留顶部主题切换，同时让用户向下滚动即可读完后续解说 | `/latest.html` / `/index.html?v=20260604-insight-later-topics-1` | `/archive/pre-insight-later-topics-20260604/index.html?v=20260604-luck-selector-1` | main `246cdd1` / gh-pages `33c6044` |
 | v0.3.86 | 2026-06-06 19:55 JST | 验证页 | `/shichusuimei/free/index.html` 大運流年页 | 将「大運流年」从验证表升级为完整页面：新增大運/流年计算说明、当前十年运摘要、每个十年大运的基本走势解说、逐年流年运势解说，并在解说卡显示天干地支、十神和冲合刑害证据 | 后台 `/shichusuimei/free/index.html?v=free-20260606-luck-page-1&section=luck` | - | main `75a9043` / gh-pages `ebef2a6` |
 | v0.3.87 | 2026-06-06 20:24 JST | 验证页 / 用户页共通データ | `/shichusuimei/free/index.html` 出生地入力 | 后台验证页出生地选择从日本限定扩展为日本/中国・香港・台湾/米国/その他海外；日本保持都道府県+市区町村，海外支持搜索并选择主要城市；新增共通 `world-locations.js`，用户页也读取同一海外城市清单 | 后台 `/shichusuimei/free/index.html?v=free-20260606-backend-world-locations-1` | - | main `c019168` / gh-pages `ef5772c` |
+| v0.3.88 | 2026-06-06 20:32 JST | 算法 / 验证页 | 大運×流年组合解说 | 修正未来流年跨越大运边界时仍套用当前大运的问题；现在每个流年年份都会重新匹配其所属十年大运，再生成「大運 × 流年」标题和解说。截图样例中 2026/2027 保持甲寅大運，2028 起切换为乙卯大運 | 后台 `/shichusuimei/free/index.html?v=free-20260606-backend-world-locations-1&section=luck` | - | main `df56ca0` / gh-pages `cefcd6d` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

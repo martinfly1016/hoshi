@@ -1210,6 +1210,10 @@ function buildDecadeYearReading(decade, annual) {
   };
 }
 
+function findDecadeForYear(decades, year) {
+  return (decades?.items || []).find((item) => item.startYear <= year && year <= item.endYear) || null;
+}
+
 const BRANCH_XING = [
   { branches: ['子', '卯'], label: '無礼の刑', text: '礼節を欠きやすく、身近な人間関係での摩擦に注意が必要な時期。' },
   { branches: ['寅', '巳', '申'], label: '恩なき刑', text: '信頼関係の揺らぎや、親切が裏目に出やすい傾向。冷静な距離感が吉。' },
@@ -1560,11 +1564,11 @@ function buildLuckCycles(input, solarTime, dayStem, effectiveParts, natalPillars
   });
   const monthlyFortunes = buildMonthlyFortunes(target.year, dayStem).map(enrich);
   const dailyFortunes = buildDailyFortunes(target.year, target.month, target.day, dayStem).map(enrich);
-  const currentDecade = decades.status === 'ok'
-    ? decades.items.find((item) => item.startYear <= target.year && target.year <= item.endYear)
-    : null;
-  const decadeYearReadings = currentDecade
-    ? annualFortunes.map((annual) => buildDecadeYearReading(currentDecade, annual))
+  const currentDecade = decades.status === 'ok' ? findDecadeForYear(decades, target.year) : null;
+  const decadeYearReadings = decades.status === 'ok'
+    ? annualFortunes
+      .map((annual) => buildDecadeYearReading(findDecadeForYear(decades, annual.year), annual))
+      .filter(Boolean)
     : [];
 
   return {

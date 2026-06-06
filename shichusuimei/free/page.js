@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260606-luck-page-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260606-ten-god-qa-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -412,9 +412,9 @@ const TEN_GOD_DISPLAY = {
   偏財: "偏財",
   正财: "正財",
   正財: "正財",
-  七杀: "偏官",
-  七殺: "偏官",
-  偏官: "偏官",
+  七杀: "七殺",
+  七殺: "七殺",
+  偏官: "七殺",
   正官: "正官",
   偏印: "偏印",
   正印: "印綬",
@@ -1641,7 +1641,7 @@ function renderLifeThemeCards(result) {
     },
     {
       title: "財運・現実面",
-      text: `財星（偏財・正財）や官星（偏官・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
+      text: `財星（偏財・正財）や官星（七殺・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
     },
   ];
   return `

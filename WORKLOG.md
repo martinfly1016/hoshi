@@ -131,6 +131,7 @@
 | v0.3.84 | 2026-06-04 22:55 JST | 算法 / 用户首页 / 验证页 | `calculation-lab.js`、`/index.html`、`/shichusuimei/free/index.html` | 大運・流年算法结果新增十神主题、十年阶段、命式冲合刑害影响摘要、每个十年大运解说、每个流年解说和当前大运 × 近十年流年的组合解说；用户页新增「大運と流年を選んで読む」选择器，可手动选择十年大运和流年并自动切换仕事・財・対人解说；后台验证页同步显示十年大运解说与组合解说 | `/latest.html` / `/index.html?v=20260604-luck-selector-1`；后台 `/shichusuimei/free/index.html?v=free-20260604-luck-selector-1` | `/archive/pre-luck-selector-20260604/index.html?v=20260602-qa-label-cleanup-1` | main `ff85663` / gh-pages `9f7d5fb` |
 | v0.3.85 | 2026-06-04 23:40 JST | 用户首页 | `/index.html` 命式詳細后半主题 | 在「命式詳細」五行特质之后新增连续正文「後半テーマの詳解」，补齐人生課題、婚姻運、仕事運、金運、対人運、健康運六个主题的完整解说、读取根拠和注意事项；保留顶部主题切换，同时让用户向下滚动即可读完后续解说 | `/latest.html` / `/index.html?v=20260604-insight-later-topics-1` | `/archive/pre-insight-later-topics-20260604/index.html?v=20260604-luck-selector-1` | main `246cdd1` / gh-pages `33c6044` |
 | v0.3.86 | 2026-06-06 19:55 JST | 验证页 | `/shichusuimei/free/index.html` 大運流年页 | 将「大運流年」从验证表升级为完整页面：新增大運/流年计算说明、当前十年运摘要、每个十年大运的基本走势解说、逐年流年运势解说，并在解说卡显示天干地支、十神和冲合刑害证据 | 后台 `/shichusuimei/free/index.html?v=free-20260606-luck-page-1&section=luck` | - | main `75a9043` / gh-pages `ebef2a6` |
+| v0.3.87 | 2026-06-06 20:24 JST | 验证页 / 用户页共通データ | `/shichusuimei/free/index.html` 出生地入力 | 后台验证页出生地选择从日本限定扩展为日本/中国・香港・台湾/米国/その他海外；日本保持都道府県+市区町村，海外支持搜索并选择主要城市；新增共通 `world-locations.js`，用户页也读取同一海外城市清单 | 后台 `/shichusuimei/free/index.html?v=free-20260606-backend-world-locations-1` | - | main `c019168` / gh-pages `ef5772c` |
 
 > 后续每次代码或页面发布，都追加一行版本记录，包含日期时间、版本号、修改范围、新版地址、归档/对比地址和提交号。
 

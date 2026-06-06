@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260604-insight-later-topics-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260606-luck-page-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -1965,11 +1965,11 @@ function renderLuckPage(result) {
       ${renderPageHero({
         kicker: "PAGE 3 / LUCK",
         title: "大運流年",
-        text: "命式に時間の流れを重ねるページです。十年単位の大運と、年・月・日の運勢周期を初版として並べます。",
+        text: "命式に時間の流れを重ねるページです。十年単位の大運、年ごとの流年、天干地支と十神の動きをまとめて読みます。",
         items: [
-          { label: "大運", text: "十年単位の流れ" },
-          { label: "流年", text: "年ごとの干支" },
-          { label: "流月・流日", text: "近い周期の確認" },
+          { label: "大運", text: "起運・順逆・十年干支" },
+          { label: "流年", text: "年ごとの天干地支" },
+          { label: "解説", text: "十神・五行・冲合刑害" },
         ],
       })}
       ${renderLuckOverviewCards(result)}
@@ -1990,6 +1990,56 @@ function genderLabel(value) {
   if (value === "male") return "男性";
   if (value === "female") return "女性";
   return "未指定";
+}
+
+function branchImpactLabel(impacts = []) {
+  if (!impacts.length) return "冲合刑害なし";
+  return impacts.slice(0, 2).map((impact) => impact.label).join(" / ");
+}
+
+function pillarEvidenceText(item) {
+  const pillar = item?.pillar || {};
+  const stemElement = pillar.element?.stem || "—";
+  const branchElement = pillar.element?.branch || "—";
+  return `${pillar.stem || "—"}(${stemElement}) / ${pillar.branch || "—"}(${branchElement})`;
+}
+
+function renderLuckFormulaPanel(result) {
+  const luck = result.luckCycles || {};
+  const decade = luck.decadeFortunes;
+  const target = luck.target || {};
+  const annual = luck.annualFortunes?.[0];
+  const currentDecade = findCurrentDecadeFortune(result);
+  const formulas = [
+    {
+      label: "大運の出し方",
+      value: decade?.status === "ok"
+        ? `${genderLabel(decade.gender)}・${directionLabel(decade.direction)} / 起運 ${decade.startTime}`
+        : (decade?.note || "性別指定後に順行・逆行と起運を計算します。"),
+    },
+    {
+      label: "現在の十年運",
+      value: currentDecade
+        ? `${currentDecade.name}（${currentDecade.startYear}-${currentDecade.endYear}年、${currentDecade.startAge}-${currentDecade.endAge}歳）`
+        : "該当する大運は未判定です。",
+    },
+    {
+      label: "流年の出し方",
+      value: annual
+        ? `${target.year}年は ${annual.name}。天干 ${annual.pillar.stem}、地支 ${annual.pillar.branch}、日主から見た十神は ${displayTenGod(annual.pillar.heavenlyTenGod)}。`
+        : "対象年の干支を干支暦から計算します。",
+    },
+  ];
+  return `
+    <div class="soft-panel luck-formula-panel">
+      ${formulas.map((item) => `
+        <article>
+          <span>${escapeHtml(item.label)}</span>
+          <p>${escapeHtml(item.value)}</p>
+        </article>
+      `).join("")}
+    </div>
+  `;
 }
 
 function renderLuckTable(items, columns) {
@@ -2105,9 +2155,14 @@ function renderDecadeReadingCard(item) {
   return `
     <article class="luck-reading-card">
       <div class="luck-reading-head">
-        <span>${escapeHtml(reading.stage || "")}</span>
+        <span>${escapeHtml(`${item.startAge}-${item.endAge}歳`)}</span>
         <strong>${escapeHtml(reading.title || item.name)}</strong>
         <em>${escapeHtml(reading.scoreLabel || "")} ${escapeHtml(String(reading.score || ""))}</em>
+      </div>
+      <div class="luck-pillar-evidence">
+        <span>天干地支 ${escapeHtml(pillarEvidenceText(item))}</span>
+        <span>十神 ${escapeHtml(displayTenGod(item.pillar?.heavenlyTenGod))}</span>
+        <span>${escapeHtml(branchImpactLabel(item.impacts))}</span>
       </div>
       <p>${escapeHtml(reading.summary || "")}</p>
       <div class="luck-reading-tags">
@@ -2120,6 +2175,48 @@ function renderDecadeReadingCard(item) {
       </dl>
       ${reading.impact ? `<small>${escapeHtml(reading.impact)}</small>` : ""}
     </article>
+  `;
+}
+
+function renderAnnualReadingCards(result) {
+  const annuals = result.luckCycles?.annualFortunes || [];
+  if (!annuals.length) return "";
+  return `
+    <div class="soft-panel reading-panel">
+      <div class="card-subhead">
+        <h3>流年の運勢解説</h3>
+        <p>対象年から10年分の流年を、天干地支・十神・命式との作用で読みます。</p>
+      </div>
+      <div class="luck-combo-list">
+        ${annuals.map((annual) => {
+          const reading = annual.reading || {};
+          return `
+            <article class="luck-combo-card">
+              <div class="luck-reading-head">
+                <span>${escapeHtml(String(annual.year))}年</span>
+                <strong>${escapeHtml(reading.title || `${annual.name}の流年`)}</strong>
+                <em>${escapeHtml(reading.scoreLabel || "")} ${escapeHtml(String(reading.score || ""))}</em>
+              </div>
+              <div class="luck-pillar-evidence">
+                <span>天干地支 ${escapeHtml(pillarEvidenceText(annual))}</span>
+                <span>十神 ${escapeHtml(displayTenGod(annual.pillar?.heavenlyTenGod))}</span>
+                <span>${escapeHtml(branchImpactLabel(annual.impacts))}</span>
+              </div>
+              <p>${escapeHtml(reading.summary || "")}</p>
+              <div class="luck-reading-tags">
+                ${(reading.keywords || []).map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("")}
+              </div>
+              <dl class="luck-reading-points">
+                <div><dt>仕事</dt><dd>${escapeHtml(reading.work || "")}</dd></div>
+                <div><dt>財</dt><dd>${escapeHtml(reading.money || "")}</dd></div>
+                <div><dt>対人</dt><dd>${escapeHtml(reading.relation || "")}</dd></div>
+              </dl>
+              ${reading.impact ? `<small>${escapeHtml(reading.impact)}</small>` : ""}
+            </article>
+          `;
+        }).join("")}
+      </div>
+    </div>
   `;
 }
 
@@ -2164,24 +2261,27 @@ function renderLuckCyclesSection(result) {
     <div class="card-head">
       <div>
         <p class="card-kicker">LUCK / CYCLES</p>
-        <h2>大運・流年・流月・流日の初版排盤</h2>
+        <h2>大運・流年の干支計算と運勢解説</h2>
       </div>
       <span class="balance-badge">${escapeHtml(`${target.year || "—"}年`)}</span>
     </div>
-    <p class="section-copy">ここでは運勢周期の干支と、十神・五行・命式との冲合刑害を重ねた自動解説を検証します。</p>
+    <p class="section-copy">大運は出生時刻から起運と順逆を出し、月柱を基準に十年ごとの干支を進めます。流年は対象年の干支を出し、日主から見た十神、五行、命式との冲合刑害を合わせて読みます。</p>
+    ${renderLuckFormulaPanel(result)}
     ${renderDecadeFortunes(result)}
+    ${renderAnnualReadingCards(result)}
     ${renderDecadeYearReadingList(result)}
     <div class="luck-grid">
       <article class="detail-card">
         <div class="card-subhead">
-          <h3>流年</h3>
+          <h3>流年干支表</h3>
           <p>${escapeHtml(`${target.year || "—"}年から10年`)}</p>
         </div>
         ${renderLuckTable(luck.annualFortunes || [], [
           { label: "年", value: (item) => item.year },
           { label: "干支", value: (item) => item.name },
+          { label: "天干/地支", value: (item) => pillarEvidenceText(item) },
           { label: "十神", value: (item) => displayTenGod(item.pillar.heavenlyTenGod) || "—" },
-          { label: "テーマ", value: (item) => item.reading?.rhythm || item.pillar.fortuneTheme || "—" },
+          { label: "作用", value: (item) => branchImpactLabel(item.impacts) },
         ])}
       </article>
       <article class="detail-card">

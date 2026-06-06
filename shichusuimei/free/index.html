@@ -2492,6 +2492,36 @@
     overflow: hidden;
   }
 
+  .luck-formula-panel {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 14px 0;
+  }
+
+  .luck-formula-panel article {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 14px;
+    background: color-mix(in srgb, var(--paper) 88%, #fff 12%);
+  }
+
+  .luck-formula-panel span {
+    color: var(--muted);
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-bottom: 6px;
+  }
+
+  .luck-formula-panel p {
+    color: var(--ink-2);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
   .luck-table-wrap {
     padding: 0;
     max-height: 420px;
@@ -2550,6 +2580,22 @@
     color: var(--ink-2);
     font-size: 13px;
     line-height: 1.75;
+  }
+
+  .luck-pillar-evidence {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 10px;
+  }
+
+  .luck-pillar-evidence span {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.35;
+    padding: 5px 7px;
   }
 
   .luck-reading-tags {
@@ -2759,6 +2805,7 @@
     .algorithm-meta,
     .tag-detail-grid,
     .tag-explain-grid,
+    .luck-formula-panel,
     .luck-grid,
     .luck-reading-points,
     .auxiliary-grid {
@@ -2877,6 +2924,7 @@
     .algorithm-meta,
     .tag-detail-grid,
     .tag-explain-grid,
+    .luck-formula-panel,
     .luck-grid,
     .luck-reading-points,
     .auxiliary-grid {
@@ -3036,6 +3084,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script type="module" src="./page.js?v=free-20260604-insight-later-topics-1"></script>
+<script type="module" src="./page.js?v=free-20260606-luck-page-1"></script>
 </body>
 </html>

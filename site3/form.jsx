@@ -632,9 +632,9 @@ const TEN_GOD_DISPLAY = {
   偏財: '偏財',
   正财: '正財',
   正財: '正財',
-  七杀: '偏官',
-  七殺: '偏官',
-  偏官: '偏官',
+  七杀: '七殺',
+  七殺: '七殺',
+  偏官: '七殺',
   正官: '正官',
   偏印: '偏印',
   正印: '印綬',
@@ -656,8 +656,7 @@ function hasTenGod(set, name) {
 }
 function localizeReadingTerm(text) {
   return String(text || '')
-    .replaceAll('七杀', '偏官')
-    .replaceAll('七殺', '偏官')
+    .replaceAll('七杀', '七殺')
     .replaceAll('劫财', '劫財')
     .replaceAll('伤官', '傷官')
     .replaceAll('偏财', '偏財')
@@ -770,7 +769,7 @@ function tenGodCompositionInsight(gods) {
     topLabels.some((name) => ['比肩', '劫財'].includes(name)) ? '自分軸・競争心' : '',
     topLabels.some((name) => ['食神', '傷官'].includes(name)) ? '表現力・感性' : '',
     topLabels.some((name) => ['正財', '偏財'].includes(name)) ? '現実成果・人との機会' : '',
-    topLabels.some((name) => ['正官', '偏官'].includes(name)) ? '責任感・判断力' : '',
+    topLabels.some((name) => ['正官', '七殺'].includes(name)) ? '責任感・判断力' : '',
     topLabels.some((name) => ['印綬', '偏印'].includes(name)) ? '学び・直感・保護' : '',
   ].filter(Boolean).join('、');
   const sourceText = primary.heavenly > primary.hidden
@@ -1065,7 +1064,7 @@ function analyzeSynthesis(calculation, profile) {
   let marriagePoints = [];
   if (gender === 'female') {
     if (hasTenGod(tenGodsSet, '正官')) marriagePoints.push('命式内に「正官（夫の星）」があり、誠実な縁に恵まれやすい徳を持っています。');
-    else if (hasTenGod(tenGodsSet, '偏官')) marriagePoints.push('「偏官」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
+    else if (hasTenGod(tenGodsSet, '七殺')) marriagePoints.push('「七殺」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
     else marriagePoints.push('自立した個としての生き方を尊重し合える関係が幸福の鍵です。');
   } else if (gender === 'male') {
     if (hasTenGod(tenGodsSet, '正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力があります。');
@@ -1092,7 +1091,7 @@ function WuxingDiagram({ dayElement, elementCounts }) {
     const idxDay = wuxingCycle.indexOf(dayElement);
     const idxTarget = wuxingCycle.indexOf(targetElement);
     const diff = (idxTarget - idxDay + 5) % 5;
-    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・偏官', '印綬・偏印'];
+    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・七殺', '印綬・偏印'];
     return families[diff] || '';
   };
   return (
@@ -1498,7 +1497,7 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>天干 / 蔵干</span>
         </div>
-        <p className="backend-copy">五行の構成は前のテーマで確認済みなので、ここでは偏官・傷官などの十神だけを集計します。同じ十神でも、天干に出ているものは表に出やすい役割、蔵干にあるものは内側や背景に残りやすい役割として分けて読みます。</p>
+        <p className="backend-copy">五行の構成は前のテーマで確認済みなので、ここでは七殺・傷官などの十神だけを集計します。同じ十神でも、天干に出ているものは表に出やすい役割、蔵干にあるものは内側や背景に残りやすい役割として分けて読みます。</p>
         <div className="theme-analysis-list">
           <article className="is-role">
             <div className="theme-analysis-rows">

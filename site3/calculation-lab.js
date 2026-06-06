@@ -1072,7 +1072,7 @@ const LUCK_TEN_GOD_GUIDE = {
     relation: '誠実さや約束を守る姿勢が信頼を育てます。',
   },
   七杀: {
-    label: '偏官',
+    label: '七殺',
     keywords: ['挑戦', '責任', '突破'],
     rhythm: '強い責任と挑戦を受ける',
     score: 74,

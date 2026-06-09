@@ -518,7 +518,7 @@ const PILLAR_POSITION_READING = {
     focus: '社会で使う力',
     relation: '仕事・上司・同僚・社会との関係',
     period: '青年期から社会へ出る時期',
-    detail: '月柱は、社会の中でどう力を使うかを見る柱です。仕事環境、役割、才能の出し方、社会的な評価に関わりやすく、命式全体の季節感や格局を見るうえでも重要な位置です。',
+    detail: '月柱は、社会の中でどう力を使うかを見る柱です。仕事環境、役割、才能の出し方、社会的な評価に関わりやすく、命式全体の季節感や型を見るうえでも重要な位置です。',
   },
   day: {
     keyword: '我',
@@ -672,6 +672,160 @@ function displayPatternText(pattern, fallback = '月令と天干から命式の�
   return localizeReadingTerm(pattern?.text || fallback);
 }
 
+const DAY_MASTER_LIFE_PROFILES = {
+  甲: {
+    character: 'まっすぐで筋を通す性格です。目標が決まると時間をかけて伸びる一方、急な方向転換や細かな駆け引きは苦手になりやすいタイプです。',
+    strength: '長所は継続力、責任感、育つまで待てる強さです。',
+    caution: '短所としては、正しさにこだわりすぎて頑固に見えたり、弱音を出すのが遅くなる点に注意が必要です。',
+    state: '人生は一気に楽をするより、根を張って信用と実績を積むほど安定します。',
+  },
+  乙: {
+    character: '柔らかく場を読む性格です。人の気持ちや空気の変化に敏感で、強く押すより調整しながら進むタイプです。',
+    strength: '長所は協調性、美意識、細やかな配慮です。',
+    caution: '短所としては、相手に合わせすぎて本音を後回しにしたり、迷いが長くなる点に注意が必要です。',
+    state: '人生は環境選びが大切で、安心できる場にいるほど才能が自然に開きます。',
+  },
+  丙: {
+    character: '明るく率直で、人前に出るほど力が出やすい性格です。隠れて準備するより、動きながら周囲を照らすタイプです。',
+    strength: '長所は表現力、存在感、前向きな推進力です。',
+    caution: '短所としては、熱が上がると細部を飛ばしたり、気分の波が表に出やすい点に注意が必要です。',
+    state: '人生は人との接点や発信の場が増えるほど開きやすく、閉じた環境では息苦しさが出やすいです。',
+  },
+  丁: {
+    character: '繊細で集中力があり、静かに物事の核心を見つめる性格です。大勢を一気に動かすより、近い相手や小さな場を深く照らすタイプです。',
+    strength: '長所は洞察力、専門性、心の機微を読む力です。',
+    caution: '短所としては、考え込みすぎたり、感情を内側で燃やして疲れやすい点に注意が必要です。',
+    state: '人生は自分のペースと集中できるテーマを持つほど安定し、浅く広い環境では消耗しやすいです。',
+  },
+  戊: {
+    character: '安定感があり、周囲を受け止める性格です。大きな方針や土台づくりに強く、細かな変化に振り回されにくいタイプです。',
+    strength: '長所は包容力、責任感、場を守る力です。',
+    caution: '短所としては、動き出しが遅くなったり、自分の考えを変えにくい点に注意が必要です。',
+    state: '人生は背負うものが増えるほど力を発揮しますが、何でも抱え込みすぎると重くなります。',
+  },
+  己: {
+    character: '現実的で面倒見がよく、人や物事を育てる性格です。派手な勝負より、日々の改善と積み上げで成果を作るタイプです。',
+    strength: '長所は実務力、育成力、生活感覚の確かさです。',
+    caution: '短所としては、心配しすぎたり、細部を抱えて自分だけ忙しくなる点に注意が必要です。',
+    state: '人生は安定した基盤を整えるほど伸びます。環境が乱れると本来の力が出にくくなります。',
+  },
+  庚: {
+    character: '判断が速く、必要なものを選び抜く性格です。曖昧なまま流されるより、課題を見つけて突破するタイプです。',
+    strength: '長所は決断力、実行力、厳しい局面での強さです。',
+    caution: '短所としては、言葉が鋭くなったり、白黒を急ぎすぎる点に注意が必要です。',
+    state: '人生は鍛えられる環境で伸びやすく、責任や競争があるほど能力が磨かれます。',
+  },
+  辛: {
+    character: '感性が細やかで、質や美しさへの基準が高い性格です。雑な環境より、磨かれた場で価値を発揮するタイプです。',
+    strength: '長所は審美眼、精密さ、品位を整える力です。',
+    caution: '短所としては、完璧を求めすぎたり、傷つきやすさを隠して距離を取る点に注意が必要です。',
+    state: '人生は自分の価値基準を仕事や人間関係に活かすほど輝きます。',
+  },
+  壬: {
+    character: '視野が広く、変化を読みながら動く性格です。小さく固定されるより、大きな流れの中で可能性を広げるタイプです。',
+    strength: '長所は構想力、自由度、情報や人をつなぐ力です。',
+    caution: '短所としては、広げすぎて散漫になったり、決め切る前に次へ行きたくなる点に注意が必要です。',
+    state: '人生は移動、学び、交流が運を開きやすく、閉塞感の強い環境では力が鈍ります。',
+  },
+  癸: {
+    character: '観察力があり、静かに本質へ近づく性格です。表立って押すより、情報を集めて深く考えるタイプです。',
+    strength: '長所は知性、柔軟性、細部から全体を読む力です。',
+    caution: '短所としては、不安を先読みしすぎたり、行動より思考が長くなる点に注意が必要です。',
+    state: '人生は学びと準備が実を結びやすく、焦らず小さな流れを継続するほど強くなります。',
+  },
+};
+
+const TEN_GOD_REAL_WORLD_PROFILES = {
+  比肩: {
+    career: '専門職、個人で責任を持つ仕事、職人性のある仕事、自分の名前で評価される仕事に向きます。',
+    workStyle: '会社員でも独立でも、自分の裁量があるほど力を出せます。創業は一人で抱えすぎず、管理や営業を補う相手がいると安定します。',
+    money: '収入は自分の技術・信用・継続力から作るタイプです。投資や大勝負より、専門性を資産化するほうが金運が伸びます。',
+    relationship: '対等な友人関係を好みます。干渉されすぎると距離を置きやすいので、尊重し合える仲間が長続きします。',
+  },
+  劫財: {
+    career: '営業、事業開発、チームを動かす仕事、競争や交渉のある分野に向きます。',
+    workStyle: '独立心が強く、起業・副業との相性もあります。ただし勢いだけで広げると利益が散りやすいので、数字管理の仕組みが必要です。',
+    money: 'お金は人脈や勝負所から動きます。共同事業・紹介・営業で伸びる一方、仲間内の貸し借りや過剰な投資には注意です。',
+    relationship: '人を巻き込む力があります。友人は増えやすいですが、競争心が強く出ると衝突しやすいため、役割と利益配分を明確にすると安定します。',
+  },
+  食神: {
+    career: '企画、教育、接客、飲食、美容、コンテンツ、子どもや生活に関わる仕事に向きます。',
+    workStyle: '楽しさや余裕が成果につながるタイプです。硬すぎる組織より、表現や育成を許す環境で才能が出ます。',
+    money: '金運は好きなこと、発信、育てたものから生まれやすいです。大金を一気に狙うより、継続的な人気やリピートで増やす読みです。',
+    relationship: '親しみやすく、場を和ませる友人運です。頼られすぎると自分の余裕を失うため、楽しめる距離感が大切です。',
+  },
+  傷官: {
+    career: 'クリエイティブ、分析、改善、文章、デザイン、研究、品質管理、専門的な表現分野に向きます。',
+    workStyle: '型通りより、改善余地のある仕事で力が出ます。組織内では上司やルールへの言葉が鋭くなりやすいので、提案の形に変えると評価されます。',
+    money: 'お金は才能・表現・問題解決力から入りやすいタイプです。投資も直感だけでなく検証ルールを持つと強みになります。',
+    relationship: '感性の合う友人とは深くつながります。違和感を言葉にしやすいぶん、批判に聞こえない伝え方が対人運の鍵です。',
+  },
+  偏財: {
+    career: '営業、マーケティング、商売、イベント、人脈を広げる仕事、流通や仲介に向きます。',
+    workStyle: '組織でも起業でも、人と機会が多い場で動きます。固定された内勤だけだと物足りなくなりやすいです。',
+    money: '金運は人脈、商機、複数収入から動きやすいです。投資・副業にも縁がありますが、広げすぎず回収管理を持つほど大きくなります。',
+    relationship: '社交的で交友範囲が広がりやすい運です。浅く広くなりすぎると本当に大切な人が薄くなるため、優先順位が必要です。',
+  },
+  正財: {
+    career: '経理、管理、事務、金融、不動産、運営、生活や現実の基盤を扱う仕事に向きます。',
+    workStyle: '安定した企業・機関・長期契約と相性があります。起業する場合も、堅い収支計画と固定顧客があるほど安全です。',
+    money: '金運は給与、固定収入、貯蓄、管理力から育ちます。一攫千金より、積み上げと信用で資産を作るタイプです。',
+    relationship: '誠実で約束を守る人間関係を好みます。損得を背負いすぎると疲れるため、頼まれごとの線引きが大切です。',
+  },
+  七殺: {
+    career: '管理職、専門資格、危機対応、法務、医療、警備、スポーツ、スピードと責任のある分野に向きます。',
+    workStyle: 'プレッシャーがあるほど力を出します。起業や責任職にも縁がありますが、無理な勝負を続けるより規律と参謀役が必要です。',
+    money: '金運は大きな責任や難しい案件を引き受けることで動きます。高リスク投資より、専門性と判断力を報酬に変えるほうが安定します。',
+    relationship: '頼られやすく、強い人間関係を作ります。緊張感が出すぎると相手が萎縮するため、安心感を言葉で示すと良縁が続きます。',
+  },
+  正官: {
+    career: '公的機関、大企業、管理職、法務、人事、教育、制度や責任を扱う仕事に向きます。',
+    workStyle: '組織・資格・肩書きとの相性がよいタイプです。起業よりも、信頼される役割や制度の中で評価を積むほうが安定しやすいです。',
+    money: '金運は信用、肩書き、長期的な昇進から育ちます。派手な投機より、堅実な収入基盤と社会的評価が財につながります。',
+    relationship: '礼儀や信頼を重んじます。友人にも誠実さを求めるため、軽い約束や曖昧な関係には疲れやすいです。',
+  },
+  偏印: {
+    career: '研究、企画、占い・心理、IT、アート、専門知識、変化のある働き方に向きます。',
+    workStyle: '固定ルーティンより、独自視点を使える環境で伸びます。副業、フリーランス、専門分野の掛け合わせにも相性があります。',
+    money: '金運は独自知識、情報、ニッチな才能から生まれます。収入が波になりやすいので、継続商品や固定契約を持つと安定します。',
+    relationship: '個性的な人や知的な会話と縁があります。気分で距離が変わりやすいため、連絡や約束のリズムを整えると信頼されます。',
+  },
+  正印: {
+    career: '教育、研究、医療福祉、文章、資格職、サポート、知識を扱う仕事に向きます。',
+    workStyle: '学べる組織、専門機関、保護のある環境で力が育ちます。起業する場合も、資格・実績・紹介が揃ってからのほうが安定します。',
+    money: '金運は知識、資格、支援者、信用から育ちます。焦って勝負するより、学びを報酬化するルートが向きます。',
+    relationship: '面倒見がよく、安心できる友人に恵まれやすい運です。受け身になりすぎると機会を逃すため、自分から頼る・誘う動きも大切です。',
+  },
+};
+
+function realWorldProfileForGod(name) {
+  const label = displayTenGod(name);
+  return TEN_GOD_REAL_WORLD_PROFILES[label] || TEN_GOD_REAL_WORLD_PROFILES[name] || TEN_GOD_REAL_WORLD_PROFILES.比肩;
+}
+
+function normalizedGender(value) {
+  if (['female', 'yin', '女性', '女'].includes(value)) return 'female';
+  if (['male', 'yang', '男性', '男'].includes(value)) return 'male';
+  return 'unspecified';
+}
+
+function spouseStarLabels(calc, genderValue) {
+  const gender = normalizedGender(genderValue || calc.input?.gender);
+  const stats = tenGodStats(calc);
+  const candidates = gender === 'female'
+    ? ['正官', '七殺']
+    : gender === 'male'
+      ? ['正財', '偏財']
+      : ['正官', '七殺', '正財', '偏財'];
+  return stats.filter(item => candidates.includes(displayTenGod(item.name))).map(item => displayTenGod(item.name));
+}
+
+function outputStarLabels(calc) {
+  return tenGodStats(calc)
+    .filter(item => ['食神', '傷官'].includes(displayTenGod(item.name)))
+    .map(item => displayTenGod(item.name));
+}
+
 function getShenSha(targetBranch, dayStem, yearBranch, dayBranch) {
   const result = [];
   const tianYiMap = { '甲': ['丑','未'], '戊': ['丑','未'], '庚': ['丑','未'], '乙': ['子','申'], '己': ['子','申'], '丙': ['亥','酉'], '丁': ['亥','酉'], '壬': ['卯','巳'], '癸': ['卯','巳'], '辛': ['寅','午'] };
@@ -814,30 +968,47 @@ function marriageElementRelationKey(dayElement, palaceElement) {
   return 'same';
 }
 
-function marriageFortuneSummary(calc) {
+function marriageFortuneSummary(calc, genderValue) {
   const dayPillar = calc.pillars.day;
   const dayElement = dayPillar.element.stem;
   const palaceElement = dayPillar.element.branch;
   const relationKey = marriageElementRelationKey(dayElement, palaceElement);
   const branchProfile = BRANCH_RELATIONSHIP_PROFILES[dayPillar.branch] || '日支は親密な関係で出やすい距離感や生活感を読む入口です。';
   const relation = MARRIAGE_ELEMENT_RELATION_READING[relationKey];
-  return `婚姻運は、日柱の地支である「日支」を婚姻宮として見ます。この命盤の日支は ${dayPillar.branch}（${palaceElement}）です。${branchProfile} 日主 ${calc.dayMaster}（${dayElement}）に対して日支がどう働くかを見ると、${relation}`;
+  const spouseStars = spouseStarLabels(calc, genderValue);
+  const spouseText = spouseStars.length
+    ? `配偶者像は「${spouseStars.slice(0, 2).join('・')}」の気配も重なるため、責任感・現実感・刺激のいずれかを持つ相手に縁を感じやすい読みです。`
+    : '配偶者星が強く前面に出ない場合、恋愛や結婚は一目惚れで一気に決まるより、日支が示す生活感や安心感を育てるほどまとまりやすい読みです。';
+  const timingText = relationKey === 'supported'
+    ? '早く決めるより、相手から支えられる安心感を確認してから進むほうが安定します。'
+    : relationKey === 'output'
+      ? '自分が相手に尽くしすぎると疲れやすいため、早婚・同棲・結婚を急ぐ場合ほど役割分担を先に決めることが大切です。'
+      : relationKey === 'pressure'
+        ? '責任や緊張が出やすい配置なので、若い時期よりも自分の境界線が整ってからの関係のほうが安定しやすいです。'
+        : relationKey === 'wealth'
+          ? '生活、仕事、お金の考え方が関係の中心になりやすく、現実的な条件をすり合わせられる相手と長続きしやすいです。'
+          : '対等さを求める配置なので、近すぎる依存関係より、それぞれの時間を尊重できる相手と安定しやすいです。';
+  return `婚姻運は、日柱の地支である「日支」を婚姻宮として見ます。この命盤の日支は ${dayPillar.branch}（${palaceElement}）です。${branchProfile} 日主 ${calc.dayMaster}（${dayElement}）に対して日支がどう働くかを見ると、${relation} ${spouseText} ${timingText}`;
 }
 
 function careerFortuneSummary(calc, patternName, strengthStatus, god) {
   const monthPillar = calc.pillars.month;
   const mainRole = god ? displayTenGod(god) : '通変星';
+  const profile = realWorldProfileForGod(god);
   const strengthText = calc.strength?.status === '身強'
-    ? '自分で主導権を握り、判断や責任を引き受けるほど仕事運が動きやすいタイプです。'
+    ? '身強寄りなので、自分で主導権を握り、判断や責任を引き受けるほど仕事運が動きやすいタイプです。'
     : calc.strength?.status === '身弱'
-      ? '組織や専門環境の中で支えを受けながら、得意分野を磨くほど仕事運が安定しやすいタイプです。'
+      ? '身弱寄りなので、組織や専門環境の中で支えを受けながら、得意分野を磨くほど仕事運が安定しやすいタイプです。'
       : '身強弱と五行バランスを重ねて、仕事で力を出しやすい環境を見ます。';
-  return `仕事運は、社会性を表す月柱と命式全体の型、身強弱、目立つ通変星を合わせて見ます。この命盤では月柱が ${monthPillar.text}、命式の型は「${patternName}」、身強弱は ${strengthStatus} です。仕事で表に出やすい役割は「${mainRole}」のテーマです。${strengthText}`;
+  return `仕事運は、社会性を表す月柱と命式全体の型、身強弱、目立つ通変星を合わせて見ます。この命盤では月柱が ${monthPillar.text}、命式の型は「${patternName}」、身強弱は ${strengthStatus} です。仕事で表に出やすい役割は「${mainRole}」のテーマです。${strengthText} 適職の方向は、${profile.career} ${profile.workStyle}`;
 }
 
 function wealthFortuneSummary(calc) {
   const stats = tenGodStats(calc);
   const wealthStars = stats.filter(item => ['正财', '正財', '偏财', '偏財'].includes(item.name) || ['正財', '偏財'].includes(displayTenGod(item.name)));
+  const outputStars = outputStarLabels(calc);
+  const primaryGod = stats[0]?.name;
+  const profile = realWorldProfileForGod(primaryGod);
   const wealthLabel = wealthStars.length
     ? wealthStars.map(item => displayTenGod(item.name)).filter(Boolean).join('・')
     : '財星は控えめ';
@@ -846,17 +1017,22 @@ function wealthFortuneSummary(calc) {
   const starText = wealthStars.length
     ? `命盤の中に ${wealthLabel} が見えるため、お金は人との機会、管理力、現実的な成果づくりと結びつきやすいタイプです。`
     : '財星が強く前面に出ない場合、金運は一攫千金よりも、仕事の型・信用・五行バランスを整えることで育てる読みになります。';
-  return `金運は、財星（正財・偏財）だけでなく、仕事運、五行バランス、用神を合わせて見ます。${starText} 五行では ${dominantLabel} が出やすく、${supportLabel} を補うほどお金の流れも整えやすくなります。`;
+  const outputText = outputStars.length
+    ? `また ${outputStars.slice(0, 2).join('・')} が見えるため、表現・企画・発信・育成したものを収入化する道もあります。`
+    : '表現星が強くない場合は、作品や発信で一気に当てるより、仕事上の信用と管理力から財を作る読みです。';
+  return `金運は、財星（正財・偏財）だけでなく、仕事運、五行バランス、用神を合わせて見ます。${starText} ${profile.money} ${outputText} 五行では ${dominantLabel} が出やすく、${supportLabel} を補うほどお金の流れも整えやすくなります。`;
 }
 
 function relationshipFortuneSummary(calc, god) {
   const mainRole = god ? displayTenGod(god) : '通変星';
   const dayBranch = calc.pillars.day.branch;
   const branchProfile = BRANCH_RELATIONSHIP_PROFILES[dayBranch] || '日支は親密な関係や近い相手との距離感を読む入口です。';
-  const roleText = god && TEN_GOD_READING[god]?.text
-    ? `目立つ通変星「${mainRole}」は、対人関係では ${TEN_GOD_READING[god].text}`
+  const reading = tenGodReading(god);
+  const profile = realWorldProfileForGod(god);
+  const roleText = reading?.text
+    ? `目立つ通変星「${mainRole}」は、対人関係では ${reading.text}`
     : `目立つ通変星「${mainRole}」から、対人関係で出やすい役割や振る舞いを見ます。`;
-  return `対人運は、命盤で目立つ通変星と、近い関係を表す日支を合わせて見ます。${roleText} 日支は ${dayBranch} で、${branchProfile}`;
+  return `対人運は、命盤で目立つ通変星と、近い関係を表す日支を合わせて見ます。${roleText} ${profile.relationship} 日支は ${dayBranch} で、${branchProfile}`;
 }
 
 function healthFortuneSummary(calc) {
@@ -894,7 +1070,7 @@ function decadeFlowSummary(calc, current) {
   return `現在は ${current.name}（${current.startYear}-${current.endYear}年 / ${currentAge}）の十年大運です。この大運では「${currentGod}」の働きが前に出やすく、テーマは「${guide.rhythm}」。${guide.advice} 人生全体の大運を見ると、${lifeTone}${peakText}`;
 }
 
-function buildUserReadingTags(calc, tenGods) {
+function buildUserReadingTags(calc, tenGods, profile) {
   const stem = STEM_READING[calc.dayMaster] || { text: '', tags: [] };
   const dominant = strongestElements(calc);
   const support = supportElements(calc);
@@ -947,7 +1123,7 @@ function buildUserReadingTags(calc, tenGods) {
       kind: 'source',
       label: '婚姻運',
       value: `日支 ${calc.pillars.day.branch}`,
-      detail: marriageFortuneSummary(calc),
+      detail: marriageFortuneSummary(calc, profile?.gender),
       evidence: `日柱 ${calc.pillars.day.text} / 日支 ${calc.pillars.day.branch} / 日主 ${calc.dayMaster}`,
       action: 'marriage',
       target: { page: 'insight', topic: 'marriage', anchor: 'insight-topic-main' },
@@ -1666,7 +1842,7 @@ function FoundationDetailSections({ calculation }) {
 
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
   const [activePillar, setActivePillar] = React.useState(null);
-  const readingTags = React.useMemo(() => buildUserReadingTags(calculation, collectTenGods(calculation)), [calculation]);
+  const readingTags = React.useMemo(() => buildUserReadingTags(calculation, collectTenGods(calculation), profile), [calculation, profile]);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) {
@@ -1777,19 +1953,28 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   const topicNums = ['貳','參','肆','伍','陸','柒','捌','玖','拾'];
   const getInsightContent = (key) => {
     const stemReading = STEM_READING[dayStem] || { title: 'その人の本質を表すタイプ', text: '日主は命式全体を読む起点になります。' };
+    const dayProfile = DAY_MASTER_LIFE_PROFILES[dayStem] || {
+      character: '日主から、その人の基本的な性格と人生の動き方を見ます。',
+      strength: '長所は命盤全体の支え方によって表れます。',
+      caution: '注意点は、強く出る性質が偏りすぎたときに現れます。',
+      state: '人生の状態は、五行バランスと大運の流れを重ねて見ます。',
+    };
     const godLabel = displayTenGod(primaryGod);
+    const godProfile = realWorldProfileForGod(primaryGod);
+    const spouseStars = spouseStarLabels(calculation, profile?.gender);
+    const outputStars = outputStarLabels(calculation);
     const contents = {
       core: {
         intro: `日主タイプは、日柱の天干である日主から見ます。`,
         p1: `日主は ${dayStem}（${calculation.pillars.day.element.stem}）です。${stemReading.title}。${stemReading.text}`,
-        p2: `日主は性格だけでなく、五行バランス、仕事運、婚姻運、対人運を見るときの中心点になります。`,
+        p2: `${dayProfile.character} ${dayProfile.strength} ${dayProfile.caution} ${dayProfile.state}`,
         source: `日柱天干 ${dayStem} / 日主五行 ${calculation.pillars.day.element.stem}`,
         note: '日主は鑑定の起点です。ここだけで断定せず、月柱・五行・通変星と重ねて読みます。',
       },
       pattern: {
         intro: `命式の型は、命式全体の構造と身強弱を合わせて見ます。`,
         p1: `この命盤の型は「${patternName}」、身強弱は ${strengthStatus} です。${displayPatternText(calculation.pattern, '月令と天干から命式の大枠を見ます。')}`,
-        p2: calculation.strength?.text || '日主の勢いと五行の支えから、どんな環境で力を出しやすいかを読みます。',
+        p2: `${calculation.strength?.text || '日主の勢いと五行の支えから、どんな環境で力を出しやすいかを読みます。'} ${strengthStatus === '身強' ? '人生は受け身で待つより、自分で決めて責任を取りに行くほど展開しやすいです。ただし強く出すぎると周囲を置いて進むため、相談役や確認の手順を持つと安定します。' : strengthStatus === '身弱' ? '人生は一人で全部を背負うより、環境・師匠・組織・専門性の支えを得るほど安定します。無理な独立や過度な競争より、得意分野を磨いて信頼される形が向きます。' : '身強身弱が極端でない場合は、環境によって主導と協調を切り替えることが開運の鍵になります。'}`,
         source: `月支 ${calculation.pillars.month.branch} / 月柱 ${calculation.pillars.month.text} / 身強弱 ${strengthStatus}`,
         note: '命式の型は人生全体の構造を読むための整理です。吉凶を一語で決めるものではありません。',
       },
@@ -1803,35 +1988,35 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
       lifeTask: {
         intro: `人生課題は、命盤の中で重なりやすい通変星から見ます。`,
         p1: `この命盤で目立つ通変星は「${godLabel}」です。四柱の天干・蔵干に出る通変星を重ねて、行動パターンを読みます。`,
-        p2: TEN_GOD_LIFE_TASKS[primaryGod] || TEN_GOD_LIFE_TASKS[godLabel] || TEN_GOD_READING[primaryGod]?.text || '行動の癖や課題として表れやすいテーマです。',
+        p2: `${TEN_GOD_LIFE_TASKS[primaryGod] || TEN_GOD_LIFE_TASKS[godLabel] || tenGodReading(primaryGod)?.text || '行動の癖や課題として表れやすいテーマです。'} 現実面では、仕事では ${godProfile.career} 対人面では ${godProfile.relationship}`,
         source: `四柱天干・蔵干の通変星 / 主要テーマ ${godLabel}`,
         note: '課題は弱点の決めつけではなく、強く出やすい癖をどう育てるかを見る項目です。',
       },
       marriage: {
         intro: `婚姻運は、日支を婚姻宮として見ます。`,
-        p1: marriageFortuneSummary(calculation),
-        p2: `詳しくは日支 ${calculation.pillars.day.branch} と日主 ${dayStem} の関係、さらに命盤内の配偶者星や通変星を重ねて読みます。`,
+        p1: marriageFortuneSummary(calculation, profile?.gender),
+        p2: `具体的には、相手選びでは安心感・生活感・責任感のどれを重視するかが大切です。${spouseStars.length ? `命盤内の配偶者星として ${spouseStars.slice(0, 3).join('・')} が見えるため、恋愛だけでなく結婚後の役割や現実的な支え合いもテーマになります。` : '配偶者星が強く目立たない場合、恋愛の勢いだけでなく、長く一緒に過ごしたときの居心地を確認するほど良縁を選びやすくなります。'} 親密関係では一人の相手と深める力を育てられますが、日支や通変星に緊張が出ると関係を複数の可能性として迷いやすい時期もあります。`,
         source: `日柱 ${calculation.pillars.day.text} / 日支 ${calculation.pillars.day.branch} / 日主 ${dayStem}`,
         note: '婚姻運は関係性の傾向を見る項目です。結婚の有無や時期を断定しません。',
       },
       career: {
         intro: `仕事運は、月柱・命式の型・身強弱・通変星を合わせて見ます。`,
         p1: careerFortuneSummary(calculation, patternName, strengthStatus, primaryGod),
-        p2: `月柱 ${calculation.pillars.month.text} は社会性や仕事環境を表す柱です。ここに命式全体の型を重ねて、仕事で力を出しやすい場を読みます。`,
+        p2: `この人は「何の職種名か」よりも、どんな役割で評価されるかを見るほうが当たりやすい命盤です。${godProfile.workStyle} 仕事で成功しやすいかは、月柱が示す社会性を使える環境に入れるかで変わります。身強なら裁量・責任・独立性、身弱なら組織・専門性・支援者を整えるほど、無理なく結果につながります。`,
         source: `月柱 ${calculation.pillars.month.text} / 命式の型 ${patternName} / 通変星 ${godLabel}`,
         note: '適職名を固定するより、力を出しやすい環境・役割・働き方の方向を重視します。',
       },
       money: {
         intro: `金運は、財星だけでなく仕事運・五行バランス・用神を合わせて見ます。`,
         p1: wealthFortuneSummary(calculation),
-        p2: `正財・偏財が強いかだけで判断せず、収入の入口、管理力、信用づくり、補う五行を重ねて見ます。`,
+        p2: `大きく稼げるかは、財星の有無だけではなく、仕事運の型を収入へ変換できるかで見ます。${outputStars.length ? `${outputStars.slice(0, 2).join('・')} があるため、発信・企画・作品・教えることをお金に変える道もあります。` : '表現星が控えめなら、発信や投機よりも、職務上の信用、固定収入、管理力を育てるほうが金運が安定します。'} 配偶者や人脈からお金の流れが広がる可能性はありますが、相手任せではなく自分の仕事と管理ルールを持つほど財が残ります。`,
         source: `財星（正財・偏財）/ 仕事運 / 五行バランス / 用神候補 ${yongLabel}`,
         note: '金額や収入を保証する読みではなく、お金との関わり方と整え方の傾向を示します。',
       },
       relationship: {
         intro: `対人運は、通変星と日支から人間関係で出やすい振る舞いを見ます。`,
         p1: relationshipFortuneSummary(calculation, primaryGod),
-        p2: `人との距離感、協力の仕方、言葉の出方は、日主・日支・目立つ通変星の組み合わせで読みます。`,
+        p2: `交友運は、広く浅く増えるタイプか、少数と深く続くタイプかを通変星と日支で見ます。${godProfile.relationship} 友人・同僚との関係では、強く出る長所がそのまま魅力になりますが、疲れている時ほど同じ性質が短所として出やすくなります。人間関係を良くする鍵は、役割・距離感・言葉の温度を自分で整えることです。`,
         source: `主要通変星 ${godLabel} / 日支 ${calculation.pillars.day.branch} / 日主 ${dayStem}`,
         note: '相性そのものではなく、この命式側に出やすい対人姿勢を読むページです。',
       },

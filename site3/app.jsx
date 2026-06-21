@@ -30,7 +30,6 @@ function useStaticTweaks(defaults) {
 
 function AppIcon({ name }) {
   const glyphs = {
-    home: '⌂',
     create: '+',
     result: '▦',
     library: '☰',
@@ -91,81 +90,6 @@ function PillarMiniMatrix({ chart }) {
   );
 }
 
-function HomeScreen({ calcResult, yearInfo, onCreate, onResult, onLibrary }) {
-  const chart = calcResult?.chart;
-  const recentName = calcResult?.profile?.name || '直近の命式';
-  const currentAnnual = chart && typeof currentAnnualFortune === 'function' ? currentAnnualFortune(chart) : null;
-  return (
-    <section className="pwa-screen home-screen" aria-label="今日の概要">
-      <div className="pwa-screen-head">
-        <div>
-          <span className="pwa-kicker">今日の概要</span>
-          <h1>星の命式</h1>
-        </div>
-        <button type="button" className="pwa-primary-icon" onClick={onCreate} aria-label="命式を作成">
-          <AppIcon name="create" />
-        </button>
-      </div>
-
-      <section className="pwa-today-panel">
-        <div>
-          <span className="pwa-kicker">現在の暦</span>
-          <h2>{yearInfo.ganzhi} / {yearInfo.reiwa}</h2>
-          <p>命式を作成すると、四柱・五行・大運の要点をこの画面からすぐ確認できます。</p>
-        </div>
-        <div className="pwa-cycle-chip">{yearInfo.gregorian}</div>
-      </section>
-
-      <div className="pwa-action-grid">
-        <button type="button" className="pwa-action-card is-primary" onClick={onCreate}>
-          <span>新規作成</span>
-          <strong>命式を作成</strong>
-          <small>生年月日、時刻、出生地から計算</small>
-        </button>
-        <button type="button" className="pwa-action-card" onClick={calcResult ? onResult : onCreate}>
-          <span>命式概要</span>
-          <strong>{calcResult ? '結果を見る' : '入力から開始'}</strong>
-          <small>{calcResult ? `${recentName} の命式を開く` : '結果は作成後に表示'}</small>
-        </button>
-      </div>
-
-      <section className="pwa-section">
-        <div className="pwa-section-title">
-          <h2>最近の命式</h2>
-          <button type="button" onClick={onLibrary}>すべて見る</button>
-        </div>
-        {calcResult ? (
-          <button type="button" className="pwa-recent-card" onClick={onResult}>
-            <div>
-              <strong>{recentName}</strong>
-              <small>{chart?.pillars?.day?.text || '—'} / {chart?.strength?.status || '判定中'}</small>
-            </div>
-            <PillarMiniMatrix chart={chart} />
-          </button>
-        ) : (
-          <div className="pwa-empty-state">
-            <strong>まだ命式がありません</strong>
-            <p>最初の命式を作成すると、ここに最近の結果が表示されます。</p>
-          </div>
-        )}
-      </section>
-
-      <section className="pwa-section pwa-two-col">
-        <article>
-          <span className="pwa-kicker">流年</span>
-          <h3>{currentAnnual?.name || '流年サマリー'}</h3>
-          <p>{currentAnnual ? `${currentAnnual.year}年のテーマを結果画面で確認できます。` : '命式作成後に現在の流れを表示します。'}</p>
-        </article>
-        <article>
-          <span className="pwa-kicker">記録</span>
-          <h3>保存した読み解き</h3>
-          <p>ブックマーク、比較、メモ機能を追加できる構造にしています。</p>
-        </article>
-      </section>
-    </section>
-  );
-}
-
 function LibraryScreen({ calcResult, onCreate, onResult }) {
   const chart = calcResult?.chart;
   const name = calcResult?.profile?.name || '現在の命式';
@@ -221,42 +145,14 @@ function LibraryScreen({ calcResult, onCreate, onResult }) {
 function App() {
   const [tweaks, setTweak] = useStaticTweaks(TWEAK_DEFAULTS);
   const [page, setPage] = React.useState(() => {
-    const allowed = new Set(['home', 'rite', 'result', 'fortune', 'insight', 'library']);
+    const allowed = new Set(['rite', 'result', 'fortune', 'insight', 'library']);
     const hash = typeof window !== 'undefined' ? window.location.hash.replace(/^#\/?/, '') : '';
     return allowed.has(hash) ? hash : 'rite';
-  });   // home | rite | result | fortune | insight | library
+  });   // rite | result | fortune | insight | library
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
   const [routeTarget, setRouteTarget] = React.useState(null);
   const [language, setLanguage] = React.useState('ja');
-
-  // Auto-calculated current year info
-  const yearInfo = React.useMemo(() => {
-    const y = new Date().getFullYear();
-    const reiwaYear = y - 2018;
-    const kanjiDigits = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
-    let reiwaStr = '';
-    if (reiwaYear === 1) reiwaStr = '元';
-    else if (reiwaYear < 10) reiwaStr = kanjiDigits[reiwaYear];
-    else if (reiwaYear === 10) reiwaStr = '十';
-    else if (reiwaYear < 20) reiwaStr = '十' + (reiwaYear % 10 === 0 ? '' : kanjiDigits[reiwaYear % 10]);
-    else reiwaStr = kanjiDigits[Math.floor(reiwaYear / 10)] + '十' + (reiwaYear % 10 === 0 ? '' : kanjiDigits[reiwaYear % 10]);
-
-    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-    const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    const stem = stems[(y - 4) % 10];
-    const branch = branches[(y - 4) % 12];
-
-    return {
-      reiwa: `令和${reiwaStr}年`,
-      ganzhi: `${stem}${branch}`,
-      gregorian: `西暦${y}年`
-    };
-  }, []);
-  
-  if (typeof window !== 'undefined') {
-    window.__hoshiYearInfo = yearInfo;
-  }
 
   // Active theme state
   const [activeTheme, setActiveTheme] = React.useState(() => {
@@ -309,7 +205,7 @@ function App() {
 
   const goto = (target, detailTarget = null) => {
     setRouteTarget(detailTarget ? { ...detailTarget, key: `${Date.now()}-${Math.random()}` } : null);
-    if (typeof window !== 'undefined' && ['home', 'rite', 'result', 'library'].includes(target)) {
+    if (typeof window !== 'undefined' && ['rite', 'result', 'library'].includes(target)) {
       window.history.replaceState(null, '', `#${target}`);
     }
     if (target === page) return;
@@ -322,7 +218,6 @@ function App() {
   };
 
   const navItems = [
-    { key: 'home', label: '今日', icon: 'home' },
     { key: 'rite', label: '作成', icon: 'create' },
     { key: 'result', label: '結果', icon: 'result', disabled: !calcResult },
     { key: 'library', label: '一覧', icon: 'library' },
@@ -337,7 +232,6 @@ function App() {
         <SiteMark />
         <nav className="app-actions site-nav" role="navigation" aria-label="サイトナビゲーション">
           <button type="button" className={page === 'rite' ? 'is-active' : ''} onClick={() => goto('rite')}>命式を作成</button>
-          <button type="button" className={page === 'home' ? 'is-active' : ''} onClick={() => goto('home')}>命式について</button>
           <button type="button" className={['result','insight','fortune'].includes(page) ? 'is-active' : ''} onClick={() => calcResult ? goto('result') : goto('rite')}>鑑定の読み方</button>
           <button type="button" onClick={() => {
             const faq = document.querySelector('.query-help-panel');
@@ -372,7 +266,6 @@ function App() {
       </aside>
 
       <main className="page app-main">
-        {page === 'home' && <HomeScreen calcResult={calcResult} yearInfo={yearInfo} onCreate={() => goto('rite')} onResult={() => goto('result')} onLibrary={() => goto('library')} />}
         {page === 'library' && <LibraryScreen calcResult={calcResult} onCreate={() => goto('rite')} onResult={() => goto('result')} />}
         {page === 'rite' && <Rite onBack={() => goto('rite')}
           initialResult={calcResult}

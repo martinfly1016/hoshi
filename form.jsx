@@ -13,8 +13,152 @@ const FALLBACK_LOCATIONS = [
   { id: 'hokkaido', label: '日本 / 北海道 札幌市', timezone: 'Asia/Tokyo', utcOffset: 9, latitude: 43.0642, longitude: 141.3469 },
 ];
 
-const REGION_OPTIONS = window.HOSHI_REGION_OPTIONS || [{ key: 'jp', label: '日本' }];
-const WORLD_LOCATIONS = window.HOSHI_WORLD_LOCATIONS || [];
+const REGION_OPTIONS = [
+  { key: 'jp', label: '日本' },
+  { key: 'cn', label: '中国・香港・台湾' },
+  { key: 'us', label: '米国' },
+  { key: 'world', label: 'その他海外' },
+];
+
+const RITE_NAV_ITEMS = [
+  { key: 'profile', num: '壹', icon: '人', label: '名前・性別' },
+  { key: 'birthday', num: '貳', icon: '日', label: '生年月日' },
+  { key: 'birthtime', num: '參', icon: '時', label: '出生時刻' },
+  { key: 'birthplace', num: '肆', icon: '地', label: '出生地' },
+];
+
+const RESULT_NAV_ITEMS = [
+  { id: 's0', num: '壹', icon: '基', label: '基本情報' },
+  { id: 's1', num: '貳', icon: '盤', label: '四柱命式' },
+  { id: 's2', num: '參', icon: '要', label: '要点解読' },
+  { id: 's3', num: '肆', icon: '詳', label: '詳しい解説' },
+];
+
+const FORTUNE_NAV_ITEMS = [
+  { id: 'f0', num: '壹', icon: '図', label: '十年運マップ' },
+  { id: 'f1', num: '貳', icon: '今', label: '現在の大運' },
+  { id: 'f2', num: '參', icon: '巡', label: '近い流年' },
+  { id: 'f3', num: '肆', icon: '表', label: '明細表' },
+];
+
+function TopicButton({ num, icon, label, active, onClick }) {
+  return (
+    <button type="button" className={`side-topic ${active ? 'is-active' : ''}`} onClick={onClick}>
+      <span className="topic-icon" aria-hidden="true">{icon || num}</span>
+      <span className="topic-copy">
+        <span className="num">{num}</span>
+        <span>{label}</span>
+      </span>
+    </button>
+  );
+}
+
+function ReadingPointCards({ topic, content }) {
+  const items = [
+    { icon: '要', label: '要点', text: content.intro },
+    { icon: '読', label: '読み方', text: content.p1 },
+    { icon: '注', label: '注意', text: content.note },
+  ];
+  return (
+    <div className="reading-point-grid" aria-label={`${topic}の要点`}>
+      {items.map((item) => (
+        <article key={item.label} className="reading-point-card">
+          <span className="reading-point-icon" aria-hidden="true">{item.icon}</span>
+          <div>
+            <strong>{item.label}</strong>
+            <p>{item.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function DetailDisclosure({ title = '詳しい説明', children }) {
+  return (
+    <details className="read-more-panel">
+      <summary>
+        <span>{title}</span>
+        <em>開く</em>
+      </summary>
+      <div className="read-more-body">{children}</div>
+    </details>
+  );
+}
+
+const RELATION_VISUAL_LABELS = {
+  same: { label: '同じ五行', direction: 'same', text: '同じ性質が重なり、自分らしさや同じ目線が出やすい関係です。' },
+  supported: { label: '日支が日主を生む', direction: 'branch-to-stem', text: '親密関係や生活の場から、本人が支えられやすい関係です。' },
+  output: { label: '日主が日支を生む', direction: 'stem-to-branch', text: '本人が関係や生活の場へ力を注ぎやすい関係です。' },
+  wealth: { label: '日主が日支を制する', direction: 'stem-to-branch', text: '本人が関係や生活の場を管理し、責任を持ちやすい関係です。' },
+  pressure: { label: '日支が日主を制する', direction: 'branch-to-stem', text: '親密関係や生活の場から、本人に役割や緊張感が生まれやすい関係です。' },
+};
+
+function DayBranchRelationVisual({ calculation }) {
+  const day = calculation.pillars.day;
+  const stemElement = day.element?.stem || '五行';
+  const branchElement = day.element?.branch || '五行';
+  const relationKey = marriageElementRelationKey(stemElement, branchElement);
+  const visual = RELATION_VISUAL_LABELS[relationKey] || RELATION_VISUAL_LABELS.same;
+  const hiddenMain = day.hiddenStemDetails?.[0];
+  const arrow = visual.direction === 'branch-to-stem' ? '←' : visual.direction === 'same' ? '＝' : '→';
+  return (
+    <section className="day-relation-card" aria-label="日主と日支の関係">
+      <div className="relation-node">
+        <span>日主</span>
+        <strong className={elementClass(stemElement)}>{day.stem}</strong>
+        <small>{stemElement} / 本人像</small>
+      </div>
+      <div className="relation-flow">
+        <b>{arrow}</b>
+        <span>{visual.label}</span>
+      </div>
+      <div className="relation-node">
+        <span>日支</span>
+        <strong className={elementClass(branchElement)}>{day.branch}</strong>
+        <small>{branchElement} / 婚姻宮</small>
+      </div>
+      <p>{visual.text}</p>
+      {hiddenMain && (
+        <div className="relation-hidden">
+          <span>内側の気配</span>
+          <strong>{hiddenMain.stem}{hiddenMain.element}</strong>
+          <small>{displayTenGod(hiddenMain.tenGod)}</small>
+        </div>
+      )}
+    </section>
+  );
+}
+
+const WORLD_LOCATIONS = [
+  { id: 'cn-beijing', country: 'cn', label: '中国 / 北京市', city: '北京市', region: '北京市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.9042, longitude: 116.4074, keywords: '北京 beijing' },
+  { id: 'cn-shanghai', country: 'cn', label: '中国 / 上海市', city: '上海市', region: '上海市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 31.2304, longitude: 121.4737, keywords: '上海 shanghai' },
+  { id: 'cn-guangzhou', country: 'cn', label: '中国 / 広東省 広州市', city: '広州市', region: '広東省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 23.1291, longitude: 113.2644, keywords: '广东 廣東 広東 广州 廣州 guangzhou canton' },
+  { id: 'cn-shenzhen', country: 'cn', label: '中国 / 広東省 深圳市', city: '深圳市', region: '広東省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 22.5431, longitude: 114.0579, keywords: '广东 廣東 広東 深圳 shenzhen' },
+  { id: 'cn-hangzhou', country: 'cn', label: '中国 / 浙江省 杭州市', city: '杭州市', region: '浙江省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 30.2741, longitude: 120.1551, keywords: '浙江 杭州 hangzhou' },
+  { id: 'cn-nanjing', country: 'cn', label: '中国 / 江蘇省 南京市', city: '南京市', region: '江蘇省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 32.0603, longitude: 118.7969, keywords: '江苏 江蘇 南京 nanjing' },
+  { id: 'cn-chengdu', country: 'cn', label: '中国 / 四川省 成都市', city: '成都市', region: '四川省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 30.5728, longitude: 104.0668, keywords: '四川 成都 chengdu' },
+  { id: 'cn-chongqing', country: 'cn', label: '中国 / 重慶市', city: '重慶市', region: '重慶市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 29.563, longitude: 106.5516, keywords: '重庆 重慶 chongqing' },
+  { id: 'cn-wuhan', country: 'cn', label: '中国 / 湖北省 武漢市', city: '武漢市', region: '湖北省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 30.5928, longitude: 114.3055, keywords: '湖北 武汉 武漢 wuhan' },
+  { id: 'cn-xian', country: 'cn', label: '中国 / 陝西省 西安市', city: '西安市', region: '陝西省', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 34.3416, longitude: 108.9398, keywords: '陕西 陝西 西安 xian xi an' },
+  { id: 'cn-tianjin', country: 'cn', label: '中国 / 天津市', city: '天津市', region: '天津市', timezone: 'Asia/Shanghai', utcOffset: 8, latitude: 39.3434, longitude: 117.3616, keywords: '天津 tianjin' },
+  { id: 'cn-hong-kong', country: 'cn', label: '中国 / 香港', city: '香港', region: '香港', timezone: 'Asia/Hong_Kong', utcOffset: 8, latitude: 22.3193, longitude: 114.1694, keywords: '香港 hong kong hk' },
+  { id: 'cn-taipei', country: 'cn', label: '台湾 / 台北市', city: '台北市', region: '台湾', timezone: 'Asia/Taipei', utcOffset: 8, latitude: 25.033, longitude: 121.5654, keywords: '台湾 臺灣 台北 taipei' },
+  { id: 'us-new-york', country: 'us', label: '米国 / ニューヨーク州 ニューヨーク市', city: 'New York', region: 'NY', timezone: 'America/New_York', utcOffset: -5, latitude: 40.7128, longitude: -74.006, keywords: 'new york ny ニューヨーク' },
+  { id: 'us-los-angeles', country: 'us', label: '米国 / カリフォルニア州 ロサンゼルス', city: 'Los Angeles', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 34.0522, longitude: -118.2437, keywords: 'los angeles california ca ロサンゼルス' },
+  { id: 'us-san-francisco', country: 'us', label: '米国 / カリフォルニア州 サンフランシスコ', city: 'San Francisco', region: 'CA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 37.7749, longitude: -122.4194, keywords: 'san francisco california ca サンフランシスコ' },
+  { id: 'us-chicago', country: 'us', label: '米国 / イリノイ州 シカゴ', city: 'Chicago', region: 'IL', timezone: 'America/Chicago', utcOffset: -6, latitude: 41.8781, longitude: -87.6298, keywords: 'chicago illinois il シカゴ' },
+  { id: 'us-houston', country: 'us', label: '米国 / テキサス州 ヒューストン', city: 'Houston', region: 'TX', timezone: 'America/Chicago', utcOffset: -6, latitude: 29.7604, longitude: -95.3698, keywords: 'houston texas tx ヒューストン' },
+  { id: 'us-seattle', country: 'us', label: '米国 / ワシントン州 シアトル', city: 'Seattle', region: 'WA', timezone: 'America/Los_Angeles', utcOffset: -8, latitude: 47.6062, longitude: -122.3321, keywords: 'seattle washington wa シアトル' },
+  { id: 'us-boston', country: 'us', label: '米国 / マサチューセッツ州 ボストン', city: 'Boston', region: 'MA', timezone: 'America/New_York', utcOffset: -5, latitude: 42.3601, longitude: -71.0589, keywords: 'boston massachusetts ma ボストン' },
+  { id: 'us-honolulu', country: 'us', label: '米国 / ハワイ州 ホノルル', city: 'Honolulu', region: 'HI', timezone: 'Pacific/Honolulu', utcOffset: -10, latitude: 21.3069, longitude: -157.8583, keywords: 'honolulu hawaii hi ハワイ ホノルル' },
+  { id: 'world-london', country: 'world', label: '英国 / ロンドン', city: 'London', region: 'England', timezone: 'Europe/London', utcOffset: 0, latitude: 51.5074, longitude: -0.1278, keywords: 'london uk england ロンドン' },
+  { id: 'world-paris', country: 'world', label: 'フランス / パリ', city: 'Paris', region: 'Ile-de-France', timezone: 'Europe/Paris', utcOffset: 1, latitude: 48.8566, longitude: 2.3522, keywords: 'paris france パリ' },
+  { id: 'world-sydney', country: 'world', label: 'オーストラリア / シドニー', city: 'Sydney', region: 'NSW', timezone: 'Australia/Sydney', utcOffset: 10, latitude: -33.8688, longitude: 151.2093, keywords: 'sydney australia シドニー' },
+  { id: 'world-singapore', country: 'world', label: 'シンガポール / シンガポール', city: 'Singapore', region: 'Singapore', timezone: 'Asia/Singapore', utcOffset: 8, latitude: 1.3521, longitude: 103.8198, keywords: 'singapore シンガポール' },
+  { id: 'world-bangkok', country: 'world', label: 'タイ / バンコク', city: 'Bangkok', region: 'Bangkok', timezone: 'Asia/Bangkok', utcOffset: 7, latitude: 13.7563, longitude: 100.5018, keywords: 'bangkok thailand バンコク' },
+  { id: 'world-seoul', country: 'world', label: '韓国 / ソウル', city: 'Seoul', region: 'Seoul', timezone: 'Asia/Seoul', utcOffset: 9, latitude: 37.5665, longitude: 126.978, keywords: 'seoul korea ソウル 韓国' },
+];
 
 function calcApi() {
   return window.HOSHI_CALC || null;
@@ -118,6 +262,26 @@ function displayRegisteredLocation(location) {
   return stripJapan(location?.label || '');
 }
 
+function displayTimezoneLabel(timezone) {
+  const labels = {
+    'Asia/Tokyo': '日本標準時',
+    'Asia/Shanghai': '中国標準時',
+    'Asia/Hong_Kong': '香港時間',
+    'Asia/Taipei': '台湾時間',
+    'America/New_York': '米国東部時間',
+    'America/Los_Angeles': '米国太平洋時間',
+    'America/Chicago': '米国中部時間',
+    'Pacific/Honolulu': 'ハワイ時間',
+    'Europe/London': '英国時間',
+    'Europe/Paris': '中央ヨーロッパ時間',
+    'Australia/Sydney': 'シドニー時間',
+    'Asia/Singapore': 'シンガポール時間',
+    'Asia/Bangkok': 'バンコク時間',
+    'Asia/Seoul': '韓国標準時',
+  };
+  return labels[timezone] || timezone || '—';
+}
+
 function parseBirthTime(value) {
   const [hour = '12', minute = '00'] = String(value || '12:00').split(':');
   return {
@@ -170,6 +334,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const [result, setResult] = React.useState(null);
   const [error, setError] = React.useState('');
   const [showStamp, setShowStamp] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState('profile');
   const fieldRefs = React.useRef({});
 
   const registeredLocations = allRegisteredLocations();
@@ -191,12 +356,36 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   const jumpToStep = (step) => {
     const target = fieldRefs.current[step];
     if (!target) return;
+    setActiveStep(step);
     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     window.setTimeout(() => {
       const focusable = target.querySelector('input:not([disabled]), select:not([disabled]), button:not([disabled])');
       if (focusable) focusable.focus({ preventScroll: true });
     }, 420);
   };
+
+  React.useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const targets = RITE_NAV_ITEMS
+      .map((item) => [item.key, fieldRefs.current[item.key]])
+      .filter((entry) => entry[1]);
+    if (!targets.length) return undefined;
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const match = targets.find((entry) => entry[1] === visible.target);
+      if (match) setActiveStep(match[0]);
+    }, {
+      rootMargin: '-28% 0px -48% 0px',
+      threshold: [0.15, 0.35, 0.6],
+    });
+
+    targets.forEach((entry) => observer.observe(entry[1]));
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     if (locationRegion === 'jp') return;
@@ -261,41 +450,40 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
   };
 
   return (
-    <section className="rite" data-screen-label="02 命式作成">
-      <aside className="rite-side">
-        <div className="kanji">命式作成</div>
-        <div className="label">MEISHIKI CREATION</div>
-        <div className="seal-stack">
-          <button type="button" className="side-topic" onClick={() => jumpToStep('profile')}><span className="num">壹</span><span>お名前と性別</span></button>
-          <button type="button" className="side-topic" onClick={() => jumpToStep('birthday')}><span className="num">貳</span><span>生年月日</span></button>
-          <button type="button" className="side-topic" onClick={() => jumpToStep('birthtime')}><span className="num">參</span><span>出生時間</span></button>
-          <button type="button" className="side-topic" onClick={() => jumpToStep('birthplace')}><span className="num">肆</span><span>出生地</span></button>
-        </div>
-      </aside>
-
+    <section className="rite creation-rite" data-screen-label="02 命式作成">
       <div className="rite-main">
         <div className="rite-intro">
-          <h2>生年月日から、あなたの命式を作成します</h2>
+          <h2>四柱推命の命式を作成</h2>
           <p>
-            四柱推命では、生年月日・出生時間・出生地から命式を作ります。
+            生年月日や出生時刻などを入力すると、あなたの命式を無料で作成できます。<br/>
+            命式の基本構造や大運・流年の流れを確認しましょう。
           </p>
         </div>
 
-        <FormField num="壹 / 一" ja="お名前" romaji="ONAMAE"
-          fieldRef={(node) => { fieldRefs.current.profile = node; }}
-          hint="※ 省略可。結果画面での呼び名として使用します">
-          <div className="input-line">
-            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
-          </div>
-        </FormField>
+        <nav className="rite-stepper query-progress" aria-label="命式作成の流れ">
+          {[
+            { num: '1', title: '入力する', text: '生年月日や出生情報を入力します' },
+            { num: '2', title: '命式を確認', text: 'あなたの命式を確認します' },
+            { num: '3', title: '解説を読む', text: '命式の意味や運勢を読み解きます' },
+          ].map((item, index) => (
+            <div key={item.num} className={`query-progress-item ${index === 0 ? 'is-active' : ''}`}>
+              <span>{item.num}</span>
+              <div>
+                <strong>{item.title}</strong>
+                <small>{item.text}</small>
+              </div>
+            </div>
+          ))}
+        </nav>
 
-        <FormField num="壹 / 二" ja="性 別" romaji="SEIBETSU"
-          hint="※ 大運（10年ごとの運勢）の順逆計算に影響します">
+        <FormField num="人" ja="基本情報" romaji="性別"
+          fieldRef={(node) => { fieldRefs.current.profile = node; }}
+          hint="性別を選択してください。">
           <div className="gender-row">
             {[
-              { key: 'yang', ja: '男性 (陽)', sym: '☰' },
-              { key: 'yin',  ja: '女性 (陰)', sym: '☷' },
-              { key: 'gen',  ja: '選択しない', sym: '☯' },
+              { key: 'yang', ja: '男性', sym: '☰' },
+              { key: 'yin',  ja: '女性', sym: '☷' },
+              { key: 'gen',  ja: '未選択', sym: '○' },
             ].map(g => (
               <button key={g.key} className={`gender-btn ${gender === g.key ? 'on' : ''}`} onClick={() => setGender(g.key)}>
                 <span className="glyph">{g.sym}</span>
@@ -305,18 +493,24 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="貳 / 一" ja="生年月日" romaji="SEINENGAPPI"
+        <FormField num="日" ja="生年月日" romaji="日付"
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}
-          hint="誕生日の暦（西暦または和暦）を選択し、入力してください">
-          <div className="toggle-row">
-            {['seireki','showa','heisei','reiwa'].map(c => (
-               <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
-                 {c === 'seireki' ? '西暦' : (c === 'showa' ? '昭和' : (c === 'heisei' ? '平成' : '令和'))}
-               </button>
-            ))}
+          hint="生まれた日付">
+          <div className="toggle-row era-row">
+            <button className={calendar === 'seireki' ? 'on' : ''} onClick={() => setCalendar('seireki')}>西暦</button>
+            <button className={calendar !== 'seireki' ? 'on' : ''} onClick={() => setCalendar(calendar === 'seireki' ? 'showa' : calendar)}>元号</button>
           </div>
+          {calendar !== 'seireki' && (
+            <div className="toggle-row era-type-row">
+              {['showa','heisei','reiwa'].map(c => (
+                <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
+                  {c === 'showa' ? '昭和' : (c === 'heisei' ? '平成' : '令和')}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="input-row date-row">
-            <div className="input-line with-mark" data-mark="年 / Y">
+            <div className="input-line with-mark" data-mark="年">
               <select value={year} onChange={e => setYear(e.target.value)}>
                 <option value="" disabled>--</option>
                 {calendar === 'seireki' && Array.from({length: 107}, (_, i) => 2026 - i).map(y => <option key={y} value={y}>{y}</option>)}
@@ -325,13 +519,13 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
                 {calendar === 'reiwa' && Array.from({length: 8}, (_, i) => 8 - i).map(y => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
-            <div className="input-line with-mark" data-mark="月 / M">
+            <div className="input-line with-mark" data-mark="月">
               <select value={month} onChange={e => setMonth(e.target.value)}>
                 <option value="" disabled>--</option>
                 {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
-            <div className="input-line with-mark" data-mark="日 / D">
+            <div className="input-line with-mark" data-mark="日">
               <select value={day} onChange={e => setDay(e.target.value)}>
                 <option value="" disabled>--</option>
                 {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
@@ -340,15 +534,15 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="參 / 一" ja="出生時間" romaji="SHUSSEIJIKAN"
+        <FormField num="時" ja="出生時刻" romaji="時刻"
           fieldRef={(node) => { fieldRefs.current.birthtime = node; }}
-          hint="出生時刻をできるだけ正確に入力してください。真太陽時の補正に使用します">
-          <div className="toggle-row compact">
+          hint="時刻がわかる場合は入力">
+          <div className="toggle-row compact time-mode-row">
             <button className={!unsure ? 'on' : ''} onClick={() => setUnsure(false)}>時刻を入力</button>
             <button className={unsure ? 'on' : ''} onClick={() => setUnsure(true)}>時間不明</button>
           </div>
           <div className={`input-row time-row ${unsure ? 'is-disabled' : ''}`}>
-            <div className="input-line with-mark" data-mark="時 / H">
+            <div className="input-line with-mark" data-mark="時">
               <select value={birthHour} disabled={unsure} aria-disabled={unsure ? 'true' : 'false'} onChange={e => {
                 setUnsure(false);
                 setBirthHour(e.target.value);
@@ -356,7 +550,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
                 {Array.from({length: 24}, (_, i) => String(i).padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}
               </select>
             </div>
-            <div className="input-line with-mark" data-mark="分 / M">
+            <div className="input-line with-mark" data-mark="分">
               <select value={birthMinute} disabled={unsure} aria-disabled={unsure ? 'true' : 'false'} onChange={e => {
                 setUnsure(false);
                 setBirthMinute(e.target.value);
@@ -367,9 +561,9 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </div>
         </FormField>
 
-        <FormField num="肆 / 一" ja="出生地" romaji="SHUSSEICHI"
+        <FormField num="地" ja="出生地" romaji="場所"
           fieldRef={(node) => { fieldRefs.current.birthplace = node; }}
-          hint="県・省・州・都市名で検索し、候補から出生地を選択してください">
+          hint="都道府県・市区町村">
           <div className="toggle-row compact location-region-row">
             {REGION_OPTIONS.map(region => (
               <button key={region.key} className={locationRegion === region.key ? 'on' : ''} onClick={() => {
@@ -419,7 +613,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
                   type="text"
                   value={locationQuery}
                   onChange={e => setLocationQuery(e.target.value)}
-                  placeholder={locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）California / New York' : '例 ）London / Seoul / Singapore'}
+                  placeholder={locationRegion === 'cn' ? '例 ）上海 / 広東 / 香港' : locationRegion === 'us' ? '例 ）カリフォルニア / ニューヨーク' : '例 ）ロンドン / ソウル / シンガポール'}
                 />
               </div>
               <div className="input-line with-mark" data-mark="候補">
@@ -433,7 +627,7 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           )}
           <div className="location-note">
             選択中: {displayRegisteredLocation(selectedLocation)}
-            {selectedLocation?.timezone ? ` / ${selectedLocation.timezone}` : ''}
+            {selectedLocation?.timezone ? ` / ${displayTimezoneLabel(selectedLocation.timezone)}` : ''}
           </div>
         </FormField>
 
@@ -451,13 +645,50 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           </button>
         </div>
         {error && <div className="notice result-error">{error}</div>}
-        <div style={{ marginTop: 56, textAlign: 'center' }}>
-          <button onClick={onBack} style={{ fontSize: 11, letterSpacing: '0.4em', color: 'var(--ink-3)', fontFamily: 'var(--f-mono)' }}>← 序章へ戻る</button>
-        </div>
       </div>
-      <div className={`seal-overlay ${showStamp ? 'show' : ''}`}>
-        <div className="stamp">命</div>
-        <div className="caption">命式を作成しています</div>
+      <aside className="creation-preview query-help-panel" aria-label="よくあるご質問">
+        <h2 className="help-title-desktop">よくあるご質問</h2>
+        <h2 className="help-title-mobile">入力に迷ったら</h2>
+        {[
+          {
+            icon: '時',
+            title: '出生時刻が不明な場合',
+            text: '時刻がわからない場合は「不明」を選択してください。日柱までの命式と、時刻不明用の解説をご覧いただけます。',
+          },
+          {
+            icon: '地',
+            title: '出生地を選ぶ理由',
+            text: '四柱推命では、出生地の緯度・経度から真太陽時を計算します。正確な命式を出すために必要な情報です。',
+          },
+          {
+            icon: '読',
+            title: '結果の見方',
+            text: '命式の各要素が持つ意味や、大運・流年の読み方を分かりやすく解説します。初めての方はこちらをご覧ください。',
+          },
+        ].map((item) => (
+          <article key={item.title} className="creation-preview-card query-help-card">
+            <span className="query-help-icon" aria-hidden="true">{item.icon}</span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <button type="button">詳しく見る <span>›</span></button>
+            </div>
+          </article>
+        ))}
+        <div className="creation-preview-card query-help-card query-about-card">
+          <span className="query-help-icon" aria-hidden="true">七</span>
+          <div>
+            <h3>七柱推命について</h3>
+            <p>七柱推命をご希望の方は、命式作成後の結果画面で切り替えてご確認いただけます。</p>
+          </div>
+        </div>
+      </aside>
+      <div className={`seal-overlay native-progress-overlay ${showStamp ? 'show' : ''}`} role="status" aria-live="polite">
+        <div className="progress-hud">
+          <span className="progress-spinner" aria-hidden="true"></span>
+          <strong>命式を作成中</strong>
+          <small>入力内容をこの端末で計算しています</small>
+        </div>
       </div>
     </section>
   );
@@ -632,13 +863,13 @@ const TEN_GOD_DISPLAY = {
   偏財: '偏財',
   正财: '正財',
   正財: '正財',
-  七杀: '七殺',
-  七殺: '七殺',
-  偏官: '七殺',
+  七杀: '偏官',
+  七殺: '偏官',
+  偏官: '偏官',
   正官: '正官',
   偏印: '偏印',
-  正印: '正印',
-  印綬: '正印',
+  正印: '印綬',
+  印綬: '印綬',
   日主: '日主',
 };
 function displayTenGod(name) {
@@ -656,11 +887,14 @@ function hasTenGod(set, name) {
 }
 function localizeReadingTerm(text) {
   return String(text || '')
-    .replaceAll('七杀', '七殺')
+    .replaceAll('七杀', '偏官')
+    .replaceAll('七殺', '偏官')
     .replaceAll('劫财', '劫財')
     .replaceAll('伤官', '傷官')
     .replaceAll('偏财', '偏財')
     .replaceAll('正财', '正財')
+    .replaceAll('正印格', '印綬格')
+    .replaceAll('正印', '印綬')
     .replaceAll('藏干', '蔵干')
     .replaceAll('纳音', '納音')
     .replaceAll('格局', '命式の型');
@@ -767,8 +1001,8 @@ function tenGodCompositionInsight(gods) {
     topLabels.some((name) => ['比肩', '劫財'].includes(name)) ? '自分軸・競争心' : '',
     topLabels.some((name) => ['食神', '傷官'].includes(name)) ? '表現力・感性' : '',
     topLabels.some((name) => ['正財', '偏財'].includes(name)) ? '現実成果・人との機会' : '',
-    topLabels.some((name) => ['正官', '七殺'].includes(name)) ? '責任感・判断力' : '',
-    topLabels.some((name) => ['正印', '偏印'].includes(name)) ? '学び・直感・保護' : '',
+    topLabels.some((name) => ['正官', '偏官'].includes(name)) ? '責任感・判断力' : '',
+    topLabels.some((name) => ['印綬', '偏印'].includes(name)) ? '学び・直感・保護' : '',
   ].filter(Boolean).join('、');
   const sourceText = primary.heavenly > primary.hidden
     ? `「${primaryLabel}」は天干側に出やすいため、周囲から見える行動や第一印象に表れやすい配置です。`
@@ -1062,7 +1296,7 @@ function analyzeSynthesis(calculation, profile) {
   let marriagePoints = [];
   if (gender === 'female') {
     if (hasTenGod(tenGodsSet, '正官')) marriagePoints.push('命式内に「正官（夫の星）」があり、誠実な縁に恵まれやすい徳を持っています。');
-    else if (hasTenGod(tenGodsSet, '七殺')) marriagePoints.push('「七殺」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
+    else if (hasTenGod(tenGodsSet, '偏官')) marriagePoints.push('「偏官」の影響が強く、ドラマチックで刺激的な関係を求める傾向にあります。');
     else marriagePoints.push('自立した個としての生き方を尊重し合える関係が幸福の鍵です。');
   } else if (gender === 'male') {
     if (hasTenGod(tenGodsSet, '正財')) marriagePoints.push('命式内に「正財（妻の星）」があり、家庭を基盤として運気を安定させる力があります。');
@@ -1089,7 +1323,7 @@ function WuxingDiagram({ dayElement, elementCounts }) {
     const idxDay = wuxingCycle.indexOf(dayElement);
     const idxTarget = wuxingCycle.indexOf(targetElement);
     const diff = (idxTarget - idxDay + 5) % 5;
-    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・七殺', '正印・偏印'];
+    const families = ['比肩・劫財', '食神・傷官', '正財・偏財', '正官・偏官', '印綬・偏印'];
     return families[diff] || '';
   };
   return (
@@ -1423,7 +1657,10 @@ function PillarMeaningSection({ calculation, profile }) {
               <small>{PILLAR_LABELS[key]} / {guide.keyword} / {guide.title}</small>
               <strong><span className={elementClass(p.element.stem)}>{p.stem}</span><span className={elementClass(p.element.branch)}>{p.branch}</span></strong>
               <p>{guide.detail}</p>
-              <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation, profile)}</p>
+              {key === 'day' && <DayBranchRelationVisual calculation={calculation} />}
+              <DetailDisclosure title={`${PILLAR_LABELS[key]}の詳しい読み`}>
+                <p className="pillar-specific-copy">{pillarSpecificReading(key, p, calculation, profile)}</p>
+              </DetailDisclosure>
               <em>見る対象: {guide.focus}</em>
               <em>関係: {guide.relation}</em>
               <em>時間帯: {guide.period}</em>
@@ -1495,7 +1732,7 @@ function BackendDetailSync({ calculation }) {
           </div>
           <span>天干 / 蔵干</span>
         </div>
-        <p className="backend-copy">五行の構成は前のテーマで確認済みなので、ここでは七殺・傷官などの十神だけを集計します。同じ十神でも、天干に出ているものは表に出やすい役割、蔵干にあるものは内側や背景に残りやすい役割として分けて読みます。</p>
+        <p className="backend-copy">五行の構成は前のテーマで確認済みなので、ここでは偏官・傷官などの十神だけを集計します。同じ十神でも、天干に出ているものは表に出やすい役割、蔵干にあるものは内側や背景に残りやすい役割として分けて読みます。</p>
         <div className="theme-analysis-list">
           <article className="is-role">
             <div className="theme-analysis-rows">
@@ -1608,7 +1845,7 @@ function BasicInfoPanel({ name, calculation, profile }) {
     { label: '生年月日', value: input.date || meta.inputDateTime?.slice(0, 10) || '—' },
     { label: '出生時間', value: timeDisplay(calculation, profile) },
     { label: '出生地', value: stripJapan(location.label || meta.location?.label || '—') },
-    { label: 'タイムゾーン', value: meta.timezone || location.timezone || '—' },
+    { label: '標準時', value: displayTimezoneLabel(meta.timezone || location.timezone) },
     { label: '真太陽時', value: meta.trueSolarTime === 'applied' ? meta.effectiveBirthDateTime : '未補正' },
     { label: '四柱', value: calculation.pillarLine || PILLAR_KEYS.map(key => calculation.pillars[key].text).join(' / ') },
   ];
@@ -1665,6 +1902,7 @@ function FoundationDetailSections({ calculation }) {
 }
 
 function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onShowInsight }) {
+  const [activeSection, setActiveSection] = React.useState('s0');
   const [activePillar, setActivePillar] = React.useState(null);
   const readingTags = React.useMemo(() => buildUserReadingTags(calculation, collectTenGods(calculation)), [calculation]);
   const scrollTo = (sid) => {
@@ -1682,16 +1920,34 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
     }
     onShowInsight(target);
   };
+  React.useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return undefined;
+    const targets = RESULT_NAV_ITEMS
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean);
+    if (!targets.length) return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target?.id) setActiveSection(visible.target.id);
+    }, { rootMargin: '-28% 0px -55% 0px', threshold: [0.05, 0.2, 0.45] });
+    targets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section className="rite result-rite" data-screen-label="03 命式">
       <aside className="rite-side">
-        <div className="kanji">命式</div><div className="label">MEISHIKI CHART</div>
+        <div className="kanji">命式</div><div className="label">命式確認</div>
+        <div className="result-nav-head">
+          <span>読み解きナビ</span>
+          <button type="button" onClick={onBack}>入力へ戻る</button>
+        </div>
         <div className="seal-stack">
-          {['基本情報','四柱命式','要点解読','詳しい解説'].map((n, i) => (
-            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`s${i}`)}><span className="num">{['壹','貳','參','肆'][i]}</span><span>{n}</span></button>
+          {RESULT_NAV_ITEMS.map((item) => (
+            <TopicButton key={item.id} {...item} active={activeSection === item.id} onClick={() => scrollTo(item.id)} />
           ))}
-          <button type="button" className="side-back" onClick={onBack}>← 入力へ戻る</button>
         </div>
       </aside>
       <div className="rite-main result-main" style={{ paddingBottom: 120 }}>
@@ -1699,7 +1955,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <button className="inline-return-btn edit" onClick={onBack}>入力内容を修正する</button>
         </div>
         <div className="result-card" data-card-label="命式の確認" style={{ marginTop: 0 }}>
-          <div className="result-summary result-wide" style={{ paddingBottom: 0 }}>
+          <div id="s0" className="result-summary result-wide" style={{ paddingBottom: 0 }}>
             <div className="summary-kicker">四柱推命 鑑定結果</div>
             <h2 style={{ margin: '6px 0 8px', fontSize: 26, letterSpacing: '0.04em' }}>{name || 'あなた'}の命式</h2>
             <p style={{ fontSize: 13, color: 'var(--ink-2)' }}>まずは命盤そのものを素早く確認できます。詳しい読み解きは「命式詳細」と「大運・流年」に分けています。</p>
@@ -1721,7 +1977,7 @@ function ResultView({ id, name, calculation, profile, onBack, onShowFortune, onS
           <div id="s3" className="result-wide result-next-panel" style={{ marginTop: 64 }}>
             <div className="result-next-head">
               <div>
-                <div className="summary-kicker">NEXT READING</div>
+                <div className="summary-kicker">次の読み解き</div>
                 <h2>さらに深く読む</h2>
               </div>
               <p>命盤の要点を確認したあと、詳しい解説または大運の流れへ進めます。</p>
@@ -1846,14 +2102,6 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
     return contents[key] || contents.core;
   };
   const content = getInsightContent(topic);
-  const laterTopicKeys = ['lifeTask', 'marriage', 'career', 'money', 'relationship', 'health'];
-  const laterTopicSections = laterTopicKeys.map((key) => {
-    const item = TOPICS.find((candidate) => candidate.key === key);
-    return {
-      ...item,
-      content: getInsightContent(key),
-    };
-  }).filter((item) => item.key);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) {
@@ -1875,34 +2123,33 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
   return (
     <section className="rite" data-screen-label="05 命式詳細">
       <aside className="rite-side insight-side">
-        <div className="kanji">命式詳細</div><div className="label">PERSONAL INSIGHTS</div>
+        <div className="kanji">命式詳細</div><div className="label">詳しい読み解き</div>
         <div className="seal-stack">
           <button
             type="button"
             className="side-topic"
             onClick={() => scrollTo('insight-structure-board')}
           >
-            <span className="num">零</span>
-            <span>命式構造表</span>
+            <span className="topic-icon" aria-hidden="true">盤</span>
+            <span className="topic-copy"><span className="num">零</span><span>命式構造表</span></span>
           </button>
           <button
             type="button"
             className="side-topic"
             onClick={() => scrollTo('insight-pillars-meaning')}
           >
-            <span className="num">壹</span>
-            <span>四柱の意味</span>
+            <span className="topic-icon" aria-hidden="true">柱</span>
+            <span className="topic-copy"><span className="num">壹</span><span>四柱の意味</span></span>
           </button>
           {TOPICS.map((t, i) => (
-            <button
+            <TopicButton
               key={t.key}
-              type="button"
-              className={`side-topic ${topic === t.key ? 'is-active' : ''}`}
+              num={topicNums[i] || i + 1}
+              icon={t.icon}
+              label={t.ja}
+              active={topic === t.key}
               onClick={() => setTopic(t.key)}
-            >
-              <span className="num">{topicNums[i] || i + 1}</span>
-              <span>{t.ja}</span>
-            </button>
+            />
           ))}
           <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
@@ -1911,6 +2158,13 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
         <div className="return-action-row">
           <button className="inline-return-btn" onClick={onBack}>← 命式へ戻る</button>
           <button className="inline-return-btn edit" onClick={onEditInput}>入力内容を修正する</button>
+        </div>
+        <div className="page-context-bar">
+          <span className="page-context-icon" aria-hidden="true">{currentTopic.icon}</span>
+          <div>
+            <small>現在位置 / 命式詳細</small>
+            <strong>{currentTopic.ja}</strong>
+          </div>
         </div>
         <div className="result-card" data-card-label="命式詳細" style={{ marginTop: 0 }}><div className="result-summary result-wide" style={{ paddingTop: 20 }}>
           <div id="insight-structure-board" className="insight-structure-board">
@@ -1933,10 +2187,14 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
                 </button>
               ))}
             </div>
+            <ReadingPointCards topic={currentTopic.ja} content={content} />
             <div className="insight-reader-body">
               <article className="insight-main-copy">
-                <p>{content.p1}</p>
-                <p>{content.p2}</p>
+                {topic === 'core' || topic === 'marriage' ? <DayBranchRelationVisual calculation={calculation} /> : null}
+                <DetailDisclosure title="補足の読み解きを開く">
+                  <p>{content.p1}</p>
+                  <p>{content.p2}</p>
+                </DetailDisclosure>
               </article>
               <aside className="insight-evidence">
                 <strong>読み取り根拠</strong>
@@ -1947,47 +2205,8 @@ function InsightView({ calculation, profile, onBack, onEditInput, routeTarget })
             </div>
           </section>
           <FoundationDetailSections calculation={calculation} />
-          <LaterInsightSections topics={laterTopicSections} onSelectTopic={setTopic} />
           <BackendDetailSync calculation={calculation} />
         </div></div>
-      </div>
-    </section>
-  );
-}
-
-function LaterInsightSections({ topics, onSelectTopic }) {
-  const nums = ['伍', '陸', '柒', '捌', '玖', '拾'];
-  return (
-    <section className="later-insight-sections">
-      <div className="later-insight-head">
-        <div>
-          <div className="summary-kicker">後半テーマの詳解</div>
-          <h3>人生課題から健康運まで、続けて読む</h3>
-          <p>五行特質のあとに、命盤を現実のテーマへ翻訳します。各項目は上部のテーマ切り替えと同じ読みを、ページ本文として続けて確認できます。</p>
-        </div>
-      </div>
-      <div className="later-insight-list">
-        {topics.map((topic, index) => (
-          <article key={topic.key} id={`insight-later-${topic.key}`} className={`later-insight-card tag-${topic.key}`}>
-            <div className="later-insight-marker">
-              <span>{nums[index]}</span>
-              <b>{topic.icon}</b>
-            </div>
-            <div className="later-insight-copy">
-              <div className="summary-kicker">{topic.ja}</div>
-              <h4>{topic.title}</h4>
-              <p>{topic.content.intro}</p>
-              <p>{topic.content.p1}</p>
-              <p>{topic.content.p2}</p>
-              <div className="later-insight-evidence">
-                <strong>読み取り根拠</strong>
-                <span>{topic.content.source}</span>
-              </div>
-              <small>{topic.content.note}</small>
-              <button type="button" onClick={() => onSelectTopic(topic.key)}>このテーマを上部で詳しく見る</button>
-            </div>
-          </article>
-        ))}
       </div>
     </section>
   );
@@ -2002,15 +2221,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
   const currentDecadeTheme = decadeTheme(currentDecade, profile?.gender);
   const monthly = luck.monthlyFortunes || [];
   const daily = luck.dailyFortunes || [];
-  const [selectedDecadeIndex, setSelectedDecadeIndex] = React.useState(currentDecade?.index || decade[0]?.index || '');
-  const [selectedYear, setSelectedYear] = React.useState(currentAnnual?.year || luck.annualFortunes?.[0]?.year || '');
-  React.useEffect(() => {
-    setSelectedDecadeIndex(currentDecade?.index || decade[0]?.index || '');
-    setSelectedYear(currentAnnual?.year || luck.annualFortunes?.[0]?.year || '');
-  }, [calculation]);
-  const selectedDecade = decade.find((item) => String(item.index) === String(selectedDecadeIndex)) || currentDecade || decade[0];
-  const selectedAnnual = (luck.annualFortunes || []).find((item) => String(item.year) === String(selectedYear)) || currentAnnual || luck.annualFortunes?.[0];
-  const selectedReading = selectedDecadeYearReading(selectedDecade, selectedAnnual);
   const scrollTo = (sid) => {
     const el = document.getElementById(sid);
     if (el) {
@@ -2026,10 +2236,10 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
   return (
     <section className="rite" data-screen-label="04 大運・流年">
       <aside className="rite-side">
-        <div className="kanji">大運・流年</div><div className="label">FORTUNE CYCLES</div>
+        <div className="kanji">大運・流年</div><div className="label">運勢の流れ</div>
         <div className="seal-stack">
-          {['十年運マップ','現在の大運','選んで読む','近い流年','明細表'].map((n, i) => (
-            <button key={n} type="button" className="side-topic" onClick={() => scrollTo(`f${i}`)}><span className="num">{['壹','貳','參','肆','伍'][i]}</span><span>{n}</span></button>
+          {FORTUNE_NAV_ITEMS.map((item) => (
+            <TopicButton key={item.id} {...item} onClick={() => scrollTo(item.id)} />
           ))}
           <button type="button" className="side-back" onClick={onBack}>← 命式へ戻る</button>
         </div>
@@ -2052,56 +2262,6 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
             </div>
           </div>
           <div id="f2" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
-            <section className="fortune-selector-panel">
-              <div className="fortune-selector-head">
-                <div>
-                  <div className="summary-kicker">大運と流年を選んで読む</div>
-                  <h3>見たい十年と一年を重ねる</h3>
-                  <p>大運は人生の大きな流れ、流年はその年に表に出る動きです。選んだ組み合わせに応じて、仕事・財・対人の読みを自動で切り替えます。</p>
-                </div>
-                <div className="fortune-selector-controls">
-                  <label>
-                    <span>大運</span>
-                    <select value={selectedDecadeIndex} onChange={(event) => setSelectedDecadeIndex(event.target.value)}>
-                      {decade.map((item) => (
-                        <option key={item.index} value={item.index}>{item.startAge}-{item.endAge}歳 / {item.name}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    <span>流年</span>
-                    <select value={selectedYear} onChange={(event) => setSelectedYear(event.target.value)}>
-                      {(luck.annualFortunes || []).map((item) => (
-                        <option key={item.year} value={item.year}>{item.year}年 / {item.name}</option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-              </div>
-              {selectedReading ? (
-                <article className="fortune-combo-reading">
-                  <div className="fortune-combo-title">
-                    <span>{selectedReading.scoreLabel}</span>
-                    <h4>{selectedReading.title}</h4>
-                    <div className="fortune-score"><i style={{ width: `${selectedReading.score}%` }} /><em>{selectedReading.score}</em></div>
-                  </div>
-                  <p>{selectedReading.summary}</p>
-                  <div className="fortune-keywords">
-                    {selectedReading.keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}
-                  </div>
-                  <div className="fortune-combo-grid">
-                    <article><strong>仕事</strong><p>{selectedReading.work}</p></article>
-                    <article><strong>財</strong><p>{selectedReading.money}</p></article>
-                    <article><strong>対人</strong><p>{selectedReading.relation}</p></article>
-                  </div>
-                  <small>{selectedReading.caution}</small>
-                </article>
-              ) : (
-                <p className="backend-copy">大運と流年を計算できる入力にすると、組み合わせ解説を表示できます。</p>
-              )}
-            </section>
-          </div>
-          <div id="f3" className="result-wide visual-block" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
             <div style={{ textAlign: 'center', marginBottom: 24 }}><h3>今日の巡り（流年・流月・流日）</h3></div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 12 }}>
               {[ { label: '今年の運気', item: currentAnnual, color: 'var(--accent)' }, { label: '今月の運気', item: monthly[0], color: 'var(--gold)' }, { label: '今日の運気', item: daily[0], color: 'var(--seal)' } ].map(l => (
@@ -2115,7 +2275,7 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
             </div>
             <AnnualFortuneGuide annual={luck.annualFortunes || []} />
           </div>
-          <div id="f4" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
+          <div id="f3" style={{ marginTop: 64, paddingTop: 40, borderTop: '1px solid var(--rule)' }}>
              <div style={{ textAlign: 'center' }}><h3>明細表</h3><p className="backend-copy">上の見取り図で大きな流れを確認したあと、必要に応じて干支・十神の明細を見ます。</p></div>
              <LuckItemTable
                title="大運"
@@ -2191,35 +2351,6 @@ const TEN_GOD_FORTUNE_GUIDE = {
 
 function fortuneGuideForGod(god) {
   return TEN_GOD_FORTUNE_GUIDE[god] || { keywords: ['確認', '調整'], rhythm: '流れを確認する時期', score: 60, tone: 'steady', advice: '大きな断定はせず、命式本体と流年を重ねて運の出方を確認します。' };
-}
-
-function impactSummary(item) {
-  const impact = item?.impacts?.[0];
-  if (!impact) return '命式との大きな冲・合・刑害は強く出ていないため、十神テーマを中心に読みます。';
-  return `${impact.label}：${impact.text}`;
-}
-
-function selectedDecadeYearReading(decade, annual) {
-  if (!decade || !annual) return null;
-  const decadeGuide = fortuneGuideForGod(decade.pillar?.heavenlyTenGod);
-  const annualGuide = fortuneGuideForGod(annual.pillar?.heavenlyTenGod);
-  const score = Math.round((decadeGuide.score * 0.62) + (annualGuide.score * 0.38));
-  const scoreLabel = score >= 75 ? '上昇' : score >= 68 ? '活動' : score >= 62 ? '安定' : '整える';
-  const decadeLabel = displayTenGod(decade.pillar?.heavenlyTenGod);
-  const annualLabel = displayTenGod(annual.pillar?.heavenlyTenGod);
-  return {
-    title: `${decade.name}大運 × ${annual.name}流年`,
-    score,
-    scoreLabel,
-    keywords: [...new Set([...(decadeGuide.keywords || []), ...(annualGuide.keywords || [])])].slice(0, 5),
-    summary: decade?.reading?.summary
-      ? `${decade.reading.summary} その十年の中で${annual.year}年は、${annualLabel}のテーマが一年の入口になります。`
-      : `${decade.startYear}-${decade.endYear}年の${decadeLabel}大運に、${annual.year}年の${annualLabel}流年が重なります。十年単位の課題を一年単位で具体化して読む組み合わせです。`,
-    work: annual?.reading?.work || `仕事面では、大運の${decadeLabel}を土台に、流年の${annualLabel}を具体的な動きとして使います。`,
-    money: annual?.reading?.money || '財運は収入断定ではなく、管理・機会・支出の出方として見ます。',
-    relation: annual?.reading?.relation || '対人面は日支と命式全体に、この年の干支がどう触れるかを重ねます。',
-    caution: annual?.reading?.impact || impactSummary(annual),
-  };
 }
 
 function decadeStageLabel(item) {

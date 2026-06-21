@@ -453,33 +453,32 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
     <section className="rite creation-rite" data-screen-label="02 命式作成">
       <div className="rite-main">
         <div className="rite-intro">
-          <h2>命式を作成</h2>
+          <h2>四柱推命の命式を作成</h2>
           <p>
-            お名前・性別・生年月日・出生時刻・出生地を入力してください。
+            生年月日や出生時刻などを入力すると、あなたの命式を無料で作成できます。<br/>
+            命式の基本構造や大運・流年の流れを確認しましょう。
           </p>
         </div>
 
-        <nav className="rite-stepper" aria-label="作成ステップ">
-          {RITE_NAV_ITEMS.map((item) => (
-            <TopicButton
-              key={item.key}
-              {...item}
-              active={activeStep === item.key}
-              onClick={() => jumpToStep(item.key)}
-            />
+        <nav className="rite-stepper query-progress" aria-label="命式作成の流れ">
+          {[
+            { num: '1', title: '入力する', text: '生年月日や出生情報を入力します' },
+            { num: '2', title: '命式を確認', text: 'あなたの命式を確認します' },
+            { num: '3', title: '解説を読む', text: '命式の意味や運勢を読み解きます' },
+          ].map((item, index) => (
+            <div key={item.num} className={`query-progress-item ${index === 0 ? 'is-active' : ''}`}>
+              <span>{item.num}</span>
+              <div>
+                <strong>{item.title}</strong>
+                <small>{item.text}</small>
+              </div>
+            </div>
           ))}
         </nav>
 
-        <FormField num="名" ja="お名前" romaji="任意"
+        <FormField num="人" ja="基本情報" romaji="性別"
           fieldRef={(node) => { fieldRefs.current.profile = node; }}
-          hint="省略可。結果画面での呼び名">
-          <div className="input-line">
-            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="例 ）田中 太郎" />
-          </div>
-        </FormField>
-
-        <FormField num="性" ja="性別" romaji="性別"
-          hint="大運の順逆計算に使用">
+          hint="性別を選択してください。">
           <div className="gender-row">
             {[
               { key: 'yang', ja: '男性', sym: '☰' },
@@ -498,12 +497,18 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
           fieldRef={(node) => { fieldRefs.current.birthday = node; }}
           hint="生まれた日付">
           <div className="toggle-row era-row">
-            {['seireki','showa','heisei','reiwa'].map(c => (
-               <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
-                 {c === 'seireki' ? '西暦' : (c === 'showa' ? '昭和' : (c === 'heisei' ? '平成' : '令和'))}
-               </button>
-            ))}
+            <button className={calendar === 'seireki' ? 'on' : ''} onClick={() => setCalendar('seireki')}>西暦</button>
+            <button className={calendar !== 'seireki' ? 'on' : ''} onClick={() => setCalendar(calendar === 'seireki' ? 'showa' : calendar)}>元号</button>
           </div>
+          {calendar !== 'seireki' && (
+            <div className="toggle-row era-type-row">
+              {['showa','heisei','reiwa'].map(c => (
+                <button key={c} className={calendar === c ? 'on' : ''} onClick={() => setCalendar(c)}>
+                  {c === 'showa' ? '昭和' : (c === 'heisei' ? '平成' : '令和')}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="input-row date-row">
             <div className="input-line with-mark" data-mark="年">
               <select value={year} onChange={e => setYear(e.target.value)}>
@@ -641,43 +646,43 @@ function Rite({ onBack, onSubmitDone, initialResult }) {
         </div>
         {error && <div className="notice result-error">{error}</div>}
       </div>
-      <aside className="creation-preview" aria-label="命式プレビュー">
-        <div className="creation-preview-card">
-          <button type="button" className="preview-link" disabled={!initialResult}>四柱の並び <span>›</span></button>
-          <div className="preview-pillars">
-            {[
-              ['年柱', initialResult?.chart?.pillars?.year?.text || '—'],
-              ['月柱', initialResult?.chart?.pillars?.month?.text || '—'],
-              ['日柱', initialResult?.chart?.pillars?.day?.text || '—'],
-              ['時柱', initialResult?.chart?.pillars?.hour?.text || '—'],
-            ].map((item) => (
-              <div key={item[0]} className={item[0] === '日柱' ? 'is-day' : ''}>
-                <span>{item[0]}</span>
-                <strong>{item[1]}</strong>
-              </div>
-            ))}
+      <aside className="creation-preview query-help-panel" aria-label="よくあるご質問">
+        <h2 className="help-title-desktop">よくあるご質問</h2>
+        <h2 className="help-title-mobile">入力に迷ったら</h2>
+        {[
+          {
+            icon: '時',
+            title: '出生時刻が不明な場合',
+            text: '時刻がわからない場合は「不明」を選択してください。日柱までの命式と、時刻不明用の解説をご覧いただけます。',
+          },
+          {
+            icon: '地',
+            title: '出生地を選ぶ理由',
+            text: '四柱推命では、出生地の緯度・経度から真太陽時を計算します。正確な命式を出すために必要な情報です。',
+          },
+          {
+            icon: '読',
+            title: '結果の見方',
+            text: '命式の各要素が持つ意味や、大運・流年の読み方を分かりやすく解説します。初めての方はこちらをご覧ください。',
+          },
+        ].map((item) => (
+          <article key={item.title} className="creation-preview-card query-help-card">
+            <span className="query-help-icon" aria-hidden="true">{item.icon}</span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              <button type="button">詳しく見る <span>›</span></button>
+            </div>
+          </article>
+        ))}
+        <div className="creation-preview-card query-help-card query-about-card">
+          <span className="query-help-icon" aria-hidden="true">七</span>
+          <div>
+            <h3>七柱推命について</h3>
+            <p>七柱推命をご希望の方は、命式作成後の結果画面で切り替えてご確認いただけます。</p>
           </div>
         </div>
-        <div className="creation-preview-card">
-          <h3>五行バランス</h3>
-          {['木', '火', '土', '金', '水'].map((item, index) => (
-            <div key={item} className="preview-balance-row">
-              <span>{item}</span>
-              <i style={{ width: `${[28, 54, 42, 68, 76][index]}%` }}></i>
-            </div>
-          ))}
-        </div>
-        <div className="creation-preview-card">
-          <h3>日主の強さ</h3>
-          <p>{initialResult ? (initialResult.chart?.strength?.label || '確認済み') : '入力後にプレビューを表示します'}</p>
-        </div>
       </aside>
-      <div className="mobile-command-bar" aria-live="polite">
-        <span>{valid ? '入力完了' : '必須項目を入力'}</span>
-        <button className={busy ? 'busy' : ''} disabled={!valid || busy} onClick={submit}>
-          {busy ? '作成中' : '命式を見る'}
-        </button>
-      </div>
       <div className={`seal-overlay native-progress-overlay ${showStamp ? 'show' : ''}`} role="status" aria-live="polite">
         <div className="progress-hud">
           <span className="progress-spinner" aria-hidden="true"></span>

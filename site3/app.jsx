@@ -20,6 +20,14 @@ const APP_LANGUAGES = [
   { key: 'en', label: '英語', available: false },
 ];
 
+function useStaticTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  const setTweak = React.useCallback((key, value) => {
+    setValues((prev) => ({ ...prev, [key]: value }));
+  }, []);
+  return [values, setTweak];
+}
+
 function AppIcon({ name }) {
   const glyphs = {
     home: '⌂',
@@ -32,6 +40,18 @@ function AppIcon({ name }) {
     export: '⇩',
   };
   return <span className="app-icon" aria-hidden="true">{glyphs[name] || '•'}</span>;
+}
+
+function SiteMark() {
+  return (
+    <div className="site-mark">
+      <span className="site-mark-seal">命</span>
+      <span>
+        <strong>星の命式</strong>
+        <small>四柱推命・七柱推命</small>
+      </span>
+    </div>
+  );
 }
 
 function CompactElementBars({ chart }) {
@@ -199,11 +219,11 @@ function LibraryScreen({ calcResult, onCreate, onResult }) {
 }
 
 function App() {
-  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [tweaks, setTweak] = useStaticTweaks(TWEAK_DEFAULTS);
   const [page, setPage] = React.useState(() => {
     const allowed = new Set(['home', 'rite', 'result', 'fortune', 'insight', 'library']);
     const hash = typeof window !== 'undefined' ? window.location.hash.replace(/^#\/?/, '') : '';
-    return allowed.has(hash) ? hash : 'home';
+    return allowed.has(hash) ? hash : 'rite';
   });   // home | rite | result | fortune | insight | library
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
@@ -314,28 +334,17 @@ function App() {
       <div className="grain"></div>
 
       <header className="chrome">
-        <div className="mark">
-          <span className="seal">命</span>
-          <span>星の命式</span>
-        </div>
-        <nav className="app-actions" role="navigation" aria-label="アプリ操作">
-          <div className="language-switch" aria-label="表示言語">
-            {APP_LANGUAGES.filter((item) => item.available).map((item) => (
-              <button
-                key={item.key}
-                type="button"
-                className={language === item.key ? 'is-active' : ''}
-                onClick={() => setLanguage(item.key)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <button onClick={toggleTheme} title="切り替え (明暗)" className="theme-toggle">
-            {activeTheme === 'kamishiro' || activeTheme === 'shuboku' ? '☽' : '☀'}
-          </button>
-          <button type="button" title="書き出し" className="icon-action"><AppIcon name="export" /></button>
+        <SiteMark />
+        <nav className="app-actions site-nav" role="navigation" aria-label="サイトナビゲーション">
+          <button type="button" className={page === 'rite' ? 'is-active' : ''} onClick={() => goto('rite')}>命式を作成</button>
+          <button type="button" className={page === 'home' ? 'is-active' : ''} onClick={() => goto('home')}>命式について</button>
+          <button type="button" className={['result','insight','fortune'].includes(page) ? 'is-active' : ''} onClick={() => calcResult ? goto('result') : goto('rite')}>鑑定の読み方</button>
+          <button type="button" onClick={() => {
+            const faq = document.querySelector('.query-help-panel');
+            if (faq) faq.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}>よくある質問</button>
         </nav>
+        <button type="button" className="mobile-menu-button" aria-label="メニュー">メニュー</button>
       </header>
 
       <aside className="app-sidebar" aria-label="メインナビゲーション">
@@ -402,65 +411,8 @@ function App() {
         )}
       </main>
 
-      <nav className="mobile-tabbar" aria-label="主要機能">
-        {navItems.map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            className={visiblePage === item.key ? 'is-active' : ''}
-            aria-current={visiblePage === item.key ? 'page' : undefined}
-            disabled={item.disabled}
-            onClick={() => goto(item.key)}
-          >
-            <AppIcon name={item.icon} />
-            {item.label}
-          </button>
-        ))}
-      </nav>
-
       <div className={`ink-wash ${washing ? 'show' : ''}`}></div>
 
-      <TweaksPanel title="調整">
-        <TweakSection title="主題">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {THEMES.map(t => (
-              <button key={t.key}
-                onClick={() => {
-                  setTweak('theme', t.key);
-                  setActiveTheme(t.key);
-                  try { localStorage.setItem('hoshi-user-theme', t.key); } catch(e){}
-                }}
-                style={{
-                  textAlign: 'left', padding: 10,
-                  border: activeTheme === t.key ? '1px solid #fff' : '1px solid rgba(255,255,255,0.16)',
-                  background: activeTheme === t.key ? 'rgba(255,255,255,0.06)' : 'transparent',
-                  color: '#fff', cursor: 'pointer', fontFamily: 'inherit',
-                  display: 'flex', flexDirection: 'column', gap: 8,
-                }}>
-                <div style={{ display: 'flex', gap: 4, height: 18 }}>
-                  {t.palette.map((c, i) => <div key={i} style={{ flex: 1, background: c }}></div>)}
-                </div>
-                <div style={{ fontSize: 13, letterSpacing: '0.2em' }}>
-                  {t.ja}
-                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', marginLeft: 8, letterSpacing: '0.12em' }}>配色</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </TweakSection>
-        <TweakSection title="書体">
-          <TweakRadio value={tweaks.type} onChange={(v) => setTweak('type', v)}
-            options={[{ value: 'mincho', label: '明朝体' }, { value: 'song', label: '宋朝風' }, { value: 'kaisho', label: '楷書体' }]} />
-        </TweakSection>
-        <TweakSection title="動き">
-          <TweakRadio value={tweaks.motion} onChange={(v) => setTweak('motion', v)}
-            options={[{ value: 'off', label: 'なし' }, { value: 'soft', label: '控えめ' }, { value: 'full', label: 'しっかり' }]} />
-        </TweakSection>
-        <TweakSection title="最初の画面">
-          <TweakRadio value={tweaks.hero} onChange={(v) => setTweak('hero', v)}
-            options={[{ value: 'centered', label: '中央配置' }, { value: 'offset', label: '余白を活かす' }]} />
-        </TweakSection>
-      </TweaksPanel>
     </React.Fragment>
   );
 }

@@ -262,7 +262,6 @@ function App() {
       <header className="chrome">
         <SiteMark onClick={() => goto('hero')} />
         <nav className={`app-actions site-nav ${mobileNavOpen ? 'is-open' : ''}`} role="navigation" aria-label="サイトナビゲーション">
-          <button type="button" className={page === 'hero' ? 'is-active' : ''} onClick={() => goto('hero')}>トップ</button>
           <button type="button" className={page === 'rite' ? 'is-active' : ''} onClick={() => goto('rite')}>命式を作成</button>
           <button type="button" className={['result','insight'].includes(page) ? 'is-active' : ''} onClick={() => calcResult ? goto('result') : goto('rite')}>鑑定の読み方</button>
           <button type="button" className={page === 'fortune' ? 'is-active' : ''} onClick={() => calcResult ? goto('fortune') : goto('rite')}>大運・流年</button>

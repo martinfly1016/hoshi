@@ -9906,6 +9906,408 @@ textarea {
   }
 }
 
+/* Scheme 2 homepage fidelity pass 2. Keep this layer last. */
+.scheme2-home-shell {
+  width: min(1440px, 100%) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 940px) minmax(320px, 380px) !important;
+  justify-content: center !important;
+  gap: 40px !important;
+  padding: 48px 44px 64px !important;
+  box-sizing: border-box !important;
+}
+
+.scheme2-home-main,
+.scheme2-home-help,
+.scheme2-home-board,
+.scheme2-home-board > * {
+  min-width: 0 !important;
+}
+
+.scheme2-home-intro {
+  margin: 0 0 30px !important;
+}
+
+.scheme2-home-intro .scheme2-home-kicker {
+  margin: 0 0 10px !important;
+  font-size: 12px !important;
+  letter-spacing: 0.08em !important;
+}
+
+.scheme2-home-intro h1 {
+  margin: 0 0 12px !important;
+  color: #16191f !important;
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif !important;
+  font-size: 40px !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.scheme2-home-intro .scheme2-home-lead {
+  max-width: 720px !important;
+  margin: 0 !important;
+  color: #59616c !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.85 !important;
+}
+
+.scheme2-home-main > .scheme2-home-flow {
+  width: 100% !important;
+  min-height: 92px !important;
+  margin: 0 0 20px !important;
+  border: 1px solid #d9dde2 !important;
+  border-radius: 4px !important;
+}
+
+.scheme2-home-main > .scheme2-home-flow > div {
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  column-gap: 14px !important;
+  padding: 18px 24px !important;
+}
+
+.scheme2-home-main > .scheme2-home-flow span {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 19px !important;
+}
+
+.scheme2-home-main > .scheme2-home-flow strong {
+  font-size: 15px !important;
+}
+
+.scheme2-home-main > .scheme2-home-flow small {
+  margin-top: 3px !important;
+  font-size: 11px !important;
+}
+
+.scheme2-home-board {
+  display: grid !important;
+  grid-template-columns: 290px minmax(0, 1fr) !important;
+  border: 1px solid #d9dde2 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+}
+
+.scheme2-home-board-copy {
+  align-content: center !important;
+  padding: 34px 30px !important;
+}
+
+.scheme2-home-board-copy > p:first-child {
+  margin: 0 0 12px !important;
+  color: #c42d27 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.scheme2-home-board-copy h2 {
+  margin: 0 !important;
+  color: #1d2026 !important;
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif !important;
+  font-size: 23px !important;
+  font-weight: 700 !important;
+  line-height: 1.55 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.scheme2-home-board-copy .scheme2-home-poem {
+  margin: 18px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: #4f5761 !important;
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1.8 !important;
+}
+
+.scheme2-home-board-note {
+  margin: 18px 0 0 !important;
+  color: #777f89 !important;
+  font-size: 12px !important;
+  line-height: 1.75 !important;
+}
+
+.scheme2-home-board .scheme2-home-visual {
+  min-height: 390px !important;
+  align-content: center !important;
+  padding: 22px 28px !important;
+  border-top: 0 !important;
+  border-left: 1px solid #d9dde2 !important;
+}
+
+.scheme2-home-board .scheme2-home-chart-head {
+  width: min(330px, 92%) !important;
+}
+
+.scheme2-home-board .scheme2-home-chart {
+  width: min(330px, 90%) !important;
+}
+
+.scheme2-home-action {
+  grid-column: 1 / -1 !important;
+  padding: 20px 64px 18px !important;
+  border-top: 1px solid #d9dde2 !important;
+  text-align: center !important;
+}
+
+.scheme2-home-action .scheme2-home-cta {
+  width: 100% !important;
+  min-height: 58px !important;
+  margin: 0 !important;
+  border-radius: 4px !important;
+  background: #c92520 !important;
+  font-size: 19px !important;
+}
+
+.scheme2-home-action .scheme2-home-privacy {
+  margin-top: 10px !important;
+}
+
+.scheme2-home-help {
+  display: grid !important;
+  align-content: start !important;
+  gap: 14px !important;
+  padding-top: 101px !important;
+}
+
+.scheme2-home-help > h2 {
+  margin: 0 0 4px !important;
+  color: #1d2026 !important;
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif !important;
+  font-size: 20px !important;
+  line-height: 1.4 !important;
+}
+
+.scheme2-home-help > button {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) !important;
+  gap: 16px !important;
+  padding: 22px 20px !important;
+  border: 1px solid #d9dde2 !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+  color: #1d2026 !important;
+  text-align: left !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+.scheme2-home-help > button:hover {
+  border-color: #c42d27 !important;
+}
+
+.scheme2-home-help > button > span {
+  width: 40px !important;
+  height: 40px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #fbefee !important;
+  color: #c42d27 !important;
+  font-family: 'Shippori Mincho', serif !important;
+  font-size: 17px !important;
+  font-weight: 800 !important;
+}
+
+.scheme2-home-help h3 {
+  margin: 0 0 9px !important;
+  font-size: 17px !important;
+  line-height: 1.5 !important;
+}
+
+.scheme2-home-help p {
+  margin: 0 !important;
+  color: #5f6771 !important;
+  font-size: 12px !important;
+  line-height: 1.8 !important;
+}
+
+.scheme2-home-help strong {
+  display: inline-flex !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+  color: #c42d27 !important;
+  font-size: 12px !important;
+}
+
+.scheme2-home-help b {
+  font-size: 18px !important;
+  line-height: 0.8 !important;
+}
+
+.scheme2-home-shell + .scheme2-home-ten-gods {
+  border-top: 1px solid #d9dde2 !important;
+}
+
+@media (max-width: 1080px) and (min-width: 761px) {
+  .scheme2-home-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 40px 34px 56px !important;
+  }
+
+  .scheme2-home-help {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    padding-top: 0 !important;
+  }
+
+  .scheme2-home-help > h2 {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .scheme2-home-shell {
+    width: 100% !important;
+    display: block !important;
+    padding: 34px 26px 42px !important;
+  }
+
+  .scheme2-home-intro {
+    margin-bottom: 26px !important;
+  }
+
+  .scheme2-home-intro .scheme2-home-kicker {
+    display: none !important;
+  }
+
+  .scheme2-home-intro h1 {
+    margin-bottom: 14px !important;
+    font-size: 38px !important;
+    line-height: 1.25 !important;
+  }
+
+  .scheme2-home-intro .scheme2-home-lead {
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+  }
+
+  .scheme2-home-intro .scheme2-home-lead br {
+    display: none !important;
+  }
+
+  .scheme2-home-main > .scheme2-home-flow {
+    min-height: 142px !important;
+    margin-bottom: 24px !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .scheme2-home-main > .scheme2-home-flow > div {
+    display: flex !important;
+    padding: 18px 5px 14px !important;
+  }
+
+  .scheme2-home-main > .scheme2-home-flow span {
+    width: 42px !important;
+    height: 42px !important;
+    flex-basis: 42px !important;
+    font-size: 21px !important;
+  }
+
+  .scheme2-home-main > .scheme2-home-flow strong {
+    font-size: 14px !important;
+  }
+
+  .scheme2-home-main > .scheme2-home-flow small {
+    max-width: 96px !important;
+    font-size: 11px !important;
+  }
+
+  .scheme2-home-board {
+    display: block !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  .scheme2-home-board-copy {
+    padding: 28px 4px 24px !important;
+  }
+
+  .scheme2-home-board-copy h2 {
+    font-size: 22px !important;
+  }
+
+  .scheme2-home-board .scheme2-home-visual {
+    min-height: 0 !important;
+    padding: 26px 0 18px !important;
+    border-top: 1px solid #d9dde2 !important;
+    border-left: 0 !important;
+  }
+
+  .scheme2-home-board .scheme2-home-chart {
+    width: min(300px, 88%) !important;
+  }
+
+  .scheme2-home-action {
+    padding: 22px 0 18px !important;
+  }
+
+  .scheme2-home-action .scheme2-home-cta {
+    min-height: 60px !important;
+    padding-left: 30px !important;
+    font-size: 18px !important;
+  }
+
+  .scheme2-home-help {
+    gap: 0 !important;
+    margin-top: 34px !important;
+    padding: 20px 14px !important;
+    border: 1px solid #e0d5c4 !important;
+    border-radius: 8px !important;
+    background: #fffdf9 !important;
+  }
+
+  .scheme2-home-help > h2 {
+    margin: 0 0 8px !important;
+    font-size: 18px !important;
+  }
+
+  .scheme2-home-help > button {
+    grid-template-columns: 36px minmax(0, 1fr) !important;
+    gap: 12px !important;
+    padding: 16px 8px !important;
+    border: 0 !important;
+    border-top: 1px solid #e3e5e8 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .scheme2-home-help > button > span {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 15px !important;
+  }
+
+  .scheme2-home-help h3 {
+    font-size: 15px !important;
+  }
+
+  .scheme2-home-help p {
+    display: none !important;
+  }
+
+  .scheme2-home-help strong {
+    margin-top: 4px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .scheme2-home-shell {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .scheme2-home-intro h1 {
+    font-size: 35px !important;
+  }
+}
+
 /* Scheme 2 homepage: old content and behavior in the approved visual system. */
 .site-mark {
   padding: 0 !important;

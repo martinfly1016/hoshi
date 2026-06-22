@@ -30,6 +30,7 @@ function useStaticTweaks(defaults) {
 
 function AppIcon({ name }) {
   const glyphs = {
+    home: '⌂',
     create: '+',
     result: '▦',
     library: '☰',
@@ -41,15 +42,15 @@ function AppIcon({ name }) {
   return <span className="app-icon" aria-hidden="true">{glyphs[name] || '•'}</span>;
 }
 
-function SiteMark() {
+function SiteMark({ onClick }) {
   return (
-    <div className="site-mark">
+    <button type="button" className="site-mark" onClick={onClick} aria-label="トップへ戻る">
       <span className="site-mark-seal">命</span>
       <span>
         <strong>星の命式</strong>
         <small>四柱推命・七柱推命</small>
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -145,14 +146,34 @@ function LibraryScreen({ calcResult, onCreate, onResult }) {
 function App() {
   const [tweaks, setTweak] = useStaticTweaks(TWEAK_DEFAULTS);
   const [page, setPage] = React.useState(() => {
-    const allowed = new Set(['rite', 'result', 'fortune', 'insight', 'library']);
+    const allowed = new Set(['hero', 'rite', 'library']);
     const hash = typeof window !== 'undefined' ? window.location.hash.replace(/^#\/?/, '') : '';
-    return allowed.has(hash) ? hash : 'rite';
-  });   // rite | result | fortune | insight | library
+    if (hash === 'home') return 'hero';
+    return allowed.has(hash) ? hash : 'hero';
+  });   // hero | rite | result | fortune | insight | library
   const [washing, setWashing] = React.useState(false);
   const [calcResult, setCalcResult] = React.useState(null);
   const [routeTarget, setRouteTarget] = React.useState(null);
   const [language, setLanguage] = React.useState('ja');
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+
+  const yearInfo = React.useMemo(() => {
+    const y = new Date().getFullYear();
+    const reiwaYear = y - 2018;
+    const kanjiDigits = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+    const reiwa = reiwaYear === 1
+      ? '元'
+      : reiwaYear < 10
+        ? kanjiDigits[reiwaYear]
+        : `${reiwaYear < 20 ? '十' : `${kanjiDigits[Math.floor(reiwaYear / 10)]}十`}${reiwaYear % 10 ? kanjiDigits[reiwaYear % 10] : ''}`;
+    const stems = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+    const branches = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    return {
+      gregorian: y,
+      reiwa: `令和${reiwa}年`,
+      ganzhi: `${stems[(y - 4) % 10]}${branches[(y - 4) % 12]}`,
+    };
+  }, []);
 
   // Active theme state
   const [activeTheme, setActiveTheme] = React.useState(() => {
@@ -204,8 +225,9 @@ function App() {
   }, [activeTheme, tweaks]);
 
   const goto = (target, detailTarget = null) => {
+    setMobileNavOpen(false);
     setRouteTarget(detailTarget ? { ...detailTarget, key: `${Date.now()}-${Math.random()}` } : null);
-    if (typeof window !== 'undefined' && ['rite', 'result', 'library'].includes(target)) {
+    if (typeof window !== 'undefined' && ['hero', 'rite', 'result', 'library'].includes(target)) {
       window.history.replaceState(null, '', `#${target}`);
     }
     if (target === page) return;
@@ -218,28 +240,43 @@ function App() {
   };
 
   const navItems = [
+    { key: 'hero', label: 'トップ', icon: 'home' },
     { key: 'rite', label: '作成', icon: 'create' },
     { key: 'result', label: '結果', icon: 'result', disabled: !calcResult },
     { key: 'library', label: '一覧', icon: 'library' },
   ];
   const visiblePage = ['insight', 'fortune'].includes(page) ? 'result' : page;
 
+  const gotoFaq = () => {
+    setMobileNavOpen(false);
+    if (page !== 'rite') goto('rite');
+    window.setTimeout(() => {
+      document.querySelector('.query-help-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, page === 'rite' ? 0 : 320);
+  };
+
   return (
     <React.Fragment>
       <div className="grain"></div>
 
       <header className="chrome">
-        <SiteMark />
-        <nav className="app-actions site-nav" role="navigation" aria-label="サイトナビゲーション">
+        <SiteMark onClick={() => goto('hero')} />
+        <nav className={`app-actions site-nav ${mobileNavOpen ? 'is-open' : ''}`} role="navigation" aria-label="サイトナビゲーション">
+          <button type="button" className={page === 'hero' ? 'is-active' : ''} onClick={() => goto('hero')}>トップ</button>
           <button type="button" className={page === 'rite' ? 'is-active' : ''} onClick={() => goto('rite')}>命式を作成</button>
-          <button type="button" className={['result','insight','fortune'].includes(page) ? 'is-active' : ''} onClick={() => calcResult ? goto('result') : goto('rite')}>鑑定の読み方</button>
-          <button type="button" onClick={() => {
-            const faq = document.querySelector('.query-help-panel');
-            if (faq) faq.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }}>よくある質問</button>
+          <button type="button" className={['result','insight'].includes(page) ? 'is-active' : ''} onClick={() => calcResult ? goto('result') : goto('rite')}>鑑定の読み方</button>
+          <button type="button" className={page === 'fortune' ? 'is-active' : ''} onClick={() => calcResult ? goto('fortune') : goto('rite')}>大運・流年</button>
+          <button type="button" onClick={gotoFaq}>よくある質問</button>
         </nav>
-        <button type="button" className="mobile-menu-button" aria-label="メニュー">メニュー</button>
+        <button
+          type="button"
+          className={`mobile-menu-button ${mobileNavOpen ? 'is-open' : ''}`}
+          aria-label={mobileNavOpen ? 'メニューを閉じる' : 'メニューを開く'}
+          aria-expanded={mobileNavOpen}
+          onClick={() => setMobileNavOpen((open) => !open)}
+        >{mobileNavOpen ? '閉じる' : 'メニュー'}</button>
       </header>
+      {mobileNavOpen && <button type="button" className="mobile-nav-scrim" aria-label="メニューを閉じる" onClick={() => setMobileNavOpen(false)} />}
 
       <aside className="app-sidebar" aria-label="メインナビゲーション">
         <div className="sidebar-search">命式を検索</div>
@@ -266,6 +303,7 @@ function App() {
       </aside>
 
       <main className="page app-main">
+        {page === 'hero' && <Hero onEnter={() => goto('rite')} yearInfo={yearInfo} />}
         {page === 'library' && <LibraryScreen calcResult={calcResult} onCreate={() => goto('rite')} onResult={() => goto('result')} />}
         {page === 'rite' && <Rite onBack={() => goto('rite')}
           initialResult={calcResult}

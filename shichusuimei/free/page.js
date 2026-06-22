@@ -1,4 +1,4 @@
-import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260606-ten-god-audit-1";
+import { calculateShichusuimei } from "../../calculation-lab.js?v=free-20260602-label-cleanup-1";
 import { JAPAN_MUNICIPALITIES } from "../../japan-municipalities.js?v=free-20260511-7";
 
 const READING_DELAY_MS = 980;
@@ -412,13 +412,13 @@ const TEN_GOD_DISPLAY = {
   偏財: "偏財",
   正财: "正財",
   正財: "正財",
-  七杀: "七殺",
-  七殺: "七殺",
-  偏官: "七殺",
+  七杀: "偏官",
+  七殺: "偏官",
+  偏官: "偏官",
   正官: "正官",
   偏印: "偏印",
-  正印: "正印",
-  印綬: "正印",
+  正印: "印綬",
+  印綬: "印綬",
   日主: "日主",
 };
 function displayTenGod(name) {
@@ -456,8 +456,6 @@ const RESULT_SECTION_TABS = [
 const DEFAULT_RESULT_SECTION_ID = RESULT_SECTION_TABS[0].id;
 const MOBILE_RESULTS_MEDIA = window.matchMedia("(max-width: 760px)");
 const URL_PARAMS = new URLSearchParams(window.location.search);
-const LOCATION_REGION_OPTIONS = window.HOSHI_REGION_OPTIONS || [{ key: "jp", label: "日本" }];
-const WORLD_LOCATIONS = window.HOSHI_WORLD_LOCATIONS || [];
 
 let lastResult = null;
 let lastResultInputSignature = "";
@@ -503,18 +501,7 @@ function selectedMunicipality() {
     || JAPAN_MUNICIPALITIES[0];
 }
 
-function selectedWorldLocation() {
-  return WORLD_LOCATIONS.find((location) => location.id === element("world-location").value)
-    || WORLD_LOCATIONS.find((location) => location.country === element("location-region").value)
-    || WORLD_LOCATIONS[0]
-    || selectedMunicipality();
-}
-
-function selectedBirthLocation() {
-  return element("location-region").value === "jp" ? selectedMunicipality() : selectedWorldLocation();
-}
-
-function locationOverrideFromSelection(location) {
+function locationOverrideFromMunicipality(location) {
   return {
     id: location.id,
     label: location.label,
@@ -536,14 +523,14 @@ function delay(milliseconds) {
 }
 
 function readInput() {
-  const location = selectedBirthLocation();
+  const location = selectedMunicipality();
   return {
     date: element("birth-date").value,
     timeKnown: element("time-known").checked,
     time: element("birth-time").value || "12:00",
     gender: element("gender").value,
     locationId: location.id,
-    locationOverride: locationOverrideFromSelection(location),
+    locationOverride: locationOverrideFromMunicipality(location),
     timeCalculationMode: element("time-mode").value,
     lateZiHourMode: element("late-zi-mode").value,
   };
@@ -555,22 +542,6 @@ function inputSignature(input = readInput()) {
 
 function displayLocationLabel(location) {
   return (location?.label || "").replace(/^日本\s*\/\s*/, "");
-}
-
-function searchableLocationText(location) {
-  return [location.label, location.region, location.city, location.keywords]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-}
-
-function worldLocationsForCurrentFilters() {
-  const region = element("location-region").value;
-  const query = element("world-location-query").value.trim().toLowerCase();
-  return WORLD_LOCATIONS
-    .filter((location) => location.country === region)
-    .filter((location) => !query || searchableLocationText(location).includes(query))
-    .slice(0, 80);
 }
 
 function setBusy(isBusy) {
@@ -1641,7 +1612,7 @@ function renderLifeThemeCards(result) {
     },
     {
       title: "財運・現実面",
-      text: `財星（偏財・正財）や官星（七殺・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
+      text: `財星（偏財・正財）や官星（偏官・正官）の出方を、収入の断定ではなく現実管理・責任・対人機会の傾向として扱います。`,
     },
   ];
   return `
@@ -1994,11 +1965,11 @@ function renderLuckPage(result) {
       ${renderPageHero({
         kicker: "PAGE 3 / LUCK",
         title: "大運流年",
-        text: "命式に時間の流れを重ねるページです。十年単位の大運、年ごとの流年、天干地支と十神の動きをまとめて読みます。",
+        text: "命式に時間の流れを重ねるページです。十年単位の大運と、年・月・日の運勢周期を初版として並べます。",
         items: [
-          { label: "大運", text: "起運・順逆・十年干支" },
-          { label: "流年", text: "年ごとの天干地支" },
-          { label: "解説", text: "十神・五行・冲合刑害" },
+          { label: "大運", text: "十年単位の流れ" },
+          { label: "流年", text: "年ごとの干支" },
+          { label: "流月・流日", text: "近い周期の確認" },
         ],
       })}
       ${renderLuckOverviewCards(result)}
@@ -2019,56 +1990,6 @@ function genderLabel(value) {
   if (value === "male") return "男性";
   if (value === "female") return "女性";
   return "未指定";
-}
-
-function branchImpactLabel(impacts = []) {
-  if (!impacts.length) return "冲合刑害なし";
-  return impacts.slice(0, 2).map((impact) => impact.label).join(" / ");
-}
-
-function pillarEvidenceText(item) {
-  const pillar = item?.pillar || {};
-  const stemElement = pillar.element?.stem || "—";
-  const branchElement = pillar.element?.branch || "—";
-  return `${pillar.stem || "—"}(${stemElement}) / ${pillar.branch || "—"}(${branchElement})`;
-}
-
-function renderLuckFormulaPanel(result) {
-  const luck = result.luckCycles || {};
-  const decade = luck.decadeFortunes;
-  const target = luck.target || {};
-  const annual = luck.annualFortunes?.[0];
-  const currentDecade = findCurrentDecadeFortune(result);
-  const formulas = [
-    {
-      label: "大運の出し方",
-      value: decade?.status === "ok"
-        ? `${genderLabel(decade.gender)}・${directionLabel(decade.direction)} / 起運 ${decade.startTime}`
-        : (decade?.note || "性別指定後に順行・逆行と起運を計算します。"),
-    },
-    {
-      label: "現在の十年運",
-      value: currentDecade
-        ? `${currentDecade.name}（${currentDecade.startYear}-${currentDecade.endYear}年、${currentDecade.startAge}-${currentDecade.endAge}歳）`
-        : "該当する大運は未判定です。",
-    },
-    {
-      label: "流年の出し方",
-      value: annual
-        ? `${target.year}年は ${annual.name}。天干 ${annual.pillar.stem}、地支 ${annual.pillar.branch}、日主から見た十神は ${displayTenGod(annual.pillar.heavenlyTenGod)}。`
-        : "対象年の干支を干支暦から計算します。",
-    },
-  ];
-  return `
-    <div class="soft-panel luck-formula-panel">
-      ${formulas.map((item) => `
-        <article>
-          <span>${escapeHtml(item.label)}</span>
-          <p>${escapeHtml(item.value)}</p>
-        </article>
-      `).join("")}
-    </div>
-  `;
 }
 
 function renderLuckTable(items, columns) {
@@ -2171,114 +2092,6 @@ function renderDecadeFortunes(result) {
         { label: "期間", value: (item) => `${item.startYear}-${item.endYear}` },
         { label: "十神", value: (item) => displayTenGod(item.pillar.heavenlyTenGod) || "—" },
       ])}
-      <div class="luck-reading-list">
-        ${decade.items.map((item) => renderDecadeReadingCard(item)).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderDecadeReadingCard(item) {
-  const reading = item.reading;
-  if (!reading) return "";
-  return `
-    <article class="luck-reading-card">
-      <div class="luck-reading-head">
-        <span>${escapeHtml(`${item.startAge}-${item.endAge}歳`)}</span>
-        <strong>${escapeHtml(reading.title || item.name)}</strong>
-        <em>${escapeHtml(reading.scoreLabel || "")} ${escapeHtml(String(reading.score || ""))}</em>
-      </div>
-      <div class="luck-pillar-evidence">
-        <span>天干地支 ${escapeHtml(pillarEvidenceText(item))}</span>
-        <span>十神 ${escapeHtml(displayTenGod(item.pillar?.heavenlyTenGod))}</span>
-        <span>${escapeHtml(branchImpactLabel(item.impacts))}</span>
-      </div>
-      <p>${escapeHtml(reading.summary || "")}</p>
-      <div class="luck-reading-tags">
-        ${(reading.keywords || []).map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("")}
-      </div>
-      <dl class="luck-reading-points">
-        <div><dt>仕事</dt><dd>${escapeHtml(reading.work || "")}</dd></div>
-        <div><dt>財</dt><dd>${escapeHtml(reading.money || "")}</dd></div>
-        <div><dt>対人</dt><dd>${escapeHtml(reading.relation || "")}</dd></div>
-      </dl>
-      ${reading.impact ? `<small>${escapeHtml(reading.impact)}</small>` : ""}
-    </article>
-  `;
-}
-
-function renderAnnualReadingCards(result) {
-  const annuals = result.luckCycles?.annualFortunes || [];
-  if (!annuals.length) return "";
-  return `
-    <div class="soft-panel reading-panel">
-      <div class="card-subhead">
-        <h3>流年の運勢解説</h3>
-        <p>対象年から10年分の流年を、天干地支・十神・命式との作用で読みます。</p>
-      </div>
-      <div class="luck-combo-list">
-        ${annuals.map((annual) => {
-          const reading = annual.reading || {};
-          return `
-            <article class="luck-combo-card">
-              <div class="luck-reading-head">
-                <span>${escapeHtml(String(annual.year))}年</span>
-                <strong>${escapeHtml(reading.title || `${annual.name}の流年`)}</strong>
-                <em>${escapeHtml(reading.scoreLabel || "")} ${escapeHtml(String(reading.score || ""))}</em>
-              </div>
-              <div class="luck-pillar-evidence">
-                <span>天干地支 ${escapeHtml(pillarEvidenceText(annual))}</span>
-                <span>十神 ${escapeHtml(displayTenGod(annual.pillar?.heavenlyTenGod))}</span>
-                <span>${escapeHtml(branchImpactLabel(annual.impacts))}</span>
-              </div>
-              <p>${escapeHtml(reading.summary || "")}</p>
-              <div class="luck-reading-tags">
-                ${(reading.keywords || []).map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("")}
-              </div>
-              <dl class="luck-reading-points">
-                <div><dt>仕事</dt><dd>${escapeHtml(reading.work || "")}</dd></div>
-                <div><dt>財</dt><dd>${escapeHtml(reading.money || "")}</dd></div>
-                <div><dt>対人</dt><dd>${escapeHtml(reading.relation || "")}</dd></div>
-              </dl>
-              ${reading.impact ? `<small>${escapeHtml(reading.impact)}</small>` : ""}
-            </article>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderDecadeYearReadingList(result) {
-  const readings = result.luckCycles?.decadeYearReadings || [];
-  if (!readings.length) return "";
-  return `
-    <div class="soft-panel reading-panel">
-      <div class="card-subhead">
-        <h3>現在の大運 × 近い流年</h3>
-        <p>現在の十年大運に、各年の流年を重ねた自動解説です。</p>
-      </div>
-      <div class="luck-combo-list">
-        ${readings.map((reading) => `
-          <article class="luck-combo-card">
-            <div class="luck-reading-head">
-              <span>${escapeHtml(String(reading.year))}年</span>
-              <strong>${escapeHtml(reading.title)}</strong>
-              <em>${escapeHtml(reading.scoreLabel)} ${escapeHtml(String(reading.score))}</em>
-            </div>
-            <p>${escapeHtml(reading.summary)}</p>
-            <div class="luck-reading-tags">
-              ${(reading.keywords || []).map((keyword) => `<span>${escapeHtml(keyword)}</span>`).join("")}
-            </div>
-            <dl class="luck-reading-points">
-              <div><dt>仕事</dt><dd>${escapeHtml(reading.work)}</dd></div>
-              <div><dt>財</dt><dd>${escapeHtml(reading.money)}</dd></div>
-              <div><dt>対人</dt><dd>${escapeHtml(reading.relation)}</dd></div>
-            </dl>
-            <small>${escapeHtml(reading.caution || "")}</small>
-          </article>
-        `).join("")}
-      </div>
     </div>
   `;
 }
@@ -2290,27 +2103,22 @@ function renderLuckCyclesSection(result) {
     <div class="card-head">
       <div>
         <p class="card-kicker">LUCK / CYCLES</p>
-        <h2>大運・流年の干支計算と運勢解説</h2>
+        <h2>大運・流年・流月・流日の初版排盤</h2>
       </div>
       <span class="balance-badge">${escapeHtml(`${target.year || "—"}年`)}</span>
     </div>
-    <p class="section-copy">大運は出生時刻から起運と順逆を出し、月柱を基準に十年ごとの干支を進めます。流年は対象年の干支を出し、日主から見た十神、五行、命式との冲合刑害を合わせて読みます。</p>
-    ${renderLuckFormulaPanel(result)}
+    <p class="section-copy">ここでは運勢周期の干支を検証用に並べます。解釈文への反映は、計算結果の確認後に段階的に進めます。</p>
     ${renderDecadeFortunes(result)}
-    ${renderAnnualReadingCards(result)}
-    ${renderDecadeYearReadingList(result)}
     <div class="luck-grid">
       <article class="detail-card">
         <div class="card-subhead">
-          <h3>流年干支表</h3>
+          <h3>流年</h3>
           <p>${escapeHtml(`${target.year || "—"}年から10年`)}</p>
         </div>
         ${renderLuckTable(luck.annualFortunes || [], [
           { label: "年", value: (item) => item.year },
           { label: "干支", value: (item) => item.name },
-          { label: "天干/地支", value: (item) => pillarEvidenceText(item) },
-          { label: "十神", value: (item) => displayTenGod(item.pillar.heavenlyTenGod) || "—" },
-          { label: "作用", value: (item) => branchImpactLabel(item.impacts) },
+          { label: "五行", value: (item) => `${item.pillar.element.stem}/${item.pillar.element.branch}` },
         ])}
       </article>
       <article class="detail-card">
@@ -2548,45 +2356,7 @@ function populateMunicipalities(prefecture, preferredId = "") {
   element("municipality").value = nextId;
 }
 
-function populateWorldLocations(preferredId = "") {
-  const locations = worldLocationsForCurrentFilters();
-  element("world-location").innerHTML = locations.map(
-    (location) => `<option value="${location.id}">${escapeHtml(displayLocationLabel(location))}</option>`,
-  ).join("");
-
-  const nextId = locations.some((location) => location.id === preferredId)
-    ? preferredId
-    : (locations[0]?.id || "");
-  element("world-location").value = nextId;
-}
-
-function updateLocationStatus() {
-  const location = selectedBirthLocation();
-  const status = element("location-status");
-  if (!status) return;
-  status.textContent = location
-    ? `選択中: ${displayLocationLabel(location)} / ${location.timezone || "timezone未設定"}`
-    : "選択できる都市がありません。検索条件を変更してください。";
-}
-
-function syncLocationControls(preferredWorldId = "") {
-  const isJapan = element("location-region").value === "jp";
-  element("prefecture-field").classList.toggle("is-hidden", !isJapan);
-  element("municipality-field").classList.toggle("is-hidden", !isJapan);
-  element("world-search-field").classList.toggle("is-hidden", isJapan);
-  element("world-location-field").classList.toggle("is-hidden", isJapan);
-  if (!isJapan) {
-    populateWorldLocations(preferredWorldId);
-  }
-  updateLocationStatus();
-}
-
 function populateLocationControls() {
-  element("location-region").innerHTML = LOCATION_REGION_OPTIONS.map(
-    (region) => `<option value="${region.key}">${escapeHtml(region.label)}</option>`,
-  ).join("");
-  element("location-region").value = "jp";
-
   const availablePrefectures = new Set(JAPAN_MUNICIPALITIES.map((location) => location.prefecture));
   const prefectures = PREFECTURE_ORDER.filter((prefecture) => availablePrefectures.has(prefecture));
   element("prefecture").innerHTML = prefectures.map(
@@ -2594,7 +2364,6 @@ function populateLocationControls() {
   ).join("");
   element("prefecture").value = DEFAULT_PREFECTURE;
   populateMunicipalities(DEFAULT_PREFECTURE, DEFAULT_MUNICIPALITY_ID);
-  syncLocationControls();
 }
 
 function syncBirthTimeField() {
@@ -2607,7 +2376,6 @@ function syncBirthTimeField() {
 
 function markInputChanged() {
   syncBirthTimeField();
-  updateLocationStatus();
   if (!lastResult) {
     setStatus("未作成");
     return;
@@ -2626,20 +2394,11 @@ function bindEvents() {
   });
   element("copy-json").addEventListener("click", copyJson);
   element("time-known").addEventListener("change", markInputChanged);
-  element("location-region").addEventListener("change", () => {
-    element("world-location-query").value = "";
-    syncLocationControls();
-    markInputChanged();
-  });
   element("prefecture").addEventListener("change", () => {
     populateMunicipalities(element("prefecture").value);
     markInputChanged();
   });
-  element("world-location-query").addEventListener("input", () => {
-    populateWorldLocations(element("world-location").value);
-    markInputChanged();
-  });
-  ["birth-date", "birth-time", "gender", "municipality", "world-location", "time-mode", "late-zi-mode"].forEach((id) => {
+  ["birth-date", "birth-time", "gender", "municipality", "time-mode", "late-zi-mode"].forEach((id) => {
     element(id).addEventListener("change", markInputChanged);
   });
 }

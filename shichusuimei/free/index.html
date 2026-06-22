@@ -295,17 +295,6 @@
     color: var(--warn);
   }
 
-  .field.is-hidden {
-    display: none;
-  }
-
-  .location-status {
-    color: var(--ink-3);
-    font-size: 12px;
-    line-height: 1.6;
-    margin-top: 8px;
-  }
-
   .checkline {
     display: flex;
     align-items: center;
@@ -2503,36 +2492,6 @@
     overflow: hidden;
   }
 
-  .luck-formula-panel {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin: 14px 0;
-  }
-
-  .luck-formula-panel article {
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    padding: 14px;
-    background: color-mix(in srgb, var(--paper) 88%, #fff 12%);
-  }
-
-  .luck-formula-panel span {
-    color: var(--muted);
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    margin-bottom: 6px;
-  }
-
-  .luck-formula-panel p {
-    color: var(--ink-2);
-    font-size: 13px;
-    line-height: 1.7;
-    margin: 0;
-  }
-
   .luck-table-wrap {
     padding: 0;
     max-height: 420px;
@@ -2542,109 +2501,6 @@
   .luck-table {
     min-width: 360px;
     font-size: 13px;
-  }
-
-  .luck-reading-list,
-  .luck-combo-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 14px;
-  }
-
-  .luck-reading-card,
-  .luck-combo-card {
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    background: color-mix(in srgb, var(--paper) 84%, #fff 16%);
-    padding: 16px;
-  }
-
-  .luck-reading-head {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .luck-reading-head span,
-  .luck-reading-head em {
-    color: var(--muted);
-    font-size: 12px;
-    font-style: normal;
-    white-space: nowrap;
-  }
-
-  .luck-reading-head strong {
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-
-  .luck-reading-card p,
-  .luck-combo-card p,
-  .luck-reading-points dd,
-  .luck-reading-card small,
-  .luck-combo-card small {
-    color: var(--ink-2);
-    font-size: 13px;
-    line-height: 1.75;
-  }
-
-  .luck-pillar-evidence {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 8px 0 10px;
-  }
-
-  .luck-pillar-evidence span {
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.35;
-    padding: 5px 7px;
-  }
-
-  .luck-reading-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 10px 0;
-  }
-
-  .luck-reading-tags span {
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    padding: 4px 8px;
-    color: var(--muted);
-    font-size: 12px;
-  }
-
-  .luck-reading-points {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    margin: 12px 0;
-  }
-
-  .luck-reading-points div {
-    border: 1px solid var(--rule);
-    padding: 10px;
-  }
-
-  .luck-reading-points dt {
-    color: var(--ink);
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  .luck-reading-points dd {
-    margin: 0;
   }
 
   .chart-shell {
@@ -2816,9 +2672,7 @@
     .algorithm-meta,
     .tag-detail-grid,
     .tag-explain-grid,
-    .luck-formula-panel,
     .luck-grid,
-    .luck-reading-points,
     .auxiliary-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -2935,9 +2789,7 @@
     .algorithm-meta,
     .tag-detail-grid,
     .tag-explain-grid,
-    .luck-formula-panel,
     .luck-grid,
-    .luck-reading-points,
     .auxiliary-grid {
       grid-template-columns: 1fr;
     }
@@ -3045,43 +2897,18 @@
 
         <div class="field">
           <div class="field-heading">
-            <label for="location-region">出生地エリア</label>
-            <span class="field-note">海外対応</span>
-          </div>
-          <select id="location-region"></select>
-        </div>
-
-        <div class="field" id="prefecture-field">
-          <div class="field-heading">
             <label for="prefecture">都道府県</label>
-            <span class="field-note">日本</span>
+            <span class="field-note">日本のみ</span>
           </div>
           <select id="prefecture"></select>
         </div>
 
-        <div class="field" id="municipality-field">
+        <div class="field">
           <div class="field-heading">
             <label for="municipality">市区町村</label>
             <span class="field-note">真太陽時に使用</span>
           </div>
           <select id="municipality"></select>
-        </div>
-
-        <div class="field is-hidden" id="world-search-field">
-          <div class="field-heading">
-            <label for="world-location-query">海外都市検索</label>
-            <span class="field-note">都市名・地域名</span>
-          </div>
-          <input id="world-location-query" type="text" placeholder="例 ）上海 / New York / London" />
-        </div>
-
-        <div class="field is-hidden" id="world-location-field">
-          <div class="field-heading">
-            <label for="world-location">海外都市</label>
-            <span class="field-note">真太陽時に使用</span>
-          </div>
-          <select id="world-location"></select>
-          <div id="location-status" class="location-status"></div>
         </div>
 
         <div class="field">
@@ -3120,7 +2947,6 @@
   <section id="result" class="results" aria-live="polite"></section>
 </main>
 
-<script src="../../world-locations.js?v=20260606-ten-god-audit-1"></script>
-<script type="module" src="./page.js?v=free-20260606-ten-god-audit-1"></script>
+<script type="module" src="./page.js?v=free-20260602-label-cleanup-1"></script>
 </body>
 </html>

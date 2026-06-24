@@ -2136,11 +2136,11 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                subtitle={luck.decadeFortunes?.status === 'ok' ? `${luck.decadeFortunes.gender || '性別'} / ${luck.decadeFortunes.direction || '順逆'} / 起運 ${luck.decadeFortunes.startTime || '—'}` : '性別を選ぶと十年運を定位します'}
                items={decade}
                columns={[
-                 { label: '順', value: item => item.index },
-                 { label: '大運', value: item => item.name },
-                 { label: '年齢', value: item => `${item.startAge}-${item.endAge}歳` },
-                 { label: '期間', value: item => `${item.startYear}-${item.endYear}` },
-                 { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod) },
+                 { label: '順', value: item => item.index, width: '56px' },
+                 { label: '大運', value: item => item.name, width: '92px' },
+                 { label: '年齢', value: item => `${item.startAge}-${item.endAge}歳`, width: '116px' },
+                 { label: '期間', value: item => `${item.startYear}-${item.endYear}`, width: '138px' },
+                 { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod), width: '112px' },
                ]}
              />
              <div className="backend-luck-grid">
@@ -2149,9 +2149,9 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                  subtitle={`${luck.target?.year || new Date().getFullYear()}年からの10年`}
                  items={luck.annualFortunes || []}
                  columns={[
-                   { label: '年', value: item => item.year },
-                   { label: '干支', value: item => item.name },
-                   { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod) },
+                   { label: '年', value: item => item.year, width: '22%' },
+                   { label: '干支', value: item => item.name, width: '36%' },
+                   { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod), width: '42%' },
                  ]}
                />
                <LuckItemTable
@@ -2159,9 +2159,9 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                  subtitle={`${luck.target?.year || new Date().getFullYear()}年の節月`}
                  items={monthly}
                  columns={[
-                   { label: '月', value: item => item.index },
-                   { label: '開始', value: item => item.solarStartDate || '—' },
-                   { label: '干支', value: item => item.name },
+                   { label: '月', value: item => item.index, width: '18%' },
+                   { label: '開始', value: item => item.solarStartDate || '—', width: '45%' },
+                   { label: '干支', value: item => item.name, width: '37%' },
                  ]}
                />
                <LuckItemTable
@@ -2169,9 +2169,9 @@ function FortuneView({ calculation, profile, onBack, onEditInput, routeTarget })
                  subtitle="対象日から14日"
                  items={daily}
                  columns={[
-                   { label: '日付', value: item => item.date },
-                   { label: '干支', value: item => item.name },
-                   { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod) },
+                   { label: '日付', value: item => item.date, width: '44%' },
+                   { label: '干支', value: item => item.name, width: '24%' },
+                   { label: '十神', value: item => displayTenGod(item.pillar?.heavenlyTenGod), width: '32%' },
                  ]}
                />
              </div>
@@ -2383,6 +2383,11 @@ function LuckItemTable({ title, subtitle, items, columns }) {
         <>
           <div className="user-luck-table-wrap">
             <table className={`user-luck-table cols-${columns.length}`}>
+              <colgroup>
+                {columns.map((col, index) => (
+                  <col key={`${col.label}-${index}`} style={col.width ? { width: col.width } : undefined} />
+                ))}
+              </colgroup>
               <thead><tr>{columns.map(col => <th key={col.label}>{col.label}</th>)}</tr></thead>
               <tbody>
                 {rows.map((item, index) => (
